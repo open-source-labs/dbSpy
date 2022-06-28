@@ -4,6 +4,8 @@
   "description": "Visualizing existing database",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
     "start": "cross-env NODE_ENV=production node server/server.js",
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "cross-env NODE_ENV=development webpack serve --open & nodemon server/server.js"
@@ -14,9 +16,12 @@
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@mui/material": "^5.8.6",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
     "cookie-session": "^2.0.0",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
+    "jest": "^28.1.1",
     "node-fetch": "^3.2.6",
     "pg": "^8.7.3",
     "react": "^18.2.0",
@@ -24,13 +29,15 @@
     "react-draggable": "^4.4.5",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "ts-jest": "^28.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
     "@babel/preset-env": "^7.18.6",
     "@babel/preset-react": "^7.18.6",
     "@types/express-session": "^1.17.4",
+    "@types/jest": "^28.1.3",
     "@types/passport": "^1.0.9",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
