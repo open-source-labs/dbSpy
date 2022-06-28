@@ -7,3 +7,4 @@ node_modules/
 # output from webpack
 dist/
 
+.env

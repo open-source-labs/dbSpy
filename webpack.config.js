@@ -3,15 +3,30 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
-  entry: './client/index.js',
+  entry: './client/index.tsx',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/'
   },
+  devtool: 'eval-source-map', //comment it out when doing the production run 
   devServer: {
+    host: 'localhost',
+    port: 8080,
+    hot: true,
     proxy: {
-      '/api/**': 'http://localhost:3000',
+      '/api/**': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/page/**': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/auth/**': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
     },
     static: {
       directory: path.join(__dirname, 'dist'),
@@ -39,11 +54,20 @@ module.exports = {
       },
       { 
         test: /\.(png|jpg)$/, 
-        use: ['url-loader?limit=8192'] }
+        use: ['url-loader?limit=8192'] 
+      },
+      { 
+        test: /\.tsx?$/, 
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
     ]
   },
   plugins: [new HtmlWebpackPlugin({
     template: 'index.html'
-  })]
+  })],
+  resolve: {
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
+  }
 };
 
