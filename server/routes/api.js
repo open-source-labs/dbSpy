@@ -2,8 +2,8 @@
 // router.get('/getSchema/:id');
 
 const express = require('express');
-const { module } = require('../../webpack.config');
-const controller = require('../controllers/controller');
+//const { module } = require('../../webpack.config');
+const controller = require('../controllers/dataController');
 
 const router = express.Router();
 
@@ -22,45 +22,48 @@ const router = express.Router();
  * Logout
  */
 
-router.get('/', /* display assets */)
-// Perhaps express.static
 
-router.get('/getAllSchemas', 
-  controller.getAllSchemas,
-  (req, res) => {
-    res.status(200).json(res.locals/*placeholder*/);
-});
 
 router.get('/getSchema', 
   controller.getSchema,
   (req, res) => {
-    res.status(200).json(res.locals/*placeholder*/);
+    res.status(200).json({"ok" : "Good"});
 });
+/*
+router.get('/', /* display assets */
+// Perhaps express.static
 
-router.get('/openSchema',
-  controller.openSchema,
-  (req, res) => {
-    res.status(200).json(res.locals/*placeholder*/);
-});
 
-router.post('/postSchema', 
-  controller.postSchema,
-  (req, res) => {
-    res.status(200).send('Post successful!');
-});
+  //router.get('/getAllSchemas', 
+  //  controller.getAllSchemas,
+  //  (req, res) => {
+  //    res.status(200).json(res.locals/*placeholder*/);
+  //});
 
-router.post('/saveSchema', 
-  controller.saveSchema,
-  (req, res) => {
-    res.status(200).send('Save successful!');
-});
+  //router.get('/openSchema',
+  //  controller.openSchema,
+  //  (req, res) => {
+  //    res.status(200).json(res.locals/*placeholder*/);
+  //});
 
-router.post('/deleteSchema', 
-  controller.deleteSchema,
-  (req, res) => {
-    res.status(200).send('Delete successful!');
-});
+  //router.post('/postSchema', 
+  //  controller.postSchema,
+  //  (req, res) => {
+  //    res.status(200).send('Post successful!');
+  //});
 
+  //router.post('/saveSchema', 
+  //  controller.saveSchema,
+  //  (req, res) => {
+  //    res.status(200).send('Save successful!');
+  //});
+
+  //router.post('/deleteSchema', 
+  //  controller.deleteSchema,
+  //  (req, res) => {
+  //    res.status(200).send('Delete successful!');
+  //});
+ 
 
 
 module.exports = router;
