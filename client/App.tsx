@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import DBDisplay from "./pages/DBDisplay";
 
 export default function App() {
   return (
@@ -12,6 +13,8 @@ export default function App() {
       <Route path="/login" element={<Login />} />
 
       <Route path={"/"} element={<Home />} />
+
+      <Route path="/display" element={<DBDisplay />} />
     </Routes>
   );
 }
