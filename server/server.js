@@ -1,5 +1,9 @@
 // Allows for the use of stored sensitive information in a .env file
+<<<<<<< HEAD
 
+=======
+require('dotenv').config();
+>>>>>>> 74415119adbe5745f4d6f59d126aa2f68295e643
 
 const express = require('express');
 
@@ -42,4 +46,8 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
+<<<<<<< HEAD
 //
+=======
+//
+>>>>>>> 74415119adbe5745f4d6f59d126aa2f68295e643
