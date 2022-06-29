@@ -2,7 +2,6 @@
 // router.get('/getSchema/:id');
 
 const express = require('express');
-const { module } = require('../../webpack.config');
 const controller = require('../controllers/controller');
 
 const router = express.Router();
