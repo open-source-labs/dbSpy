@@ -1,48 +1,45 @@
-const express = require("express");
+// Allows for the use of stored sensitive information in a .env file
+require('dotenv').config();
 
-const path = require("path");
+const express = require('express');
+
+const apiRouter = require('./routes/api');
+
 const app = express();
+const PORT = 3000;
 
-const dataRouter = require('./routes/api');
+// -------------
+/** I don't think we need routes for home, but we w
+* Home
+* Login
+* Display
+* Logout
+*/
 
+// Parse Incoming requests with a json body
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Parse incoming requests with url encoded payloads
+app.use(express.urlencoded({extended: true }));
 
 
-console.log("server running ");
-app.use('/api', dataRouter);
+// Implementation is flexibile, can change if needed
+app.use('/api', apiRouter);
 
+// Catch-all error handler
+app.use('*', (req, res) => {
+  res.sendStatus(404);
+});
 
-
-
-
-
-// End of code 
-
-
-
-
-
-
-
-
-
-
-
-// catch-all route handler for any requests to an unknown route
-app.use((req, res) => res.status(404).send('This is not the page you\'re looking for...'));
-
+// Global error handler, any middleware function passing next(err) will follow this structure
 app.use((err, req, res, next) => {
-    const defaultErr = {
-      log: 'Express error handler caught unknown middleware error',
-      status: 500,
-      message: { err: 'An error occurred' },
-    };
-    const errorObj = Object.assign({}, defaultErr, err);
-    console.log(errorObj.log);
-    return res.status(errorObj.status).json(errorObj.message);
-  });
+  const defaultErr = {
+    log: 'Express error handler caught unknown middleware error',
+    status: 500,
+    message: { err: 'An error occurred' }
+  };
+  const errorObj = Object.assign({}, defaultErr, err);
+  console.log(errorObj.log);
+  return res.status(errorObj.status).json(errorObj.message);
+});
 
-app.listen(3000); //listens on port 3000 -> http://localhost:3000/
-
-module.exports = app;
+//
