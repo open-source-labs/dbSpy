@@ -2,12 +2,8 @@
 // router.get('/getSchema/:id');
 
 const express = require('express');
-<<<<<<< HEAD
 //const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
-=======
-const controller = require('../controllers/controller');
->>>>>>> 74415119adbe5745f4d6f59d126aa2f68295e643
 
 const router = express.Router();
 
@@ -26,11 +22,7 @@ const router = express.Router();
  * Logout
  */
 
-<<<<<<< HEAD
-router.get('/', /* display assets */);
-=======
 router.get('/', /* display assets */)
->>>>>>> 74415119adbe5745f4d6f59d126aa2f68295e643
 // Perhaps express.static
 
 router.get('/getAllSchemas', 
