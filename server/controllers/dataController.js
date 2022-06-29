@@ -549,7 +549,22 @@ dataController.getSchema =   (req, res, next) => {
     }
   }
   
-  
+  dataController.getAllSchemas = (req, res) => {
+
+  };
+
+  dataController.openSchema = (req, res) => {
+    
+  };
+  dataController.postSchema = (req, res) => {
+    
+  };
+  dataController.saveSchema = (req, res) => {
+    
+  };
+  dataController.deleteSchema = (req, res) => {
+    
+  }; 
   
   
   
