@@ -18,7 +18,7 @@ const PORT = 3000;
 * Logout
 */
 
-// Parse Incoming requests with a json body
+// Parse incoming requests with a json body
 app.use(express.json());
 // Parse incoming requests with url encoded payloads
 app.use(express.urlencoded({extended: true }));
