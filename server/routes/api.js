@@ -22,7 +22,7 @@ const router = express.Router();
  * Logout
  */
 
-router.get('/', /* display assets */)
+router.get('/', /* display assets */);
 // Perhaps express.static
 
 router.get('/getAllSchemas', 
@@ -47,7 +47,8 @@ router.get('/openSchema',
 router.post('/postSchema', 
   controller.postSchema,
   (req, res) => {
-    res.status(200).send('Post successful!');
+    console.log("About to send Post!");
+    res.status(200).json([{columnName: "People", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}, {columnName: "City", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}, {columnName: "Job", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}]);
 });
 
 router.post('/saveSchema', 
