@@ -22,29 +22,24 @@ const router = express.Router();
  * Logout
  */
 
-router.get('/', 
-  (req, res) => {
-  res.status(200).json({ test: 'test' });
-  });
-// Perhaps express.static
 
 router.get('/getAllSchemas', 
   controller.getAllSchemas,
   (req, res) => {
-    res.status(200).json(res.locals/*placeholder*/);
+    
+    res.status(200).json({'ok': 'ok'});
 });
 
-router.get('/getSchema', 
+router.post('/getSchema', 
   controller.getSchema,
   (req, res) => {
-    console.log("called")
-    res.status(200).json(res.locals/*placeholder*/);
+    console.log("called");
+    res.status(200).json(res.locals.data);
 });
 
-router.get('/openSchema',
-  controller.openSchema,
+router.get('/openSchema',controller.openSchema,
   (req, res) => {
-    res.status(200).json(res.locals/*placeholder*/);
+    res.status(200).json({'ok': 'ok'});
 });
 
 router.post('/postSchema', 
