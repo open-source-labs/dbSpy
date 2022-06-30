@@ -6,6 +6,7 @@ import {
   Group,
   Box,
   PasswordInput,
+  Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQuery, useMutation, useQueryClient } from "react-query";
@@ -14,16 +15,25 @@ import axios from "axios";
 interface SideBarProps {
   fetchedData: object;
   setFetchedData: (fetchedData: object) => void;
+  isLoading: boolean;
+  isError: boolean;
+  mutate: (data: object) => void;
 }
 
-export default function Sidebar({ fetchedData, setFetchedData }: SideBarProps) {
+export default function Sidebar({
+  fetchedData,
+  setFetchedData,
+  isLoading,
+  isError,
+  mutate,
+}: SideBarProps) {
   const form = useForm({
     initialValues: {
-      host: "",
-      dbUsername: "",
-      dbPassword: "",
+      hostname: "",
+      username: "",
+      password: "",
       port: "",
-      databaseName: "",
+      database_name: "",
     },
   });
 
@@ -50,50 +60,61 @@ export default function Sidebar({ fetchedData, setFetchedData }: SideBarProps) {
   //   if (error) return <h1>Error</h1>;
 
   // USE MUTATION FOR POST REQUEST
-  const submitPost = useMutation((dataToSend: object) => {
-    console.log("logging data", dataToSend);
-    return axios
-      .post("/api/postSchema", dataToSend)
-      .then((res) => setFetchedData(res.data));
-  });
+  //   const { isLoading, mutate } = useMutation((dataToSend: object) => {
+  //     console.log("logging data", dataToSend);
+  //     return axios
+  //       .post("/api/getSchema", dataToSend)
+  //       .then((res) => setFetchedData(res.data));
+  //   });
   console.log(fetchedData);
+
+  if (isLoading) {
+    return <Text>Loading your database... It will take couple of minutes</Text>;
+  }
 
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto">
       <form
         onSubmit={form.onSubmit((values) => {
-          submitPost.mutate(values);
+          mutate(values);
+          form.setValues({
+            hostname: "",
+            username: "",
+            password: "",
+            port: "",
+            database_name: "",
+          });
         })}
       >
         <TextInput
           required
-          // label="Host"
-          placeholder="Host"
-          {...form.getInputProps("host")}
+          label="Host"
+          //   placeholder="Host"
+          {...form.getInputProps("hostname")}
         />
         <TextInput
           required
-          // label="Port"
-          placeholder="Port"
+          label="Port"
+          //   placeholder="Port"
           {...form.getInputProps("port")}
         />
         <TextInput
           required
-          // label="DB Username"
-          placeholder="Username"
-          {...form.getInputProps("dbUsername")}
+          label="Database Username"
+          //   placeholder="Username"
+          {...form.getInputProps("username")}
         />
         <PasswordInput
           required
-          // label="DB Password"
-          placeholder="Password"
-          {...form.getInputProps("dbPassword")}
+          label="Database Password"
+          //   placeholder="Password"
+          {...form.getInputProps("password")}
         />
         <TextInput
           required
-          // label="DB Name"
-          placeholder="Database name"
-          {...form.getInputProps("databaseName")}
+          label="Database Name"
+          //   placeholder="Database name"
+          {...form.getInputProps("database_name")}
         />
 
         <Group position="right" mt="md">
