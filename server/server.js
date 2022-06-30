@@ -1,5 +1,7 @@
 // Allows for the use of stored sensitive information in a .env file
+
 require('dotenv').config();
+
 
 const express = require('express');
 
@@ -42,4 +44,5 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-//
+
+app.listen(3000);
