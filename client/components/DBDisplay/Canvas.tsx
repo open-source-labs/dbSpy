@@ -1,10 +1,15 @@
 import React from "react";
 import Table from "./Table";
 
-export default function Canvas() {
+interface CanvasProps {
+  fetchedData: object;
+  setFetchedData: (fetchedData: object) => void;
+}
+
+export default function Canvas({ fetchedData, setFetchedData }: CanvasProps) {
   return (
     <div>
-      <Table />
+      <Table fetchedData={fetchedData} setFetchedData={setFetchedData} />
     </div>
   );
 }

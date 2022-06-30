@@ -16,7 +16,7 @@ const PORT = 3000;
 * Logout
 */
 
-// Parse Incoming requests with a json body
+// Parse incoming requests with a json body
 app.use(express.json());
 // Parse incoming requests with url encoded payloads
 app.use(express.urlencoded({extended: true }));
@@ -41,5 +41,7 @@ app.use((err, req, res, next) => {
   console.log(errorObj.log);
   return res.status(errorObj.status).json(errorObj.message);
 });
+
+app.listen(PORT, ()=>console.log("Server is listening on port 3000!"));
 
 //

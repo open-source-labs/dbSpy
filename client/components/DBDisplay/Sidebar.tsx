@@ -11,7 +11,12 @@ import { useForm } from "@mantine/form";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 
-export default function Sidebar() {
+interface SideBarProps {
+  fetchedData: object;
+  setFetchedData: (fetchedData: object) => void;
+}
+
+export default function Sidebar({ fetchedData, setFetchedData }: SideBarProps) {
   const form = useForm({
     initialValues: {
       host: "",
@@ -22,17 +27,16 @@ export default function Sidebar() {
     },
   });
 
+  //USE QUERY FOR GET REQUEST
   //   const { data } = useQuery("initialschema");
-
-  const { isLoading, error, data, refetch } = useQuery(
-    "dogs",
-    async () => {
-      console.log("test");
-      return axios("https://random.dog/woof.json");
-    },
-    { enabled: false }
-  );
-
+  //   const { isLoading, error, data, refetch } = useQuery(
+  //     "dogs",
+  //     async () => {
+  //       console.log("test");
+  //       return axios("https://random.dog/woof.json");
+  //     },
+  //     { enabled: false }
+  //   );
   // fetch("/api/getSchema", {
   //   method: "POST",
   //   headers: {
@@ -42,16 +46,23 @@ export default function Sidebar() {
   // })
   //   .then((res) => res.json())
   //   .then((res) => console.log(res.data));
-  if (isLoading) return <h1>Loading...</h1>;
-  if (error) return <h1>Error</h1>;
+  //   if (isLoading) return <h1>Loading...</h1>;
+  //   if (error) return <h1>Error</h1>;
+
+  // USE MUTATION FOR POST REQUEST
+  const submitPost = useMutation((dataToSend: object) => {
+    console.log("logging data", dataToSend);
+    return axios
+      .post("/api/postSchema", dataToSend)
+      .then((res) => setFetchedData(res.data));
+  });
+  console.log(fetchedData);
 
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto">
       <form
         onSubmit={form.onSubmit((values) => {
-          console.log(values);
-          form.getInputProps("host").value = "";
-          refetch();
+          submitPost.mutate(values);
         })}
       >
         <TextInput

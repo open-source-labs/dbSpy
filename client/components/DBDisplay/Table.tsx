@@ -14,7 +14,21 @@ const rows: GridRowsProp = [
   { id: 3, col1: "email", col2: false, col3: false, col4: "none" },
 ];
 
-export default function Table() {
+interface TableProps {
+  fetchedData: object;
+  setFetchedData: (fetchedData: object) => void;
+}
+
+export default function Table({ fetchedData, setFetchedData }: TableProps) {
+  /**fetchedData: 
+   * two loops, one will iterate through array, and the other with the objects
+  [
+    {columnName: "People", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}, 
+    {columnName: "City", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}, 
+    {columnName: "Job", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}
+  ]
+  **/
+
   return (
     <div style={{ height: 300, width: "50%" }}>
       <DataGrid rows={rows} columns={columns} />
