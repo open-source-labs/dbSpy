@@ -22,7 +22,10 @@ const router = express.Router();
  * Logout
  */
 
-router.get('/', /* display assets */);
+router.get('/', 
+  (req, res) => {
+  res.status(200).json({ test: 'test' });
+  });
 // Perhaps express.static
 
 router.get('/getAllSchemas', 

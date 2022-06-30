@@ -45,6 +45,16 @@ const writeSchema =  async (command) => {
 
 dataController.getSchema =   (req, res, next) => {
     console.log("running getSchema controller...");
+
+    // Commented version waits input in req body
+    // const { 
+    //   hostname,
+    //   password,
+    //   port,
+    //   username,
+    //   database_name
+    //   } = req.body;
+
     const hostname = 'arjuna.db.elephantsql.com';
     const password = 'qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR';
     const port = '5432';

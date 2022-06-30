@@ -8,4 +8,7 @@ server/db_schemas
 # output from webpack
 dist/
 
+# package-lock
+/package-lock.json
+
 .env
