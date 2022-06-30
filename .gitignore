@@ -3,6 +3,7 @@
 
 # dependencies
 node_modules/
+server/db_schemas
 
 # output from webpack
 dist/
