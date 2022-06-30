@@ -34,6 +34,7 @@ router.get('/getAllSchemas',
 router.get('/getSchema', 
   controller.getSchema,
   (req, res) => {
+    console.log("called")
     res.status(200).json(res.locals/*placeholder*/);
 });
 
