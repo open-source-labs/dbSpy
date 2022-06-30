@@ -34,6 +34,7 @@ router.post('/getSchema',
   controller.getSchema,
   (req, res) => {
     console.log("called");
+    console.log(req.body)
     res.status(200).json(res.locals.data);
 });
 
