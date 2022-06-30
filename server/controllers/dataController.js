@@ -1,5 +1,5 @@
 const fs = require('fs');
-const dataController = {};
+
 const path = require("path");
 //const { exec } = require('child_process');
 const util = require('util');
@@ -11,7 +11,7 @@ let primaryKeyList = [];
 let tableList = [];
 let exportedTables = 0; 
 
-
+const dataController = {};
 function postgresDumpQuery(hostname, password, port, username, database_name) {
   const command = [];
   const currentDateTime = new Date();
@@ -23,13 +23,24 @@ function postgresDumpQuery(hostname, password, port, username, database_name) {
   return command;  
 }
 
-/*
-async function lsExample() {
-  const { stdout, stderr } = await exec('ls');
-  console.log('stdout:', stdout);
-  console.error('stderr:', stderr);
-}
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const writeSchema =  async (command) => {
   
@@ -43,18 +54,18 @@ const writeSchema =  async (command) => {
   }
 };
 
-dataController.getSchema =   (req, res, next) => {
+dataController.getSchema = (req, res, next) => {
+    let result = null; 
     console.log("running getSchema controller...");
-    const hostname = 'arjuna.db.elephantsql.com';
-    const password = 'qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR';
-    const port = '5432';
-    const username = 'twvoyfda';
-    const database_name = 'twvoyfda';
+    const hostname = req.body.hostname;
+    const password = req.body.password;
+    const port = req.body.port;
+    const username = req.body.username;
+    const database_name = req.body.database_name;
     const command = postgresDumpQuery(hostname,password,port, username, database_name);
     console.log(command, '<-command');
-    writeSchema(command).then(res => {
-      console.log(res, 'response obj');
-      console.log(command[1], 'command[1] output');
+    writeSchema(command).then(resq => {
+      
       fs.readFile(command[1], 'utf8', (error, data) => {
         if (error) 
           {
@@ -63,13 +74,38 @@ dataController.getSchema =   (req, res, next) => {
             msg: 'Error reading database schema file',
             err: error});    
           }
-        parseSql(data);
+        result = parseSql(data);
+       
+        res.locals.data = result;
+        next();
+       
       }); 
-    console.log("test");
+    
     
     });
-      next();
-};
+
+
+    
+  };
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -484,8 +520,51 @@ dataController.getSchema =   (req, res, next) => {
     // Process Foreign Keys
     processForeignKey();
 
-    createTableUI();
-    
+
+
+  
+     
+
+  for (let i in tableList) {
+    for (let k in tableList[i].Properties)
+    {
+    if (tableList[i].Properties[k] !== undefined)
+    {
+     let composite = tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
+     
+     let value = composite[1].search(/NOT/i);
+     if (value > 0)
+     {let type = composite[1].substring(0, value -1);
+     let additional_constraints = composite[1].substring(value);
+      
+     
+     tableList[i].Properties[k].field_name = composite[0];
+     tableList[i].Properties[k].data_type = type; 
+     tableList[i].Properties[k].additional_constraints = additional_constraints;
+     
+     }
+     else
+     {
+      let type = composite[1].substring(value);
+      let additional_constraints = null;
+      tableList[i].Properties[k].field_name = composite[0];
+      tableList[i].Properties[k].data_type = type; 
+      tableList[i].Properties[k].additional_constraints = additional_constraints;
+      
+     }
+    }
+
+  }
+
+  }
+
+
+
+
+
+     return tableList; 
+
+
 
   }
 
@@ -502,20 +581,19 @@ dataController.getSchema =   (req, res, next) => {
 
       function createTableUI() {
        
-        console.log('TableList', tableList)
+        //console.log('TableList', tableList);
         tableList.forEach(function (tableModel) {
           // Push in string code to d3tables array to render table name as a row
           //console.log('TableModel Name:', tableModel);
         
-        console.log('table name:', tableModel.Name);
+       // console.log('table name:', tableModel.Name);
         
         for (let ref in tableModel.Properties)
-        console.log('object:', tableModel.Properties[ref]);
-
-      
-    
-        
+        //console.log('object:', tableModel.Properties[ref]);
+        ;
           }
+          
+          
 
         );
           
@@ -531,6 +609,12 @@ dataController.getSchema =   (req, res, next) => {
         });
         */
         // Closing curly brace for ending out graphviz syntax string
+
+
+
+
+
+        return tableList;
         }
         // functions to handle mouseover to depict related tables only
        
@@ -553,9 +637,62 @@ dataController.getSchema =   (req, res, next) => {
 
   };
 
-  dataController.openSchema = (req, res) => {
-    
-  };
+  dataController.openSchema = (req,res, next) => {
+  
+      
+        fs.readFile('/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/twvoyfdatwvoyfda1656557484.sql', 'utf8', (error, data) => {
+            if (error) 
+              {
+                console.error(`error- in FS: ${error.message}`);
+                return next({
+                msg: 'Error reading database schema file',
+                err: error});    
+              }
+           let result = parseSql(data);
+           console.log(result);
+         /*
+          for (let i in result) {
+            for (let k in result[i].Properties)
+            {
+            if (result[i].Properties[k] !== undefined)
+            {
+             let composite = result[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
+             
+             let value = composite[1].search(/NOT/i);
+             if (value > 0)
+             {let type = composite[1].substring(0, value -1);
+             let additional_constraints = composite[1].substring(value);
+              
+             
+             result[i].Properties[k].field_name = composite[0];
+             result[i].Properties[k].data_type = type; 
+             result[i].Properties[k].additional_constraints = additional_constraints;
+             console.log(result[i].Properties[k]);
+             }
+             else
+             {
+              let type = composite[1].substring(value);
+              let additional_constraints = null;
+              result[i].Properties[k].field_name = composite[0];
+              result[i].Properties[k].data_type = type; 
+              result[i].Properties[k].additional_constraints = additional_constraints;
+              console.log(result[i].Properties[k]);
+             }
+            }
+
+          }
+
+          }
+*/
+
+            //console.log(result);
+            next();
+           
+          }); 
+         
+     
+    };
+
   dataController.postSchema = (req, res) => {
     
   };
@@ -566,7 +703,4 @@ dataController.getSchema =   (req, res, next) => {
     
   }; 
   
-  
-  
-
-module.exports = dataController;
+  module.exports = dataController;
