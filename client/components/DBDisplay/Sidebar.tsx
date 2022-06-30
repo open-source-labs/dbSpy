@@ -7,12 +7,12 @@ import {
   Box,
   PasswordInput,
   Text,
-  Drawer, 
+  Drawer,
   useMantineTheme,
-  MantineTheme
+  MantineTheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Database } from 'tabler-icons-react';
+import { Database } from "tabler-icons-react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 
@@ -82,7 +82,11 @@ export default function Sidebar({
     <>
       <Drawer
         position="right"
-        overlayColor={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
+        overlayColor={
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[9]
+            : theme.colors.gray[2]
+        }
         overlayOpacity={0.55}
         overlayBlur={3}
         opened={opened}
@@ -91,7 +95,6 @@ export default function Sidebar({
         padding="xl"
         size="md"
       >
-    
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
@@ -142,19 +145,22 @@ export default function Sidebar({
             </Group>
           </form>
         </Box>
-    </Drawer>
+      </Drawer>
 
-    <Group position="right">
-      <Button 
-      //  variant="white" color="white"
-        leftIcon={<Database />}
-        styles={() => ({
-          root: {
-            marginRight: 30
-          }
-        })}
-        onClick={() => setOpened(true)}>Connect to database</Button>
-    </Group>
+      <Group position="right">
+        <Button
+          //  variant="white" color="white"
+          leftIcon={<Database />}
+          styles={() => ({
+            root: {
+              marginRight: 30,
+            },
+          })}
+          onClick={() => setOpened(true)}
+        >
+          Connect to database
+        </Button>
+      </Group>
     </>
   );
 }
