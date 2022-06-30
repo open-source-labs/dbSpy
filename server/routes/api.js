@@ -2,7 +2,8 @@
 // router.get('/getSchema/:id');
 
 const express = require('express');
-const controller = require('../controllers/controller');
+//const { module } = require('../../webpack.config');
+const controller = require('../controllers/dataController');
 
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.get('/getAllSchemas',
 router.get('/getSchema', 
   controller.getSchema,
   (req, res) => {
+    console.log("called")
     res.status(200).json(res.locals/*placeholder*/);
 });
 
