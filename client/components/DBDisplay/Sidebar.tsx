@@ -6,26 +6,36 @@ import {
   Group,
   Box,
   PasswordInput,
+  Text,
+  Drawer,
+  useMantineTheme,
+  MantineTheme,
+  Loader,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { Database } from "tabler-icons-react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 
 interface SideBarProps {
-  fetchedData: object;
-  setFetchedData: (fetchedData: object) => void;
+  isLoading: boolean;
+  isError: boolean;
+  mutate: (data: object) => void;
 }
 
-export default function Sidebar({ fetchedData, setFetchedData }: SideBarProps) {
+export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
   const form = useForm({
     initialValues: {
-      host: "",
-      dbUsername: "",
-      dbPassword: "",
-      port: "",
-      databaseName: "",
+      hostname: "arjuna.db.elephantsql.com",
+      username: "twvoyfda",
+      password: "qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR",
+      port: "5432",
+      database_name: "twvoyfda",
     },
   });
+  const [opened, setOpened] = useState(false);
+  const theme = useMantineTheme();
 
   //USE QUERY FOR GET REQUEST
   //   const { data } = useQuery("initialschema");
@@ -50,56 +60,114 @@ export default function Sidebar({ fetchedData, setFetchedData }: SideBarProps) {
   //   if (error) return <h1>Error</h1>;
 
   // USE MUTATION FOR POST REQUEST
-  const submitPost = useMutation((dataToSend: object) => {
-    console.log("logging data", dataToSend);
-    return axios
-      .post("/api/postSchema", dataToSend)
-      .then((res) => setFetchedData(res.data));
-  });
-  console.log(fetchedData);
+  //   const { isLoading, mutate } = useMutation((dataToSend: object) => {
+  //     console.log("logging data", dataToSend);
+  //     return axios
+  //       .post("/api/getSchema", dataToSend)
+  //       .then((res) => setFetchedData(res.data));
+  //   });
+
+  //   if (isLoading) {
+  //     return (
+  //       <>
+  //         <Box>
+  //           <Loader />
+  //           <Text>Loading your database... It will take couple of minutes</Text>;
+  //         </Box>
+  //       </>
+  //     );
+  //   }
 
   return (
-    <Box sx={{ maxWidth: 300 }} mx="auto">
-      <form
-        onSubmit={form.onSubmit((values) => {
-          submitPost.mutate(values);
-        })}
+    <>
+      <Drawer
+        position="right"
+        overlayColor={
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[9]
+            : theme.colors.gray[2]
+        }
+        overlayOpacity={0.55}
+        overlayBlur={3}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Connect to database"
+        padding="xl"
+        size="md"
       >
-        <TextInput
-          required
-          // label="Host"
-          placeholder="Host"
-          {...form.getInputProps("host")}
-        />
-        <TextInput
-          required
-          // label="Port"
-          placeholder="Port"
-          {...form.getInputProps("port")}
-        />
-        <TextInput
-          required
-          // label="DB Username"
-          placeholder="Username"
-          {...form.getInputProps("dbUsername")}
-        />
-        <PasswordInput
-          required
-          // label="DB Password"
-          placeholder="Password"
-          {...form.getInputProps("dbPassword")}
-        />
-        <TextInput
-          required
-          // label="DB Name"
-          placeholder="Database name"
-          {...form.getInputProps("databaseName")}
-        />
+        <LoadingOverlay visible={isLoading} />
 
-        <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
-        </Group>
-      </form>
-    </Box>
+        <Box sx={{ maxWidth: 300 }} mx="auto">
+          <form
+            onSubmit={form.onSubmit((values) => {
+              mutate(values);
+              form.setValues({
+                hostname: "",
+                username: "",
+                password: "",
+                port: "",
+                database_name: "",
+              });
+            })}
+          >
+            <TextInput
+              required
+              data-autofocus
+              label="Host"
+              //   autoComplete="arjuna.db.elephantsql.com"
+              //   placeholder="Host"
+              {...form.getInputProps("hostname")}
+            />
+            <TextInput
+              required
+              label="Port"
+              //   placeholder="Port"
+              //   autoComplete="5432"
+              {...form.getInputProps("port")}
+            />
+            <TextInput
+              required
+              label="Database Username"
+              //   placeholder="Username"
+              //   autoComplete="twvoyfda"
+              {...form.getInputProps("username")}
+            />
+            <PasswordInput
+              required
+              label="Database Password"
+              //   placeholder="Password"
+              //   autoComplete="qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR"
+              {...form.getInputProps("password")}
+            />
+            <TextInput
+              required
+              label="Database Name"
+              //   placeholder="Database name"
+              //   autoComplete="twvoyfda"
+              {...form.getInputProps("database_name")}
+            />
+
+            <Group position="right" mt="md">
+              <Button type="submit">Connect</Button>
+            </Group>
+          </form>
+        </Box>
+      </Drawer>
+
+      <Group position="right">
+        <Button
+          //  variant="white" color="white"
+          leftIcon={<Database />}
+          styles={() => ({
+            root: {
+              marginRight: 30,
+            },
+          })}
+          onClick={() => setOpened(true)}
+        >
+          Connect to database
+        </Button>
+      </Group>
+    </>
   );
 }
