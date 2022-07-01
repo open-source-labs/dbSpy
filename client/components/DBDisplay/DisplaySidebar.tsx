@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppShell,
   Navbar,
@@ -10,7 +10,19 @@ import {
   Burger,
   useMantineTheme,
   Button,
+  Drawer,
+  Menu,
+  Divider,
 } from "@mantine/core";
+import {
+  Settings,
+  Search,
+  Photo,
+  MessageCircle,
+  Trash,
+  ArrowsLeftRight,
+} from "tabler-icons-react";
+import { useDisclosure } from "@mantine/hooks";
 
 interface DisplaySidebarProps {
   opened: boolean;
@@ -21,14 +33,39 @@ export default function DisplaySidebar({
   opened,
   setOpened,
 }: DisplaySidebarProps) {
+  const theme = useMantineTheme();
+  const [openedMenu, setOpenedMenu] = useState(false);
+
   return (
-    <Navbar
-      p="md"
-      hiddenBreakpoint="sm"
-      hidden={!opened}
-      width={{ sm: 200, lg: 300 }}
+    <Menu
+      control={
+        <Burger
+          opened={opened}
+          onClick={() => setOpened(!opened)}
+          size="sm"
+          color={"white"}
+          mr="xl"
+        />
+      }
+      opened={openedMenu}
+      onOpen={() => {
+        setOpenedMenu(!openedMenu);
+        setOpened(!opened);
+      }}
+      onClose={() => {
+        setOpenedMenu(!openedMenu);
+        setOpened(!opened);
+      }}
     >
-      <Text>Application navbar</Text>
-    </Navbar>
+      <Menu.Label>PROJECT</Menu.Label>
+      <Menu.Item icon={<Settings size={14} />}>Support/Docs</Menu.Item>
+      <Menu.Item icon={<Settings size={14} />}>Request a Feature</Menu.Item>
+      <Menu.Item icon={<Settings size={14} />}>Report a Problem</Menu.Item>
+      <Divider />
+      <Menu.Label>HELP</Menu.Label>
+      <Menu.Item icon={<Settings size={14} />}>Support/Docs</Menu.Item>
+      <Menu.Item icon={<Settings size={14} />}>Request a Feature</Menu.Item>
+      <Menu.Item icon={<Settings size={14} />}>Report a Problem</Menu.Item>
+    </Menu>
   );
 }

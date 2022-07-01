@@ -3,13 +3,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useMutation } from "react-query";
 import Canvas from "../components/DBDisplay/Canvas";
-import DisplayNavbar from "../components/DBDisplay/DisplayNavbar";
+import DisplayHeader from "../components/DBDisplay/DisplayHeader";
 import Sidebar from "../components/DBDisplay/Sidebar";
 import { Header, AppShell } from "@mantine/core";
 import DisplaySidebar from "../components/DBDisplay/DisplaySidebar";
 
 export default function DBDisplay() {
-  const [fetchedData, setFetchedData] = useState({});
+  const [fetchedData, setFetchedData] = useState([{}]);
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
     console.log("logging data", dataToSend);
@@ -21,23 +21,14 @@ export default function DBDisplay() {
   });
 
   return (
-    // {/* <Sidebar
-    //   fetchedData={fetchedData}
-    //   setFetchedData={setFetchedData}
-    //   isLoading={isLoading}
-    //   isError={isError}
-    //   mutate={mutate}
-    // /> */}
     <AppShell
       padding="md"
-      header={
-        <Header height={60} p="xs" sx={{ backgroundColor: "#173e7c" }}>
-          <DisplayNavbar opened={opened} setOpened={setOpened} />
-        </Header>
-      }
-      navbarOffsetBreakpoint="sm"
-      navbar={<DisplaySidebar opened={opened} setOpened={setOpened} />}
+      header={<DisplayHeader opened={opened} setOpened={setOpened} />}
+      // navbarOffsetBreakpoint="sm"
+      // navbar={<DisplaySidebar opened={opened} setOpened={setOpened} />}
       styles={(theme) => ({
+        root: { height: "100%" },
+        body: { height: "100%" },
         main: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -46,6 +37,7 @@ export default function DBDisplay() {
         },
       })}
     >
+      <Sidebar isLoading={isLoading} isError={isError} mutate={mutate} />
       <Canvas fetchedData={fetchedData} setFetchedData={setFetchedData} />
     </AppShell>
   );
