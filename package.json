@@ -21,10 +21,10 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.6",
     "@mui/x-data-grid": "^5.12.3",
-    "axios": "^0.27.2",
     "@shagital/db-dumper": "^1.0.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
+    "axios": "^0.27.2",
     "childprocess": "^2.0.2",
     "cookie-session": "^2.0.0",
     "dotenv": "^16.0.1",
@@ -42,7 +42,9 @@
     "react-query": "^3.39.1",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
+    "react-xarrows": "^2.0.2",
     "styled-components": "^5.3.5",
+    "tabler-icons-react": "^1.52.0",
     "ts-jest": "^28.0.5"
   },
   "devDependencies": {

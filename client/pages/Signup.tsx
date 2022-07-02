@@ -5,7 +5,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -16,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function Copyright(props: any) {
   return (
@@ -26,7 +26,7 @@ function Copyright(props: any) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://www.google.com">
+      <Link color="inherit" to="/">
         dbSpy
       </Link>{" "}
       {new Date().getFullYear()}
@@ -38,13 +38,13 @@ function Copyright(props: any) {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#173e7c",
+      main: "#2b3a42",
     },
     secondary: {
-      main: "#abaeb5fe",
+      main: "#2b3a42",
     },
     background: {
-      default: "#f3f3f3fb",
+      default: "#fcfcfcfa",
     },
   },
 });
@@ -64,7 +64,7 @@ export default function Signup() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Link href="/" variant="body1">
+      <Link to="/">
         <IconButton
           aria-label="delete"
           color="primary"
@@ -220,9 +220,7 @@ export default function Signup() {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="/login" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
+                  <Link to="/login">Already have an account? Sign in</Link>
                 </Grid>
               </Grid>
             </Box>

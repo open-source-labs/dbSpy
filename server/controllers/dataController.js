@@ -54,6 +54,7 @@ const writeSchema =  async (command) => {
   }
 };
 
+//getSchema controller allows the user 
 dataController.getSchema = (req, res, next) => {
     let result = null; 
     console.log("running getSchema controller...");
@@ -203,7 +204,7 @@ dataController.getSchema = (req, res, next) => {
     const primaryKeyLabelIndex = name.toLowerCase().indexOf('primary key');
     if (primaryKeyLabelIndex >= 0) {
       foreignKey = foreignKey.slice(0, primaryKeyLabelIndex).trim();
-    };
+    }
     
     // Create ForeignKey with IsDestination = false
     const foreignKeyOriginModel = createForeignKey(foreignKey, currentTableModel.Name, referencedPropertyName, referencedTableName, false);
