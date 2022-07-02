@@ -4,12 +4,12 @@ import Draggable from "react-draggable";
 import { useXarrow } from "react-xarrows";
 
 const columns: GridColDef[] = [
-  { field: "col1", headerName: "Column", width: 100, editable: true },
+  { field: "col1", headerName: "Column", width: 75, editable: true },
   { field: "col2", headerName: "Type", width: 100, editable: true },
   { field: "col3", headerName: "Constraints", width: 100, editable: true },
-  { field: "col4", headerName: "PK", width: 75, editable: true },
+  { field: "col4", headerName: "PK", width: 50, editable: true },
   { field: "col5", headerName: "FK", width: 50, editable: true },
-  { field: "col6", headerName: "Ref", width: 100, editable: true },
+  // { field: "col6", headerName: "Ref", width: 50, editable: true },
 ];
 
 interface TableProps {
@@ -66,7 +66,7 @@ export default function Table({ tableInfo, id }: TableProps) {
         col3: obj.additional_constraints,
         col4: obj.IsPrimaryKey,
         col5: obj.IsForeignKey,
-        col6: obj.References,
+        // col6: obj.References,
       });
     });
   }
@@ -92,8 +92,8 @@ export default function Table({ tableInfo, id }: TableProps) {
       <div
         id={id}
         style={{
-          height: 300,
-          width: 450,
+          height: "auto",
+          width: "380",
           marginTop: "35px",
           marginBottom: "35px",
         }}
@@ -102,7 +102,16 @@ export default function Table({ tableInfo, id }: TableProps) {
         <DataGrid
           rows={rows}
           columns={columns}
-          style={{ backgroundColor: "white" }}
+          rowsPerPageOptions={[10]}
+          rowHeight={30}
+          autoHeight={true}
+          editMode={"row"}
+          hideFooter={true}
+          disableColumnMenu={true}
+          disableColumnFilter={true}
+          disableColumnSelector={true}
+          getRowId={(r) => r.id}
+          sx={{ bgcolor: "white", fontSize: "12px" }}
         />
       </div>
     </Draggable>

@@ -55,7 +55,12 @@ export default function DBDisplay() {
       })}
     >
       <Sidebar isLoading={isLoading} isError={isError} mutate={mutate} />
-      <Canvas fetchedData={fetchedData} setFetchedData={setFetchedData} />
+      <Canvas
+        isLoading={isLoading}
+        isError={isError}
+        fetchedData={fetchedData}
+        setFetchedData={setFetchedData}
+      />
     </AppShell>
   );
 }
