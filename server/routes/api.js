@@ -32,11 +32,11 @@ router.get('/getAllSchemas',
 });
 
 router.post('/getSchema', 
-  // controller.getSchema,
+  //  controller.getSchema,
   (req, res) => {
     console.log("called");
     // console.log(res.locals.data);
-    // res.status(200).json(res.locals.data);
+    //  res.status(200).json(res.locals.data);
     res.status(200).json(dummydata);
 });
 

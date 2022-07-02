@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import DisplaySidebar from "./DisplaySidebar";
+import { fontFamily } from "@mui/system";
 
 interface DisplayHeaderProps {
   opened: boolean;
@@ -26,7 +27,7 @@ export default function DisplayHeader({
   const theme = useMantineTheme();
 
   return (
-    <Header height={60} p="xs" sx={{ backgroundColor: "#173e7c" }}>
+    <Header height={60} p="xs" sx={{ backgroundColor: "#2b3a42" }}>
       <div
         style={{
           display: "flex",
@@ -43,9 +44,16 @@ export default function DisplayHeader({
           <Text color="white">Logo</Text>
         </div>
 
+        <div style={{ color: "white", borderColor: "white" }}>
+          LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022
+        </div>
+
         <div>
           <Link to="/">
-            <Button variant="gradient" gradient={{ from: "blue", to: "black" }}>
+            <Button
+              variant="outline"
+              sx={{ color: "white", borderColor: "white" }}
+            >
               Sign Out
             </Button>
           </Link>
