@@ -40,6 +40,10 @@ router.post('/getSchema',
     // res.status(200).json(dummydata);
 });
 
+router.get('/testObj', controller.objSchema, (req, res) => {
+ res.status(200).json({'response': res.locals.result});
+});
+
 router.get('/openSchema',controller.openSchema,
   (req, res) => {
     res.status(200).json({'ok': 'ok'});
