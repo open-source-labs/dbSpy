@@ -4,7 +4,7 @@
 const express = require('express');
 //const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
-const {dummydata} = require('../db_schemas/dummy.ts');
+
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router.post('/getSchema',
     console.log("called");
     // console.log(res.locals.data);
     // res.status(200).json(res.locals.data);
-    res.status(200).json(dummydata);
+    // res.status(200).json(dummydata);
 });
 
 router.get('/openSchema',controller.openSchema,

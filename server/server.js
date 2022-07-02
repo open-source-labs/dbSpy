@@ -1,13 +1,33 @@
 // Allows for the use of stored sensitive information in a .env file
 
-require('dotenv').config();
-
-
 const express = require('express');
+const session = require("express-session");
+const passport = require('passport');
+require('dotenv').config();
+require('./auth');
+
+
+function isLoggedIn(req,res,next) {
+  req.user ? next() : res.sendStatus(401);
+}
+
+
+
 
 const apiRouter = require('./routes/api');
 
 const app = express();
+app.use(session(
+{secret: process.env.TEAM_SECRET,
+resave: false,
+saveUninitialized: true,
+cookie: {}
+}
+
+
+));
+app.use(passport.initialize());
+app.use(passport.session());
 const PORT = 3000;
 
 // -------------
@@ -23,6 +43,40 @@ app.use(express.json());
 // Parse incoming requests with url encoded payloads
 app.use(express.urlencoded({extended: true }));
 
+// From vid
+app.get('/', (req, res) => {
+  res.send('<a href="/auth/google">Authenticate with Google</a>');
+});
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['email', 'profile'] }));
+
+  app.get('/google/callback', passport.authenticate('google', { 
+    successRedirect: '/protected', 
+    failureRedirect: '/auth/failure',
+  }));
+
+app.get('auth/failure', (req, res)=> {
+  res.send('something went wrong');
+});
+
+app.get('/protected', isLoggedIn, (req, res) => {
+  res.status(200).json(req.user);
+});
+
+app.get('/logout', ( req,res)=> {
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        res.status(400).send('Unable to log out', err);
+      } else {
+        res.send('Logout successful');
+      }
+    });
+  } else {
+    res.send("session not found");
+  }
+});
 
 // Implementation is flexibile, can change if needed
 app.use('/api', apiRouter);
