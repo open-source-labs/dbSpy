@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import Draggable from "react-draggable";
+import { useXarrow } from "react-xarrows";
 
 const columns: GridColDef[] = [
   { field: "col1", headerName: "Column", width: 100, editable: true },
@@ -28,9 +29,10 @@ interface TableProps {
       }
     ];
   };
+  id: string;
 }
 
-export default function Table({ tableInfo }: TableProps) {
+export default function Table({ tableInfo, id }: TableProps) {
   // const { Name, Properties } = tableInfo;
 
   // const [activeDrags, setActiveDrags] = useState(0);
@@ -84,19 +86,25 @@ export default function Table({ tableInfo }: TableProps) {
   const rows: GridRowsProp = rowArr;
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
-
+  const updateXarrow = useXarrow();
   return (
-    <div style={{ height: "100%", width: "100%", margin: "35px" }}>
-      <Draggable bounds="parent">
-        <div style={{ height: 300, width: 450, margin: "35px" }}>
-          <div style={{ fontSize: "24px" }}>{tableInfo.Name}</div>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            style={{ backgroundColor: "white" }}
-          />
-        </div>
-      </Draggable>
-    </div>
+    <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
+      <div
+        id={id}
+        style={{
+          height: 300,
+          width: 450,
+          marginTop: "35px",
+          marginBottom: "35px",
+        }}
+      >
+        <div style={{ fontSize: "24px" }}>{tableInfo.Name}</div>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          style={{ backgroundColor: "white" }}
+        />
+      </div>
+    </Draggable>
   );
 }

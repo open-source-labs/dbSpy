@@ -14,7 +14,7 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Database } from "tabler-icons-react";
+import { Database, DatabaseImport } from "tabler-icons-react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 
@@ -157,7 +157,7 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
       <Group position="right">
         <Button
           //  variant="white" color="white"
-          leftIcon={<Database />}
+          leftIcon={<DatabaseImport />}
           styles={() => ({
             root: {
               marginRight: 30,

@@ -21,6 +21,10 @@ import {
   MessageCircle,
   Trash,
   ArrowsLeftRight,
+  Database,
+  Users,
+  Help,
+  MessageReport,
 } from "tabler-icons-react";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -57,15 +61,16 @@ export default function DisplaySidebar({
         setOpened(!opened);
       }}
     >
-      <Menu.Label>PROJECT</Menu.Label>
-      <Menu.Item icon={<Settings size={14} />}>Support/Docs</Menu.Item>
-      <Menu.Item icon={<Settings size={14} />}>Request a Feature</Menu.Item>
-      <Menu.Item icon={<Settings size={14} />}>Report a Problem</Menu.Item>
+      <Menu.Label>ABOUT</Menu.Label>
+      <Menu.Item icon={<Database size={14} />}>dbSpy</Menu.Item>
+      <Menu.Item icon={<Users size={14} />}>Team</Menu.Item>
       <Divider />
       <Menu.Label>HELP</Menu.Label>
-      <Menu.Item icon={<Settings size={14} />}>Support/Docs</Menu.Item>
-      <Menu.Item icon={<Settings size={14} />}>Request a Feature</Menu.Item>
-      <Menu.Item icon={<Settings size={14} />}>Report a Problem</Menu.Item>
+      <Menu.Item icon={<Help size={14} />}>Support/Docs</Menu.Item>
+      <Menu.Item icon={<MessageCircle size={14} />}>
+        Request a Feature
+      </Menu.Item>
+      <Menu.Item icon={<MessageReport size={14} />}>Report a Problem</Menu.Item>
     </Menu>
   );
 }
