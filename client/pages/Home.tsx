@@ -5,6 +5,9 @@ import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
 
 export default function Home() {
+
+ 
+
   return (
     <div>
       <HomeNavbar />
@@ -14,6 +17,7 @@ export default function Home() {
       <Link to={"/login"}>
         <button>login</button>
       </Link>
+   
       <Link to={"/display"}>
         <button>display</button>
       </Link>

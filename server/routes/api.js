@@ -35,9 +35,72 @@ router.post('/getSchema',
   // controller.getSchema,
   (req, res) => {
     console.log("called");
-    // console.log(res.locals.data);
+    
+    const dummydata =  [
+      {
+        Name: 'public.accounts',
+        Properties: [
+          {
+            IsForeignKey: false,
+            IsPrimaryKey: false,
+            Name: 'user_id integer NOT NULL',
+            References: [],
+            TableName: 'public.accounts',
+            Value: null,
+            additional_constraints: 'NOT NULL',
+            data_type: 'integer',
+            field_name: 'user_id',
+          },
+        ]
+      },
+      {
+        Name: 'public.location',
+        Properties: [
+          {
+            IsForeignKey: false,
+            IsPrimaryKey: false,
+            Name: 'id integer NOT NULL',
+            References: [],
+            TableName: 'public.location',
+            Value: null,
+            additional_constraints: 'NOT NULL',
+            data_type: 'integer',
+            field_name: 'id',
+          },
+          {
+            IsForeignKey: false,
+            IsPrimaryKey: false,
+            Name: "password character varying(50) NOT NULL",
+            References: [],
+            TableName: "public.accounts",
+            Value: null,
+            additional_constraints: "NOT NULL",
+            data_type: "character varying(50)",
+            field_name: "password",
+          },
+          {
+            IsForeignKey: false,
+            IsPrimaryKey: false,
+            Name: "email character varying(255) NOT NULL",
+            References: [],
+            TableName: "public.accounts",
+            Value: null,
+            additional_constraints: "NOT NULL",
+            data_type: "character varying(255)",
+            field_name: "email",
+          },
+        ]
+      }
+    ];
+
+
+
+
+
+
     // res.status(200).json(res.locals.data);
-    // res.status(200).json(dummydata);
+    console.log('returned', dummydata);
+     res.status(200).json(dummydata);
 });
 
 router.get('/testObj', controller.objSchema, (req, res) => {

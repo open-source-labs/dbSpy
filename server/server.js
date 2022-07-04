@@ -8,7 +8,7 @@ require('./auth');
 
 
 function isLoggedIn(req,res,next) {
-  req.user ? next() : res.sendStatus(401);
+  req.user ? next() : res.sendStatus(200).json(null);
 }
 
 
@@ -43,26 +43,28 @@ app.use(express.json());
 // Parse incoming requests with url encoded payloads
 app.use(express.urlencoded({extended: true }));
 
-// From vid
-app.get('/', (req, res) => {
-  res.send('<a href="/auth/google">Authenticate with Google</a>');
-});
+
 
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] }));
 
   app.get('/google/callback', passport.authenticate('google', { 
-    successRedirect: '/protected', 
-    failureRedirect: '/auth/failure',
+    successRedirect: '/', 
+    failureRedirect: '/',
   }));
 
 app.get('auth/failure', (req, res)=> {
   res.send('something went wrong');
 });
 
-app.get('/protected', isLoggedIn, (req, res) => {
+app.get('/protected', (req, res) => {
+  if (req.user)
   res.status(200).json(req.user);
+  else
+  res.status(200).json(null);
 });
+
+
 
 app.get('/logout', ( req,res)=> {
   if (req.session) {
@@ -70,7 +72,7 @@ app.get('/logout', ( req,res)=> {
       if (err) {
         res.status(400).send('Unable to log out', err);
       } else {
-        res.send('Logout successful');
+        res.status(200).json({logout: true});
       }
     });
   } else {
