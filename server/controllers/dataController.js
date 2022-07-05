@@ -19,7 +19,7 @@ function postgresDumpQuery(hostname, password, port, username, database_name) {
   const filename = path.join(__dirname, `../db_schemas/${username}${database_name}${resultInSeconds.toString()}.sql`);
   command.push(`pg_dump -s postgres://${username}:${password}@${hostname}:${port}/${database_name} > ${filename}`);
   command.push(filename);
-  console.log('command created:', command);
+  //console.log('command created:', command);
   return command;  
 }
 
@@ -56,6 +56,8 @@ const writeSchema =  async (command) => {
 
 //getSchema controller allows the user 
 dataController.getSchema = (req, res, next) => {
+
+  /*
     let result = null; 
     console.log("running getSchema controller...");
     const hostname = req.body.hostname;
@@ -84,11 +86,27 @@ dataController.getSchema = (req, res, next) => {
     
     
     });
+*/
 
 
-    
-  };
 
+fs.readFile(path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'), 'utf8', (error, data) => {
+  if (error) 
+    {
+      console.error(`error- in FS: ${error.message}`);
+      return next({
+      msg: 'Error reading database schema file',
+      err: error});    
+    }
+  const result = parseSql(data);
+   //console.log(result);
+   for (let records in result)
+   //console.log('instance of table', result[records]);
+  res.locals.data = result;
+  next();
+
+  });
+}
 
   //objSchema controller allows the user to obj data to more
   //usable format for front-end
@@ -189,7 +207,7 @@ dataController.objSchema = (req, res, next) => {
     //   }
     // }
     console.log("route for testObj works");
-     console.log(results);
+     //console.log(results);
 
     
      res.locals.result = results;
@@ -281,7 +299,7 @@ dataController.objSchema = (req, res, next) => {
     return table;
   }
 
-  // Creates foreignKeyModel and assigns properties to arguments passed in
+  // Creates foreignKeyModel and asReferencesProsigns properties to arguments passed in
   function createForeignKey(primaryKeyName, primaryKeyTableName, referencesPropertyName, referencesTableName, isDestination) {
     const foreignKey = new ForeignKeyModel;
     foreignKey.PrimaryKeyTableName = primaryKeyTableName;
@@ -390,11 +408,19 @@ dataController.objSchema = (req, res, next) => {
   // Iterates through foreignKeyList and checks every property in every table
   // If propertyModel's name equals what the foreignKeyModel is referencing, set propertyModel.IsForeignKey to true and add foreignKeyModel to propertyModel.References array
   function processForeignKey() {
+    console.log("processForeign Key Called")
     foreignKeyList.forEach(function (foreignKeyModel) {
       tableList.forEach(function (tableModel) {
+           console.log(foreignKeyList);
+       
+
         if (tableModel.Name === foreignKeyModel.ReferencesTableName) {
+
           tableModel.Properties.forEach(function (propertyModel) {
+            console.log("PropertyModel.name---->", propertyModel.name); 
+            console.log("ForeignKeyModel Ref Name--->", foreignKeyModel.ReferencesPropertyName);
             if (propertyModel.Name === foreignKeyModel.ReferencesPropertyName) {
+              console.log("References Pair Found");
               propertyModel.IsForeignKey = true;
               propertyModel.References.push(foreignKeyModel);
             }
@@ -628,9 +654,11 @@ dataController.objSchema = (req, res, next) => {
       } 
     }
 
+    
     // Process Primary Keys
     processPrimaryKey();
 
+    console.log("jest before code ")
     // Process Foreign Keys
     processForeignKey();
 
@@ -675,7 +703,7 @@ dataController.objSchema = (req, res, next) => {
 
 
 
-
+    //console.log(tableList);
      return tableList; 
 
 
@@ -760,7 +788,7 @@ dataController.objSchema = (req, res, next) => {
                 err: error});    
               }
            let result = parseSql(data);
-           console.log(result);
+           //console.log(result);
          /*
           for (let i in result) {
             for (let k in result[i].Properties)

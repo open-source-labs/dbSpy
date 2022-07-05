@@ -43,7 +43,7 @@ interface stateChangeProps {
 
 
 export default function DBDisplay({user}:stateChangeProps) {
-  console.log('in DB Display', user);
+  //console.log('in DB Display', user);
   const navigate = useNavigate();
 
   /*
@@ -78,17 +78,17 @@ export default function DBDisplay({user}:stateChangeProps) {
 
 
 
-  const [fetchedData, setFetchedData] = useState([{}]);
+  const [fetchedData, setFetchedData] = useState({});
 
 
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
-    console.log("logging data", dataToSend);
-    console.log("Time start to load database", Date.now());
+    //console.log("logging data", dataToSend);
+    //console.log("Time start to load database", Date.now());
     return axios.post("/api/getSchema", dataToSend).then((res) => {
       setFetchedData(res.data);
-      console.log("this is retrieved data from server,: ", res.data);
-      console.log("Time Done to Load Database", Date.now());
+     // console.log("this is retrieved data from server,: ", res.data);
+      //console.log("Time Done to Load Database", Date.now());
     });
   });
 

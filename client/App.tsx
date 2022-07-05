@@ -29,7 +29,7 @@ useEffect(() => {
     const result = await data.json();
     if (result !==null)
     {setUser({name:result.given_name, email:result.email, id:result.id, picture:result.picture});
-    console.log(result);
+    //console.log(result);
     }
     else
     {setUser({name:null, email:null, id:null, picture: null})

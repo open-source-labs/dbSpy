@@ -4,7 +4,7 @@
 const express = require('express');
 //const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
-
+const path = require("path");
 const {dummydata} = require('../dummy.ts');
 
 
@@ -34,11 +34,10 @@ router.get('/getAllSchemas',
 });
 
 router.post('/getSchema', 
-  //  controller.getSchema,
+   controller.getSchema,
   (req, res) => {
     console.log("called");
-  
-    res.status(200).json({ok: "dummy data here"});
+    res.status(200).json(res.locals.data);
 });
 
 router.get('/openSchema',controller.openSchema,
