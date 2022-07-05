@@ -122,6 +122,7 @@ export default function Login() {
                   name="email"
                   autoComplete="email"
                   color="primary"
+                  autoFocus
                 />
               </Grid>
               <Grid item xs={16} marginBottom={2}>

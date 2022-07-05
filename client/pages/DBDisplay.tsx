@@ -14,7 +14,7 @@ import {
   Group,
   ThemeIcon,
 } from "@mantine/core";
-import DisplaySidebar from "../components/DBDisplay/DisplaySidebar";
+import MenuPopUp from "../components/DBDisplay/MenuPopUp";
 import {
   ArrowBackUp,
   Camera,
@@ -26,13 +26,14 @@ import {
 } from "tabler-icons-react";
 
 export default function DBDisplay() {
-  const [fetchedData, setFetchedData] = useState([{}]);
+  const [fetchedData, setFetchedData] = useState({});
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
     console.log("logging data", dataToSend);
     console.log("Time start to load database", Date.now());
     return axios.post("/api/getSchema", dataToSend).then((res) => {
       setFetchedData(res.data);
+      console.log("this is retrieved data from server,: ", res.data);
       console.log("Time Done to Load Database", Date.now());
     });
   });
