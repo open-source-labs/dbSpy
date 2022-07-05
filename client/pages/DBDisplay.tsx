@@ -78,7 +78,7 @@ export default function DBDisplay({user}:stateChangeProps) {
 
 
 
-  const [fetchedData, setFetchedData] = useState([{}]);
+  const [fetchedData, setFetchedData] = useState({});
 
 
   const [opened, setOpened] = useState(false);
