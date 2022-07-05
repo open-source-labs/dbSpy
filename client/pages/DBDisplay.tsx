@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, {useEffect ,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
@@ -29,21 +29,16 @@ import {
 } from "tabler-icons-react";
 
 interface stateChangeProps {
- user : {
- email: string | null, 
- id: string | null, 
- name: string | null, 
- picture: string | null, 
- }
-
+  user: {
+    email: string | null;
+    id: string | null;
+    name: string | null;
+    picture: string | null;
+  };
 }
 
-
-
-
-
-export default function DBDisplay({user}:stateChangeProps) {
-  console.log('in DB Display', user);
+export default function DBDisplay({ user }: stateChangeProps) {
+  console.log("in DB Display", user);
   const navigate = useNavigate();
 
   /*
@@ -73,13 +68,7 @@ export default function DBDisplay({user}:stateChangeProps) {
   },[])
 */
 
-
-
-
-
-
-  const [fetchedData, setFetchedData] = useState([{}]);
-
+  const [fetchedData, setFetchedData] = useState({});
 
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
@@ -95,7 +84,9 @@ export default function DBDisplay({user}:stateChangeProps) {
   return (
     <AppShell
       padding="md"
-      header={<DisplayHeader name={user.name} opened={opened} setOpened={setOpened} />}
+      header={
+        <DisplayHeader name={user.name} opened={opened} setOpened={setOpened} />
+      }
       // navbarOffsetBreakpoint="sm"
       navbar={<FeatureTab></FeatureTab>}
       styles={(theme) => ({
