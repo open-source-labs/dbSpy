@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import Table from "./Table";
 import Xarrow, { Xwrapper } from "react-xarrows";
 import { Loader, Text } from "@mantine/core";
-import { LinearProgress } from "@mui/material";
 
 interface CanvasProps {
   fetchedData: {
@@ -11,6 +10,7 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   isLoading: boolean;
   isError: boolean;
+  tablename: string;
 }
 
 export default function Canvas({
@@ -18,6 +18,7 @@ export default function Canvas({
   isError,
   fetchedData,
   setFetchedData,
+  tablename,
 }: CanvasProps) {
   console.log(fetchedData);
 

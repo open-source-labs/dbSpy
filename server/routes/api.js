@@ -38,9 +38,10 @@ router.post('/getSchema',
   (req, res) => {
     console.log("called");
   
-    // res.status(200).json({ok: "dummy data here"});
+    // res.status(200).json(res.locals.data);
     res.status(200).json(dummydata);
-  });
+});
+
 
 router.get('/openSchema',controller.openSchema,
   (req, res) => {

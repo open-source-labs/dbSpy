@@ -1,9 +1,11 @@
 import axios from "axios";
-import React, {useEffect ,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
 import Sidebar from "../components/DBDisplay/Sidebar";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useForm } from "@mantine/form";
 import {
   Header,
   AppShell,
@@ -13,11 +15,11 @@ import {
   UnstyledButton,
   Group,
   ThemeIcon,
+  Modal,
+  TextInput,
+  Box,
+  Button,
 } from "@mantine/core";
-
-import { Navigate, useNavigate } from "react-router-dom";
-import MenuPopUp from "../components/DBDisplay/MenuPopUp";
-
 import {
   ArrowBackUp,
   Camera,
@@ -29,21 +31,17 @@ import {
 } from "tabler-icons-react";
 
 interface stateChangeProps {
- user : {
- email: string | null, 
- id: string | null, 
- name: string | null, 
- picture: string | null, 
- }
-
+  user: {
+    email: string | null;
+    id: string | null;
+    name: string | null;
+    picture: string | null;
+  };
+  setLoggedIn: (e: boolean) => void;
 }
 
-
-
-
-
-export default function DBDisplay({user}:stateChangeProps) {
-  console.log('in DB Display', user);
+export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
+  console.log("in DB Display", user);
   const navigate = useNavigate();
 
   /*
@@ -74,11 +72,8 @@ export default function DBDisplay({user}:stateChangeProps) {
 */
 
 
-
-
-
-
   const [fetchedData, setFetchedData] = useState({});
+  const [tablename, setTablename] = useState("");
 
 
   const [opened, setOpened] = useState(false);
@@ -92,12 +87,31 @@ export default function DBDisplay({user}:stateChangeProps) {
     });
   });
 
+  useEffect(() => {
+    setLoggedIn(true);
+    localStorage.setItem("isLoggedIn", "true");
+  }, []);
+
   return (
     <AppShell
       padding="md"
-      header={<DisplayHeader name={user.name} opened={opened} setOpened={setOpened} />}
+      header={
+        <DisplayHeader
+          name={user.name}
+          picture={user.picture}
+          opened={opened}
+          setOpened={setOpened}
+          setLoggedIn={setLoggedIn}
+        />
+      }
       // navbarOffsetBreakpoint="sm"
-      navbar={<FeatureTab></FeatureTab>}
+      navbar={
+        <FeatureTab
+          setTablename={setTablename}
+          setFetchedData={setFetchedData}
+          fetchedData={fetchedData}
+        ></FeatureTab>
+      }
       styles={(theme) => ({
         root: { height: "100%" },
         body: { height: "100%" },
@@ -115,15 +129,66 @@ export default function DBDisplay({user}:stateChangeProps) {
         isError={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
+        tablename={tablename}
       />
     </AppShell>
   );
 }
 
-function FeatureTab() {
+interface FeatureTabProps {
+  setTablename: (e: string) => void;
+  fetchedData: {};
+  setFetchedData: (e: {}) => void;
+}
+
+function FeatureTab({
+  setTablename,
+  setFetchedData,
+  fetchedData,
+}: FeatureTabProps) {
+  const [modalOpened, setModalOpened] = useState(false);
+  const form = useForm({
+    initialValues: {
+      tablename: "",
+    },
+  });
+
   return (
     <Navbar width={{ base: 300 }} height={500} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Type new table name: "
+      >
+        <Box sx={{ maxWidth: 300 }} mx="auto">
+          <form
+            onSubmit={form.onSubmit((values) => {
+              setTablename(values.tablename);
+              setFetchedData({
+                ...fetchedData,
+                ["public." + values.tablename]: {},
+              });
+              setModalOpened(false);
+              form.setValues({
+                tablename: "",
+              });
+            })}
+          >
+            <TextInput
+              required
+              data-autofocus
+              label="Table Name: "
+              //   autoComplete="arjuna.db.elephantsql.com"
+              //   placeholder="Host"
+              {...form.getInputProps("tablename")}
+            />
+            <Group position="right" mt="md">
+              <Button type="submit">Create</Button>
+            </Group>
+          </form>
+        </Box>
+      </Modal>
 
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
         <div style={{ fontSize: "24px", margin: "10px" }}>FILE</div>
@@ -259,6 +324,7 @@ function FeatureTab() {
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => setModalOpened(true)}
         >
           <Group>
             <ThemeIcon
