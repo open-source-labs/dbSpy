@@ -42,6 +42,7 @@ router.post('/getSchema',
     res.status(200).json(dummydata);
 });
 
+
 router.get('/openSchema',controller.openSchema,
   (req, res) => {
     res.status(200).json({'ok': 'ok'});
