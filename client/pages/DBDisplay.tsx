@@ -77,10 +77,9 @@ export default function DBDisplay({user}:stateChangeProps) {
 
 
 
-
+  const [buttonText, setButtonText] = useState('Connect to Database')
   const [fetchedData, setFetchedData] = useState({});
-
-
+  
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
     console.log("logging data", dataToSend);
@@ -90,7 +89,9 @@ export default function DBDisplay({user}:stateChangeProps) {
       console.log("this is retrieved data from server,: ", res.data);
       console.log("Time Done to Load Database", Date.now());
     });
-  });
+  }, {onSuccess: () => {
+      setButtonText("Disconnect from Database");
+    }});
 
   return (
     <AppShell
@@ -109,7 +110,7 @@ export default function DBDisplay({user}:stateChangeProps) {
         },
       })}
     >
-      <Sidebar isLoading={isLoading} isError={isError} mutate={mutate} />
+      <Sidebar buttonText={buttonText} setButtonText={setButtonText} isLoading={isLoading} isError={isError} mutate={mutate} />
       <Canvas
         isLoading={isLoading}
         isError={isError}

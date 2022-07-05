@@ -19,12 +19,14 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 
 interface SideBarProps {
+  buttonText: string;
+  setButtonText: (string: string) => void;
   isLoading: boolean;
   isError: boolean;
   mutate: (data: object) => void;
 }
 
-export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
+export default function Sidebar({ buttonText, setButtonText, isLoading, isError, mutate }: SideBarProps) {
   const form = useForm({
     initialValues: {
       hostname: "arjuna.db.elephantsql.com",
@@ -36,6 +38,7 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
   });
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
+  
 
   //USE QUERY FOR GET REQUEST
   //   const { data } = useQuery("initialschema");
@@ -91,7 +94,7 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
         overlayBlur={3}
         opened={opened}
         onClose={() => setOpened(false)}
-        title="Connect to database"
+        title="Connect to Database"
         padding="xl"
         size="md"
       >
@@ -158,14 +161,14 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
         <Button
           //  variant="white" color="white"
           leftIcon={<DatabaseImport />}
-          styles={() => ({
-            root: {
-              marginRight: 30,
-            },
-          })}
+          // styles={() => ({
+          //   root: {
+          //     marginRight: 30,
+          //   },
+          // })}
           onClick={() => setOpened(true)}
         >
-          Connect to database
+          {buttonText}
         </Button>
       </Group>
     </>

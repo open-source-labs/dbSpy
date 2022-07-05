@@ -17,7 +17,6 @@ export default function Home() {
       <Link to={"/login"}>
         <button>login</button>
       </Link>
-   
       <Link to={"/display"}>
         <button>display</button>
       </Link>

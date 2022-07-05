@@ -1,12 +1,11 @@
-// Note: Perhaps use of params for this section would be useful, for instance 
+// Note: Perhaps use of params for this section would be useful, for instance
 // router.get('/getSchema/:id');
 
 const express = require('express');
 //const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
 
-const {dummydata} = require('../dummy.ts');
-
+const { dummydata } = require('../dummy.ts');
 
 const router = express.Router();
 
@@ -18,53 +17,61 @@ const router = express.Router();
  * deleteSchema Check
  * openSchema Check
  * getAllSchemas Check
- * 
+ *
  * Home
  * Login
  * Display
  * Logout
  */
 
-
-router.get('/getAllSchemas', 
-  controller.getAllSchemas,
-  (req, res) => {
-    
-    res.status(200).json({'ok': 'ok'});
+router.get('/getAllSchemas', controller.getAllSchemas, (req, res) => {
+  res.status(200).json({ ok: 'ok' });
 });
 
-router.post('/getSchema', 
+router.post(
+  '/getSchema',
   //  controller.getSchema,
   (req, res) => {
-    console.log("called");
-  
-    res.status(200).json({ok: "dummy data here"});
+    console.log('called');
+    res.status(200).json(dummydata);
+    // res.status(200).json({ok: "dummy data here"});
+  }
+);
+
+router.get('/openSchema', controller.openSchema, (req, res) => {
+  res.status(200).json({ ok: 'ok' });
 });
 
-router.get('/openSchema',controller.openSchema,
-  (req, res) => {
-    res.status(200).json({'ok': 'ok'});
+router.post('/postSchema', controller.postSchema, (req, res) => {
+  console.log('About to send Post!');
+  res.status(200).json([
+    {
+      columnName: 'People',
+      dataType: 'VARCHAR(200)',
+      isPrimaryKey: false,
+      isForeignKey: false,
+    },
+    {
+      columnName: 'City',
+      dataType: 'VARCHAR(200)',
+      isPrimaryKey: false,
+      isForeignKey: false,
+    },
+    {
+      columnName: 'Job',
+      dataType: 'VARCHAR(200)',
+      isPrimaryKey: false,
+      isForeignKey: false,
+    },
+  ]);
 });
 
-router.post('/postSchema', 
-  controller.postSchema,
-  (req, res) => {
-    console.log("About to send Post!");
-    res.status(200).json([{columnName: "People", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}, {columnName: "City", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}, {columnName: "Job", dataType: "VARCHAR(200)", isPrimaryKey: false, isForeignKey: false}]);
+router.post('/saveSchema', controller.saveSchema, (req, res) => {
+  res.status(200).send('Save successful!');
 });
 
-router.post('/saveSchema', 
-  controller.saveSchema,
-  (req, res) => {
-    res.status(200).send('Save successful!');
+router.post('/deleteSchema', controller.deleteSchema, (req, res) => {
+  res.status(200).send('Delete successful!');
 });
-
-router.post('/deleteSchema', 
-  controller.deleteSchema,
-  (req, res) => {
-    res.status(200).send('Delete successful!');
-});
-
-
 
 module.exports = router;
