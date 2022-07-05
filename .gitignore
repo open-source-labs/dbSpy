@@ -9,6 +9,6 @@ server/db_schemas
 dist/
 
 # package-lock
-/package-lock.json
+package-lock.json
 
 .env
