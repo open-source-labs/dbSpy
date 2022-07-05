@@ -5,7 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function Copyright(props: any) {
   return (
@@ -26,7 +27,7 @@ function Copyright(props: any) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="/">
+      <Link color="inherit" to="/">
         dbSpy
       </Link>{" "}
       {new Date().getFullYear()}
@@ -38,18 +39,39 @@ function Copyright(props: any) {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#173e7c",
+      main: "#2b3a42",
     },
     secondary: {
-      main: "#abaeb5fe",
+      main: "#2b3a42",
     },
     background: {
-      default: "#f3f3f3fb",
+      default: "#fcfcfcfa",
     },
   },
 });
 
+
+
 export default function Login() {
+
+  const google = ()=> { 
+
+    
+    const strWindowFeatures =
+     'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+
+    window.open("http://localhost:8080/auth/google", '_self', strWindowFeatures);
+
+    
+  
+
+    console.log("clicked window ");
+};
+    
+  
+
+
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -61,7 +83,7 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Link href="/" variant="body1">
+      <Link to="/">
         <IconButton
           aria-label="delete"
           color="primary"
@@ -121,6 +143,7 @@ export default function Login() {
                   name="email"
                   autoComplete="email"
                   color="primary"
+                  autoFocus
                 />
               </Grid>
               <Grid item xs={16} marginBottom={2}>
@@ -152,9 +175,7 @@ export default function Login() {
                   />
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body1">
-                    Forgot Password?
-                  </Link>
+                  <Link to="#">Forgot Password?</Link>
                 </Grid>
               </Grid>
 
@@ -176,7 +197,7 @@ export default function Login() {
           </Typography>
 
           <Box>
-            <Button
+            <Button onClick={google}
               sx={{
                 borderRadius: 50,
                 // padding: "25px 36px",
@@ -208,9 +229,7 @@ export default function Login() {
             </Button>
           </Box>
 
-          <Link href="/signup" variant="body2" sx={{ mt: 2 }}>
-            Don't have an account?
-          </Link>
+          <Link to="/signup">Don't have an account?</Link>
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
