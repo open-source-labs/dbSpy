@@ -1,32 +1,13 @@
 import React, { useState } from "react";
+import { Burger, useMantineTheme, Menu, Divider } from "@mantine/core";
 import {
-  AppShell,
-  Navbar,
-  Header,
-  Footer,
-  Aside,
-  Text,
-  MediaQuery,
-  Burger,
-  useMantineTheme,
-  Button,
-  Drawer,
-  Menu,
-  Divider,
-} from "@mantine/core";
-import {
-  Settings,
-  Search,
-  Photo,
   MessageCircle,
-  Trash,
-  ArrowsLeftRight,
   Database,
   Users,
   Help,
   MessageReport,
 } from "tabler-icons-react";
-import { useDisclosure } from "@mantine/hooks";
+import { Link } from "react-router-dom";
 
 interface MenuPopUpProps {
   opened: boolean;
@@ -59,7 +40,9 @@ export default function MenuPopUp({ opened, setOpened }: MenuPopUpProps) {
       }}
     >
       <Menu.Label>ABOUT</Menu.Label>
-      <Menu.Item icon={<Database size={14} />}>dbSpy</Menu.Item>
+      <Link to="/">
+        <Menu.Item icon={<Database size={14} />}>dbSpy</Menu.Item>
+      </Link>
       <Menu.Item icon={<Users size={14} />}>Team</Menu.Item>
       <Divider />
       <Menu.Label>HELP</Menu.Label>
