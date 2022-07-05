@@ -71,8 +71,10 @@ export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
   },[])
 */
 
+
   const [fetchedData, setFetchedData] = useState({});
   const [tablename, setTablename] = useState("");
+
 
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
