@@ -50,7 +50,28 @@ const theme = createTheme({
   },
 });
 
+
+
 export default function Login() {
+
+  const google = ()=> { 
+
+    
+    const strWindowFeatures =
+     'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+
+    window.open("http://localhost:8080/auth/google", '_self', strWindowFeatures);
+
+    
+  
+
+    console.log("clicked window ");
+};
+    
+  
+
+
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -122,6 +143,7 @@ export default function Login() {
                   name="email"
                   autoComplete="email"
                   color="primary"
+                  autoFocus
                 />
               </Grid>
               <Grid item xs={16} marginBottom={2}>
@@ -175,7 +197,7 @@ export default function Login() {
           </Typography>
 
           <Box>
-            <Button
+            <Button onClick={google}
               sx={{
                 borderRadius: 50,
                 // padding: "25px 36px",

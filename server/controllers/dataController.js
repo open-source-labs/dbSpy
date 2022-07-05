@@ -90,6 +90,119 @@ dataController.getSchema = (req, res, next) => {
   };
 
 
+  //objSchema controller allows the user to obj data to more
+  //usable format for front-end
+dataController.objSchema = (req, res, next) => {
+
+  
+  let testdata = [
+    {
+      Name: 'public.accounts',
+      Properties: [
+        {
+          IsForeignKey: false,
+          IsPrimaryKey: false,
+          Name: 'user_id integer NOT NULL',
+          References: [],
+          TableName: 'public.accounts',
+          Value: null,
+          additional_constraints: 'NOT NULL',
+          data_type: 'integer',
+          field_name: 'user_id',
+        },
+      ]
+    },
+    {
+      Name: 'public.location',
+      Properties: [
+        {
+          IsForeignKey: false,
+          IsPrimaryKey: false,
+          Name: 'id integer NOT NULL',
+          References: [],
+          TableName: 'public.location',
+          Value: null,
+          additional_constraints: 'NOT NULL',
+          data_type: 'integer',
+          field_name: 'id',
+        },
+        {
+          IsForeignKey: false,
+          IsPrimaryKey: false,
+          Name: "password character varying(50) NOT NULL",
+          References: [],
+          TableName: "public.accounts",
+          Value: null,
+          additional_constraints: "NOT NULL",
+          data_type: "character varying(50)",
+          field_name: "password",
+        },
+        {
+          IsForeignKey: false,
+          IsPrimaryKey: false,
+          Name: "email character varying(255) NOT NULL",
+          References: [],
+          TableName: "public.accounts",
+          Value: null,
+          additional_constraints: "NOT NULL",
+          data_type: "character varying(255)",
+          field_name: "email",
+        },
+      ]
+    }
+  ];
+
+  let results = {};
+  //iterate through the testdata Array
+    //Grab name property for each element of array - Table Name 
+        //Assign properties to name property of the table within new obj
+            // iterate through the Properties Array
+                // Assign field name as key for properties....
+
+
+    for (let i = 0; i < testdata.length; i++) { 
+    // this outer loop will iterate through tables within testdata
+      let properties = {};
+       for (let k = 0; k < testdata[i].Properties.length; k++) {
+        let key = testdata[i].Properties[k].field_name
+        properties[key] = testdata[i].Properties[k]
+       }
+
+       results[testdata[i].Name] = properties;
+    }
+
+
+
+
+    // result = {
+    //   "public.account" : {
+    //     "id" : {
+    //       IsForeignKey: false,
+    //       IsPrimaryKey: false,
+    //       Name: 'id integer NOT NULL',
+    //       References: [],
+    //       TableName: 'public.location',
+    //       Value: null,
+    //       additional_constraints: 'NOT NULL',
+    //       data_type: 'integer',
+    //     }
+    //   }
+    // }
+    console.log("route for testObj works");
+     console.log(results);
+
+    
+     res.locals.result = results;
+      next();
+  
+  };
+
+
+  
+
+
+
+
 
 
   
@@ -570,10 +683,7 @@ dataController.getSchema = (req, res, next) => {
   }
 
 
-  // Declare various model classes
-
-
-  
+ 
   
 
 

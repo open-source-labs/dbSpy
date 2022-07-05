@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, {useEffect ,useState } from "react";
 import { useMutation } from "react-query";
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
@@ -14,7 +14,10 @@ import {
   Group,
   ThemeIcon,
 } from "@mantine/core";
-import DisplaySidebar from "../components/DBDisplay/DisplaySidebar";
+
+import { Navigate, useNavigate } from "react-router-dom";
+import MenuPopUp from "../components/DBDisplay/MenuPopUp";
+
 import {
   ArrowBackUp,
   Camera,
@@ -25,14 +28,66 @@ import {
   Upload,
 } from "tabler-icons-react";
 
-export default function DBDisplay() {
+interface stateChangeProps {
+ user : {
+ email: string | null, 
+ id: string | null, 
+ name: string | null, 
+ picture: string | null, 
+ }
+
+}
+
+
+
+
+
+export default function DBDisplay({user}:stateChangeProps) {
+  console.log('in DB Display', user);
+  const navigate = useNavigate();
+
+  /*
+  useEffect(() => {
+
+    // declare the async data fetching function
+    const fetchData = async () => {
+      const data = await fetch('/protected');
+      // convert data to json
+      const result = await data.json();
+     
+      if (result == null)
+      {
+        navigate('/login');
+      }
+    
+    }
+  
+    // call the function
+    fetchData()
+      // make sure to catch any error
+      .catch(err=> {
+        console.error
+        navigate('/login')
+      });
+  
+  },[])
+*/
+
+
+
+
+
+
   const [fetchedData, setFetchedData] = useState([{}]);
+
+
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
     console.log("logging data", dataToSend);
     console.log("Time start to load database", Date.now());
     return axios.post("/api/getSchema", dataToSend).then((res) => {
       setFetchedData(res.data);
+      console.log("this is retrieved data from server,: ", res.data);
       console.log("Time Done to Load Database", Date.now());
     });
   });
@@ -40,7 +95,7 @@ export default function DBDisplay() {
   return (
     <AppShell
       padding="md"
-      header={<DisplayHeader opened={opened} setOpened={setOpened} />}
+      header={<DisplayHeader name={user.name} opened={opened} setOpened={setOpened} />}
       // navbarOffsetBreakpoint="sm"
       navbar={<FeatureTab></FeatureTab>}
       styles={(theme) => ({
@@ -55,7 +110,12 @@ export default function DBDisplay() {
       })}
     >
       <Sidebar isLoading={isLoading} isError={isError} mutate={mutate} />
-      <Canvas fetchedData={fetchedData} setFetchedData={setFetchedData} />
+      <Canvas
+        isLoading={isLoading}
+        isError={isError}
+        fetchedData={fetchedData}
+        setFetchedData={setFetchedData}
+      />
     </AppShell>
   );
 }
