@@ -32,9 +32,10 @@ router.get('/getAllSchemas',
 });
 
 router.post('/getSchema', 
-  // controller.getSchema,
+  //  controller.getSchema,
   (req, res) => {
     console.log("called");
+<<<<<<< HEAD
     
     const dummydata =  [
       {
@@ -105,6 +106,11 @@ router.post('/getSchema',
 
 router.get('/testObj', controller.objSchema, (req, res) => {
  res.status(200).json({'response': res.locals.result});
+=======
+    // console.log(res.locals.data);
+    //  res.status(200).json(res.locals.data);
+    res.status(200).json(dummydata);
+>>>>>>> d1f56711bf693246a770f402fdfbf8bf0b8e6471
 });
 
 router.get('/openSchema',controller.openSchema,
