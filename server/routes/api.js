@@ -4,7 +4,7 @@
 const express = require('express');
 //const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
-const {dummydata} = require('../db_schemas/dummy.ts');
+const {dummydata} = require('../dummy.ts');
 
 const router = express.Router();
 
