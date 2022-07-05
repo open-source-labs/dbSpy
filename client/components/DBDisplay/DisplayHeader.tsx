@@ -12,19 +12,52 @@ import {
   Button,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+
+import { useNavigate } from 'react-router-dom';
 import MenuPopUp from "./MenuPopUp";
+
 import { fontFamily } from "@mui/system";
 
 interface DisplayHeaderProps {
   opened: boolean;
   setOpened: (opened: boolean) => void;
+  name: string | null,
 }
 
 export default function DisplayHeader({
   opened,
   setOpened,
+  name,
 }: DisplayHeaderProps) {
   const theme = useMantineTheme();
+
+
+const navigate = useNavigate();
+
+const logout = ()=> { 
+  fetch('/logout')
+  .then(response => response.json())
+  .then((data) => {
+   console.log(data);
+   navigate('/login');
+
+   
+  })
+  .catch((err: {}) => 
+    {console.log('Error:', err);
+    navigate('/login');
+  
+  });
+
+
+console.log("clicked");
+};
+
+
+
+
+
+
 
   return (
     <Header height={60} p="xs" sx={{ backgroundColor: "#2b3a42" }}>
@@ -49,14 +82,11 @@ export default function DisplayHeader({
         </div>
 
         <div>
-          <Link to="/">
-            <Button
-              variant="outline"
-              sx={{ color: "white", borderColor: "white" }}
-            >
+        <div><Text color="white"> Welcome, {(name == null) ? " " : name.concat(' ')} </Text></div>
+            <Button variant="gradient" gradient={{ from: "blue", to: "black" }} onClick={logout}>
               Sign Out
             </Button>
-          </Link>
+        
         </div>
       </div>
     </Header>

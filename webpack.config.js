@@ -27,6 +27,10 @@ module.exports = {
         target: 'http://localhost:3000',
         secure: false
       },
+      '/**': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
     },
     static: {
       directory: path.join(__dirname, 'dist'),
