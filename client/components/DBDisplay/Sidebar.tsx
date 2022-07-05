@@ -158,11 +158,11 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
         <Button
           //  variant="white" color="white"
           leftIcon={<DatabaseImport />}
-          styles={() => ({
-            root: {
-              marginRight: 30,
-            },
-          })}
+          // styles={() => ({
+          //   root: {
+          //     marginRight: 30,
+          //   },
+          // })}
           onClick={() => setOpened(true)}
         >
           Connect to database

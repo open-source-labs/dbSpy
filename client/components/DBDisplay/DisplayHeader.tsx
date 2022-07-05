@@ -76,7 +76,13 @@ export default function DisplayHeader({
         </div>
 
         <div>
-          <Box style={{ display: "flex", alignItems: "center" }}>
+          <Box
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: "6px",
+            }}
+          >
             <Text color="white" style={{ fontSize: "12px" }}>
               {" "}
               Welcome, {name == null ? " " : name.concat(" ")}{" "}
