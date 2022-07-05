@@ -14,8 +14,9 @@ import {
   Group,
   ThemeIcon,
 } from "@mantine/core";
-import DisplaySidebar from "../components/DBDisplay/DisplaySidebar";
+
 import { Navigate, useNavigate } from "react-router-dom";
+import MenuPopUp from "../components/DBDisplay/MenuPopUp";
 
 import {
   ArrowBackUp,
@@ -26,7 +27,6 @@ import {
   Plus,
   Upload,
 } from "tabler-icons-react";
-
 
 interface stateChangeProps {
  user : {
@@ -79,12 +79,15 @@ export default function DBDisplay({user}:stateChangeProps) {
 
 
   const [fetchedData, setFetchedData] = useState([{}]);
+
+
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
     console.log("logging data", dataToSend);
     console.log("Time start to load database", Date.now());
     return axios.post("/api/getSchema", dataToSend).then((res) => {
       setFetchedData(res.data);
+      console.log("this is retrieved data from server,: ", res.data);
       console.log("Time Done to Load Database", Date.now());
     });
   });

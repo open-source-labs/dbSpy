@@ -28,15 +28,12 @@ import {
 } from "tabler-icons-react";
 import { useDisclosure } from "@mantine/hooks";
 
-interface DisplaySidebarProps {
+interface MenuPopUpProps {
   opened: boolean;
   setOpened: (opened: boolean) => void;
 }
 
-export default function DisplaySidebar({
-  opened,
-  setOpened,
-}: DisplaySidebarProps) {
+export default function MenuPopUp({ opened, setOpened }: MenuPopUpProps) {
   const theme = useMantineTheme();
   const [openedMenu, setOpenedMenu] = useState(false);
 
