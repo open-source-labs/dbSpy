@@ -13,11 +13,8 @@ import {
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import DisplaySidebar from "./DisplaySidebar";
-<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
-=======
 import { fontFamily } from "@mui/system";
->>>>>>> d1f56711bf693246a770f402fdfbf8bf0b8e6471
 
 interface DisplayHeaderProps {
   opened: boolean;
@@ -83,16 +80,8 @@ console.log("clicked");
         </div>
 
         <div>
-<<<<<<< HEAD
         <div><Text color="white"> Welcome, {(name == null) ? " " : name.concat(' ')} </Text></div>
             <Button variant="gradient" gradient={{ from: "blue", to: "black" }} onClick={logout}>
-=======
-          <Link to="/">
-            <Button
-              variant="outline"
-              sx={{ color: "white", borderColor: "white" }}
-            >
->>>>>>> d1f56711bf693246a770f402fdfbf8bf0b8e6471
               Sign Out
             </Button>
         

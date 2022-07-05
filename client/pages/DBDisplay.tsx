@@ -15,8 +15,18 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import DisplaySidebar from "../components/DBDisplay/DisplaySidebar";
-<<<<<<< HEAD
 import { Navigate, useNavigate } from "react-router-dom";
+
+import {
+  ArrowBackUp,
+  Camera,
+  Database,
+  DatabaseImport,
+  DeviceFloppy,
+  Plus,
+  Upload,
+} from "tabler-icons-react";
+
 
 interface stateChangeProps {
  user : {
@@ -66,17 +76,7 @@ export default function DBDisplay({user}:stateChangeProps) {
 
 
 
-=======
-import {
-  ArrowBackUp,
-  Camera,
-  Database,
-  DatabaseImport,
-  DeviceFloppy,
-  Plus,
-  Upload,
-} from "tabler-icons-react";
->>>>>>> d1f56711bf693246a770f402fdfbf8bf0b8e6471
+
 
   const [fetchedData, setFetchedData] = useState([{}]);
   const [opened, setOpened] = useState(false);
