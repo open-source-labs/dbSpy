@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
-import DisplaySidebar from "./DisplaySidebar";
+import MenuPopUp from "./MenuPopUp";
 import { fontFamily } from "@mui/system";
 
 interface DisplayHeaderProps {
@@ -38,7 +38,7 @@ export default function DisplayHeader({
       >
         <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
           <MediaQuery largerThan="sm" styles={{ display: "block" }}>
-            <DisplaySidebar opened={opened} setOpened={setOpened} />
+            <MenuPopUp opened={opened} setOpened={setOpened} />
           </MediaQuery>
 
           <Text color="white">Logo</Text>
