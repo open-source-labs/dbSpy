@@ -142,7 +142,7 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    // console.log("this is updatedRow:", updatedRow);
+    console.log("this is updatedRow:", updatedRow);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -247,7 +247,7 @@ export default function Table({ tableInfo, id }: TableProps) {
     // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
-  // console.log("this is updated rows: ", rows);
+  console.log("this is updated rows: ", rows);
   // console.log("this is the table I am editing: ", id);
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
