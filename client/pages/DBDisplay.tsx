@@ -98,6 +98,7 @@ export default function DBDisplay({
     {
       onSuccess: () => {
         DataStore.connect();
+        console.log("connected?", DataStore.connectedToDB);
         // setConnectedToDB(true);
         setSideBarOpened(true);
       },

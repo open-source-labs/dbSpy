@@ -5,7 +5,7 @@ import { Loader, Text, Button, Group } from "@mantine/core";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
-import DataStore from '../../Store'
+import DataStore from "../../Store";
 
 interface CanvasProps {
   fetchedData: {
