@@ -8,7 +8,11 @@ import Sidebar from './Sidebar'
 
 interface CanvasProps {
   fetchedData: {
-    [key: string]: {};
+    [key: string]: {
+       
+      [key: string] :  { IsForeignKey: boolean; IsPrimaryKey: boolean; Name: string; References: any[]; TableName: string; Value: any; additional_constraints: string | null; data_type: string; field_name: string; };
+
+    };
   };
   setFetchedData: (fetchedData: object) => void;
   isLoading: boolean;
@@ -60,6 +64,20 @@ export default function Canvas({
     return <>An Error Occurred: Check Your Internet Connection</>;
   }
 
+  //console.log("this is tables in canvas for Xarrow---->", tables);
+  for (let table in fetchedData)
+  {
+
+         for (let column in fetchedData[table])
+         {  
+          console.log(fetchedData[table][column]);
+              
+              
+         }
+
+    
+  }
+
   // console.log("this is tables", tables);
   return (
     <div style={{ height: "100%" }}>
@@ -72,6 +90,9 @@ export default function Canvas({
         </Group>
         <Xwrapper>
           {tables}
+         
+
+
           <Xarrow
             headSize={5}
             color={"green"}

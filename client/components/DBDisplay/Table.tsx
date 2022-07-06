@@ -316,7 +316,7 @@ function EditToolbar(props: EditToolbarProps) {
 
   const handleClick = () => {
     const id = randomId();
-    console.log(id);
+    //console.log(id);
     setRows((oldRows) => [
       ...oldRows,
       { id, column: "", type: "", constraint: "", pk: "", fk: "", isNew: true },
