@@ -6,6 +6,7 @@ import DisplayHeader from "../components/DBDisplay/DisplayHeader";
 import Sidebar from "../components/DBDisplay/Sidebar";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
+import DataStore from "../Store";
 import {
   Header,
   AppShell,
@@ -38,10 +39,15 @@ interface stateChangeProps {
     picture: string | null;
   };
   setLoggedIn: (e: boolean) => void;
+  loggedIn: boolean;
 }
 
-export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
-  console.log("in DB Display", user);
+export default function DBDisplay({
+  user,
+  setLoggedIn,
+  loggedIn,
+}: stateChangeProps) {
+  // console.log("in DB Display", user);
   const navigate = useNavigate();
 
   /*
@@ -71,35 +77,45 @@ export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
   },[])
 */
 
-
-
-
   const [fetchedData, setFetchedData] = useState({});
   const [connectedToDB, setConnectedToDB] = useState(false);
   const [sideBarOpened, setSideBarOpened] = useState(false);
-  
   const [tablename, setTablename] = useState("");
-
-
   const [opened, setOpened] = useState(false);
-  const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
-    console.log("logging data", dataToSend);
-    console.log("Time start to load database", Date.now());
-    return axios.post("/api/getSchema", dataToSend).then((res) => {
-      setFetchedData(res.data);
-      console.log("this is retrieved data from server,: ", res.data);
-      console.log("Time Done to Load Database", Date.now());
-    });
-  }, {onSuccess: () => {
-      setConnectedToDB(true);
-      setSideBarOpened(true);
-    }});
+
+  const { isLoading, isError, mutate } = useMutation(
+    (dataToSend: object) => {
+      // console.log("logging data", dataToSend);
+      // console.log("Time start to load database", Date.now());
+      return axios.post("/api/getSchema", dataToSend).then((res) => {
+        setFetchedData(res.data);
+        console.log("this is retrieved data from server,: ", res.data);
+        // console.log("Time Done to Load Database", Date.now());
+        DataStore.getData(res.data);
+        console.log("this is dataStore: ", DataStore);
+      });
+    },
+    {
+      onSuccess: () => {
+        setConnectedToDB(true);
+        setSideBarOpened(true);
+      },
+    }
+  );
 
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
-  }, []);
 
+    if (loggedIn) {
+      const savedData = DataStore.store.get(DataStore.store.size - 1);
+      if (savedData) {
+        setFetchedData(savedData);
+        console.log("this is saved: ", savedData);
+      }
+    }
+  }, []);
+  console.log("this is fetchedData from dbdisplay,", fetchedData);
   return (
     <AppShell
       padding="md"
@@ -131,7 +147,13 @@ export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
         },
       })}
     >
-      <Sidebar sideBarOpened={sideBarOpened} setSideBarOpened={setSideBarOpened} isLoading={isLoading} isError={isError} mutate={mutate} />
+      <Sidebar
+        sideBarOpened={sideBarOpened}
+        setSideBarOpened={setSideBarOpened}
+        isLoading={isLoading}
+        isError={isError}
+        mutate={mutate}
+      />
       <Canvas
         isLoading={isLoading}
         isError={isError}
@@ -166,7 +188,7 @@ function FeatureTab({
   });
 
   return (
-    <Navbar width={{ base: 300 }} height={500} p="xs">
+    <Navbar width={{ base: 225 }} height={500} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
       <Modal
         opened={modalOpened}

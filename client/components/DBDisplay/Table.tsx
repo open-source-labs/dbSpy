@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { DragEvent, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -52,10 +52,19 @@ export default function Table({ tableInfo, id }: TableProps) {
   // const { Name, Properties } = tableInfo;
 
   // const [activeDrags, setActiveDrags] = useState(0);
-  // const [deltaPosition, setDeltaPosition] = useState({
-  //   x: 0,
-  //   y: 0,
-  // });
+  const [deltaPosition, setDeltaPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  function handleDrag(e: DragEvent<HTMLDivElement>, ui: any) {
+    const { x, y } = deltaPosition;
+    setDeltaPosition({
+      x: x + ui.deltaX,
+      y: y + ui.deltaY,
+    });
+    console.log(deltaPosition);
+  }
   // const [controlledPosition, setControlledPosition] = useState({
   //   x: -400,
   //   y: 200,
@@ -139,43 +148,58 @@ export default function Table({ tableInfo, id }: TableProps) {
   };
 
   const columns: GridColumns = [
-    { 
-      field: "column", 
-      headerName: "Column", 
-      width: 75, 
-      editable: true 
+    {
+      field: "column",
+      headerName: "Column",
+      width: 75,
+      editable: true,
     },
-    { 
-      field: "type", 
-      headerName: "Type", 
-      width: 100, 
-      editable: true, 
-      type: "singleSelect", 
-      valueOptions: ["binary", "blob", "boolean", "date", "datetime", "decimal", "float", "integer", "serial", "string", "text", "time", "timestamp", "varchar(255)"] 
+    {
+      field: "type",
+      headerName: "Type",
+      width: 100,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: [
+        "binary",
+        "blob",
+        "boolean",
+        "date",
+        "datetime",
+        "decimal",
+        "float",
+        "integer",
+        "serial",
+        "string",
+        "text",
+        "time",
+        "timestamp",
+        "varchar(255)",
+      ],
     },
     {
       field: "constraint",
       headerName: "Constraints",
       width: 100,
       editable: true,
-      type: "singleSelect", 
-      valueOptions: ["NOT NULL", "UNIQUE"] 
+      type: "singleSelect",
+      valueOptions: ["NOT NULL", "UNIQUE"],
     },
-    { 
-      field: "pk", 
-      headerName: "PK", 
-      width: 50, 
-      editable: true, 
-      type: "singleSelect", 
-      valueOptions: ["true", "false"] 
+    {
+      field: "pk",
+      headerName: "PK",
+      width: 50,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["true", "false"],
     },
-    { 
-      field: "fk", 
-      headerName: "FK", 
-      width: 50, 
-      editable: true, 
-      type: "singleSelect", 
-      valueOptions: ["true", "false"] 
+    {
+      field: "fk",
+      headerName: "FK",
+      width: 50,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["true", "false"],
     },
     {
       field: "actions",
@@ -224,6 +248,7 @@ export default function Table({ tableInfo, id }: TableProps) {
   ];
 
   console.log("this is updated rows: ", rows);
+  // console.log("this is the table I am editing: ", id);
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
@@ -246,17 +271,9 @@ export default function Table({ tableInfo, id }: TableProps) {
           }}
         >
           <div style={{ fontSize: "24px" }}>{id}</div>
-          {/* <Button
-            variant="outline"
-            sx={{
-              fontSize: "16px",
-              border: "0px solid",
-              color: "black",
-              backgroundColor: "transparent",
-            }}
-          >
-            + add row
-          </Button> */}
+          {/* <div onDrag={handleDrag}>
+            x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
+          </div> */}
         </div>
         <DataGrid
           rows={rows}
@@ -300,7 +317,7 @@ function EditToolbar(props: EditToolbarProps) {
 
   const handleClick = () => {
     const id = randomId();
-    console.log(id);
+    //console.log(id);
     setRows((oldRows) => [
       ...oldRows,
       { id, column: "", type: "", constraint: "", pk: "", fk: "", isNew: true },

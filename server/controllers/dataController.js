@@ -19,7 +19,7 @@ function postgresDumpQuery(hostname, password, port, username, database_name) {
   const filename = path.join(__dirname, `../db_schemas/${username}${database_name}${resultInSeconds.toString()}.sql`);
   command.push(`pg_dump -s postgres://${username}:${password}@${hostname}:${port}/${database_name} > ${filename}`);
   command.push(filename);
-  console.log('command created:', command);
+  //console.log('command created:', command);
   return command;  
 }
 
@@ -56,102 +56,64 @@ const writeSchema =  async (command) => {
 
 //getSchema controller allows the user 
 dataController.getSchema = (req, res, next) => {
-    let result = null; 
-    console.log("running getSchema controller...");
-    const hostname = req.body.hostname;
-    const password = req.body.password;
-    const port = req.body.port;
-    const username = req.body.username;
-    const database_name = req.body.database_name;
-    const command = postgresDumpQuery(hostname,password,port, username, database_name);
-    console.log(command, '<-command');
-    writeSchema(command).then(resq => {
+
+  
+    // let result = null; 
+    // console.log("running getSchema controller...");
+    // const hostname = req.body.hostname;
+    // const password = req.body.password;
+    // const port = req.body.port;
+    // const username = req.body.username;
+    // const database_name = req.body.database_name;
+    // const command = postgresDumpQuery(hostname,password,port, username, database_name);
+    // console.log(command, '<-command');
+    // writeSchema(command).then(resq => {
       
-      fs.readFile(command[1], 'utf8', (error, data) => {
-        if (error) 
-          {
-            console.error(`error- in FS: ${error.message}`);
-            return next({
-            msg: 'Error reading database schema file',
-            err: error});    
-          }
-        result = parseSql(data);
+    //   fs.readFile(command[1], 'utf8', (error, data) => {
+    //     if (error) 
+    //       {
+    //         console.error(`error- in FS: ${error.message}`);
+    //         return next({
+    //         msg: 'Error reading database schema file',
+    //         err: error});    
+    //       }
+    //     result = parseSql(data);
        
-        res.locals.data = result;
-        next();
+    //     res.locals.data = result;
+    //     next();
        
-      }); 
+    //   }); 
     
     
-    });
+    // });
 
 
-    
-  };
 
+
+fs.readFile(path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'), 'utf8', (error, data) => {
+  if (error) 
+    {
+      console.error(`error- in FS: ${error.message}`);
+      return next({
+      msg: 'Error reading database schema file',
+      err: error});    
+    }
+  const result = parseSql(data);
+   //console.log(result);
+   for (let records in result)
+   //console.log('instance of table', result[records]);
+  res.locals.testdata = result;
+  next();
+
+  });
+}
 
   //objSchema controller allows the user to obj data to more
   //usable format for front-end
 dataController.objSchema = (req, res, next) => {
 
   
-  let testdata = [
-    {
-      Name: 'public.accounts',
-      Properties: [
-        {
-          IsForeignKey: false,
-          IsPrimaryKey: false,
-          Name: 'user_id integer NOT NULL',
-          References: [],
-          TableName: 'public.accounts',
-          Value: null,
-          additional_constraints: 'NOT NULL',
-          data_type: 'integer',
-          field_name: 'user_id',
-        },
-      ]
-    },
-    {
-      Name: 'public.location',
-      Properties: [
-        {
-          IsForeignKey: false,
-          IsPrimaryKey: false,
-          Name: 'id integer NOT NULL',
-          References: [],
-          TableName: 'public.location',
-          Value: null,
-          additional_constraints: 'NOT NULL',
-          data_type: 'integer',
-          field_name: 'id',
-        },
-        {
-          IsForeignKey: false,
-          IsPrimaryKey: false,
-          Name: "password character varying(50) NOT NULL",
-          References: [],
-          TableName: "public.accounts",
-          Value: null,
-          additional_constraints: "NOT NULL",
-          data_type: "character varying(50)",
-          field_name: "password",
-        },
-        {
-          IsForeignKey: false,
-          IsPrimaryKey: false,
-          Name: "email character varying(255) NOT NULL",
-          References: [],
-          TableName: "public.accounts",
-          Value: null,
-          additional_constraints: "NOT NULL",
-          data_type: "character varying(255)",
-          field_name: "email",
-        },
-      ]
-    }
-  ];
-
+  let testdata = res.locals.testdata;
   let results = {};
   //iterate through the testdata Array
     //Grab name property for each element of array - Table Name 
@@ -171,25 +133,8 @@ dataController.objSchema = (req, res, next) => {
        results[testdata[i].Name] = properties;
     }
 
-
-
-
-    // result = {
-    //   "public.account" : {
-    //     "id" : {
-    //       IsForeignKey: false,
-    //       IsPrimaryKey: false,
-    //       Name: 'id integer NOT NULL',
-    //       References: [],
-    //       TableName: 'public.location',
-    //       Value: null,
-    //       additional_constraints: 'NOT NULL',
-    //       data_type: 'integer',
-    //     }
-    //   }
-    // }
     console.log("route for testObj works");
-     console.log(results);
+     //console.log(results);
 
     
      res.locals.result = results;
@@ -281,7 +226,7 @@ dataController.objSchema = (req, res, next) => {
     return table;
   }
 
-  // Creates foreignKeyModel and assigns properties to arguments passed in
+  // Creates foreignKeyModel and asReferencesProsigns properties to arguments passed in
   function createForeignKey(primaryKeyName, primaryKeyTableName, referencesPropertyName, referencesTableName, isDestination) {
     const foreignKey = new ForeignKeyModel;
     foreignKey.PrimaryKeyTableName = primaryKeyTableName;
@@ -344,11 +289,24 @@ dataController.objSchema = (req, res, next) => {
   }
   
   function parseMySQLForeignKey(name, currentTableModel) {
+    
+    //console.log('currentTableModel', currentTableModel);
     // Parsing Foreign Key from MySQL syntax
     name = name.replace(/\"/g, '');
-    let foreignKeyName = name.match(/(?<=FOREIGN\sKEY\s)(\([a-zA-Z_]+\))(?=\sREFERENCES\s)/)[0].replace(/\(|\)/g, '');
-    const referencedTableName = name.match(/(?<=REFERENCES\s)([a-zA-Z_]+)(?=\()/)[0];
-    const referencedPropertyName = name.match(/(?<=REFERENCES\s[a-zA-Z_]+)(\([a-zA-Z_]+\))/)[0].replace(/\(|\)/g, '');
+    //console.log('Tbale name---->', currentTableModel.Name)
+   // console.log('in parseMySWL ForeignKey----', name);
+    
+   let  foreignKeyName = name.match(/(?<=FOREIGN\sKEY\s)(\([A-Za-z0-9_]+\))(?=\sREFERENCES\s)/)[0].replace(/\(|\)/g, '');
+    const referencedTableName = name.match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_]+)+/)[0];
+    //let constraintname = name.match(/(?<=CONSTRAINT\s)([A-Za-z0-9_]+)/)[0];
+    const referencedPropertyName = name.match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_()]+)+/)[0].match(/\(([^()]+)\)/g )[0].replace(/\(|\)/g,'');
+
+
+  
+    console.log('foreign key Table', currentTableModel.Name);
+    console.log('ref property name', referencedPropertyName);
+    console.log('ref tablename', referencedTableName);
+    console.log('foreign key name', foreignKeyName);
 
     // Look through current table and reassign isForeignKey prop to true, reassign foreignKeyName to include type
     currentTableModel.Properties.forEach(property => {
@@ -357,23 +315,42 @@ dataController.objSchema = (req, res, next) => {
         foreignKeyName = property.Name;
       }
     });
+     
+  
+
+    //console.log("Primary Table Model", PrimaryTableModel);
+
+
 
     // Create ForeignKey
     const foreignKeyOriginModel = createForeignKey(foreignKeyName, currentTableModel.Name, referencedPropertyName, referencedTableName, false);
 
+     
+
+
     // Add ForeignKey Origin
     foreignKeyList.push(foreignKeyOriginModel);
+    
+
 
     // Create ForeignKey
-    const foreignKeyDestinationModel = createForeignKey(referencedPropertyName, referencedTableName, foreignKeyName, currentTableModel.Name, true);
+    const foreignKeyDestinationModel = createForeignKey(referencedPropertyName, referencedTableName, foreignKeyName, currentTableModel.Name, false);
+
+      
+
+    
 
     // Add ForeignKey Destination
     foreignKeyList.push(foreignKeyDestinationModel);
+   
+
+   
   }
 
   // Iterates through primaryKeyList and checks every property in every table
   // If primaryKeyList.Name === propertyModel.Name, set IsPrimaryKey property to true
   function processPrimaryKey() {
+
     primaryKeyList.forEach(function (primaryModel) {
       tableList.forEach(function (tableModel) {
         if (tableModel.Name === primaryModel.PrimaryKeyTableName) {
@@ -390,11 +367,21 @@ dataController.objSchema = (req, res, next) => {
   // Iterates through foreignKeyList and checks every property in every table
   // If propertyModel's name equals what the foreignKeyModel is referencing, set propertyModel.IsForeignKey to true and add foreignKeyModel to propertyModel.References array
   function processForeignKey() {
+    //console.log("processForeign Key Called")
     foreignKeyList.forEach(function (foreignKeyModel) {
+      console.log('fk list' ,foreignKeyModel);
       tableList.forEach(function (tableModel) {
+           
+       
+
         if (tableModel.Name === foreignKeyModel.ReferencesTableName) {
+
           tableModel.Properties.forEach(function (propertyModel) {
+           // console.log("PropertyModel.name---->", propertyModel.name); 
+           // console.log("ForeignKeyModel Ref Name--->", foreignKeyModel.ReferencesPropertyName);
+           console.log('prop model name', propertyModel.Name);
             if (propertyModel.Name === foreignKeyModel.ReferencesPropertyName) {
+              //console.log("References Pair Found");
               propertyModel.IsForeignKey = true;
               propertyModel.References.push(foreignKeyModel);
             }
@@ -441,19 +428,31 @@ dataController.objSchema = (req, res, next) => {
 
   function parseAlterTable(tableName, constraint) {
     // const tableName = tmp.match(/(?<=ALTER\sTABLE\s)([a-zA-Z_]+)(?=\sADD\sCONSTRAINT)/)[0];
+    
+   // console.log('tableName in parseAlterTable------>', tableName);
+    //console.log('constraint------->', constraint);
     tableName = tableName.trim();
     let currentTableModel;
     tableList.forEach(tableModel => {
+
       if (tableModel.Name === tableName) {
         currentTableModel = tableModel;
+        //console.log('currentTableModel ', currentTableModel);
       }
     });
+  
     if (constraint.indexOf('FOREIGN KEY') !== -1) {
+      //console.log('fk found---------->');
       const name = constraint.substring(constraint.indexOf('FOREIGN KEY'), constraint.length - 1);
+    //  console.log('foreign key', name)
+     // console.log(currentTableModel);
       parseMySQLForeignKey(name, currentTableModel);
     } else if (constraint.indexOf('PRIMARY KEY') !== -1) {
+      //console.log('pk found ------>');
       const name = constraint.substring(constraint.indexOf('PRIMARY KEY'), constraint.length - 1);
       parseMYSQLPrimaryKey(name, currentTableModel);
+      //console.log('primary key', name);
+      //console.log(currentTableModel);
     }
   }
 
@@ -482,6 +481,7 @@ dataController.objSchema = (req, res, next) => {
 
   function parseMYSQLPrimaryKey(name, currentTableModel) {
     const primaryKeyName = name.slice(13).replace(')', '').replace(/\"/g, '');
+   
     currentTableModel.Properties.forEach(property => {
       if (property.Name.split(' ')[0] === primaryKeyName) {
         property.IsPrimaryKey = true;
@@ -508,9 +508,10 @@ dataController.objSchema = (req, res, next) => {
      let rowCell = null;
 
       const tmp = lines[i].trim();
-
-      const propertyRow = tmp.substring(0, 12).toLowerCase();
-
+      
+      const propertyRow = tmp.substring(0, 12).toLowerCase().trim();
+      
+    
       if (currentTableModel !== null && tmp.includes(');')) {
         tableList.push(currentTableModel);
         currentTableModel = null;
@@ -524,26 +525,39 @@ dataController.objSchema = (req, res, next) => {
 
         //Parse Table Name
         name = parseTableName(name);
+       
 
 
         //Create Table
         currentTableModel = createTable(name);
       }
       // tmp === 'ALTER TABLE'
-      else if (tmp === 'ALTER TABLE') {
-        parseAlterTable(lines[i + 1], lines[i + 3]);
-        i += 3;
-      }
+     
+      else if (propertyRow == 'alter table') {
+        let alterQuerySplit = tmp.toLowerCase().trim();
+        let tname = null; 
+        
+          for (let i = 0; i < tableList.length; i++)
+          {
+              if( alterQuerySplit.indexOf(tableList[i].Name) !== -1)
+                     {tname = tableList[i].Name; }
+          }
+        
+                    parseAlterTable(tname, lines[i + 1]);
+                     i += 3;
+            }
 
-      // Parse Properties 
-      else if (tmp !== '(' && currentTableModel != null && propertyRow !== 'alter table ') {
-
+      // Parse Properties Primarly for field props of Tables 
+      else if (tmp !== '(' && currentTableModel !== null && propertyRow !== 'alter table ') {
+         
         //Parse the row
         let name = tmp.substring(0, (tmp.charAt(tmp.length - 1) === ',') ? tmp.length - 1 : tmp.length);
-
+         //console.log('name after format', name);
         // Check if first 10 characters are 'constraint'
         const constraint = name.substring(0, 10).toLowerCase();
         if (constraint === 'constraint') {
+          //double checking for constraints here
+          //console.log("constraint detected");
           if (name.indexOf("PRIMARY KEY") !== -1) {
             name = name.substring(name.indexOf("PRIMARY KEY"), name.length).replace(/\"/g, "")
           } else if (name.indexOf("FOREIGN KEY") !== -1) {
@@ -566,6 +580,8 @@ dataController.objSchema = (req, res, next) => {
         // Verify if this is a property that doesn't have a relationship (One minute of silence for the property)
         let normalProperty = propertyType !== 'primary key' && propertyType !== 'foreign key' && propertyType !== 'SQLServer primary key' && propertyType !== 'SQLServer foreign key' && propertyType !== 'SQLServer both';
 
+
+        //console.log('property row', propertyRow)
         // Parse properties that don't have relationships
         if (normalProperty) {
 
@@ -628,9 +644,11 @@ dataController.objSchema = (req, res, next) => {
       } 
     }
 
+    
     // Process Primary Keys
     processPrimaryKey();
 
+    
     // Process Foreign Keys
     processForeignKey();
 
@@ -675,7 +693,7 @@ dataController.objSchema = (req, res, next) => {
 
 
 
-
+    //console.log(tableList);
      return tableList; 
 
 
@@ -708,20 +726,7 @@ dataController.objSchema = (req, res, next) => {
 
         );
           
-        // Loop through foreign keys for parsing relationships and drawing out 
-        // arrows with graphviz to depict how tables are related
-        /*
-        foreignKeyList.forEach(ForeignKeyModel => {
-          if (!ForeignKeyModel.IsDestination) {
-           
-            console.log('PrimaryKey Name', ForeignKeyModel.PrimaryKeyTableName);
-        
-          }
-        });
-        */
-        // Closing curly brace for ending out graphviz syntax string
-
-
+      
 
 
 
@@ -760,7 +765,7 @@ dataController.objSchema = (req, res, next) => {
                 err: error});    
               }
            let result = parseSql(data);
-           console.log(result);
+           //console.log(result);
          /*
           for (let i in result) {
             for (let k in result[i].Properties)
