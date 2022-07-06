@@ -34,10 +34,10 @@ router.get('/getAllSchemas',
 });
 
 router.post('/getSchema', 
-   controller.getSchema,
+   controller.getSchema, controller.objSchema,
   (req, res) => {
     console.log("called");
-    res.status(200).json(res.locals.data);
+    res.status(200).json(res.locals.result);
 });
 
 router.get('/openSchema',controller.openSchema,

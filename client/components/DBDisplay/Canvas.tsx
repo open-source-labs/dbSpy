@@ -23,7 +23,7 @@ export default function Canvas({
   fetchedData,
   setFetchedData,
 }: CanvasProps) {
-  //console.log(fetchedData);
+  console.log(fetchedData);
 
   // const tables: JSX.Element[] = fetchedData.map((table: any, ind: number) => {
   //   return <Table key={`Table${ind}`} id={`table${ind}`} tableInfo={table} />;
@@ -61,8 +61,7 @@ export default function Canvas({
 
          for (let column in fetchedData[table])
          {  
-          
-          console.log('References Data------->',fetchedData[table][column]);
+          console.log(fetchedData[table][column]);
               
               
          }
