@@ -29,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
+import DataStore from "../../Store";
 
 interface TableProps {
   tableInfo: {
@@ -45,6 +46,15 @@ interface TableProps {
     };
   };
   id: string;
+}
+
+interface RowProps {
+  id: string;
+  column: string;
+  constraint: string;
+  fk: boolean;
+  pk: boolean;
+  type: string;
 }
 
 export default function Table({ tableInfo, id }: TableProps) {
@@ -143,6 +153,9 @@ export default function Table({ tableInfo, id }: TableProps) {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
     console.log("this is updatedRow:", updatedRow);
+    updatedRowsToTable(
+      rows.map((row) => (row.id === newRow.id ? updatedRow : row))
+    );
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -247,7 +260,33 @@ export default function Table({ tableInfo, id }: TableProps) {
     // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
-  console.log("this is updated rows: ", rows);
+  function updatedRowsToTable(rows: RowProps[]) {
+    const tablename = id;
+    const dataAfterChange: any = {};
+    const col: any = {};
+    rows.forEach((obj: RowProps) => {
+      const { id, column, constraint, fk, pk, type } = obj;
+      col[column] = {
+        IsForeignKey: fk,
+        IsPrimaryKey: pk,
+        References: [],
+        TableName: tablename,
+        additional_constraints: constraint,
+        data_type: type,
+        field_name: column,
+      };
+      dataAfterChange[tablename] = col;
+    });
+
+    DataStore.getData({
+      ...DataStore.store.get(DataStore.store.size - 1),
+      ...dataAfterChange,
+    });
+    console.log("this is dataStore2:", DataStore.store);
+    console.log("this is data After Change: ", dataAfterChange);
+  }
+
+  // console.log("this is updated rows: ", rows);
   // console.log("this is the table I am editing: ", id);
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo

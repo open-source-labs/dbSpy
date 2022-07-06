@@ -1,10 +1,12 @@
 class Store {
   store: Map<{}, {}>;
   ind: number;
+  connectedToDB: boolean;
 
   constructor() {
     this.store = new Map();
     this.ind = 0;
+    this.connectedToDB = false;
   }
 
   getData(data: {}) {
@@ -12,6 +14,11 @@ class Store {
     this.ind++;
     return this.store;
   }
+
+  //   dbConnect();
+
+  //   dbDisconnet();
 }
+
 const DataStore = new Store();
 export default DataStore;
