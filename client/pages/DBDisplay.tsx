@@ -183,7 +183,7 @@ function FeatureTab({
   });
 
   return (
-    <Navbar width={{ base: 300 }} height={500} p="xs">
+    <Navbar width={{ base: 225 }} height={500} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
       <Modal
         opened={modalOpened}

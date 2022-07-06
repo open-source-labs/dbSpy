@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { DragEvent, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -52,10 +52,19 @@ export default function Table({ tableInfo, id }: TableProps) {
   // const { Name, Properties } = tableInfo;
 
   // const [activeDrags, setActiveDrags] = useState(0);
-  // const [deltaPosition, setDeltaPosition] = useState({
-  //   x: 0,
-  //   y: 0,
-  // });
+  const [deltaPosition, setDeltaPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  function handleDrag(e: DragEvent<HTMLDivElement>, ui: any) {
+    const { x, y } = deltaPosition;
+    setDeltaPosition({
+      x: x + ui.deltaX,
+      y: y + ui.deltaY,
+    });
+    console.log(deltaPosition);
+  }
   // const [controlledPosition, setControlledPosition] = useState({
   //   x: -400,
   //   y: 200,
@@ -262,17 +271,9 @@ export default function Table({ tableInfo, id }: TableProps) {
           }}
         >
           <div style={{ fontSize: "24px" }}>{id}</div>
-          {/* <Button
-            variant="outline"
-            sx={{
-              fontSize: "16px",
-              border: "0px solid",
-              color: "black",
-              backgroundColor: "transparent",
-            }}
-          >
-            + add row
-          </Button> */}
+          {/* <div onDrag={handleDrag}>
+            x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
+          </div> */}
         </div>
         <DataGrid
           rows={rows}
