@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
 import Table from "./Table";
 import Xarrow, { Xwrapper } from "react-xarrows";
-import { Loader, Text } from "@mantine/core";
+import { Loader, Text, Button, Group } from "@mantine/core";
+import { Database, DatabaseImport } from "tabler-icons-react";
+import { LinearProgress } from "@mui/material";
+import Sidebar from './Sidebar'
 
 interface CanvasProps {
   fetchedData: {
@@ -10,6 +13,10 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   isLoading: boolean;
   isError: boolean;
+  connectedToDB: boolean;
+  setConnectedToDB: (param: boolean) => void;
+  sideBarOpened: boolean;
+  setSideBarOpened: (param: boolean) => void;
   tablename: string;
 }
 
@@ -18,6 +25,9 @@ export default function Canvas({
   isError,
   fetchedData,
   setFetchedData,
+  connectedToDB,
+  setConnectedToDB,
+  setSideBarOpened,
   tablename,
 }: CanvasProps) {
   // const tables: JSX.Element[] = fetchedData.map((table: any, ind: number) => {
@@ -53,7 +63,13 @@ export default function Canvas({
   // console.log("this is tables", tables);
   return (
     <div style={{ height: "100%" }}>
-      {Object.keys(fetchedData).length > 0 ? (
+      {Object.keys(fetchedData).length > 0 && connectedToDB ? (
+        <>
+        <Group position="right">
+          <Button color="white"
+          leftIcon={<DatabaseImport />} onClick={() => setConnectedToDB(false)}>Disconnect from DB</Button>
+        
+        </Group>
         <Xwrapper>
           {tables}
           <Xarrow
@@ -69,9 +85,18 @@ export default function Canvas({
             end={"public.user"}
           />
         </Xwrapper>
+        </>
       ) : (
-        "Please Connect to Your Database"
-      )}
+        <>
+        {/* "Please Connect to Your Database" */}
+        <Group position="right">
+        <Button color="white"
+          leftIcon={<DatabaseImport />} onClick={() => setSideBarOpened(true)}>Connect to DB</Button>
+        </Group>
+        </>
+      )
+      }
+      
     </div>
   );
 }

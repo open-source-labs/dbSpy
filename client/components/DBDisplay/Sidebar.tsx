@@ -22,9 +22,11 @@ interface SideBarProps {
   isLoading: boolean;
   isError: boolean;
   mutate: (data: object) => void;
+  sideBarOpened: boolean;
+  setSideBarOpened: (param: boolean) => void;
 }
 
-export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
+export default function Sidebar({ isLoading, isError, mutate, sideBarOpened, setSideBarOpened }: SideBarProps) {
   const form = useForm({
     initialValues: {
       hostname: "arjuna.db.elephantsql.com",
@@ -34,8 +36,10 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
       database_name: "twvoyfda",
     },
   });
-  const [opened, setOpened] = useState(false);
+  // const [opened, setOpened] = useState(false);
+  // const [sideBarOpened, setSideBarOpened] = useState(false);
   const theme = useMantineTheme();
+  
 
   //USE QUERY FOR GET REQUEST
   //   const { data } = useQuery("initialschema");
@@ -89,9 +93,9 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
         }
         overlayOpacity={0.55}
         overlayBlur={3}
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title="Connect to database"
+        opened={sideBarOpened}
+        onClose={() => setSideBarOpened(false)}
+        title="Connect to Database"
         padding="xl"
         size="md"
       >
@@ -155,7 +159,7 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
       </Drawer>
 
       <Group position="right">
-        <Button
+        {/* <Button
           //  variant="white" color="white"
           leftIcon={<DatabaseImport />}
           // styles={() => ({
@@ -163,10 +167,10 @@ export default function Sidebar({ isLoading, isError, mutate }: SideBarProps) {
           //     marginRight: 30,
           //   },
           // })}
-          onClick={() => setOpened(true)}
+          onClick={() => setSideBarOpened(true)}
         >
-          Connect to database
-        </Button>
+          {buttonText}
+        </Button> */}
       </Group>
     </>
   );

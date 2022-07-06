@@ -78,9 +78,12 @@ export default function DBDisplay({
 */
 
   const [fetchedData, setFetchedData] = useState({});
+  const [connectedToDB, setConnectedToDB] = useState(false);
+  const [sideBarOpened, setSideBarOpened] = useState(false);
   const [tablename, setTablename] = useState("");
-
   const [opened, setOpened] = useState(false);
+  
+
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
       // console.log("logging data", dataToSend);
@@ -94,8 +97,9 @@ export default function DBDisplay({
       });
     },
     {
-      onSuccess: async () => {
-        console.log("onSuccess", fetchedData);
+      onSuccess: () => {
+      setConnectedToDB(true);
+      setSideBarOpened(true);
       },
     }
   );
@@ -144,12 +148,16 @@ export default function DBDisplay({
         },
       })}
     >
-      <Sidebar isLoading={isLoading} isError={isError} mutate={mutate} />
+      <Sidebar sideBarOpened={sideBarOpened} setSideBarOpened={setSideBarOpened} isLoading={isLoading} isError={isError} mutate={mutate} />
       <Canvas
         isLoading={isLoading}
         isError={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
+        connectedToDB={connectedToDB}
+        setConnectedToDB={setConnectedToDB}
+        sideBarOpened={sideBarOpened}
+        setSideBarOpened={setSideBarOpened}
         tablename={tablename}
       />
     </AppShell>
