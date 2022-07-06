@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -8,47 +8,52 @@ import DBDisplay from "./pages/DBDisplay";
 import HomeFooter from "./components/Home/HomeFooter";
 import { useNavigate } from "react-router-dom";
 export default function App() {
-
   // const [user, setUser] = useState(null)
-//useEffect to validate user session by default set to null
+  //useEffect to validate user session by default set to null
 
-//declare function userAuth which uses fetch method to server
-// route to /applicationAuth
-// which will return from response.json user session details
+  //declare function userAuth which uses fetch method to server
+  // route to /applicationAuth
+  // which will return from response.json user session details
   // if user session exist, use setUser to response.json
-  // if does not exist, redirect 
+  // if does not exist, redirect
+  const [loggedIn, setLoggedIn] = useState(false);
+  console.log(loggedIn);
+  const [user, setUser] = useState({
+    name: null,
+    email: null,
+    id: null,
+    picture: null,
+  });
+  let navigate = useNavigate();
 
-const [user, setUser] = useState({name:null, email:null, id:null, picture: null});
+  useEffect(() => {
+    // declare the async data fetching function
+    const fetchData = async () => {
+      const data = await fetch("/protected");
+      // convert data to json
+      const result = await data.json();
+      if (result !== null) {
+        setUser({
+          name: result.given_name,
+          email: result.email,
+          id: result.id,
+          picture: result.picture,
+        });
+        console.log(result);
+      } else {
+        setUser({ name: null, email: null, id: null, picture: null });
+        // navigate("/");
+      }
+    };
 
-useEffect(() => {
-
-  // declare the async data fetching function
-  const fetchData = async () => {
-    const data = await fetch('/protected');
-    // convert data to json
-    const result = await data.json();
-    if (result !==null)
-    {setUser({name:result.given_name, email:result.email, id:result.id, picture:result.picture});
-    console.log(result);
-    }
-    else
-    {setUser({name:null, email:null, id:null, picture: null})
-    let navigate = useNavigate();
-    navigate("/");
-  }
-  
-  }
-
-  // call the function
-  fetchData()
-    // make sure to catch any error
-    .catch(err=> {
-      console.error
-      setUser({name:null, email:null, id:null, picture: null});
-    });
-
-})
-
+    // call the function
+    fetchData()
+      // make sure to catch any error
+      .catch((err) => {
+        console.error;
+        setUser({ name: null, email: null, id: null, picture: null });
+      });
+  }, []);
 
   return (
     <Routes>
@@ -56,9 +61,27 @@ useEffect(() => {
 
       <Route path="/login" element={<Login />} />
 
-      <Route path={"/"} element={ <Home/>  } />
+      <Route path={"/"} element={<Home user={user} loggedIn={loggedIn} />} />
 
-      <Route path="/display" element={ (user.id !== null) ? <DBDisplay user={user}/> :<Login /> } />
+      <Route
+        path="/display"
+        // element={<DBDisplay user={user} />}
+        element={
+          user.id !== null ? (
+            <DBDisplay user={user} setLoggedIn={setLoggedIn} />
+          ) : (
+            "PLEASE LOG IN..."
+          )
+        }
+      />
+
+      <Route
+        path="/display/:id"
+        element={<DBDisplay user={user} setLoggedIn={setLoggedIn} />}
+        // element={
+        //   user.id !== null ? <DBDisplay user={user} /> : "PLEASE LOG IN..."
+        // }
+      />
     </Routes>
   );
 }

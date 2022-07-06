@@ -50,27 +50,19 @@ const theme = createTheme({
   },
 });
 
-
-
 export default function Login() {
-
-  const google = ()=> { 
-
-    
+  const google = () => {
     const strWindowFeatures =
-     'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+      "toolbar=no, menubar=no, width=600, height=700, top=100, left=100";
 
-    window.open("http://localhost:8080/auth/google", '_self', strWindowFeatures);
-
-    
-  
+    window.open(
+      "http://localhost:8080/auth/google",
+      "_self",
+      strWindowFeatures
+    );
 
     console.log("clicked window ");
-};
-    
-  
-
-
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -197,7 +189,8 @@ export default function Login() {
           </Typography>
 
           <Box>
-            <Button onClick={google}
+            <Button
+              onClick={google}
               sx={{
                 borderRadius: 50,
                 // padding: "25px 36px",
