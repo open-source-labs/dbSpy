@@ -247,8 +247,8 @@ export default function Table({ tableInfo, id }: TableProps) {
     // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
-  console.log("this is updated rows: ", rows);
-  console.log("this is the table I am editing: ", id);
+  // console.log("this is updated rows: ", rows);
+  // console.log("this is the table I am editing: ", id);
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();

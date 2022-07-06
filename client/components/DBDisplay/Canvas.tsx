@@ -58,7 +58,7 @@ export default function Canvas({
       );
     }
   );
-
+  console.log("this is fetchedData from Canvas.tsx", fetchedData);
   if (isLoading) {
     return (
       <Text>
@@ -99,14 +99,14 @@ export default function Canvas({
             <Xarrow
               headSize={5}
               color={"green"}
-              start={"public.accounts"}
-              end={"public.location"}
+              start={"public.films"}
+              end={"public.people"}
             />
             <Xarrow
               headSize={5}
               color={"green"}
-              start={"public.location"}
-              end={"public.user"}
+              start={"public.people"}
+              end={"public.pilots"}
             />
           </Xwrapper>
         </>

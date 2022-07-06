@@ -82,7 +82,6 @@ export default function DBDisplay({
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [tablename, setTablename] = useState("");
   const [opened, setOpened] = useState(false);
-  
 
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
@@ -98,8 +97,8 @@ export default function DBDisplay({
     },
     {
       onSuccess: () => {
-      setConnectedToDB(true);
-      setSideBarOpened(true);
+        setConnectedToDB(true);
+        setSideBarOpened(true);
       },
     }
   );
@@ -116,7 +115,7 @@ export default function DBDisplay({
       }
     }
   }, []);
-
+  console.log("this is fetchedData from dbdisplay,", fetchedData);
   return (
     <AppShell
       padding="md"
@@ -148,7 +147,13 @@ export default function DBDisplay({
         },
       })}
     >
-      <Sidebar sideBarOpened={sideBarOpened} setSideBarOpened={setSideBarOpened} isLoading={isLoading} isError={isError} mutate={mutate} />
+      <Sidebar
+        sideBarOpened={sideBarOpened}
+        setSideBarOpened={setSideBarOpened}
+        isLoading={isLoading}
+        isError={isError}
+        mutate={mutate}
+      />
       <Canvas
         isLoading={isLoading}
         isError={isError}
