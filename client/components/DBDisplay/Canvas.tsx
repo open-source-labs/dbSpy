@@ -5,6 +5,7 @@ import { Loader, Text, Button, Group } from "@mantine/core";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
+import DataStore from '../../Store'
 
 interface CanvasProps {
   fetchedData: {
@@ -25,8 +26,9 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   isLoading: boolean;
   isError: boolean;
-  connectedToDB: boolean;
-  setConnectedToDB: (param: boolean) => void;
+  // connectedToDB: boolean;
+  // disconnect: () => void;
+  // setConnectedToDB: (param: boolean) => void;
   sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
   tablename: string;
@@ -37,8 +39,9 @@ export default function Canvas({
   isError,
   fetchedData,
   setFetchedData,
-  connectedToDB,
-  setConnectedToDB,
+  // disconnect,
+  // connectedToDB,
+  // setConnectedToDB,
   setSideBarOpened,
   tablename,
 }: CanvasProps) {
@@ -82,13 +85,13 @@ export default function Canvas({
   // console.log("this is tables", tables);
   return (
     <div style={{ height: "100%" }}>
-      {Object.keys(fetchedData).length > 0 && connectedToDB ? (
+      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           <Group position="right">
             <Button
               color="white"
               leftIcon={<DatabaseImport />}
-              onClick={() => setConnectedToDB(false)}
+              onClick={() => DataStore.disconnect()}
             >
               Disconnect from DB
             </Button>

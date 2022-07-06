@@ -78,7 +78,7 @@ export default function DBDisplay({
 */
 
   const [fetchedData, setFetchedData] = useState({});
-  const [connectedToDB, setConnectedToDB] = useState(false);
+  // const [connectedToDB, setConnectedToDB] = useState(false);
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [tablename, setTablename] = useState("");
   const [opened, setOpened] = useState(false);
@@ -97,7 +97,8 @@ export default function DBDisplay({
     },
     {
       onSuccess: () => {
-        setConnectedToDB(true);
+        DataStore.connect();
+        // setConnectedToDB(true);
         setSideBarOpened(true);
       },
     }
@@ -159,8 +160,9 @@ export default function DBDisplay({
         isError={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
-        connectedToDB={connectedToDB}
-        setConnectedToDB={setConnectedToDB}
+        // disconnect={DataStore.disconnect}
+        // connectedToDB={DataStore.connectedToDB}
+        // setConnectedToDB={setConnectedToDB}
         sideBarOpened={sideBarOpened}
         setSideBarOpened={setSideBarOpened}
         tablename={tablename}
