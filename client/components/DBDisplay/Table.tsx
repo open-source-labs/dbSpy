@@ -133,49 +133,64 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    console.log("this is updatedRow:", updatedRow);
+    // console.log("this is updatedRow:", updatedRow);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
   const columns: GridColumns = [
-    { 
-      field: "column", 
-      headerName: "Column", 
-      width: 75, 
-      editable: true 
+    {
+      field: "column",
+      headerName: "Column",
+      width: 75,
+      editable: true,
     },
-    { 
-      field: "type", 
-      headerName: "Type", 
-      width: 100, 
-      editable: true, 
-      type: "singleSelect", 
-      valueOptions: ["binary", "blob", "boolean", "date", "datetime", "decimal", "float", "integer", "serial", "string", "text", "time", "timestamp", "varchar(255)"] 
+    {
+      field: "type",
+      headerName: "Type",
+      width: 100,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: [
+        "binary",
+        "blob",
+        "boolean",
+        "date",
+        "datetime",
+        "decimal",
+        "float",
+        "integer",
+        "serial",
+        "string",
+        "text",
+        "time",
+        "timestamp",
+        "varchar(255)",
+      ],
     },
     {
       field: "constraint",
       headerName: "Constraints",
       width: 100,
       editable: true,
-      type: "singleSelect", 
-      valueOptions: ["NOT NULL", "UNIQUE"] 
+      type: "singleSelect",
+      valueOptions: ["NOT NULL", "UNIQUE"],
     },
-    { 
-      field: "pk", 
-      headerName: "PK", 
-      width: 50, 
-      editable: true, 
-      type: "singleSelect", 
-      valueOptions: ["true", "false"] 
+    {
+      field: "pk",
+      headerName: "PK",
+      width: 50,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["true", "false"],
     },
-    { 
-      field: "fk", 
-      headerName: "FK", 
-      width: 50, 
-      editable: true, 
-      type: "singleSelect", 
-      valueOptions: ["true", "false"] 
+    {
+      field: "fk",
+      headerName: "FK",
+      width: 50,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["true", "false"],
     },
     {
       field: "actions",

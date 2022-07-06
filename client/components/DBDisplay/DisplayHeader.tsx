@@ -61,7 +61,14 @@ export default function DisplayHeader({
           justifyContent: "space-between",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: "100%",
+            flex: "1fr",
+          }}
+        >
           <MediaQuery largerThan="sm" styles={{ display: "block" }}>
             <MenuPopUp opened={opened} setOpened={setOpened} />
           </MediaQuery>
@@ -71,37 +78,36 @@ export default function DisplayHeader({
           </Link>
         </div>
 
-        <div style={{ color: "white", borderColor: "white" }}>
+        <div style={{ color: "white", borderColor: "white", flex: "1fr" }}>
           LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022
         </div>
 
-        <div>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginRight: "6px",
-            }}
+        <Box
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginRight: "6px",
+            flex: "1fr",
+          }}
+        >
+          <Text color="white" style={{ fontSize: "12px" }}>
+            {" "}
+            Welcome, {name == null ? " " : name.concat(" ")}{" "}
+          </Text>
+          <Image
+            radius="lg"
+            src="https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236__340.png"
+            alt="profile pic"
+            style={{ width: "30px", margin: "0px 10px" }}
+          />
+          <Button
+            variant="outline"
+            style={{ color: "white", border: "1px solid white" }}
+            onClick={logout}
           >
-            <Text color="white" style={{ fontSize: "12px" }}>
-              {" "}
-              Welcome, {name == null ? " " : name.concat(" ")}{" "}
-            </Text>
-            <Image
-              radius="lg"
-              src="https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236__340.png"
-              alt="profile pic"
-              style={{ width: "30px", margin: "0px 10px" }}
-            />
-            <Button
-              variant="outline"
-              style={{ color: "white", border: "1px solid white" }}
-              onClick={logout}
-            >
-              Sign Out
-            </Button>
-          </Box>
-        </div>
+            Sign Out
+          </Button>
+        </Box>
       </div>
     </Header>
   );
