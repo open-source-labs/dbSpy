@@ -510,9 +510,8 @@ dataController.objSchema = (req, res, next) => {
       const tmp = lines[i].trim();
       
       const propertyRow = tmp.substring(0, 12).toLowerCase().trim();
-      //console.log('property Row -------->', propertyRow);
       
-      //console.log("alter.........")
+    
       if (currentTableModel !== null && tmp.includes(');')) {
         tableList.push(currentTableModel);
         currentTableModel = null;
@@ -526,7 +525,7 @@ dataController.objSchema = (req, res, next) => {
 
         //Parse Table Name
         name = parseTableName(name);
-        //console.log('Table name --------->', name);
+       
 
 
         //Create Table
@@ -543,22 +542,14 @@ dataController.objSchema = (req, res, next) => {
               if( alterQuerySplit.indexOf(tableList[i].Name) !== -1)
                      {tname = tableList[i].Name; }
           }
-        // use TableList to iterate through Tables
-            // loop 
-               // check TableList[i].name indexof 
-               // if we find indexof !== -1 then 
-               // assign to Tablename of parseAlterTable
-      //console.log('tableName match---->',tname );
-      //console.log('propertyRow i + 1',lines[i + 1]);
-      //console.log('propertyRow2 i +3', lines[i + 3]);
+        
                     parseAlterTable(tname, lines[i + 1]);
                      i += 3;
             }
 
       // Parse Properties Primarly for field props of Tables 
       else if (tmp !== '(' && currentTableModel !== null && propertyRow !== 'alter table ') {
-          //console.log("other else rannn!")
-          //console.log('tmp', tmp);
+         
         //Parse the row
         let name = tmp.substring(0, (tmp.charAt(tmp.length - 1) === ',') ? tmp.length - 1 : tmp.length);
          //console.log('name after format', name);
@@ -657,7 +648,7 @@ dataController.objSchema = (req, res, next) => {
     // Process Primary Keys
     processPrimaryKey();
 
-    //console.log("jest before code ")
+    
     // Process Foreign Keys
     processForeignKey();
 
@@ -735,20 +726,7 @@ dataController.objSchema = (req, res, next) => {
 
         );
           
-        // Loop through foreign keys for parsing relationships and drawing out 
-        // arrows with graphviz to depict how tables are related
-        /*
-        foreignKeyList.forEach(ForeignKeyModel => {
-          if (!ForeignKeyModel.IsDestination) {
-           
-            console.log('PrimaryKey Name', ForeignKeyModel.PrimaryKeyTableName);
-        
-          }
-        });
-        */
-        // Closing curly brace for ending out graphviz syntax string
-
-
+      
 
 
 
