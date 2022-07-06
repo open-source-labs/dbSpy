@@ -19,8 +19,6 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 
 interface SideBarProps {
-  buttonText: string;
-  setButtonText: (string: string) => void;
   isLoading: boolean;
   isError: boolean;
   mutate: (data: object) => void;
@@ -28,7 +26,7 @@ interface SideBarProps {
   setSideBarOpened: (param: boolean) => void;
 }
 
-export default function Sidebar({ buttonText, setButtonText, isLoading, isError, mutate, sideBarOpened, setSideBarOpened }: SideBarProps) {
+export default function Sidebar({ isLoading, isError, mutate, sideBarOpened, setSideBarOpened }: SideBarProps) {
   const form = useForm({
     initialValues: {
       hostname: "arjuna.db.elephantsql.com",

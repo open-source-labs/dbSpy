@@ -26,7 +26,15 @@ module.exports = {
         target: 'http://localhost:3000',
         secure: false,
       },
-      '/**': {
+      '/protected': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/logout': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/google/**': {
         target: 'http://localhost:3000',
         secure: false
       },

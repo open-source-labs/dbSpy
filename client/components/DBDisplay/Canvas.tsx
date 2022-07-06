@@ -17,7 +17,7 @@ interface CanvasProps {
   setConnectedToDB: (param: boolean) => void;
   sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
-
+  tablename: string;
 }
 
 export default function Canvas({
@@ -27,7 +27,8 @@ export default function Canvas({
   setFetchedData,
   connectedToDB,
   setConnectedToDB,
-  setSideBarOpened
+  setSideBarOpened,
+  tablename,
 }: CanvasProps) {
   console.log(fetchedData);
 
