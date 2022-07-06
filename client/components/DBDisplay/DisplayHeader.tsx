@@ -32,7 +32,7 @@ export default function DisplayHeader({
   const navigate = useNavigate();
 
   if (picture === null) picture = undefined;
-  console.log(picture);
+  // console.log(picture);
 
   const logout = () => {
     localStorage.setItem("isLoggedIn", "false");

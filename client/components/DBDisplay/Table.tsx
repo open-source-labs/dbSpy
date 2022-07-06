@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { DragEvent, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -52,10 +52,19 @@ export default function Table({ tableInfo, id }: TableProps) {
   // const { Name, Properties } = tableInfo;
 
   // const [activeDrags, setActiveDrags] = useState(0);
-  // const [deltaPosition, setDeltaPosition] = useState({
-  //   x: 0,
-  //   y: 0,
-  // });
+  const [deltaPosition, setDeltaPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  function handleDrag(e: DragEvent<HTMLDivElement>, ui: any) {
+    const { x, y } = deltaPosition;
+    setDeltaPosition({
+      x: x + ui.deltaX,
+      y: y + ui.deltaY,
+    });
+    console.log(deltaPosition);
+  }
   // const [controlledPosition, setControlledPosition] = useState({
   //   x: -400,
   //   y: 200,
@@ -133,7 +142,7 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    // console.log("this is updatedRow:", updatedRow);
+    console.log("this is updatedRow:", updatedRow);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -239,7 +248,7 @@ export default function Table({ tableInfo, id }: TableProps) {
   ];
 
   console.log("this is updated rows: ", rows);
-  console.log("this is the table I am editing: ", id);
+  // console.log("this is the table I am editing: ", id);
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
@@ -262,17 +271,9 @@ export default function Table({ tableInfo, id }: TableProps) {
           }}
         >
           <div style={{ fontSize: "24px" }}>{id}</div>
-          {/* <Button
-            variant="outline"
-            sx={{
-              fontSize: "16px",
-              border: "0px solid",
-              color: "black",
-              backgroundColor: "transparent",
-            }}
-          >
-            + add row
-          </Button> */}
+          {/* <div onDrag={handleDrag}>
+            x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
+          </div> */}
         </div>
         <DataGrid
           rows={rows}
