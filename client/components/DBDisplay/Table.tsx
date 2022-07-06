@@ -239,6 +239,7 @@ export default function Table({ tableInfo, id }: TableProps) {
   ];
 
   console.log("this is updated rows: ", rows);
+  console.log("this is the table I am editing: ", id);
 
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
