@@ -24,9 +24,11 @@ interface SideBarProps {
   isLoading: boolean;
   isError: boolean;
   mutate: (data: object) => void;
+  sideBarOpened: boolean;
+  setSideBarOpened: (param: boolean) => void;
 }
 
-export default function Sidebar({ buttonText, setButtonText, isLoading, isError, mutate }: SideBarProps) {
+export default function Sidebar({ buttonText, setButtonText, isLoading, isError, mutate, sideBarOpened, setSideBarOpened }: SideBarProps) {
   const form = useForm({
     initialValues: {
       hostname: "arjuna.db.elephantsql.com",
@@ -36,7 +38,8 @@ export default function Sidebar({ buttonText, setButtonText, isLoading, isError,
       database_name: "twvoyfda",
     },
   });
-  const [opened, setOpened] = useState(false);
+  // const [opened, setOpened] = useState(false);
+  // const [sideBarOpened, setSideBarOpened] = useState(false);
   const theme = useMantineTheme();
   
 
@@ -92,8 +95,8 @@ export default function Sidebar({ buttonText, setButtonText, isLoading, isError,
         }
         overlayOpacity={0.55}
         overlayBlur={3}
-        opened={opened}
-        onClose={() => setOpened(false)}
+        opened={sideBarOpened}
+        onClose={() => setSideBarOpened(false)}
         title="Connect to Database"
         padding="xl"
         size="md"
@@ -158,7 +161,7 @@ export default function Sidebar({ buttonText, setButtonText, isLoading, isError,
       </Drawer>
 
       <Group position="right">
-        <Button
+        {/* <Button
           //  variant="white" color="white"
           leftIcon={<DatabaseImport />}
           // styles={() => ({
@@ -166,10 +169,10 @@ export default function Sidebar({ buttonText, setButtonText, isLoading, isError,
           //     marginRight: 30,
           //   },
           // })}
-          onClick={() => setOpened(true)}
+          onClick={() => setSideBarOpened(true)}
         >
           {buttonText}
-        </Button>
+        </Button> */}
       </Group>
     </>
   );

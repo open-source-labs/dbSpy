@@ -79,6 +79,8 @@ export default function DBDisplay({user}:stateChangeProps) {
 
   const [buttonText, setButtonText] = useState('Connect to Database')
   const [fetchedData, setFetchedData] = useState({});
+  const [connectedToDB, setConnectedToDB] = useState(false);
+  const [sideBarOpened, setSideBarOpened] = useState(false);
   
   const [opened, setOpened] = useState(false);
   const { isLoading, isError, mutate } = useMutation((dataToSend: object) => {
@@ -90,6 +92,10 @@ export default function DBDisplay({user}:stateChangeProps) {
       console.log("Time Done to Load Database", Date.now());
     });
   }, {onSuccess: () => {
+      console.log(connectedToDB);
+      setConnectedToDB(true);
+      setSideBarOpened(true);
+      console.log(connectedToDB);
       setButtonText("Disconnect from Database");
     }});
 
@@ -110,12 +116,16 @@ export default function DBDisplay({user}:stateChangeProps) {
         },
       })}
     >
-      <Sidebar buttonText={buttonText} setButtonText={setButtonText} isLoading={isLoading} isError={isError} mutate={mutate} />
+      <Sidebar sideBarOpened={sideBarOpened} setSideBarOpened={setSideBarOpened} buttonText={buttonText} setButtonText={setButtonText} isLoading={isLoading} isError={isError} mutate={mutate} />
       <Canvas
         isLoading={isLoading}
         isError={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
+        connectedToDB={connectedToDB}
+        setConnectedToDB={setConnectedToDB}
+        sideBarOpened={sideBarOpened}
+        setSideBarOpened={setSideBarOpened}
       />
     </AppShell>
   );
