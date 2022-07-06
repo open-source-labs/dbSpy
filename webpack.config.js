@@ -1,15 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-
 module.exports = {
   entry: './client/index.tsx',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: '/',
   },
-  devtool: 'eval-source-map', //comment it out when doing the production run 
+  devtool: 'eval-source-map', //comment it out when doing the production run
   devServer: {
     host: 'localhost',
     port: 8080,
@@ -17,15 +16,15 @@ module.exports = {
     proxy: {
       '/api/**': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: false,
       },
       '/page/**': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: false,
       },
       '/auth/**': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: false,
       },
       '/protected': {
         target: 'http://localhost:3000',
@@ -42,7 +41,7 @@ module.exports = {
     },
     static: {
       directory: path.join(__dirname, 'dist'),
-      publicPath: '/dist'
+      publicPath: '/dist',
     },
     historyApiFallback: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
@@ -56,30 +55,31 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
-          }
-        }
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
+        },
       },
       {
         test: /\.scss?/,
-        use: ['style-loader', 'css-loader',  'sass-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
-      { 
-        test: /\.(png|jpg)$/, 
-        use: ['url-loader?limit=8192'] 
+      {
+        test: /\.(png|jpg)$/,
+        use: ['url-loader?limit=8192'],
       },
-      { 
-        test: /\.tsx?$/, 
+      {
+        test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/
-      }
-    ]
+        exclude: /node_modules/,
+      },
+    ],
   },
-  plugins: [new HtmlWebpackPlugin({
-    template: 'index.html'
-  })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+    }),
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
-  }
+  },
 };
-

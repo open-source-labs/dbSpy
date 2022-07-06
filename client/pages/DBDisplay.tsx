@@ -72,7 +72,12 @@ export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
 */
 
 
+
+
   const [fetchedData, setFetchedData] = useState({});
+  const [connectedToDB, setConnectedToDB] = useState(false);
+  const [sideBarOpened, setSideBarOpened] = useState(false);
+  
   const [tablename, setTablename] = useState("");
 
 
@@ -85,7 +90,10 @@ export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
       console.log("this is retrieved data from server,: ", res.data);
       console.log("Time Done to Load Database", Date.now());
     });
-  });
+  }, {onSuccess: () => {
+      setConnectedToDB(true);
+      setSideBarOpened(true);
+    }});
 
   useEffect(() => {
     setLoggedIn(true);
@@ -123,12 +131,16 @@ export default function DBDisplay({ user, setLoggedIn }: stateChangeProps) {
         },
       })}
     >
-      <Sidebar isLoading={isLoading} isError={isError} mutate={mutate} />
+      <Sidebar sideBarOpened={sideBarOpened} setSideBarOpened={setSideBarOpened} isLoading={isLoading} isError={isError} mutate={mutate} />
       <Canvas
         isLoading={isLoading}
         isError={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
+        connectedToDB={connectedToDB}
+        setConnectedToDB={setConnectedToDB}
+        sideBarOpened={sideBarOpened}
+        setSideBarOpened={setSideBarOpened}
         tablename={tablename}
       />
     </AppShell>
