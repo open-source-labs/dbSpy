@@ -17,7 +17,6 @@ export default function App() {
   // if user session exist, use setUser to response.json
   // if does not exist, redirect
   const [loggedIn, setLoggedIn] = useState(false);
-  console.log(loggedIn);
   const [user, setUser] = useState({
     name: null,
     email: null,
@@ -68,7 +67,11 @@ export default function App() {
         // element={<DBDisplay user={user} />}
         element={
           user.id !== null ? (
-            <DBDisplay user={user} setLoggedIn={setLoggedIn} />
+            <DBDisplay
+              user={user}
+              loggedIn={loggedIn}
+              setLoggedIn={setLoggedIn}
+            />
           ) : (
             "PLEASE LOG IN..."
           )
@@ -77,7 +80,13 @@ export default function App() {
 
       <Route
         path="/display/:id"
-        element={<DBDisplay user={user} setLoggedIn={setLoggedIn} />}
+        element={
+          <DBDisplay
+            user={user}
+            loggedIn={loggedIn}
+            setLoggedIn={setLoggedIn}
+          />
+        }
         // element={
         //   user.id !== null ? <DBDisplay user={user} /> : "PLEASE LOG IN..."
         // }
