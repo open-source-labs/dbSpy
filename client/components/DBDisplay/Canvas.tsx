@@ -71,44 +71,34 @@ export default function Canvas({
   if (isError) {
     return <>An Error Occurred: Check Your Internet Connection</>;
   }
- 
-   
-  let refArray:string[] = [];
 
-
+  let refArray: string[] = [];
 
   for (let table in fetchedData) {
-    for (let column in fetchedData[table])
-    {
-      for (let ref in fetchedData[table][column].References)
-         {
-          if (fetchedData[table][column].References[ref].IsDestination ==true)
-          refArray.push(fetchedData[table][column].References[ref])  
-         }
+    for (let column in fetchedData[table]) {
+      for (let ref in fetchedData[table][column].References) {
+        if (fetchedData[table][column].References[ref].IsDestination == true)
+          refArray.push(fetchedData[table][column].References[ref]);
+      }
     }
-      
-     }
-   
-  
-  
-   //console.log(refArray)
-   
-   const xa:JSX.Element[] = refArray.map((reff:any) => {
-    
+  }
+
+  //console.log(refArray)
+
+  const xa: JSX.Element[] = refArray.map((reff: any) => {
     return (
       <Xarrow
-          headSize={5}
-          color={"green"}
-          start={reff.PrimaryKeyTableName}
-          end={reff.ReferencesTableName}
-        />
-    )
-  })
-
+        headSize={5}
+        color={"green"}
+        start={reff.PrimaryKeyTableName}
+        end={reff.ReferencesTableName}
+      />
+    );
+  });
 
   // console.log("this is tables", tables);
   return (
-    <div style={{ height: "100%"}}>
+    <div style={{ height: "100%" }}>
       {Object.keys(fetchedData).length > 0 && connectedToDB ? (
         <>
           <Group position="right">
@@ -120,10 +110,10 @@ export default function Canvas({
               Disconnect from DB
             </Button>
           </Group>
+
           <Xwrapper>
             {tables}
             {xa}
-          
           </Xwrapper>
         </>
       ) : (
