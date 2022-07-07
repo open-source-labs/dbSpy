@@ -31,6 +31,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
+import "../../permissiveFn.js";
 
 interface TableProps {
   tableInfo: {
@@ -184,6 +185,22 @@ export default function Table({ tableInfo, id }: TableProps) {
     // else if (logicCheck(newRow, rows) === "assignRef") {
     //   setRefOpened(true);
     // }
+    console.log("permissiveColumnCheck runnning");
+    //iterate through the beforeChange table.
+    let ColBeforeChange;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].id === newRow.id) {
+        ColBeforeChange = rows[i];
+      }
+    }
+
+    const query = permissiveColumnCheck(
+      ColBeforeChange,
+      newRow,
+      tablename,
+      DataStore.store.get(DataStore.store.size - 1)
+    );
+    console.log("this is Query", query);
 
     const updatedRow = { ...newRow, isNew: false };
     console.log("this is currentRow", rows);
@@ -191,6 +208,8 @@ export default function Table({ tableInfo, id }: TableProps) {
     updatedRowsToTable(
       rows.map((row) => (row.id === newRow.id ? updatedRow : row))
     );
+    //console.log("this is updatedRow:", updatedRow);
+
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
