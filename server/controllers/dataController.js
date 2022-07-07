@@ -559,7 +559,7 @@ function parseSql(text) {
       i += 3;
     }
 
-    // Parse Properties Primarly for field props of Tables
+    // Parse Properties Primarily for field props of Tables
     else if (
       tmp !== '(' &&
       currentTableModel !== null &&
@@ -780,7 +780,7 @@ dataController.getAllSchemas = (req, res) => {};
 
 dataController.openSchema = (req, res, next) => {
   fs.readFile(
-    '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/twvoyfdatwvoyfda1656557484.sql',
+    '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/vjcmcautvjcmcaut1657127402.sql',
     'utf8',
     (error, data) => {
       if (error) {

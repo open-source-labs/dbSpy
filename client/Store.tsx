@@ -1,13 +1,14 @@
-
 class Store {
   store: Map<{}, {}>;
   ind: number;
   connectedToDB: boolean;
+  // queries: string[];
 
   constructor() {
     this.store = new Map();
     this.ind = 0;
     this.connectedToDB = false;
+    // this.queries = [];
   }
 
   getData(data: {}) {
@@ -23,6 +24,10 @@ class Store {
   disconnect() {
     this.connectedToDB = false;
     location.reload();
+  }
+
+  clearQueries() {
+    this.store.clear();
   }
 }
 

@@ -19,7 +19,7 @@ import {
   randomTraderName,
   randomUpdatedDate,
   randomId,
-  useDemoData
+  useDemoData,
 } from "@mui/x-data-grid-generator";
 import Draggable from "react-draggable";
 import { useXarrow } from "react-xarrows";
@@ -30,6 +30,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
+import DataStore from "../../Store";
 
 interface TableProps {
   tableInfo: {
@@ -48,6 +49,15 @@ interface TableProps {
   id: string;
 }
 
+interface RowProps {
+  id: string;
+  column: string;
+  constraint: string;
+  fk: boolean;
+  pk: boolean;
+  type: string;
+}
+
 export default function Table({ tableInfo, id }: TableProps) {
   // console.log("this is tableinfo from table: ", tableInfo);
   // const { Name, Properties } = tableInfo;
@@ -58,33 +68,18 @@ export default function Table({ tableInfo, id }: TableProps) {
     y: 0,
   });
 
-
-
   function handleDrag(e: DragEvent<HTMLDivElement>, ui: any) {
     const { x, y } = deltaPosition;
     setDeltaPosition({
       x: x + ui.deltaX,
       y: y + ui.deltaY,
     });
-    //console.log(deltaPosition);
+    // console.log(deltaPosition);
   }
-  // const [controlledPosition, setControlledPosition] = useState({
-  //   x: -400,
-  //   y: 200,
-  // });
 
-  // function onStart() {
-  //   setActiveDrags(activeDrags + 1);
-  // }
-
-  // function onStop() {
-  //   setActiveDrags(activeDrags - 1);
-  // }
-
-  // const dragHandler = { onStart, onStop };
-
+  const tablename = id;
   let rowArr: Array<any> = [];
-
+  console.log("this is the table we editted", tablename);
   if (Object.keys(tableInfo).length) {
     Object.values(tableInfo).forEach((obj, ind) => {
       rowArr.push({
@@ -121,13 +116,17 @@ export default function Table({ tableInfo, id }: TableProps) {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id: GridRowId) => () => {
-    // console.log("this is rows: ", rows);
-    // console.log("this is rowModesModel", rowModesModel);
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
+  const handleSaveClick =
+    (id: GridRowId, getValue: (id: GridRowId, field: string) => any) => () => {
+      // console.log("this is rows: ", rows);
+      // console.log("this is rowModesModel", rowModesModel);
+      // console.log("this is getValue", getValue(id, "column"));
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+      // console.log("this is getValue", getValue(id, "column"));
+    };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    updatedRowsToTable(rows.filter((row) => row.id !== id));
     setRows(rows.filter((row) => row.id !== id));
   };
 
@@ -144,16 +143,24 @@ export default function Table({ tableInfo, id }: TableProps) {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    // if (true) {
+    //   alert("you cannot put duplicate values for column name!");
+    //   setRowModesModel({
+    //     ...rowModesModel,
+    //     [newRow.id]: { mode: GridRowModes.Edit },
+    //   });
+    //   return;
+    // }
+
     const updatedRow = { ...newRow, isNew: false };
-    //console.log("this is updatedRow:", updatedRow);
+    console.log("this is currentRow", rows);
+    console.log("this is updatedRow:", updatedRow);
+    updatedRowsToTable(
+      rows.map((row) => (row.id === newRow.id ? updatedRow : row))
+    );
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
-
- 
-
-
-
 
   const columns: GridColumns = [
     {
@@ -213,9 +220,9 @@ export default function Table({ tableInfo, id }: TableProps) {
       field: "actions",
       type: "actions",
       headerName: "",
-      width: 75,
+      width: 70,
       cellClassName: "actions",
-      getActions: ({ id }) => {
+      getActions: ({ id, getValue }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
@@ -223,7 +230,7 @@ export default function Table({ tableInfo, id }: TableProps) {
             <GridActionsCellItem
               icon={<SaveIcon />}
               label="Save"
-              onClick={handleSaveClick(id)}
+              onClick={handleSaveClick(id, getValue)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
@@ -252,18 +259,40 @@ export default function Table({ tableInfo, id }: TableProps) {
         ];
       },
     },
-  
+
     // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
-  //console.log("this is updated rows: ", rows);
+  function updatedRowsToTable(rows: RowProps[]) {
+    const dataAfterChange: any = {};
+    const col: any = {};
+    rows.forEach((obj: RowProps) => {
+      const { id, column, constraint, fk, pk, type } = obj;
+      col[column] = {
+        IsForeignKey: fk,
+        IsPrimaryKey: pk,
+        References: [],
+        TableName: tablename,
+        additional_constraints: constraint,
+        data_type: type,
+        field_name: column,
+      };
+      dataAfterChange[tablename] = col;
+    });
+
+    DataStore.getData({
+      ...DataStore.store.get(DataStore.store.size - 1),
+      ...dataAfterChange,
+    });
+    console.log("this is dataStore2:", DataStore.store);
+    console.log("this is data After Change: ", dataAfterChange);
+  }
+
+  // console.log("this is updated rows: ", rows);
   // console.log("this is the table I am editing: ", id);
-   for (let cols in tableInfo)
-   {
-     console.log(tableInfo[cols].References);
-
-
-   }
+  for (let cols in tableInfo) {
+    console.log(tableInfo[cols].References);
+  }
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
   return (

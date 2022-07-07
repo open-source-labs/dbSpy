@@ -5,7 +5,7 @@ import { Loader, Text, Button, Group } from "@mantine/core";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
-import DataStore from '../../Store'
+import DataStore from "../../Store";
 
 interface CanvasProps {
   fetchedData: {
@@ -74,44 +74,64 @@ export default function Canvas({
   if (isError) {
     return <>An Error Occurred: Check Your Internet Connection</>;
   }
- 
-   
-  let refArray:string[] = [];
 
-
+  let refArray: string[] = [];
 
   for (let table in fetchedData) {
-    for (let column in fetchedData[table])
-    {
-      for (let ref in fetchedData[table][column].References)
-         {
-          if (fetchedData[table][column].References[ref].IsDestination ==true)
-          refArray.push(fetchedData[table][column].References[ref])  
-         }
+    for (let column in fetchedData[table]) {
+      for (let ref in fetchedData[table][column].References) {
+        if (fetchedData[table][column].References[ref].IsDestination == true)
+          refArray.push(fetchedData[table][column].References[ref]);
+      }
     }
-      
-     }
-   
-  
-  
-   //console.log(refArray)
-   
-   const xa:JSX.Element[] = refArray.map((reff:any) => {
-    
+  }
+
+  //console.log(refArray)
+
+  const xa: JSX.Element[] = refArray.map((reff: any) => {
     return (
       <Xarrow
-          headSize={5}
-          color={"green"}
-          start={reff.PrimaryKeyTableName}
-          end={reff.ReferencesTableName}
-        />
-    )
-  })
+        headSize={5}
+        zIndex={-1}
+        color={"green"}
+        start={reff.PrimaryKeyTableName}
+        end={reff.ReferencesTableName}
+      />
+    );
+  });
+
+  // function to submit queries to 
+  function executeChanges() {
+    console.log(DataStore.store);
+    const queriesArray:object = DataStore.store;
+    console.log('sending queries array', queriesArray);
+
+    // fetch('/api/handleQueries', {
+    //   method: 'POST',
+    //   headers: {
+    //     "Content-Type": "application/json",
+    // },
+      // body: JSON.stringify({
+        // queries: queriesArray,
+        // PG_URI: link,
+    // })
+    //    RECEIVING SUCCESS MESSAGE
+    //   .then((res) => res.json())
+    // .then((res) => {
+    //   if (!res.success) continue;
+    //     console.log(res)
+    //   console.log('clearing queries');
+    //   DataStore.clearQueries();
+    //   console.log(DataStore.queries);
+    // });
+    //   .catch(err) => console.log(err);
+    // }
+  }
 
 
   // console.log("this is tables", tables);
   return (
-    <div style={{ height: "100%"}}>
+    <div style={{ height: "100%" }}>
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           <Group position="right">
@@ -123,10 +143,24 @@ export default function Canvas({
               Disconnect from DB
             </Button>
           </Group>
+          <Group position="right">
+            <Button
+              styles={() => ({
+                root: {
+                  marginTop: 20,
+                }
+              })}
+              color="red"
+              leftIcon={<DatabaseImport />}
+              onClick={() => executeChanges()}
+            >
+              Execute changes
+            </Button>
+          </Group>
+
           <Xwrapper>
             {tables}
             {xa}
-          
           </Xwrapper>
         </>
       ) : (
