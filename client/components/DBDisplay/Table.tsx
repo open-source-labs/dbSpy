@@ -73,25 +73,12 @@ export default function Table({ tableInfo, id }: TableProps) {
       x: x + ui.deltaX,
       y: y + ui.deltaY,
     });
-    console.log(deltaPosition);
+    // console.log(deltaPosition);
   }
-  // const [controlledPosition, setControlledPosition] = useState({
-  //   x: -400,
-  //   y: 200,
-  // });
 
-  // function onStart() {
-  //   setActiveDrags(activeDrags + 1);
-  // }
-
-  // function onStop() {
-  //   setActiveDrags(activeDrags - 1);
-  // }
-
-  // const dragHandler = { onStart, onStop };
-
+  const tablename = id;
   let rowArr: Array<any> = [];
-
+  console.log("this is the table we editted", tablename);
   if (Object.keys(tableInfo).length) {
     Object.values(tableInfo).forEach((obj, ind) => {
       rowArr.push({
@@ -128,13 +115,17 @@ export default function Table({ tableInfo, id }: TableProps) {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id: GridRowId) => () => {
-    // console.log("this is rows: ", rows);
-    // console.log("this is rowModesModel", rowModesModel);
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
+  const handleSaveClick =
+    (id: GridRowId, getValue: (id: GridRowId, field: string) => any) => () => {
+      // console.log("this is rows: ", rows);
+      // console.log("this is rowModesModel", rowModesModel);
+      // console.log("this is getValue", getValue(id, "column"));
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+      // console.log("this is getValue", getValue(id, "column"));
+    };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    updatedRowsToTable(rows.filter((row) => row.id !== id));
     setRows(rows.filter((row) => row.id !== id));
   };
 
@@ -151,7 +142,17 @@ export default function Table({ tableInfo, id }: TableProps) {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    // if (true) {
+    //   alert("you cannot put duplicate values for column name!");
+    //   setRowModesModel({
+    //     ...rowModesModel,
+    //     [newRow.id]: { mode: GridRowModes.Edit },
+    //   });
+    //   return;
+    // }
+
     const updatedRow = { ...newRow, isNew: false };
+    console.log("this is currentRow", rows);
     console.log("this is updatedRow:", updatedRow);
     updatedRowsToTable(
       rows.map((row) => (row.id === newRow.id ? updatedRow : row))
@@ -220,7 +221,7 @@ export default function Table({ tableInfo, id }: TableProps) {
       headerName: "",
       width: 75,
       cellClassName: "actions",
-      getActions: ({ id }) => {
+      getActions: ({ id, getValue }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
@@ -228,7 +229,7 @@ export default function Table({ tableInfo, id }: TableProps) {
             <GridActionsCellItem
               icon={<SaveIcon />}
               label="Save"
-              onClick={handleSaveClick(id)}
+              onClick={handleSaveClick(id, getValue)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
@@ -261,7 +262,6 @@ export default function Table({ tableInfo, id }: TableProps) {
   ];
 
   function updatedRowsToTable(rows: RowProps[]) {
-    const tablename = id;
     const dataAfterChange: any = {};
     const col: any = {};
     rows.forEach((obj: RowProps) => {

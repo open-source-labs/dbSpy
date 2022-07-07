@@ -56,9 +56,9 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
           <Link to={"/login"}>
             <button>login</button>
           </Link>
-          {/* <Link to={"/login"}>
+          <Link to={"/login"}>
             <button>display</button>
-          </Link> */}
+          </Link>
         </div>
       )}
 
