@@ -4,6 +4,7 @@ const path = require("path");
 //const { exec } = require('child_process');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const { Pool } = require('pg');
 
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
@@ -215,7 +216,7 @@ dataController.objSchema = (req, res, next) => {
     property.IsForeignKey = isForeignKey;
     property.IsPrimaryKey = isPrimaryKey;
     return property;
-  };
+  }
 
   // Creates a new table with name property assigned to argument passed in
   function createTable(name) {
@@ -848,6 +849,40 @@ dataController.objSchema = (req, res, next) => {
   dataController.postSchema = (req, res) => {
     
   };
+
+  dataController.handleQueries = (req, res, next) => {
+    // Assumption, being passed an array of queries in req.body
+    // grab PG_URI from user when they connect to DB
+
+    const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+    // const PG_URI = req.body//something
+
+    const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
+    // const queryArray = req.body.queries.flat();
+    const text = queryArray.join(' ');
+
+    const pool = new Pool({
+      connectionString: PG_URI
+    });
+    const execQueries = (text, params, callback) => {
+      console.log('executed query', text);
+      return pool.query(text, params, callback);
+    };
+
+    execQueries(text)
+      .then(data => {
+        res.locals.success = 'Success';
+        next();
+      })
+      .catch(err => {
+        next({
+          log: 'Error in handleQueries middleware',
+          message: { err: err },
+        });
+      });
+  };
+
+
   dataController.saveSchema = (req, res) => {
     
   };
