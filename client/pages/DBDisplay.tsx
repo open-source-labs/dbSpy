@@ -7,6 +7,7 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import DataStore from "../Store";
+
 import {
   Header,
   AppShell,
@@ -100,7 +101,7 @@ export default function DBDisplay({
         DataStore.connect();
         console.log("connected?", DataStore.connectedToDB);
         // setConnectedToDB(true);
-        setSideBarOpened(true);
+        setSideBarOpened(false);
       },
     }
   );

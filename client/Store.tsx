@@ -22,6 +22,7 @@ class Store {
 
   disconnect() {
     this.connectedToDB = false;
+    location.reload();
   }
 }
 
