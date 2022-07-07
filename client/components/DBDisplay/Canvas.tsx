@@ -92,12 +92,42 @@ export default function Canvas({
     return (
       <Xarrow
         headSize={5}
+        zIndex={-1}
         color={"green"}
         start={reff.PrimaryKeyTableName}
         end={reff.ReferencesTableName}
       />
     );
   });
+
+  // function to submit queries to 
+  function executeChanges() {
+    console.log(DataStore.store);
+    const queriesArray:object = DataStore.store;
+    console.log('sending queries array', queriesArray);
+
+    // fetch('/api/handleQueries', {
+    //   method: 'POST',
+    //   headers: {
+    //     "Content-Type": "application/json",
+    // },
+      // body: JSON.stringify({
+        // queries: queriesArray,
+        // PG_URI: link,
+    // })
+    //    RECEIVING SUCCESS MESSAGE
+    //   .then((res) => res.json())
+    // .then((res) => {
+    //   if (!res.success) continue;
+    //     console.log(res)
+    //   console.log('clearing queries');
+    //   DataStore.clearQueries();
+    //   console.log(DataStore.queries);
+    // });
+    //   .catch(err) => console.log(err);
+    // }
+  }
+
 
   // console.log("this is tables", tables);
   return (
@@ -111,6 +141,20 @@ export default function Canvas({
               onClick={() => DataStore.disconnect()}
             >
               Disconnect from DB
+            </Button>
+          </Group>
+          <Group position="right">
+            <Button
+              styles={() => ({
+                root: {
+                  marginTop: 20,
+                }
+              })}
+              color="red"
+              leftIcon={<DatabaseImport />}
+              onClick={() => executeChanges()}
+            >
+              Execute changes
             </Button>
           </Group>
 
