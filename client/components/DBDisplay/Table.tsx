@@ -30,6 +30,9 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
+import '../../permissiveFn.js';
+
+
 
 interface TableProps {
   tableInfo: {
@@ -146,6 +149,10 @@ export default function Table({ tableInfo, id }: TableProps) {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
     //console.log("this is updatedRow:", updatedRow);
+
+    console.log("permissiveColumnCheck runnning")
+    
+
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
