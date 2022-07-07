@@ -220,7 +220,7 @@ export default function Table({ tableInfo, id }: TableProps) {
       field: "actions",
       type: "actions",
       headerName: "",
-      width: 75,
+      width: 70,
       cellClassName: "actions",
       getActions: ({ id, getValue }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
