@@ -151,7 +151,15 @@ export default function Table({ tableInfo, id }: TableProps) {
     //console.log("this is updatedRow:", updatedRow);
 
     console.log("permissiveColumnCheck runnning")
-    
+    //iterate through the beforeChange table.
+    let ColBeforeChange;
+    for (let i=0; i<rows.length; i++) {
+      if (rows[i].id === newRow.id) {
+        ColBeforeChange = rows[i];
+      }
+    }
+
+    // permissiveColumnCheck(ColBeforeChange, newRow, tablename, )
 
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
