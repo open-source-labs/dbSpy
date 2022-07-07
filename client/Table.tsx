@@ -1,6 +1,7 @@
 import * as React from "react";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 
+
 const columns: GridColDef[] = [
   { field: "col1", headerName: "Column Name", width: 150 },
   { field: "col2", headerName: "Primary Key", width: 150 },
