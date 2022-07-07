@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Table from "./Table";
 import Xarrow, { Xwrapper } from "react-xarrows";
-import { Loader, Text, Button, Group } from "@mantine/core";
+import { Loader, Text, Button, Group, Modal } from "@mantine/core";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
+import DataStore from "../../Store";
 
 interface CanvasProps {
   fetchedData: {
@@ -25,8 +26,9 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   isLoading: boolean;
   isError: boolean;
-  connectedToDB: boolean;
-  setConnectedToDB: (param: boolean) => void;
+  // connectedToDB: boolean;
+  // disconnect: () => void;
+  // setConnectedToDB: (param: boolean) => void;
   sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
   tablename: string;
@@ -37,8 +39,9 @@ export default function Canvas({
   isError,
   fetchedData,
   setFetchedData,
-  connectedToDB,
-  setConnectedToDB,
+  // disconnect,
+  // connectedToDB,
+  // setConnectedToDB,
   setSideBarOpened,
   tablename,
 }: CanvasProps) {
@@ -71,59 +74,52 @@ export default function Canvas({
   if (isError) {
     return <>An Error Occurred: Check Your Internet Connection</>;
   }
- 
-   
-  let refArray:string[] = [];
 
-
+  let refArray: string[] = [];
 
   for (let table in fetchedData) {
-    for (let column in fetchedData[table])
-    {
-      for (let ref in fetchedData[table][column].References)
-         {
-          if (fetchedData[table][column].References[ref].IsDestination ==true)
-          refArray.push(fetchedData[table][column].References[ref])  
-         }
+    for (let column in fetchedData[table]) {
+      for (let ref in fetchedData[table][column].References) {
+        if (fetchedData[table][column].References[ref].IsDestination == true)
+          refArray.push(fetchedData[table][column].References[ref]);
+      }
     }
-      
-     }
-   
-  
-  
-   //console.log(refArray)
-   
-   const xa:JSX.Element[] = refArray.map((reff:any) => {
-    
+  }
+
+  //console.log(refArray)
+
+  const xa: JSX.Element[] = refArray.map((reff: any) => {
     return (
       <Xarrow
-          headSize={5}
-          color={"green"}
-          start={reff.PrimaryKeyTableName}
-          end={reff.ReferencesTableName}
-        />
-    )
-  })
+        headSize={5}
+        color={"green"}
+        zIndex={-1}
+        start={reff.PrimaryKeyTableName}
+        end={reff.ReferencesTableName}
+      />
+    );
+  });
 
+  const [refOpened, setRefOpened] = useState(false);
 
   // console.log("this is tables", tables);
   return (
-    <div style={{ height: "100%"}}>
-      {Object.keys(fetchedData).length > 0 && connectedToDB ? (
+    <div style={{ height: "100%" }}>
+      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           <Group position="right">
             <Button
               color="white"
               leftIcon={<DatabaseImport />}
-              onClick={() => setConnectedToDB(false)}
+              onClick={() => DataStore.disconnect()}
             >
               Disconnect from DB
             </Button>
           </Group>
+
           <Xwrapper>
             {tables}
             {xa}
-          
           </Xwrapper>
         </>
       ) : (
@@ -140,6 +136,13 @@ export default function Canvas({
           </Group>
         </>
       )}
+      {/* <Modal
+        opened={refOpened}
+        onClose={() => setRefOpened(false)}
+        title="Introduce yourself!"
+      >
+        hi
+      </Modal> */}
     </div>
   );
 }

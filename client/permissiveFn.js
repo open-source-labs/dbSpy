@@ -848,7 +848,7 @@ let ColAfterChange = {
 let tableName = "public.accounts"
 
 */
-function permissiveColumnCheck(ColBeforeChange, ColAfterChange, tableName, TableBeforeChange) {
+export default function permissiveColumnCheck(ColBeforeChange, ColAfterChange, tableName, TableBeforeChange) {
 
     console.log(ColAfterChange);
     console.log(ColBeforeChange);

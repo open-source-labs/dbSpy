@@ -7,6 +7,7 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import DataStore from "../Store";
+
 import {
   Header,
   AppShell,
@@ -78,7 +79,7 @@ export default function DBDisplay({
 */
 
   const [fetchedData, setFetchedData] = useState({});
-  const [connectedToDB, setConnectedToDB] = useState(false);
+  // const [connectedToDB, setConnectedToDB] = useState(false);
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [tablename, setTablename] = useState("");
   const [opened, setOpened] = useState(false);
@@ -97,8 +98,10 @@ export default function DBDisplay({
     },
     {
       onSuccess: () => {
-        setConnectedToDB(true);
-        setSideBarOpened(true);
+        DataStore.connect();
+        console.log("connected?", DataStore.connectedToDB);
+        // setConnectedToDB(true);
+        setSideBarOpened(false);
       },
     }
   );
@@ -140,10 +143,10 @@ export default function DBDisplay({
         root: { height: "100%" },
         body: { height: "100%" },
         main: {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
+          backgroundColor: "transparent",
+          // theme.colorScheme === "dark"
+          //   ? theme.colors.dark[8]
+          //   : theme.colors.gray[0],
         },
       })}
     >
@@ -159,8 +162,9 @@ export default function DBDisplay({
         isError={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
-        connectedToDB={connectedToDB}
-        setConnectedToDB={setConnectedToDB}
+        // disconnect={DataStore.disconnect}
+        // connectedToDB={DataStore.connectedToDB}
+        // setConnectedToDB={setConnectedToDB}
         sideBarOpened={sideBarOpened}
         setSideBarOpened={setSideBarOpened}
         tablename={tablename}
