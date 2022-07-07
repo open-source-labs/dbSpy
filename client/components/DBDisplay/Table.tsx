@@ -31,7 +31,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
-import "../../permissiveFn.js";
+import permissiveColumnCheck from "../../permissiveFn.js";
 
 interface TableProps {
   tableInfo: {
@@ -194,13 +194,22 @@ export default function Table({ tableInfo, id }: TableProps) {
       }
     }
 
-    const query = permissiveColumnCheck(
-      ColBeforeChange,
-      newRow,
-      tablename,
+    console.log("ColBeforechange: ", ColBeforeChange);
+    console.log("ColeAfterChange: ", newRow);
+    console.log("tablename: ", tablename);
+    console.log(
+      "tableBeforechange: ",
       DataStore.store.get(DataStore.store.size - 1)
     );
-    console.log("this is Query", query);
+    console.log(
+      "this is Query",
+      permissiveColumnCheck(
+        ColBeforeChange,
+        newRow,
+        tablename,
+        DataStore.store.get(DataStore.store.size - 1)
+      )
+    );
 
     const updatedRow = { ...newRow, isNew: false };
     console.log("this is currentRow", rows);
