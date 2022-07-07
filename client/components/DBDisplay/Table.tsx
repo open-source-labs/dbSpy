@@ -19,6 +19,7 @@ import {
   randomTraderName,
   randomUpdatedDate,
   randomId,
+  useDemoData,
 } from "@mui/x-data-grid-generator";
 import Draggable from "react-draggable";
 import { useXarrow } from "react-xarrows";
@@ -258,6 +259,7 @@ export default function Table({ tableInfo, id }: TableProps) {
         ];
       },
     },
+
     // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
@@ -288,7 +290,9 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   // console.log("this is updated rows: ", rows);
   // console.log("this is the table I am editing: ", id);
-
+  for (let cols in tableInfo) {
+    console.log(tableInfo[cols].References);
+  }
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
   return (
@@ -297,7 +301,7 @@ export default function Table({ tableInfo, id }: TableProps) {
         id={id}
         style={{
           height: "auto",
-          width: "450",
+          width: "450px",
           marginTop: "35px",
           marginBottom: "35px",
         }}
