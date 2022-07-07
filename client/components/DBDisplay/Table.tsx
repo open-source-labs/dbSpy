@@ -23,7 +23,7 @@ import {
 } from "@mui/x-data-grid-generator";
 import Draggable from "react-draggable";
 import { useXarrow } from "react-xarrows";
-import { Text } from "@mantine/core";
+import { Modal, Text } from "@mantine/core";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -98,6 +98,20 @@ export default function Table({ tableInfo, id }: TableProps) {
   const [rows, setRows] = useState(rowArr);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
+  function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
+    if (Object.values(newRow).includes("")) return "empty";
+
+    for (let i = 0; i < oldRow.length; i++) {
+      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
+        return "columnIssue";
+      if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
+    }
+
+    if (newRow.fk === "true") return "assignRef";
+
+    return "";
+  }
+
   const handleRowEditStart = (
     params: GridRowParams,
     event: MuiEvent<React.SyntheticEvent>
@@ -116,6 +130,7 @@ export default function Table({ tableInfo, id }: TableProps) {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
+  const currentRowEditting = "";
   const handleSaveClick =
     (id: GridRowId, getValue: (id: GridRowId, field: string) => any) => () => {
       // console.log("this is rows: ", rows);
@@ -143,13 +158,31 @@ export default function Table({ tableInfo, id }: TableProps) {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    // if (true) {
-    //   alert("you cannot put duplicate values for column name!");
-    //   setRowModesModel({
-    //     ...rowModesModel,
-    //     [newRow.id]: { mode: GridRowModes.Edit },
-    //   });
-    //   return;
+    if (logicCheck(newRow, rows) === "empty") {
+      alert("Please make sure to fill out every cell!");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    } else if (logicCheck(newRow, rows) === "columnIssue") {
+      alert("you cannot have duplicate column names!");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    } else if (logicCheck(newRow, rows) === "pkIssue") {
+      alert("you cannot have more than one PK!");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    }
+
+    // else if (logicCheck(newRow, rows) === "assignRef") {
+    //   setRefOpened(true);
     // }
 
     const updatedRow = { ...newRow, isNew: false };
@@ -334,6 +367,7 @@ export default function Table({ tableInfo, id }: TableProps) {
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={(error) => console.log("logic failed")}
           components={{
             Toolbar: EditToolbar,
           }}

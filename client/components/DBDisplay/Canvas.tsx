@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Table from "./Table";
 import Xarrow, { Xwrapper } from "react-xarrows";
-import { Loader, Text, Button, Group } from "@mantine/core";
+import { Loader, Text, Button, Group, Modal } from "@mantine/core";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
@@ -99,6 +99,8 @@ export default function Canvas({
     );
   });
 
+  const [refOpened, setRefOpened] = useState(false);
+
   // console.log("this is tables", tables);
   return (
     <div style={{ height: "100%" }}>
@@ -133,6 +135,13 @@ export default function Canvas({
           </Group>
         </>
       )}
+      {/* <Modal
+        opened={refOpened}
+        onClose={() => setRefOpened(false)}
+        title="Introduce yourself!"
+      >
+        hi
+      </Modal> */}
     </div>
   );
 }
