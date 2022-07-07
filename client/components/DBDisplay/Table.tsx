@@ -19,6 +19,7 @@ import {
   randomTraderName,
   randomUpdatedDate,
   randomId,
+  useDemoData
 } from "@mui/x-data-grid-generator";
 import Draggable from "react-draggable";
 import { useXarrow } from "react-xarrows";
@@ -57,13 +58,15 @@ export default function Table({ tableInfo, id }: TableProps) {
     y: 0,
   });
 
+
+
   function handleDrag(e: DragEvent<HTMLDivElement>, ui: any) {
     const { x, y } = deltaPosition;
     setDeltaPosition({
       x: x + ui.deltaX,
       y: y + ui.deltaY,
     });
-    console.log(deltaPosition);
+    //console.log(deltaPosition);
   }
   // const [controlledPosition, setControlledPosition] = useState({
   //   x: -400,
@@ -142,10 +145,15 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    console.log("this is updatedRow:", updatedRow);
+    //console.log("this is updatedRow:", updatedRow);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
+
+ 
+
+
+
 
   const columns: GridColumns = [
     {
@@ -244,12 +252,18 @@ export default function Table({ tableInfo, id }: TableProps) {
         ];
       },
     },
+  
     // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
-  console.log("this is updated rows: ", rows);
+  //console.log("this is updated rows: ", rows);
   // console.log("this is the table I am editing: ", id);
+   for (let cols in tableInfo)
+   {
+     console.log(tableInfo[cols].References);
 
+
+   }
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
   return (
@@ -258,7 +272,7 @@ export default function Table({ tableInfo, id }: TableProps) {
         id={id}
         style={{
           height: "auto",
-          width: "450",
+          width: "450px",
           marginTop: "35px",
           marginBottom: "35px",
         }}
