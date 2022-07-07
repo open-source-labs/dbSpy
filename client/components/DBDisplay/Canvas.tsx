@@ -93,6 +93,7 @@ export default function Canvas({
       <Xarrow
         headSize={5}
         color={"green"}
+        zIndex={-1}
         start={reff.PrimaryKeyTableName}
         end={reff.ReferencesTableName}
       />
