@@ -4,14 +4,22 @@ import Xarrow, { Xwrapper } from "react-xarrows";
 import { Loader, Text, Button, Group } from "@mantine/core";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
-import Sidebar from './Sidebar'
+import Sidebar from "./Sidebar";
 
 interface CanvasProps {
   fetchedData: {
     [key: string]: {
-       
-      [key: string] :  { IsForeignKey: boolean; IsPrimaryKey: boolean; Name: string; References: any[]; TableName: string; Value: any; additional_constraints: string | null; data_type: string; field_name: string; };
-
+      [key: string]: {
+        IsForeignKey: boolean;
+        IsPrimaryKey: boolean;
+        Name: string;
+        References: any[];
+        TableName: string;
+        Value: any;
+        additional_constraints: string | null;
+        data_type: string;
+        field_name: string;
+      };
     };
   };
   setFetchedData: (fetchedData: object) => void;
@@ -50,7 +58,7 @@ export default function Canvas({
       );
     }
   );
-
+  //console.log("this is fetchedData from Canvas.tsx", fetchedData);
   if (isLoading) {
     return (
       <Text>
@@ -63,61 +71,75 @@ export default function Canvas({
   if (isError) {
     return <>An Error Occurred: Check Your Internet Connection</>;
   }
+ 
+   
+  let refArray:string[] = [];
 
-  //console.log("this is tables in canvas for Xarrow---->", tables);
-  for (let table in fetchedData)
-  {
 
-         for (let column in fetchedData[table])
-         {  
-          console.log(fetchedData[table][column]);
-              
-              
+
+  for (let table in fetchedData) {
+    for (let column in fetchedData[table])
+    {
+      for (let ref in fetchedData[table][column].References)
+         {
+          if (fetchedData[table][column].References[ref].IsDestination ==true)
+          refArray.push(fetchedData[table][column].References[ref])  
          }
-
+    }
+      
+     }
+   
+  
+  
+   //console.log(refArray)
+   
+   const xa:JSX.Element[] = refArray.map((reff:any) => {
     
-  }
+    return (
+      <Xarrow
+          headSize={5}
+          color={"green"}
+          start={reff.PrimaryKeyTableName}
+          end={reff.ReferencesTableName}
+        />
+    )
+  })
+
 
   // console.log("this is tables", tables);
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: "100%"}}>
       {Object.keys(fetchedData).length > 0 && connectedToDB ? (
         <>
-        <Group position="right">
-          <Button color="white"
-          leftIcon={<DatabaseImport />} onClick={() => setConnectedToDB(false)}>Disconnect from DB</Button>
-        
-        </Group>
-        <Xwrapper>
-          {tables}
-         
-
-
-          <Xarrow
-            headSize={5}
-            color={"green"}
-            start={"public.accounts"}
-            end={"public.location"}
-          />
-          <Xarrow
-            headSize={5}
-            color={"green"}
-            start={"public.location"}
-            end={"public.user"}
-          />
-        </Xwrapper>
+          <Group position="right">
+            <Button
+              color="white"
+              leftIcon={<DatabaseImport />}
+              onClick={() => setConnectedToDB(false)}
+            >
+              Disconnect from DB
+            </Button>
+          </Group>
+          <Xwrapper>
+            {tables}
+            {xa}
+          
+          </Xwrapper>
         </>
       ) : (
         <>
-        {/* "Please Connect to Your Database" */}
-        <Group position="right">
-        <Button color="white"
-          leftIcon={<DatabaseImport />} onClick={() => setSideBarOpened(true)}>Connect to DB</Button>
-        </Group>
+          {/* "Please Connect to Your Database" */}
+          <Group position="right">
+            <Button
+              color="white"
+              leftIcon={<DatabaseImport />}
+              onClick={() => setSideBarOpened(true)}
+            >
+              Connect to DB
+            </Button>
+          </Group>
         </>
-      )
-      }
-      
+      )}
     </div>
   );
 }
