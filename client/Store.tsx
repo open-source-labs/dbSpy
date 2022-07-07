@@ -1,4 +1,3 @@
-
 class Store {
   store: Map<{}, {}>;
   ind: number;
