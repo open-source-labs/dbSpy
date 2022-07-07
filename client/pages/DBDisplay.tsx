@@ -143,10 +143,10 @@ export default function DBDisplay({
         root: { height: "100%" },
         body: { height: "100%" },
         main: {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
+          backgroundColor: "transparent",
+          // theme.colorScheme === "dark"
+          //   ? theme.colors.dark[8]
+          //   : theme.colors.gray[0],
         },
       })}
     >
