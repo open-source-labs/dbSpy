@@ -112,7 +112,7 @@ export default function Canvas({
   // console.log("this is tables", tables);
   return (
     <div style={{ height: "100%"}}>
-      {Object.keys(fetchedData).length > 0 && connectedToDB ? (
+      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           <Group position="right">
             <Button
