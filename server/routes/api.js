@@ -30,13 +30,13 @@ router.get('/getAllSchemas', controller.getAllSchemas, (req, res) => {
 
 router.post(
   '/getSchema',
-   controller.getSchema,
-   controller.objSchema,
+  //  controller.getSchema,
+  //  controller.objSchema,
   (req, res) => {
     console.log('called');
-    // res.status(200).json(dummydata);
+    res.status(200).json(dummydata);
     // res.status(200).json(res.locals.data);
-    res.status(200).json(res.locals.result);
+    // res.status(200).json(res.locals.result);
   }
 );
 
@@ -67,6 +67,15 @@ router.post('/postSchema', controller.postSchema, (req, res) => {
     },
   ]);
 });
+
+// Recieving an array of strings (queries)
+router.post('/handleQueries',
+  controller.handleQueries,
+  (req, res) => {
+    // console.log('Hi from post request updating schema');
+    // console.log(res.locals.success);
+    res.status(200).json({ success: res.locals.success });
+  });
 
 router.post('/saveSchema', controller.saveSchema, (req, res) => {
   res.status(200).send('Save successful!');
