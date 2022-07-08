@@ -59,35 +59,35 @@ const writeSchema =  async (command) => {
 dataController.getSchema = (req, res, next) => {
 
   
-    // let result = null; 
-    // console.log("running getSchema controller...");
-    // const hostname = req.body.hostname;
-    // const password = req.body.password;
-    // const port = req.body.port;
-    // const username = req.body.username;
-    // const database_name = req.body.database_name;
-    // const command = postgresDumpQuery(hostname,password,port, username, database_name);
-    // console.log(command, '<-command');
-    // writeSchema(command).then(resq => {
+  //   let result = null; 
+  //   console.log("running getSchema controller...");
+  //   const hostname = req.body.hostname;
+  //   const password = req.body.password;
+  //   const port = req.body.port;
+  //   const username = req.body.username;
+  //   const database_name = req.body.database_name;
+  //   const command = postgresDumpQuery(hostname,password,port, username, database_name);
+  //   console.log(command, '<-command');
+  //   writeSchema(command).then(resq => {
       
-    //   fs.readFile(command[1], 'utf8', (error, data) => {
-    //     if (error) 
-    //       {
-    //         console.error(`error- in FS: ${error.message}`);
-    //         return next({
-    //         msg: 'Error reading database schema file',
-    //         err: error});    
-    //       }
-    //     result = parseSql(data);
+  //     fs.readFile(command[1], 'utf8', (error, data) => {
+  //       if (error) 
+  //         {
+  //           console.error(`error- in FS: ${error.message}`);
+  //           return next({
+  //           msg: 'Error reading database schema file',
+  //           err: error});    
+  //         }
+  //       result = parseSql(data);
        
-    //     res.locals.data = result;
-    //     next();
+  //       res.locals.data = result;
+  //       next();
        
-    //   }); 
+  //     }); 
     
     
-    // });
-
+  //   });
+  // }
 
 
 

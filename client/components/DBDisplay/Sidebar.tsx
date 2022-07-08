@@ -26,20 +26,25 @@ interface SideBarProps {
   setSideBarOpened: (param: boolean) => void;
 }
 
-export default function Sidebar({ isLoading, isError, mutate, sideBarOpened, setSideBarOpened }: SideBarProps) {
+export default function Sidebar({
+  isLoading,
+  isError,
+  mutate,
+  sideBarOpened,
+  setSideBarOpened,
+}: SideBarProps) {
   const form = useForm({
     initialValues: {
-      hostname: "arjuna.db.elephantsql.com",
-      username: "twvoyfda",
-      password: "qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR",
+      hostname: "castor.db.elephantsql.com",
+      username: "vjcmcaut",
+      password: "wcc8BHXNjyN4exqfuQVPzpdeOBJimLfg",
       port: "5432",
-      database_name: "twvoyfda",
+      database_name: "vjcmcaut",
     },
   });
   // const [opened, setOpened] = useState(false);
   // const [sideBarOpened, setSideBarOpened] = useState(false);
   const theme = useMantineTheme();
-  
 
   //USE QUERY FOR GET REQUEST
   //   const { data } = useQuery("initialschema");

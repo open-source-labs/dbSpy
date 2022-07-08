@@ -194,13 +194,13 @@ export default function Table({ tableInfo, id }: TableProps) {
       }
     }
 
-    console.log("ColBeforechange: ", ColBeforeChange);
-    console.log("ColeAfterChange: ", newRow);
-    console.log("tablename: ", tablename);
-    console.log(
-      "tableBeforechange: ",
-      DataStore.store.get(DataStore.store.size - 1)
-    );
+    // console.log("ColBeforechange: ", ColBeforeChange);
+    // console.log("ColeAfterChange: ", newRow);
+    // console.log("tablename: ", tablename);
+    // console.log(
+    //   "tableBeforechange: ",
+    //   DataStore.store.get(DataStore.store.size - 1)
+    // );
     console.log(
       "this is Query",
       permissiveColumnCheck(
@@ -210,6 +210,17 @@ export default function Table({ tableInfo, id }: TableProps) {
         DataStore.store.get(DataStore.store.size - 1)
       )
     );
+
+    const queryResult = permissiveColumnCheck(
+      ColBeforeChange,
+      newRow,
+      tablename,
+      DataStore.store.get(DataStore.store.size - 1)
+    );
+
+    DataStore.queryList.push(...queryResult);
+    DataStore.getQuery(DataStore.queryList.slice());
+    console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
     console.log("this is currentRow", rows);
