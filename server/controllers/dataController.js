@@ -857,7 +857,9 @@ dataController.objSchema = (req, res, next) => {
     const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
     // const PG_URI = req.body//something
 
-    const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
+    // const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
+    const queryArray = ['select concat(\'alter table public.people drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'people\' and constraint_type = \'UNIQUE\';'].flat();
+    // , 'select concat(\'alter table public.species drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'species\' and constraint_type = \'NOT NULL\';'
     // const queryArray = req.body.queries.flat();
     const text = queryArray.join(' ');
 
@@ -871,6 +873,7 @@ dataController.objSchema = (req, res, next) => {
 
     execQueries(text)
       .then(data => {
+        console.log(data, "<-- data");
         res.locals.success = 'Success';
         next();
       })
