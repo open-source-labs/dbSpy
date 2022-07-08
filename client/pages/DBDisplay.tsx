@@ -93,6 +93,7 @@ export default function DBDisplay({
         console.log("this is retrieved data from server,: ", res.data);
         // console.log("Time Done to Load Database", Date.now());
         DataStore.getData(res.data);
+        DataStore.getQuery([{ type: "", query: "" }]);
         console.log("this is dataStore: ", DataStore);
       });
     },
@@ -207,6 +208,11 @@ function FeatureTab({
                 ...fetchedData,
                 ["public." + values.tablename]: {},
               });
+              // DataStore.getData({
+              //   ...fetchedData,
+              //   ["public." + values.tablename]: {},
+              // });
+              console.log("after creation of table", DataStore.store);
               setModalOpened(false);
               form.setValues({
                 tablename: "",
