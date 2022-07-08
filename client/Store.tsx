@@ -2,15 +2,19 @@ class Store {
   store: Map<{}, {}>;
   ind: number;
   connectedToDB: boolean;
-  queries: string[];
   userDBInfo: object;
+  queryInd: number;
+  queries: Map<{}, {}[]>;
+  queryList: {}[];
 
   constructor() {
     this.store = new Map();
     this.ind = 0;
     this.connectedToDB = false;
-    this.queries = [];
     this.userDBInfo = {};
+    this.queryInd = 0;
+    this.queries = new Map();
+    this.queryList = [];
   }
 
   getData(data: {}) {
@@ -30,7 +34,13 @@ class Store {
 
   clearQueries() {
     // this.store.clear();
-    this.queries = [];
+    // this.queries = [];
+  }
+
+  getQuery(data: {}[]) {
+    this.queries.set(this.queryInd, data);
+    this.queryInd++;
+    return this.queries;
   }
 }
 
