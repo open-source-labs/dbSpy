@@ -154,13 +154,13 @@ export default function DBDisplay({
       <Sidebar
         sideBarOpened={sideBarOpened}
         setSideBarOpened={setSideBarOpened}
-        isLoading={isLoading}
-        isError={isError}
+        isLoadingProps={isLoading}
+        isErrorProps={isError}
         mutate={mutate}
       />
       <Canvas
-        isLoading={isLoading}
-        isError={isError}
+        isLoadingProps={isLoading}
+        isErrorProps={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
         // disconnect={DataStore.disconnect}

@@ -19,18 +19,17 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import DataStore from "../../Store";
 
-
 interface SideBarProps {
-  isLoading: boolean;
-  isError: boolean;
+  isLoadingProps: boolean;
+  isErrorProps: boolean;
   mutate: (data: object) => void;
   sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
 }
 
 export default function Sidebar({
-  isLoading,
-  isError,
+  isLoadingProps,
+  isErrorProps,
   mutate,
   sideBarOpened,
   setSideBarOpened,
@@ -47,7 +46,6 @@ export default function Sidebar({
   // const [opened, setOpened] = useState(false);
   // const [sideBarOpened, setSideBarOpened] = useState(false);
   const theme = useMantineTheme();
-  
 
   //USE QUERY FOR GET REQUEST
   //   const { data } = useQuery("initialschema");
@@ -107,7 +105,7 @@ export default function Sidebar({
         padding="xl"
         size="md"
       >
-        <LoadingOverlay visible={isLoading} />
+        <LoadingOverlay visible={isLoadingProps} />
 
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
@@ -169,7 +167,7 @@ export default function Sidebar({
       </Drawer>
 
       {/* <Group position="right"> */}
-        {/* <Button
+      {/* <Button
           //  variant="white" color="white"
           leftIcon={<DatabaseImport />}
           // styles={() => ({

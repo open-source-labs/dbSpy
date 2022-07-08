@@ -194,13 +194,13 @@ export default function Table({ tableInfo, id }: TableProps) {
       }
     }
 
-    // console.log("ColBeforechange: ", ColBeforeChange);
-    // console.log("ColeAfterChange: ", newRow);
-    // console.log("tablename: ", tablename);
-    // console.log(
-    //   "tableBeforechange: ",
-    //   DataStore.store.get(DataStore.store.size - 1)
-    // );
+    console.log("ColBeforechange: ", ColBeforeChange);
+    console.log("ColeAfterChange: ", newRow);
+    console.log("tablename: ", tablename);
+    console.log(
+      "tableBeforechange: ",
+      DataStore.store.get(DataStore.store.size - 1)
+    );
     // console.log(
     //   "this is Query",
     //   permissiveColumnCheck(

@@ -70,7 +70,7 @@ dataController.getSchema = (req, res, next) => {
   // });
 
   fs.readFile(
-    path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
+    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
     'utf8',
     (error, data) => {
       if (error) {
@@ -836,42 +836,77 @@ dataController.openSchema = (req, res, next) => {
 
 dataController.postSchema = (req, res) => {};
 
-dataController.handleQueries = (req, res, next) => {
+dataController.handleQueries = async (req, res, next) => {
   // Assumption, being passed an array of queries in req.body
   // grab PG_URI from user when they connect to DB
+  const {uri, queries} = req.body;
 
-  const PG_URI =
-    'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  // const PG_URI = req.body//something
+  //data structure in req.body
+  /*
+{
+  queries: [
+    {
+      type: 'single', 
+      query: 'ALTER TABLE public.films RENAME COLUMN _id TO test;'
+    },
+    {
+      type: 'single',
+      query: 'ALTER TABLE public.films ADD CONSTRAINT UNIQUEtest UNIQUE test;'
+    },
+    {
+      type: 'returnQuery', 
+      query: "select concat('alter table public.films drop const…le_name='films' and constraint_type = 'NOT NULL';",
+      returnedQuery: 'fjkdjfkdj'
+    }
+  ],
+  uri: "postgres://vjcmcaut:wcc8BHXNjyN4exqfuQVPzpdeOBJimLfg@castor.db.elephantsql.com:5432/vjcmcaut"
+}
+  */
+  
 
+  // const PG_URI =
+  //   'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  const PG_URI = uri//something
+  console.log("Data received from Client", req.body)
   // const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
-  const queryArray = [
-    "select concat('alter table public.people drop constraint ', constraint_name) as my_query from information_schema.table_constraints where table_schema = 'public' and table_name='people' and constraint_type = 'UNIQUE';",
-  ].flat();
+  // const queryArray = [
+  //   "select concat('alter table public.people drop constraint ', constraint_name) as my_query from information_schema.table_constraints where table_schema = 'public' and table_name='people' and constraint_type = 'UNIQUE';",
+  // ].flat();
   // , 'select concat(\'alter table public.species drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'species\' and constraint_type = \'NOT NULL\';'
-  // const queryArray = req.body.queries.flat();
-  const text = queryArray.join(' ');
-
-  const pool = new Pool({
-    connectionString: PG_URI,
-  });
   const execQueries = (text, params, callback) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
   };
+  
+  let queryStr = '';
+  for (let i=0; i<queries.length; i++) {
+    if (queries[i].type === 'returnQuery') {
+      //execute
+      //whatever returns, we concat to queryStr
+      // const newQuery = await execQueries(queries[i].query);
+      // queryStr = queryStr.concat(newQuery);
+    }
+    else queryStr = queryStr.concat(queries[i].query)
+  }
+  // const queryArray = req.body.queries;
+  // const text = queryArray.join(' ');
 
-  execQueries(text)
-    .then((data) => {
-      console.log(data, '<-- data');
-      res.locals.success = 'Success';
+  const pool = new Pool({
+    connectionString: PG_URI,
+  });
+  console.log(queryStr);
+  // execQueries(queryStr)
+  //   .then((data) => {
+      // console.log(data, '<-- data');
+      res.locals.success = true;
       next();
-    })
-    .catch((err) => {
-      next({
-        log: 'Error in handleQueries middleware',
-        message: { err: err },
-      });
-    });
+    // })
+    // .catch((err) => {
+    //   next({
+    //     log: 'Error in handleQueries middleware',
+    //     message: { err: err },
+    //   });
+    // });
 };
 
 dataController.saveSchema = (req, res) => {};

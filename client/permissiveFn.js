@@ -986,9 +986,11 @@ let impactedTable = TableBeforeChange[tableName];
             if (newConstObj.constraint[constr].action == 'remove')
            {
             
-            let UQuery1 = 'select concat(\'alter table '+tableName+' drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \''+tableName.split(".")[0]+'\' and table_name=\''.concat(tableName.split(".")[1]).concat('\' and constraint_type = \''+ constr +'\';');
-            console.log(UQuery1)
-            querySet.push( {type:'returnQuery', query:UQuery1});
+            // let UQuery1 = 'select concat(\'alter table '+tableName+' drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \''+tableName.split(".")[0]+'\' and table_name=\''.concat(tableName.split(".")[1]).concat('\' and constraint_type = \''+ constr +'\';');
+            // console.log(UQuery1)
+            // querySet.push( {type:'returnQuery', query:UQuery1});
+            let UQuery1 = 'ALTER TABLE \'' + tableName + '\' ALTER \'' + ColAfterChange.column + '\' DROP ' + constr;
+            querySet.push( {type:'single', query:UQuery1});
            }
 
 
