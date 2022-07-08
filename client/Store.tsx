@@ -2,6 +2,7 @@ class Store {
   store: Map<{}, {}>;
   ind: number;
   connectedToDB: boolean;
+  userDBInfo: object;
   queryInd: number;
   queries: Map<{}, {}[]>;
   queryList: {}[];
@@ -10,6 +11,7 @@ class Store {
     this.store = new Map();
     this.ind = 0;
     this.connectedToDB = false;
+    this.userDBInfo = {};
     this.queryInd = 0;
     this.queries = new Map();
     this.queryList = [];
@@ -28,6 +30,11 @@ class Store {
   disconnect() {
     this.connectedToDB = false;
     location.reload();
+  }
+
+  clearQueries() {
+    // this.store.clear();
+    // this.queries = [];
   }
 
   getQuery(data: {}[]) {
