@@ -6,6 +6,9 @@ import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
 import DataStore from "../../Store";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+
 
 interface CanvasProps {
   fetchedData: {
@@ -101,10 +104,39 @@ export default function Canvas({
   });
 
   // function to submit queries to 
-  function executeChanges() {
-    console.log(DataStore.store);
-    const queriesArray:object = DataStore.store;
-    console.log('sending queries array', queriesArray);
+  const executeChanges = () => {
+    
+    // const queriesObject:object = DataStore.queries;
+    // console.log('sending queries array', queriesObject);
+    const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    // console.log(obj);
+    
+    // creating URI for server to connect to user's db
+    let db_uri = "postgres://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.database_name;
+    // console.log(db_uri);
+    // uri examples
+    // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
+    // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
+
+    const dbQuery = {
+      queries: DataStore.queries,
+      uri: db_uri
+    }
+    console.log('logging dbQuery', dbQuery);
+    // useMutation((dbQuery: object) => {
+    //   console.log("logging data", dbQuery);
+      
+    //   return axios.post("/api/handleQueries", dbQuery).then((res) => {
+    //       console.log("this is retrieved data from server", res);
+    //     });
+    //   },
+    //   {
+    //     onSuccess: () => {
+    //       console.log('clearing DataStore.queries');
+    //       DataStore.clearQueries();
+    //     },
+    //   }
+    // );
 
     // fetch('/api/handleQueries', {
     //   method: 'POST',
@@ -115,7 +147,7 @@ export default function Canvas({
         // queries: queriesArray,
         // PG_URI: link,
     // })
-    //    RECEIVING SUCCESS MESSAGE
+    //    UPON SUCCESS MESSAGE
     //   .then((res) => res.json())
     // .then((res) => {
     //   if (!res.success) continue;
