@@ -67,6 +67,15 @@ router.post('/postSchema', controller.postSchema, (req, res) => {
   ]);
 });
 
+// Recieving an array of strings (queries)
+router.post('/handleQueries',
+  controller.handleQueries,
+  (req, res) => {
+    // console.log('Hi from post request updating schema');
+    // console.log(res.locals.success);
+    res.status(200).json({ success: res.locals.success });
+  });
+
 router.post('/saveSchema', controller.saveSchema, (req, res) => {
   res.status(200).send('Save successful!');
 });

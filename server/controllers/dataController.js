@@ -4,6 +4,7 @@ const path = require("path");
 //const { exec } = require('child_process');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const { Pool } = require('pg');
 
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
@@ -57,35 +58,36 @@ const writeSchema =  async (command) => {
 //getSchema controller allows the user 
 dataController.getSchema = (req, res, next) => {
 
-    // let result = null; 
-    // console.log("running getSchema controller...");
-    // const hostname = req.body.hostname;
-    // const password = req.body.password;
-    // const port = req.body.port;
-    // const username = req.body.username;
-    // const database_name = req.body.database_name;
-    // const command = postgresDumpQuery(hostname,password,port, username, database_name);
-    // console.log(command, '<-command');
-    // writeSchema(command).then(resq => {
+  
+  //   let result = null; 
+  //   console.log("running getSchema controller...");
+  //   const hostname = req.body.hostname;
+  //   const password = req.body.password;
+  //   const port = req.body.port;
+  //   const username = req.body.username;
+  //   const database_name = req.body.database_name;
+  //   const command = postgresDumpQuery(hostname,password,port, username, database_name);
+  //   console.log(command, '<-command');
+  //   writeSchema(command).then(resq => {
       
-    //   fs.readFile(command[1], 'utf8', (error, data) => {
-    //     if (error) 
-    //       {
-    //         console.error(`error- in FS: ${error.message}`);
-    //         return next({
-    //         msg: 'Error reading database schema file',
-    //         err: error});    
-    //       }
-    //     result = parseSql(data);
+  //     fs.readFile(command[1], 'utf8', (error, data) => {
+  //       if (error) 
+  //         {
+  //           console.error(`error- in FS: ${error.message}`);
+  //           return next({
+  //           msg: 'Error reading database schema file',
+  //           err: error});    
+  //         }
+  //       result = parseSql(data);
        
-    //     res.locals.data = result;
-    //     next();
+  //       res.locals.data = result;
+  //       next();
        
-    //   }); 
+  //     }); 
     
     
-    // });
-
+  //   });
+  // }
 
 
 
@@ -214,7 +216,7 @@ dataController.objSchema = (req, res, next) => {
     property.IsForeignKey = isForeignKey;
     property.IsPrimaryKey = isPrimaryKey;
     return property;
-  };
+  }
 
   // Creates a new table with name property assigned to argument passed in
   function createTable(name) {
@@ -847,6 +849,43 @@ dataController.objSchema = (req, res, next) => {
   dataController.postSchema = (req, res) => {
     
   };
+
+  dataController.handleQueries = (req, res, next) => {
+    // Assumption, being passed an array of queries in req.body
+    // grab PG_URI from user when they connect to DB
+
+    const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+    // const PG_URI = req.body//something
+
+    // const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
+    const queryArray = ['select concat(\'alter table public.people drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'people\' and constraint_type = \'UNIQUE\';'].flat();
+    // , 'select concat(\'alter table public.species drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'species\' and constraint_type = \'NOT NULL\';'
+    // const queryArray = req.body.queries.flat();
+    const text = queryArray.join(' ');
+
+    const pool = new Pool({
+      connectionString: PG_URI
+    });
+    const execQueries = (text, params, callback) => {
+      console.log('executed query', text);
+      return pool.query(text, params, callback);
+    };
+
+    execQueries(text)
+      .then(data => {
+        console.log(data, "<-- data");
+        res.locals.success = 'Success';
+        next();
+      })
+      .catch(err => {
+        next({
+          log: 'Error in handleQueries middleware',
+          message: { err: err },
+        });
+      });
+  };
+
+
   dataController.saveSchema = (req, res) => {
     
   };
