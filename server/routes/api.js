@@ -34,8 +34,7 @@ router.post(
    controller.objSchema,
   (req, res) => {
     console.log('called');
-    // res.status(200).json(dummydata);
-    // res.status(200).json(res.locals.data);
+    ;
     res.status(200).json(res.locals.result);
   }
 );

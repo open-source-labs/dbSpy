@@ -57,7 +57,6 @@ const writeSchema =  async (command) => {
 //getSchema controller allows the user 
 dataController.getSchema = (req, res, next) => {
 
-  
     // let result = null; 
     // console.log("running getSchema controller...");
     // const hostname = req.body.hostname;
@@ -90,7 +89,7 @@ dataController.getSchema = (req, res, next) => {
 
 
 
-fs.readFile(path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'), 'utf8', (error, data) => {
+fs.readFile(path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656611693.sql'), 'utf8', (error, data) => {
   if (error) 
     {
       console.error(`error- in FS: ${error.message}`);
@@ -100,9 +99,9 @@ fs.readFile(path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql')
     }
   const result = parseSql(data);
    //console.log(result);
-   for (let records in result)
+  
    //console.log('instance of table', result[records]);
-  res.locals.testdata = result;
+  res.locals.data = result;
   next();
 
   });
@@ -112,8 +111,8 @@ fs.readFile(path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql')
   //usable format for front-end
 dataController.objSchema = (req, res, next) => {
 
-  
-  let testdata = res.locals.testdata;
+  console.log(res.locals.data)
+  let testdata = res.locals.data;
   let results = {};
   //iterate through the testdata Array
     //Grab name property for each element of array - Table Name 

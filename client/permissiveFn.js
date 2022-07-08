@@ -850,10 +850,10 @@ let tableName = "public.accounts"
 */
 export default function permissiveColumnCheck(ColBeforeChange, ColAfterChange, tableName, TableBeforeChange) {
 
-    console.log(ColAfterChange);
-    console.log(ColBeforeChange);
-    console.log(tableName);
-    console.log(TableBeforeChange);
+    console.log('---------->',ColAfterChange);
+    console.log('---------->',ColBeforeChange);
+    console.log('---------->',tableName);
+    console.log('---------->',TableBeforeChange);
   
     
 // constraints
@@ -877,12 +877,12 @@ let impactedTable = TableBeforeChange[tableName];
    //check Col Name Change Before vs. After
    if (ColAfterChange.column !== ColBeforeChange.column)
    {
-        
+        console.log("Column Name check")
        //trim column name for whitespaces
        ColAfterChange.column = ColAfterChange.column.trim();
        
         // first check if the column name is empty
-        if (ColAfterChange.column == null || ColAfterChange == undefined)
+        if (ColAfterChange.column == null || ColAfterChange.column == undefined)
         return({status: "failed", errorMsg:"Must not have empty column name"})
 
        //validate Name against restricted Column Names
@@ -892,36 +892,41 @@ let impactedTable = TableBeforeChange[tableName];
         return ({status: "failed", errorMsg:"Restricted Column Name Violation to Table"});
        }
 
-       //regex check valid Column Name against Postgres ruleset. 
+       //regex check valid Column Name against Postgres ruleset.
+      
        const regex =  /^[a-zA-Z_][a-zA-Z0-9_]*$/;
-       console.log(ColAfterChange.column.match(regex));
-       console.log(ColAfterChange.column);
-       if (ColAfterChange.column.match(regex) == null )
-       { console.log("failed")
+       //console.log(ColAfterChange.column.match(regex));
+     
+    
+       if (ColAfterChange.column.match(regex)[0] !==  ColAfterChange.column)
+       { console.log("failed-------------->in Regex");
         return ({status: "failed", errorMsg:"Postgres restricted column name violation"});
        }
 
        //check Column name against all other columns in table. If name already exist
        //in table, flag as error in fn response
+
+       /*
        for (let colNames in impactedTable)
-       {
-    if (impactedTable[colNames].Name.toUpperCase().indexOf(ColAfterChange.column.toUpperCase())!== -1) 
+       { console.log('in impacted Table comparasion', impactedTable);
+    if (impactedTable[colNames].Name.toUpperCase() == ColAfterChange.column.toUpperCase()) 
        {
         console.log(impactedTable[colNames].Name)
-        console.log(ColAfterChange.column)
+        console.log(ColAfterChange.column);
         return ({status: "failed", errorMsg:"Postgres restriction. Duplicate column name"});
        }
        
-      
+   
     
        }
+          */
        objChangeSet.column = {status: true, newValue:ColAfterChange.column, oldValue:ColBeforeChange.column}
        let nameQuery = "ALTER TABLE ".concat(tableName).concat(" RENAME COLUMN ").concat(ColBeforeChange.column).concat(" TO ").concat(ColAfterChange.column).concat(";")
        querySet.push({type:'single', query:nameQuery});
 
-       console.log(querySet)
+       console.log(querySet);
    }
-
+    console.log('after the column is done', querySet)
    //check constraint col for changes. This should be an obj of objs, so we will code both
    //type for now
    if (typeof(ColAfterChange.constraint) == "string")
@@ -963,7 +968,7 @@ let impactedTable = TableBeforeChange[tableName];
 
 
         }
-        
+   
        console.log(newConstObj.constraint)
 
         for (let constr in newConstObj.constraint) {
