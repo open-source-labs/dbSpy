@@ -17,18 +17,19 @@ import { useForm } from "@mantine/form";
 import { Database, DatabaseImport } from "tabler-icons-react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
+import DataStore from "../../Store";
 
 interface SideBarProps {
-  isLoading: boolean;
-  isError: boolean;
+  isLoadingProps: boolean;
+  isErrorProps: boolean;
   mutate: (data: object) => void;
   sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
 }
 
 export default function Sidebar({
-  isLoading,
-  isError,
+  isLoadingProps,
+  isErrorProps,
   mutate,
   sideBarOpened,
   setSideBarOpened,
@@ -104,11 +105,13 @@ export default function Sidebar({
         padding="xl"
         size="md"
       >
-        <LoadingOverlay visible={isLoading} />
+        <LoadingOverlay visible={isLoadingProps} />
 
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
+              // grabbing userDBInfo from values to send to server to make db changes
+              DataStore.userDBInfo = values;
               mutate(values);
               form.setValues({
                 hostname: "",
@@ -163,8 +166,8 @@ export default function Sidebar({
         </Box>
       </Drawer>
 
-      <Group position="right">
-        {/* <Button
+      {/* <Group position="right"> */}
+      {/* <Button
           //  variant="white" color="white"
           leftIcon={<DatabaseImport />}
           // styles={() => ({
@@ -176,7 +179,7 @@ export default function Sidebar({
         >
           {buttonText}
         </Button> */}
-      </Group>
+      {/* </Group> */}
     </>
   );
 }

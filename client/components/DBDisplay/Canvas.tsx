@@ -6,6 +6,8 @@ import { Database, DatabaseImport } from "tabler-icons-react";
 import { LinearProgress } from "@mui/material";
 import Sidebar from "./Sidebar";
 import DataStore from "../../Store";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import axios from "axios";
 
 interface CanvasProps {
   fetchedData: {
@@ -24,8 +26,8 @@ interface CanvasProps {
     };
   };
   setFetchedData: (fetchedData: object) => void;
-  isLoading: boolean;
-  isError: boolean;
+  isLoadingProps: boolean;
+  isErrorProps: boolean;
   // connectedToDB: boolean;
   // disconnect: () => void;
   // setConnectedToDB: (param: boolean) => void;
@@ -35,8 +37,8 @@ interface CanvasProps {
 }
 
 export default function Canvas({
-  isLoading,
-  isError,
+  isLoadingProps,
+  isErrorProps,
   fetchedData,
   setFetchedData,
   // disconnect,
@@ -62,18 +64,6 @@ export default function Canvas({
     }
   );
   //console.log("this is fetchedData from Canvas.tsx", fetchedData);
-  if (isLoading) {
-    return (
-      <Text>
-        Please Wait... It can take few minutes to complete the retrieval of data
-        <Loader size="xl" variant="dots" />
-      </Text>
-    );
-  }
-
-  if (isError) {
-    return <>An Error Occurred: Check Your Internet Connection</>;
-  }
 
   let refArray: string[] = [];
 
@@ -92,15 +82,123 @@ export default function Canvas({
     return (
       <Xarrow
         headSize={5}
-        color={"green"}
         zIndex={-1}
+        color={"green"}
         start={reff.PrimaryKeyTableName}
         end={reff.ReferencesTableName}
       />
     );
   });
 
+  const { isLoading, isError, mutate } = useMutation(
+    (dbQuery: object) => {
+      console.log("logging data", dbQuery);
+
+      return axios.post("/api/handleQueries", dbQuery).then((res) => {
+        console.log("this is retrieved data from server", res.data);
+      });
+    },
+    {
+      onSuccess: () => {
+        // console.log("clearing DataStore.queries");
+        const latestTableModel: any = DataStore.store.get(
+          DataStore.store.size - 1
+        );
+        DataStore.clearStore();
+        DataStore.getQuery([{ type: "", query: "" }]);
+        DataStore.getData(latestTableModel);
+        setFetchedData(latestTableModel);
+        console.log("is DataStore cleared?", DataStore);
+      },
+      onError: () => {
+        console.log("Failed to execute changes");
+        // res?.success;
+      },
+    }
+  );
+
+  // function to submit queries to
+  const executeChanges = () => {
+    // const queriesObject:object = DataStore.queries;
+    // console.log('sending queries array', queriesObject);
+    const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    // console.log(obj);
+
+    // creating URI for server to connect to user's db
+    let db_uri =
+      "postgres://" +
+      obj.username +
+      ":" +
+      obj.password +
+      "@" +
+      obj.hostname +
+      ":" +
+      obj.port +
+      "/" +
+      obj.database_name;
+    // console.log(db_uri);
+
+    // uri examples
+    // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
+    // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
+
+    const dbQuery = {
+      queries: DataStore.queries.get(DataStore.queries.size - 1),
+      uri: db_uri,
+    };
+
+    console.log("logging dbQuery", dbQuery);
+    mutate(dbQuery);
+
+    // fetch('/api/handleQueries', {
+    //   method: 'POST',
+    //   headers: {
+    //     "Content-Type": "application/json",
+    // },
+    // body: JSON.stringify({
+    // queries: queriesArray,
+    // PG_URI: link,
+    // })
+    //    UPON SUCCESS MESSAGE
+    //   .then((res) => res.json())
+    // .then((res) => {
+    //   if (!res.success) continue;
+    //     console.log(res)
+    //   console.log('clearing queries');
+    //   DataStore.clearStore();
+    //   console.log(DataStore.queries);
+    // });
+    //   .catch(err) => console.log(err);
+    // }
+  };
+
   const [refOpened, setRefOpened] = useState(false);
+
+  if (isLoadingProps) {
+    return (
+      <Text>
+        Please Wait... It can take few minutes to complete the retrieval of data
+        <Loader size="xl" variant="dots" />
+      </Text>
+    );
+  }
+
+  if (isErrorProps) {
+    return <>An Error Occurred: Check Your Internet Connection</>;
+  }
+
+  if (isLoading) {
+    return (
+      <h3>
+        Please Wait... It can take few minutes to complete the retrieval of data
+        <Loader size="xl" variant="dots" />
+      </h3>
+    );
+  }
+
+  if (isError) {
+    return <h3>An Error Occurred: Check Your Internet Connection</h3>;
+  }
 
   // console.log("this is tables", tables);
   return (
@@ -114,6 +212,20 @@ export default function Canvas({
               onClick={() => DataStore.disconnect()}
             >
               Disconnect from DB
+            </Button>
+          </Group>
+          <Group position="right">
+            <Button
+              styles={() => ({
+                root: {
+                  marginTop: 20,
+                },
+              })}
+              color="red"
+              leftIcon={<DatabaseImport />}
+              onClick={() => executeChanges()}
+            >
+              Execute changes
             </Button>
           </Group>
 

@@ -72,7 +72,7 @@ router.post('/handleQueries',
   controller.handleQueries,
   (req, res) => {
     // console.log('Hi from post request updating schema');
-    // console.log(res.locals.success);
+    console.log(res.locals.success);
     res.status(200).json({ success: res.locals.success });
   });
 
