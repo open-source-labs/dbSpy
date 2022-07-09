@@ -185,7 +185,7 @@ export default function Table({ tableInfo, id }: TableProps) {
     // else if (logicCheck(newRow, rows) === "assignRef") {
     //   setRefOpened(true);
     // }
-    console.log("permissiveColumnCheck runnning");
+    // console.log("permissiveColumnCheck runnning");
     //iterate through the beforeChange table.
     let ColBeforeChange;
     for (let i = 0; i < rows.length; i++) {
@@ -194,22 +194,22 @@ export default function Table({ tableInfo, id }: TableProps) {
       }
     }
 
-    // console.log("ColBeforechange: ", ColBeforeChange);
-    // console.log("ColeAfterChange: ", newRow);
-    // console.log("tablename: ", tablename);
-    // console.log(
-    //   "tableBeforechange: ",
-    //   DataStore.store.get(DataStore.store.size - 1)
-    // );
+    console.log("ColBeforechange: ", ColBeforeChange);
+    console.log("ColeAfterChange: ", newRow);
+    console.log("tablename: ", tablename);
     console.log(
-      "this is Query",
-      permissiveColumnCheck(
-        ColBeforeChange,
-        newRow,
-        tablename,
-        DataStore.store.get(DataStore.store.size - 1)
-      )
+      "tableBeforechange: ",
+      DataStore.store.get(DataStore.store.size - 1)
     );
+    // console.log(
+    //   "this is Query",
+    //   permissiveColumnCheck(
+    //     ColBeforeChange,
+    //     newRow,
+    //     tablename,
+    //     DataStore.store.get(DataStore.store.size - 1)
+    //   )
+    // );
 
     const queryResult = permissiveColumnCheck(
       ColBeforeChange,
@@ -218,13 +218,22 @@ export default function Table({ tableInfo, id }: TableProps) {
       DataStore.store.get(DataStore.store.size - 1)
     );
 
+    if (Object.keys(queryResult[0])[0] === "status") {
+      alert("you cannot use reserved keyword for a column name!");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    }
+
     DataStore.queryList.push(...queryResult);
     DataStore.getQuery(DataStore.queryList.slice());
     console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
-    console.log("this is currentRow", rows);
-    console.log("this is updatedRow:", updatedRow);
+    // console.log("this is currentRow", rows);
+    // console.log("this is updatedRow:", updatedRow);
     updatedRowsToTable(
       rows.map((row) => (row.id === newRow.id ? updatedRow : row))
     );
@@ -362,9 +371,9 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   // console.log("this is updated rows: ", rows);
   // console.log("this is the table I am editing: ", id);
-  for (let cols in tableInfo) {
-    console.log(tableInfo[cols].References);
-  }
+  // for (let cols in tableInfo) {
+  //   console.log(tableInfo[cols].References);
+  // }
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
   return (

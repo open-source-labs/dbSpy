@@ -32,9 +32,12 @@ class Store {
     location.reload();
   }
 
-  clearQueries() {
-    // this.store.clear();
-    // this.queries = [];
+  clearStore() {
+    this.store.clear();
+    this.queries.clear();
+    this.ind = 0;
+    this.queryInd = 0;
+    this.queryList = [];
   }
 
   getQuery(data: {}[]) {
