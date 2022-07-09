@@ -877,24 +877,15 @@ let impactedTable = TableBeforeChange[tableName];
    //check Col Name Change Before vs. After
    if (ColAfterChange.column !== ColBeforeChange.column)
    {
-<<<<<<< HEAD
-        console.log("Column Name check")
-=======
         
         console.log("hey",ColAfterChange)
         console.log("ho",ColBeforeChange)
->>>>>>> 4f726d5e69b75802eab26b2749ab08579f0e9314
        //trim column name for whitespaces
        ColAfterChange.column = ColAfterChange.column.trim();
        
         // first check if the column name is empty
-<<<<<<< HEAD
-        if (ColAfterChange.column == null || ColAfterChange.column == undefined)
-        return({status: "failed", errorMsg:"Must not have empty column name"})
-=======
         if (ColAfterChange.column == null || ColAfterChange == undefined)
         return([{status: "failed", errorMsg:"Must not have empty column name"}])
->>>>>>> 4f726d5e69b75802eab26b2749ab08579f0e9314
 
        //validate Name against restricted Column Names
        if (restrictedColNames[ColAfterChange.column.toUpperCase()])
@@ -906,33 +897,6 @@ let impactedTable = TableBeforeChange[tableName];
        //regex check valid Column Name against Postgres ruleset.
       
        const regex =  /^[a-zA-Z_][a-zA-Z0-9_]*$/;
-<<<<<<< HEAD
-       //console.log(ColAfterChange.column.match(regex));
-     
-    
-       if (ColAfterChange.column.match(regex)[0] !==  ColAfterChange.column)
-       { console.log("failed-------------->in Regex");
-        return ({status: "failed", errorMsg:"Postgres restricted column name violation"});
-       }
-
-       //check Column name against all other columns in table. If name already exist
-       //in table, flag as error in fn response
-
-       /*
-       for (let colNames in impactedTable)
-       { console.log('in impacted Table comparasion', impactedTable);
-    if (impactedTable[colNames].Name.toUpperCase() == ColAfterChange.column.toUpperCase()) 
-       {
-        console.log(impactedTable[colNames].Name)
-        console.log(ColAfterChange.column);
-        return ({status: "failed", errorMsg:"Postgres restriction. Duplicate column name"});
-       }
-       
-   
-    
-       }
-          */
-=======
     //    console.log(ColAfterChange.column.match(regex));
     //    console.log(ColAfterChange.column);
     //    if (ColAfterChange.column.match(regex) == null )
@@ -955,7 +919,6 @@ let impactedTable = TableBeforeChange[tableName];
     //    }
 
     
->>>>>>> 4f726d5e69b75802eab26b2749ab08579f0e9314
        objChangeSet.column = {status: true, newValue:ColAfterChange.column, oldValue:ColBeforeChange.column}
        let nameQuery = "ALTER TABLE ".concat(tableName).concat(" RENAME COLUMN ").concat(ColBeforeChange.column).concat(" TO ").concat(ColAfterChange.column).concat(";")
        querySet.push({type:'single', query:nameQuery});
