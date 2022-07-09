@@ -844,45 +844,22 @@ dataController.handleQueries = async (req, res, next) => {
 
   Execute the resulting query string as a transaction */
 
+  /**
+   * Handshake block
+   */
   const {uri, queries} = req.body;
-
-  //data structure in req.body
-  /*
-{
-  queries: [
-    {
-      type: 'single', 
-      query: 'ALTER TABLE public.films RENAME COLUMN _id TO test;'
-    },
-    {
-      type: 'single',
-      query: 'ALTER TABLE public.films ADD CONSTRAINT UNIQUEtest UNIQUE test;'
-    },
-    {
-      type: 'returnQuery', 
-      query: "select concat('alter table public.films drop const…le_name='films' and constraint_type = 'NOT NULL';",
-      returnedQuery: 'fjkdjfkdj'
-    }
-  ],
-  uri: "postgres://vjcmcaut:wcc8BHXNjyN4exqfuQVPzpdeOBJimLfg@castor.db.elephantsql.com:5432/vjcmcaut"
-}
-  */
-  
-
-  // const PG_URI =
-  //   'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  const PG_URI = uri//something
+  // const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  const PG_URI = uri;
   console.log("Data received from Client", req.body)
-  // const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
-  // const queryArray = [
-  //   "select concat('alter table public.people drop constraint ', constraint_name) as my_query from information_schema.table_constraints where table_schema = 'public' and table_name='people' and constraint_type = 'UNIQUE';",
-  // ].flat();
-  // , 'select concat(\'alter table public.species drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'species\' and constraint_type = \'NOT NULL\';'
+  // const queries= ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
   
+  /**
+   * Function definition and initialization block
+   */
   const pool = new Pool({
     connectionString: PG_URI,
   });
-  
+
   const execQueries = (text, params, callback) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
@@ -890,7 +867,6 @@ dataController.handleQueries = async (req, res, next) => {
   
   const transactionQuery = async (queryString) => {
     const client = await pool.connect();
-
     try {
       await client.query('BEGIN');
       await client.query(queryString);
@@ -903,20 +879,21 @@ dataController.handleQueries = async (req, res, next) => {
     }
   };
 
+  /**
+   * Build out query string
+   * Iterates through queries and conditionally adds either the query or the output of the query to queryStr
+   */
   let queryStr = '';
-  for (let i=0; i<queries.length; i++) {
+  for (let i = 0; i < queries.length; i++) {
     if (queries[i].type === 'returnQuery') {
-      //execute
-      //whatever returns, we concat to queryStr
-      // const newQuery = await execQueries(queries[i].query);
-      // queryStr = queryStr.concat(newQuery);
+      //execute & whatever returns, we concat to queryStr
+      const newQuery = await execQueries(queries[i].query);
+      queryStr = queryStr.concat(newQuery);
     }
     else queryStr = queryStr.concat(queries[i].query);
   }
-  // const queryArray = req.body.queries;
-  // const text = queryArray.join(' ');
 
-  console.log(queryStr);
+  // console.log(queryStr);
 
   /**
    * Transaction implementation
@@ -934,19 +911,6 @@ dataController.handleQueries = async (req, res, next) => {
         message: { err: err },
       });
     });
-
-  // execQueries(transactStr)
-  //   .then((data) => {
-      // console.log(data, '<-- data');
-      // res.locals.success = true;
-      // next();
-    // })
-    // .catch((err) => {
-    //   next({
-    //     log: 'Error in handleQueries middleware',
-    //     message: { err: err },
-    //   });
-    // });
 };
 
 dataController.saveSchema = (req, res) => {};
