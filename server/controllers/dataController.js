@@ -847,11 +847,23 @@ dataController.handleQueries = async (req, res, next) => {
   /**
    * Handshake block
    */
-  const {uri, queries} = req.body;
-  // const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  const PG_URI = uri;
-  console.log("Data received from Client", req.body)
-  // const queries= ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
+  // Production values
+  // const {uri, queries} = req.body;
+  // const PG_URI = uri;
+
+  // Test values
+  const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  console.log("Data received from Client", req.body);
+  const queries = [
+    {
+      type: 'single',
+      query: 'SELECT * FROM public.films;',
+    },
+    {
+      type: 'single',
+      query: 'SELECT * FROM public.pefdgdfshsople;',
+    }
+  ];
   
   /**
    * Function definition and initialization block
@@ -872,6 +884,7 @@ dataController.handleQueries = async (req, res, next) => {
       await client.query(queryString);
       await client.query('COMMIT');
     } catch (err) {
+      console.log('--Invalid query detected in handleQueries\n--Transaction declined');
       await client.query('ROLLBACK');
       throw err;
     } finally {
@@ -899,9 +912,10 @@ dataController.handleQueries = async (req, res, next) => {
    * Transaction implementation
    * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do. CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
    */
+  res.locals.success = false;
+
   transactionQuery(queryStr)
-    .then((data) => {
-      console.log(data, '<-- data from transaction');
+    .then(() => {
       res.locals.success = true;
       return next();
     })
