@@ -837,8 +837,13 @@ dataController.openSchema = (req, res, next) => {
 dataController.postSchema = (req, res) => {};
 
 dataController.handleQueries = async (req, res, next) => {
-  // Assumption, being passed an array of queries in req.body
-  // grab PG_URI from user when they connect to DB
+  /* Assumption, being passed an array of queries in req.body
+  grab PG_URI from user when they connect to DB
+
+  Loop through array of queries and add them to a query string, if return query, add their outputs to the query string instead
+
+  Execute the resulting query string as a transaction */
+
   const {uri, queries} = req.body;
 
   //data structure in req.body
@@ -873,11 +878,31 @@ dataController.handleQueries = async (req, res, next) => {
   //   "select concat('alter table public.people drop constraint ', constraint_name) as my_query from information_schema.table_constraints where table_schema = 'public' and table_name='people' and constraint_type = 'UNIQUE';",
   // ].flat();
   // , 'select concat(\'alter table public.species drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'species\' and constraint_type = \'NOT NULL\';'
+  
+  const pool = new Pool({
+    connectionString: PG_URI,
+  });
+  
   const execQueries = (text, params, callback) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
   };
   
+  const transactionQuery = async (queryString) => {
+    const client = await pool.connect();
+
+    try {
+      await client.query('BEGIN');
+      await client.query(queryString);
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  };
+
   let queryStr = '';
   for (let i=0; i<queries.length; i++) {
     if (queries[i].type === 'returnQuery') {
@@ -886,20 +911,35 @@ dataController.handleQueries = async (req, res, next) => {
       // const newQuery = await execQueries(queries[i].query);
       // queryStr = queryStr.concat(newQuery);
     }
-    else queryStr = queryStr.concat(queries[i].query)
+    else queryStr = queryStr.concat(queries[i].query);
   }
   // const queryArray = req.body.queries;
   // const text = queryArray.join(' ');
 
-  const pool = new Pool({
-    connectionString: PG_URI,
-  });
   console.log(queryStr);
-  // execQueries(queryStr)
+
+  /**
+   * Transaction implementation
+   * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do. CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
+   */
+  transactionQuery(queryStr)
+    .then((data) => {
+      console.log(data, '<-- data from transaction');
+      res.locals.success = true;
+      return next();
+    })
+    .catch((err) => {
+      next({
+        log: 'Error in handleQueries middleware',
+        message: { err: err },
+      });
+    });
+
+  // execQueries(transactStr)
   //   .then((data) => {
       // console.log(data, '<-- data');
-      res.locals.success = true;
-      next();
+      // res.locals.success = true;
+      // next();
     // })
     // .catch((err) => {
     //   next({
