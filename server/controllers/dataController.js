@@ -39,6 +39,55 @@ const writeSchema = async (command) => {
   }
 };
 
+dataController.testDrop = (req, res, next) => {
+let uri = 'postgres://cwoalfud:jqrPGXvWd8vqZydnDinBiWy1gS4C_a9J@arjuna.db.elephantsql.com/cwoalfud';
+
+/*
+  let querytest = "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema = 'public' AND table_constraints.table_name='films' AND constraint_type='UNIQUE' AND key_column_usage.column_name= 'title' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
+*/
+
+const ColAfterChange = { 
+  "column": "title",
+  "constraint": " ",
+  "fk": true,
+  "id": "title",
+  "isNew": false,
+  "pk": false,
+  "type": "integer",
+  
+       "References": 
+              {
+                  "PrimaryKeyName": "_id",
+                  "ReferencesPropertyName": "person_id integer NOT NULL",
+                  "PrimaryKeyTableName": "public.people",
+                  "ReferencesTableName": "public.people_in_films",
+                  "IsDestination": false
+              }
+          
+  
+}
+
+let tableName = "public.films";
+
+const queryForeign =   'alter table ' + tableName + ' alter column ' + ColAfterChange.column + ' set not null;';
+
+ //querySet.push( {type:'single', query:queryForeign});
+
+/*
+  const pool = new Pool({
+    connectionString: uri,
+  });
+
+
+  pool.query(querytest).then(data => {
+    return next();
+  });
+
+*/
+res.locals.testresponse = queryForeign; 
+next();
+};
+
 //getSchema controller allows the user
 dataController.getSchema = (req, res, next) => {
   // let result = null;

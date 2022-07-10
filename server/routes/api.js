@@ -28,6 +28,11 @@ router.get('/getAllSchemas', controller.getAllSchemas, (req, res) => {
   res.status(200).json({ ok: 'ok' });
 });
 
+router.get('/testDrop', controller.testDrop, (req, res) => {
+  res.status(200).json(res.locals.testresponse);
+});
+
+
 router.post(
   '/getSchema',
    controller.getSchema,
