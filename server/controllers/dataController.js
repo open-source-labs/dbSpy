@@ -47,13 +47,14 @@ let uri = 'postgres://cwoalfud:jqrPGXvWd8vqZydnDinBiWy1gS4C_a9J@arjuna.db.elepha
 */
 
 const ColAfterChange = { 
-  "column": "title",
+  "column": "title_new",
   "constraint": " ",
   "fk": true,
+  "type": "integer",
   "id": "title",
   "isNew": false,
   "pk": false,
-  "type": "integer",
+  
   
        "References": 
               {
@@ -67,9 +68,10 @@ const ColAfterChange = {
   
 }
 
-let tableName = "public.films";
+let tableName = "public.alphabet";
 
-const queryForeign =   'alter table ' + tableName + ' alter column ' + ColAfterChange.column + ' set not null;';
+  let UQueryNewCol =  'ALTER TABLE ' + tableName +
+' ADD ' + ColAfterChange.column + ' ' + ColAfterChange.type;
 
  //querySet.push( {type:'single', query:queryForeign});
 
@@ -84,7 +86,7 @@ const queryForeign =   'alter table ' + tableName + ' alter column ' + ColAfterC
   });
 
 */
-res.locals.testresponse = queryForeign; 
+res.locals.testresponse = UQueryNewCol; 
 next();
 };
 

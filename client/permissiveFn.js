@@ -3,6 +3,22 @@
 2. DIscuss how we might want to handle request to change datatype
 
 */
+// constraints
+const objConstraints = { "UNIQUE": true, "PRIMARY KEY": true, "FOREIGN KEY": true, "CHECK": true, "EXCLUSION": true, "NOT NULL": true};
+
+
+// restricted col names
+const restrictedColNames = { "ALL": true, "ANALYSE": true, "ANALYZE": true, "AND": true, "ANY": true, "ARRAY": true, "AS": true, "ASC": true, "ASYMMETRIC": true, "BOTH": true, "CASE": true, "CAST": true, "CHECK": true, "COLLATE": true, "COLUMN": true, "CONSTRAINT": true, "CREATE": true, "CURRENT_CATALOG": true, "CURRENT_DATE": true, "CURRENT_ROLE": true, "CURRENT_TIME": true, "CURRENT_TIMESTAMP": true, "CURRENT_USER": true, "DEFAULT": true, "DEFERRABLE": true, "DESC": true, "DISTINCT": true, "DO": true, "ELSE": true, "END": true, "EXCEPT": true, "FALSE": true, "FETCH": true, "FOR": true, "FOREIGN": true, "FROM": true, "GRANT": true, "GROUP": true, "HAVING": true, "IN": true, "INITIALLY": true, "INTERSECT": true, "INTO": true, "LATERAL": true, "LEADING": true, "LIMIT": true, "LOCALTIME": true, "LOCALTIMESTAMP": true, "NOT": true, "NULL": true, "OFFSET": true, "ON": true, "ONLY": true, "OR": true, "ORDER": true, "PLACING": true, "PRIMARY": true, "REFERENCES": true, "RETURNING": true, "SELECT": true, "SESSION_USER": true, "SOME": true, "SYMMETRIC": true, "TABLE": true, "THEN": true, "TO": true, "TRAILING": true, "true": true, "UNION": true, "UNIQUE": true, "USER": true, "USING": true, "VARIADIC": true, "WHEN": true, "WHERE": true, "WINDOW": true, "WITH": true};
+
+
+
+
+
+
+
+
+
+
 
 /*
 let TableBeforeChange = {
@@ -856,14 +872,6 @@ export default function permissiveColumnCheck(ColBeforeChange, ColAfterChange, t
     console.log('---------->',TableBeforeChange);
   
     
-// constraints
-const objConstraints = { "UNIQUE": true, "PRIMARY KEY": true, "FOREIGN KEY": true, "CHECK": true, "EXCLUSION": true, "NOT NULL": true}
-
-
-// restricted col names
-const restrictedColNames = { "ALL": true, "ANALYSE": true, "ANALYZE": true, "AND": true, "ANY": true, "ARRAY": true, "AS": true, "ASC": true, "ASYMMETRIC": true, "BOTH": true, "CASE": true, "CAST": true, "CHECK": true, "COLLATE": true, "COLUMN": true, "CONSTRAINT": true, "CREATE": true, "CURRENT_CATALOG": true, "CURRENT_DATE": true, "CURRENT_ROLE": true, "CURRENT_TIME": true, "CURRENT_TIMESTAMP": true, "CURRENT_USER": true, "DEFAULT": true, "DEFERRABLE": true, "DESC": true, "DISTINCT": true, "DO": true, "ELSE": true, "END": true, "EXCEPT": true, "FALSE": true, "FETCH": true, "FOR": true, "FOREIGN": true, "FROM": true, "GRANT": true, "GROUP": true, "HAVING": true, "IN": true, "INITIALLY": true, "INTERSECT": true, "INTO": true, "LATERAL": true, "LEADING": true, "LIMIT": true, "LOCALTIME": true, "LOCALTIMESTAMP": true, "NOT": true, "NULL": true, "OFFSET": true, "ON": true, "ONLY": true, "OR": true, "ORDER": true, "PLACING": true, "PRIMARY": true, "REFERENCES": true, "RETURNING": true, "SELECT": true, "SESSION_USER": true, "SOME": true, "SYMMETRIC": true, "TABLE": true, "THEN": true, "TO": true, "TRAILING": true, "true": true, "UNION": true, "UNIQUE": true, "USER": true, "USING": true, "VARIADIC": true, "WHEN": true, "WHERE": true, "WINDOW": true, "WITH": true}
-
-
 
 
 //get current table involved with change. 
@@ -875,7 +883,14 @@ let impactedTable = TableBeforeChange[tableName];
    let err = {} //error response handler
 
    //check Col Name Change Before vs. After
-   if (ColAfterChange.column !== ColBeforeChange.column)
+
+   if (ColAfterChange.isNew)
+   {
+     let UQueryNewCol =  'ALTER TABLE ' + tableName +
+    ' ADD ' + ColAfterChange.column + ' ' + ColAfterChange.type;
+    querySet.push(UQueryNewCol);
+   }
+   else (ColAfterChange.column !== ColBeforeChange.column);
    {
         
         console.log("hey",ColAfterChange)
@@ -1123,6 +1138,6 @@ let impactedTable = TableBeforeChange[tableName];
    
    console.log(querySet);
    return querySet; 
-   
-}
+} 
+ 
 
