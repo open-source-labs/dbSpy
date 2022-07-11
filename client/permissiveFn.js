@@ -1276,7 +1276,6 @@ export function permissiveTableCheck(
   //regex
   const regex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
   const found = tableName.match(regex);
-  console.log("found", found)
   if (found === null) {
     return [{
       status: "failed",
