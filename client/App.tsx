@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
-
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import DBDisplay from "./pages/DBDisplay";
-import HomeFooter from "./components/Home/HomeFooter";
-import { useNavigate } from "react-router-dom";
-export default function App() {
-  // const [user, setUser] = useState(null)
-  //useEffect to validate user session by default set to null
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
-  //declare function userAuth which uses fetch method to server
-  // route to /applicationAuth
-  // which will return from response.json user session details
-  // if user session exist, use setUser to response.json
-  // if does not exist, redirect
+export default function App() {
+  /*
+  States Declaration:
+  "loggedIn" - boolean that describes if any user is logged in;
+  "user" - object that describes the user data coming back from OAuth2.0;
+  */
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
     name: null,
@@ -23,13 +18,15 @@ export default function App() {
     id: null,
     picture: null,
   });
-  let navigate = useNavigate();
 
+  /*
+  UseEffect to fetch user data from "/protected" route;
+  "fetchData" - a function that fetches user data from "/protected" route;
+  setUser with data come back from fetch request;
+  */
   useEffect(() => {
-    // declare the async data fetching function
     const fetchData = async () => {
       const data = await fetch("/protected");
-      // convert data to json
       const result = await data.json();
       if (result !== null) {
         setUser({
@@ -38,33 +35,33 @@ export default function App() {
           id: result.id,
           picture: result.picture,
         });
-        console.log(result);
       } else {
         setUser({ name: null, email: null, id: null, picture: null });
-        // navigate("/");
       }
     };
 
-    // call the function
-    fetchData()
-      // make sure to catch any error
-      .catch((err) => {
-        console.error;
-        setUser({ name: null, email: null, id: null, picture: null });
-      });
+    /* invocation of "fetchData" with error handling with catch */
+    fetchData().catch((err) => {
+      console.error;
+      setUser({ name: null, email: null, id: null, picture: null });
+    });
   }, []);
 
+  /*
+    React Router, a library for Client-Side Rendering, with 4 different paths:
+    1. "/" - main launch page
+    2. "/signup" - sign up page
+    3. "/login" - login page
+    4. "/display" | "/display/:id" - database visualization application page; only accessible when user is authorized;
+  */
   return (
     <Routes>
-      <Route path="/signup" element={<Signup />} />
-
-      <Route path="/login" element={<Login />} />
-
       <Route path={"/"} element={<Home user={user} loggedIn={loggedIn} />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
 
       <Route
         path="/display"
-        // element={<DBDisplay user={user} />}
         element={
           user.id !== null ? (
             <DBDisplay
@@ -87,9 +84,6 @@ export default function App() {
             setLoggedIn={setLoggedIn}
           />
         }
-        // element={
-        //   user.id !== null ? <DBDisplay user={user} /> : "PLEASE LOG IN..."
-        // }
       />
     </Routes>
   );

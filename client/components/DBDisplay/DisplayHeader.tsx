@@ -1,34 +1,28 @@
+// React & React Router & React Query Modules;
 import React, { useState } from "react";
-import {
-  Header,
-  Text,
-  MediaQuery,
-  useMantineTheme,
-  Button,
-  Image,
-  Box,
-} from "@mantine/core";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useNavigate } from "react-router-dom";
+// Components imported;
 import MenuPopUp from "./MenuPopUp";
-import { Link } from "react-router-dom";
+
+// UI Libraries - Mantine
+import { Header, Text, MediaQuery, Button, Image, Box } from "@mantine/core";
 
 interface DisplayHeaderProps {
-  opened: boolean;
-  setOpened: (opened: boolean) => void;
+  menuPopUpOpened: boolean;
   name: string | null;
   picture: string | null | undefined;
   setLoggedIn: (e: boolean) => void;
+  setMenuPopUpOpened: (opened: boolean) => void;
 }
 
 export default function DisplayHeader({
-  opened,
-  setOpened,
+  menuPopUpOpened,
   name,
   picture,
   setLoggedIn,
+  setMenuPopUpOpened,
 }: DisplayHeaderProps) {
-  const theme = useMantineTheme();
   const navigate = useNavigate();
 
   if (picture === null) picture = undefined;
@@ -70,7 +64,10 @@ export default function DisplayHeader({
           }}
         >
           <MediaQuery largerThan="sm" styles={{ display: "block" }}>
-            <MenuPopUp opened={opened} setOpened={setOpened} />
+            <MenuPopUp
+              opened={menuPopUpOpened}
+              setOpened={setMenuPopUpOpened}
+            />
           </MediaQuery>
 
           <Link to="/">
