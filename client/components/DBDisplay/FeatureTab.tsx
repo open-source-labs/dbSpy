@@ -78,7 +78,11 @@ export default function FeatureTab({
         key={num}
       >
         <Group>
-          <Text size="md">{num}</Text>
+          {num === 0 && <Text size="md">{`Initial Data`}</Text>}
+          {num === 1 && <Text size="md">{`${num}st Edit`}</Text>}
+          {num === 2 && <Text size="md">{`${num}nd Edit`}</Text>}
+          {num === 3 && <Text size="md">{`${num}rd Edit`}</Text>}
+          {num > 3 && <Text size="md">{`${num}th Edit`}</Text>}
         </Group>
       </UnstyledButton>
     );

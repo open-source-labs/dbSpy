@@ -93,6 +93,14 @@ export default function Canvas({
         color={"green"}
         start={reff.PrimaryKeyTableName}
         end={reff.ReferencesTableName}
+        endAnchor={[
+          { position: "right", offset: { x: +10, y: +10 } },
+          { position: "left", offset: { x: -10, y: -10 } },
+          { position: "bottom", offset: { x: +10, y: +10 } },
+          { position: "top", offset: { x: -10 } },
+        ]}
+        curveness={1.0}
+        animateDrawing={2}
       />
     );
   });

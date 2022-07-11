@@ -68,7 +68,7 @@ class Store {
   }
 
   /* 
-  "getData" - a method that logs table model data into "store" Map object
+  "getData" - a method that gets table model data from "store" Map object
   */
   getData(ind: number) {
     return this.store.get(ind);

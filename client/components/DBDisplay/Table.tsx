@@ -60,6 +60,7 @@ interface RowProps {
   fk: boolean;
   pk: boolean;
   type: string;
+  reference: {}[];
 }
 
 export default function Table({
@@ -101,7 +102,7 @@ export default function Table({
           constraint: obj.additional_constraints,
           pk: obj.IsPrimaryKey,
           fk: obj.IsForeignKey,
-          // col6: obj.References,
+          reference: obj.References,
         });
       });
     }
@@ -117,7 +118,7 @@ export default function Table({
         constraint: obj.additional_constraints,
         pk: obj.IsPrimaryKey,
         fk: obj.IsForeignKey,
-        // col6: obj.References,
+        reference: obj.References,
       });
     });
   }
@@ -376,11 +377,11 @@ export default function Table({
     const dataAfterChange: any = {};
     const col: any = {};
     rows.forEach((obj: RowProps) => {
-      const { id, column, constraint, fk, pk, type } = obj;
+      const { id, column, constraint, fk, pk, type, reference } = obj;
       col[column] = {
         IsForeignKey: fk,
         IsPrimaryKey: pk,
-        References: [],
+        References: reference,
         TableName: tablename,
         additional_constraints: constraint,
         data_type: type,
