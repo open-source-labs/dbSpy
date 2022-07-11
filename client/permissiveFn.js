@@ -3,6 +3,22 @@
 2. DIscuss how we might want to handle request to change datatype
 
 */
+// constraints
+const objConstraints = { "UNIQUE": true, "PRIMARY KEY": true, "FOREIGN KEY": true, "CHECK": true, "EXCLUSION": true, "NOT NULL": true};
+
+
+// restricted col names
+const restrictedColNames = { "ALL": true, "ANALYSE": true, "ANALYZE": true, "AND": true, "ANY": true, "ARRAY": true, "AS": true, "ASC": true, "ASYMMETRIC": true, "BOTH": true, "CASE": true, "CAST": true, "CHECK": true, "COLLATE": true, "COLUMN": true, "CONSTRAINT": true, "CREATE": true, "CURRENT_CATALOG": true, "CURRENT_DATE": true, "CURRENT_ROLE": true, "CURRENT_TIME": true, "CURRENT_TIMESTAMP": true, "CURRENT_USER": true, "DEFAULT": true, "DEFERRABLE": true, "DESC": true, "DISTINCT": true, "DO": true, "ELSE": true, "END": true, "EXCEPT": true, "FALSE": true, "FETCH": true, "FOR": true, "FOREIGN": true, "FROM": true, "GRANT": true, "GROUP": true, "HAVING": true, "IN": true, "INITIALLY": true, "INTERSECT": true, "INTO": true, "LATERAL": true, "LEADING": true, "LIMIT": true, "LOCALTIME": true, "LOCALTIMESTAMP": true, "NOT": true, "NULL": true, "OFFSET": true, "ON": true, "ONLY": true, "OR": true, "ORDER": true, "PLACING": true, "PRIMARY": true, "REFERENCES": true, "RETURNING": true, "SELECT": true, "SESSION_USER": true, "SOME": true, "SYMMETRIC": true, "TABLE": true, "THEN": true, "TO": true, "TRAILING": true, "true": true, "UNION": true, "UNIQUE": true, "USER": true, "USING": true, "VARIADIC": true, "WHEN": true, "WHERE": true, "WINDOW": true, "WITH": true};
+
+
+
+
+
+
+
+
+
+
 
 /*
 let TableBeforeChange = {
@@ -850,20 +866,12 @@ let tableName = "public.accounts"
 */
 export default function permissiveColumnCheck(ColBeforeChange, ColAfterChange, tableName, TableBeforeChange) {
 
-    console.log(ColAfterChange);
-    console.log(ColBeforeChange);
-    console.log(tableName);
-    console.log(TableBeforeChange);
+    console.log('---------->',ColAfterChange);
+    console.log('---------->',ColBeforeChange);
+    console.log('---------->',tableName);
+    console.log('---------->',TableBeforeChange);
   
     
-// constraints
-const objConstraints = { "UNIQUE": true, "PRIMARY KEY": true, "FOREIGN KEY": true, "CHECK": true, "EXCLUSION": true, "NOT NULL": true}
-
-
-// restricted col names
-const restrictedColNames = { "ALL": true, "ANALYSE": true, "ANALYZE": true, "AND": true, "ANY": true, "ARRAY": true, "AS": true, "ASC": true, "ASYMMETRIC": true, "BOTH": true, "CASE": true, "CAST": true, "CHECK": true, "COLLATE": true, "COLUMN": true, "CONSTRAINT": true, "CREATE": true, "CURRENT_CATALOG": true, "CURRENT_DATE": true, "CURRENT_ROLE": true, "CURRENT_TIME": true, "CURRENT_TIMESTAMP": true, "CURRENT_USER": true, "DEFAULT": true, "DEFERRABLE": true, "DESC": true, "DISTINCT": true, "DO": true, "ELSE": true, "END": true, "EXCEPT": true, "FALSE": true, "FETCH": true, "FOR": true, "FOREIGN": true, "FROM": true, "GRANT": true, "GROUP": true, "HAVING": true, "IN": true, "INITIALLY": true, "INTERSECT": true, "INTO": true, "LATERAL": true, "LEADING": true, "LIMIT": true, "LOCALTIME": true, "LOCALTIMESTAMP": true, "NOT": true, "NULL": true, "OFFSET": true, "ON": true, "ONLY": true, "OR": true, "ORDER": true, "PLACING": true, "PRIMARY": true, "REFERENCES": true, "RETURNING": true, "SELECT": true, "SESSION_USER": true, "SOME": true, "SYMMETRIC": true, "TABLE": true, "THEN": true, "TO": true, "TRAILING": true, "true": true, "UNION": true, "UNIQUE": true, "USER": true, "USING": true, "VARIADIC": true, "WHEN": true, "WHERE": true, "WINDOW": true, "WITH": true}
-
-
 
 
 //get current table involved with change. 
@@ -875,7 +883,14 @@ let impactedTable = TableBeforeChange[tableName];
    let err = {} //error response handler
 
    //check Col Name Change Before vs. After
-   if (ColAfterChange.column !== ColBeforeChange.column)
+
+   if (ColAfterChange.isNew)
+   {
+     let UQueryNewCol =  'ALTER TABLE ' + tableName +
+    ' ADD ' + ColAfterChange.column + ' ' + ColAfterChange.type;
+    querySet.push(UQueryNewCol);
+   }
+   else (ColAfterChange.column !== ColBeforeChange.column);
    {
         
         console.log("hey",ColAfterChange)
@@ -894,7 +909,8 @@ let impactedTable = TableBeforeChange[tableName];
         return ([{status: "failed", errorMsg:"Restricted Column Name Violation to Table"}]);
        }
 
-       //regex check valid Column Name against Postgres ruleset. 
+       //regex check valid Column Name against Postgres ruleset.
+      
        const regex =  /^[a-zA-Z_][a-zA-Z0-9_]*$/;
     //    console.log(ColAfterChange.column.match(regex));
     //    console.log(ColAfterChange.column);
@@ -922,9 +938,9 @@ let impactedTable = TableBeforeChange[tableName];
        let nameQuery = "ALTER TABLE ".concat(tableName).concat(" RENAME COLUMN ").concat(ColBeforeChange.column).concat(" TO ").concat(ColAfterChange.column).concat(";")
        querySet.push({type:'single', query:nameQuery});
 
-       console.log(querySet)
+       console.log(querySet);
    }
-
+    console.log('after the column is done', querySet)
    //check constraint col for changes. This should be an obj of objs, so we will code both
    //type for now
    if (typeof(ColAfterChange.constraint) == "string")
@@ -966,31 +982,55 @@ let impactedTable = TableBeforeChange[tableName];
 
 
         }
-        
+   
        console.log(newConstObj.constraint)
 
-        for (let constr in newConstObj.constraint) {
-        console.log(constr, newConstObj.constraint[constr]) 
+        for (const constr in newConstObj.constraint) {
+        console.log(constr, newConstObj.constraint[constr]);
 
         if (newConstObj.constraint[constr])
         {
 
             if (newConstObj.constraint[constr].action == 'add')
             {
-                let UQuery = 'ALTER TABLE '.concat(tableName).concat(' ADD CONSTRAINT ').concat(constr).concat(ColAfterChange.column).concat(' ').concat(constr).concat(' ').concat(ColAfterChange.column).concat(';');
-                querySet.push({type:'single', query:UQuery});
-                console.log(querySet)
+
+
+                if (constr.toUpperCase() == "UNIQUE")
+              {
+                let Query1 = 'ALTER TABLE \'' + tableName + '\' ADD UNIQUE (\'' + ColAfterChange.column + '\' );';
+                
+                querySet.push( {type:'single', query:Query1});
+              }
+
+              if (constr.toUpperCase() == "NOT NULL")
+              {
+                let Query1 = 'alter table ' + tableName + ' alter column ' + ColAfterChange.column + ' set not null;';
+                
+                querySet.push( {type:'single', query:Query1});
+
+              }
+
         
             }
 
             if (newConstObj.constraint[constr].action == 'remove')
            {
             
-            // let UQuery1 = 'select concat(\'alter table '+tableName+' drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \''+tableName.split(".")[0]+'\' and table_name=\''.concat(tableName.split(".")[1]).concat('\' and constraint_type = \''+ constr +'\';');
-            // console.log(UQuery1)
-            // querySet.push( {type:'returnQuery', query:UQuery1});
-            let UQuery1 = 'ALTER TABLE \'' + tableName + '\' ALTER \'' + ColAfterChange.column + '\' DROP ' + constr;
-            querySet.push( {type:'single', query:UQuery1});
+
+              if (constr.toUpperCase() == "UNIQUE")
+              {
+                let UQuery1 = 'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' + tableName.split(".")[0] + '\' AND table_constraints.table_name=\'' + tableName.split(".")[1] + '\' AND constraint_type=\'' + 'UNIQUE' + '\' AND key_column_usage.column_name= \'' + ColAfterChange.column + '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$';
+                console.log(UQuery1);
+                querySet.push( {type:'single', query:UQuery1});
+              }
+
+
+              if (constr.toUpperCase() == "NOT NULL")
+              {
+                let UQuery1 = 'ALTER TABLE ' + tableName + ' ALTER COLUMN ' + ColAfterChange.column + ' DROP NOT NULL;';
+                querySet.push( {type:'single', query:UQuery1});
+              }
+
            }
 
 
@@ -1033,9 +1073,9 @@ let impactedTable = TableBeforeChange[tableName];
 
           */
 
-           objChangeSet.pk = {action: "add", type:"PRIMARY KEY", constraint_name: 'pk_'.concat(ColAfterChange.column.toLowerCase()), column: ColAfterChange.column};
+           objChangeSet.pk = {action: "add", type:"PRIMARY KEY", constraint_name: 'pk_'.concat(tableName.split(".")[1].toLowerCase()), column: ColAfterChange.column};
 
-           let queryPrimary = 'ALTER TABLE '+tableName+' ADD CONSTRAINT \''+objChangeSet.pk.constraint_name +'\' PRIMARY KEY \''+ ColAfterChange.column +'\'';
+           const queryPrimary = 'ALTER TABLE ' + tableName.split(".")[1] + ' ADD CONSTRAINT pk_' + tableName.split(".")[1] + ' PRIMARY KEY (' + ColAfterChange.column + ');';
             //console.log(queryPrimary)
            querySet.push( {type:'single', query:queryPrimary});
         }
@@ -1048,14 +1088,56 @@ let impactedTable = TableBeforeChange[tableName];
              return ([{status: "failed", errorMsg:"Postgres restriction. Primary Key cannot be dropped due to dependences"}]);
            } 
            objChangeSet.pk = {action: "remove"};
+             
+           let UQuery1 = 'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' + tableName.split(".")[0] + '\' AND table_constraints.table_name=\'' + tableName.split(".")[1] + '\' AND constraint_type=\'PRIMARY KEY\' AND key_column_usage.column_name= \'' + ColAfterChange.column + '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$';
+           console.log(UQuery1);
+           querySet.push( {type:'single', query:UQuery1});          
         }
-  
+
+   }
+   if (ColAfterChange.fk !==  ColBeforeChange.fk)
+   {
+        
+     
+        if (ColAfterChange.fk == true)
+        {
+           
+   // Assume informaiton is in references object of ColAfterChange as follows: 
+        /*
+
+        References
+                {
+                    "PrimaryKeyName": "user_id integer",
+                    "ReferencesPropertyName": "id integer NOT NULL",
+                    "PrimaryKeyTableName": "public.profile",
+                    "ReferencesTableName": "public.user_accounts",
+                    "IsDestination": true,
+                    "constrainName": "profile_user_id_fkey"
+                }
+
+        */
+       
+            const queryForeign = 'ALTER TABLE ' + ColAfterChange.References.ReferencesTableName + ' ADD CONSTRAINT ' + tableName.split(".")[1] + '_' + ColAfterChange.column + '_fkey  FOREIGN KEY (' + ColAfterChange.References.ReferencesPropertyName.split(' ')[0] + ') REFERENCES ' + ColAfterChange.References.PrimaryKeyTableName + '(' + ColAfterChange.References.PrimaryKeyName.split(' ')[0] + ');';
+
+            querySet.push( {type:'single', query:queryForeign});
+
+        }
+        else
+        {
+            objChangeSet.fk = {action: "remove"};
+             
+            let UQuery1 =  'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' + tableName.split(".")[0] + '\' AND table_constraints.table_name=\'' + tableName.split(".")[1] + '\'AND constraint_type=\'FOREIGN KEY\' AND key_column_usage.column_name= \'' + ColAfterChange.column + '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$' ;
+            console.log(UQuery1);
+            querySet.push( {type:'single', query:UQuery1});   
+
+
+
+        }
 
    }
    
    console.log(querySet);
    return querySet; 
-   
-}
+} 
+ 
 
-//console.log(permissiveColumnCheck(ColBeforeChange, ColAfterChange,tableName, TableBeforeChange));
