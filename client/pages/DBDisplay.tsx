@@ -1,36 +1,17 @@
-import axios from "axios";
+// React & React Router & React Query Modules;
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+
+// Components Imported;
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
 import Sidebar from "../components/DBDisplay/Sidebar";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useForm } from "@mantine/form";
-import DataStore from "../Store";
+import FeatureTab from "../components/DBDisplay/FeatureTab";
 
-import {
-  Header,
-  AppShell,
-  Navbar,
-  ScrollArea,
-  Text,
-  UnstyledButton,
-  Group,
-  ThemeIcon,
-  Modal,
-  TextInput,
-  Box,
-  Button,
-} from "@mantine/core";
-import {
-  ArrowBackUp,
-  Camera,
-  Database,
-  DatabaseImport,
-  DeviceFloppy,
-  Plus,
-  Upload,
-} from "tabler-icons-react";
+//Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
+import axios from "axios";
+import DataStore from "../Store";
+import { AppShell } from "@mantine/core";
 
 interface stateChangeProps {
   user: {
@@ -43,83 +24,72 @@ interface stateChangeProps {
   loggedIn: boolean;
 }
 
+/* "DBDisplay" Component - database visualization application page; only accessible when user is authorized; */
 export default function DBDisplay({
   user,
   setLoggedIn,
   loggedIn,
 }: stateChangeProps) {
-  // console.log("in DB Display", user);
-  const navigate = useNavigate();
-
-  /*
-  useEffect(() => {
-
-    // declare the async data fetching function
-    const fetchData = async () => {
-      const data = await fetch('/protected');
-      // convert data to json
-      const result = await data.json();
-     
-      if (result == null)
-      {
-        navigate('/login');
-      }
-    
-    }
-  
-    // call the function
-    fetchData()
-      // make sure to catch any error
-      .catch(err=> {
-        console.error
-        navigate('/login')
-      });
-  
-  },[])
-*/
-
+  /* Server Cache State or Form Input State
+  "fetchedData" - a state that stores database table model and is used to render database schema tables;
+  "tablename" - a state that stores input data (table name for a new table) from "ADD TABLE" feature;
+  */
   const [fetchedData, setFetchedData] = useState({});
-  // const [connectedToDB, setConnectedToDB] = useState(false);
-  const [sideBarOpened, setSideBarOpened] = useState(false);
   const [tablename, setTablename] = useState("");
-  const [opened, setOpened] = useState(false);
 
+  /* UI State
+  "sideBarOpened" - a state that opens and closes the side bar for database connection;
+  "menuPopUpOpened" - a state that opens and closes the Menu Pop Up for when burger icon is clicked;
+  "numEdit" - a state that tracks the table editting activity
+  "historyClick" - a state that tracks user click on Time Travel feature
+  */
+  const [sideBarOpened, setSideBarOpened] = useState(false);
+  const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
+  const [numEdit, setNumEdit] = useState(0);
+  const [historyClick, setHistoryClick] = useState(0);
+
+  /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
+  initiate "fetchedData" and Map objects in "DataStore" 
+  onSuccess: update connectedToDB global state to "true" and close the side bar
+  */
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
-      // console.log("logging data", dataToSend);
-      // console.log("Time start to load database", Date.now());
       return axios.post("/api/getSchema", dataToSend).then((res) => {
         setFetchedData(res.data);
+        DataStore.setData(res.data);
+        DataStore.setQuery([{ type: "", query: "" }]);
+
+        //Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
         console.log("this is retrieved data from server,: ", res.data);
-        // console.log("Time Done to Load Database", Date.now());
-        DataStore.getData(res.data);
-        DataStore.getQuery([{ type: "", query: "" }]);
         console.log("this is dataStore: ", DataStore);
       });
     },
     {
       onSuccess: () => {
         DataStore.connect();
-        console.log("connected?", DataStore.connectedToDB);
-        // setConnectedToDB(true);
         setSideBarOpened(false);
       },
     }
   );
 
+  /* useEffect:
+  "loggedIn" gets set to "true"; localStorage also gets set to "true"
+  gets triggered when table editting is done or History list is clicked.
+  Client-side caching implemented with latest update of table model. 
+  */
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
 
-    if (loggedIn) {
-      const savedData = DataStore.store.get(DataStore.store.size - 1);
+    if (loggedIn && DataStore.ind > 0) {
+      const savedData = DataStore.getData(DataStore.store.size - 1);
       if (savedData) {
         setFetchedData(savedData);
         console.log("this is saved: ", savedData);
       }
     }
   }, []);
-  console.log("this is fetchedData from dbdisplay,", fetchedData);
+
   return (
     <AppShell
       padding="md"
@@ -127,8 +97,8 @@ export default function DBDisplay({
         <DisplayHeader
           name={user.name}
           picture={user.picture}
-          opened={opened}
-          setOpened={setOpened}
+          menuPopUpOpened={menuPopUpOpened}
+          setMenuPopUpOpened={setMenuPopUpOpened}
           setLoggedIn={setLoggedIn}
         />
       }
@@ -138,6 +108,8 @@ export default function DBDisplay({
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
+          historyClick={historyClick}
+          setHistoryClick={setHistoryClick}
         ></FeatureTab>
       }
       styles={(theme) => ({
@@ -145,9 +117,10 @@ export default function DBDisplay({
         body: { height: "100%" },
         main: {
           backgroundColor: "transparent",
-          // theme.colorScheme === "dark"
-          //   ? theme.colors.dark[8]
-          //   : theme.colors.gray[0],
+          // backgroundColor:
+          //   theme.colorScheme === "dark"
+          //     ? theme.colors.dark[8]
+          //     : theme.colors.gray[0],
         },
       })}
     >
@@ -163,281 +136,10 @@ export default function DBDisplay({
         isErrorProps={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
-        // disconnect={DataStore.disconnect}
-        // connectedToDB={DataStore.connectedToDB}
-        // setConnectedToDB={setConnectedToDB}
-        sideBarOpened={sideBarOpened}
         setSideBarOpened={setSideBarOpened}
-        tablename={tablename}
+        setNumEdit={setNumEdit}
+        numEdit={numEdit}
       />
     </AppShell>
-  );
-}
-
-interface FeatureTabProps {
-  setTablename: (e: string) => void;
-  fetchedData: {};
-  setFetchedData: (e: {}) => void;
-}
-
-function FeatureTab({
-  setTablename,
-  setFetchedData,
-  fetchedData,
-}: FeatureTabProps) {
-  const [modalOpened, setModalOpened] = useState(false);
-  const form = useForm({
-    initialValues: {
-      tablename: "",
-    },
-  });
-
-  return (
-    <Navbar width={{ base: 225 }} height={500} p="xs">
-      {/* <Navbar.Section>LOGO</Navbar.Section> */}
-      <Modal
-        opened={modalOpened}
-        onClose={() => setModalOpened(false)}
-        title="Type new table name: "
-      >
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-          <form
-            onSubmit={form.onSubmit((values) => {
-              setTablename(values.tablename);
-              setFetchedData({
-                ...fetchedData,
-                ["public." + values.tablename]: {},
-              });
-              // DataStore.getData({
-              //   ...fetchedData,
-              //   ["public." + values.tablename]: {},
-              // });
-              console.log("after creation of table", DataStore.store);
-              setModalOpened(false);
-              form.setValues({
-                tablename: "",
-              });
-            })}
-          >
-            <TextInput
-              required
-              data-autofocus
-              label="Table Name: "
-              //   autoComplete="arjuna.db.elephantsql.com"
-              //   placeholder="Host"
-              {...form.getInputProps("tablename")}
-            />
-            <Group position="right" mt="md">
-              <Button type="submit">Create</Button>
-            </Group>
-          </form>
-        </Box>
-      </Modal>
-
-      <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <div style={{ fontSize: "24px", margin: "10px" }}>FILE</div>
-        <hr />
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <Database />
-            </ThemeIcon>
-            <Text size="md">CREATE NEW</Text>
-          </Group>
-        </UnstyledButton>
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <Upload />
-            </ThemeIcon>
-            <Text size="md">LOAD JSON FILE</Text>
-          </Group>
-        </UnstyledButton>
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <DatabaseImport />
-            </ThemeIcon>
-            <Text size="md">LOAD SQL FILE</Text>
-          </Group>
-        </UnstyledButton>
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <DeviceFloppy />
-            </ThemeIcon>
-            <Text size="md">SAVE</Text>
-          </Group>
-        </UnstyledButton>
-      </Navbar.Section>
-      <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>EDIT</div> <hr />
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-          onClick={() => setModalOpened(true)}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <Plus />
-            </ThemeIcon>
-            <Text size="md">ADD TABLE</Text>
-          </Group>
-        </UnstyledButton>
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <ArrowBackUp />
-            </ThemeIcon>
-            <Text size="md">UNDO</Text>
-          </Group>
-        </UnstyledButton>
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <Camera />
-            </ThemeIcon>
-            <Text size="md">SCREENSHOT</Text>
-          </Group>
-        </UnstyledButton>
-      </Navbar.Section>
-    </Navbar>
   );
 }

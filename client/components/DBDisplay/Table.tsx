@@ -1,4 +1,4 @@
-import React, { DragEvent, useState } from "react";
+import React, { DragEvent, useEffect, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -48,6 +48,9 @@ interface TableProps {
     };
   };
   id: string;
+  setNumEdit: (numEdit: number) => void;
+  numEdit: number;
+  setFetchedData: (fetchedData: any) => void;
 }
 
 interface RowProps {
@@ -57,9 +60,16 @@ interface RowProps {
   fk: boolean;
   pk: boolean;
   type: string;
+  reference: {}[];
 }
 
-export default function Table({ tableInfo, id }: TableProps) {
+export default function Table({
+  tableInfo,
+  id,
+  setNumEdit,
+  numEdit,
+  setFetchedData,
+}: TableProps) {
   // console.log("this is tableinfo from table: ", tableInfo);
   // const { Name, Properties } = tableInfo;
 
@@ -80,7 +90,25 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   const tablename = id;
   let rowArr: Array<any> = [];
-  console.log("this is the table we editted", tablename);
+
+  useEffect(() => {
+    let rowArr2: Array<any> = [];
+    if (Object.keys(tableInfo).length) {
+      Object.values(tableInfo).forEach((obj, ind) => {
+        rowArr2.push({
+          id: obj.field_name,
+          column: obj.field_name,
+          type: obj.data_type,
+          constraint: obj.additional_constraints,
+          pk: obj.IsPrimaryKey,
+          fk: obj.IsForeignKey,
+          reference: obj.References,
+        });
+      });
+    }
+    setRows(rowArr2);
+  }, [tableInfo]);
+
   if (Object.keys(tableInfo).length) {
     Object.values(tableInfo).forEach((obj, ind) => {
       rowArr.push({
@@ -90,13 +118,14 @@ export default function Table({ tableInfo, id }: TableProps) {
         constraint: obj.additional_constraints,
         pk: obj.IsPrimaryKey,
         fk: obj.IsForeignKey,
-        // col6: obj.References,
+        reference: obj.References,
       });
     });
   }
 
   // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
+  // console.log(rows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
@@ -199,7 +228,7 @@ export default function Table({ tableInfo, id }: TableProps) {
     console.log("tablename: ", tablename);
     console.log(
       "tableBeforechange: ",
-      DataStore.store.get(DataStore.store.size - 1)
+      DataStore.getData(DataStore.store.size - 1)
     );
     // console.log(
     //   "this is Query",
@@ -215,7 +244,7 @@ export default function Table({ tableInfo, id }: TableProps) {
       ColBeforeChange,
       newRow,
       tablename,
-      DataStore.store.get(DataStore.store.size - 1)
+      DataStore.getData(DataStore.store.size - 1)
     );
 
     if (Object.keys(queryResult[0])[0] === "status") {
@@ -228,7 +257,7 @@ export default function Table({ tableInfo, id }: TableProps) {
     }
 
     DataStore.queryList.push(...queryResult);
-    DataStore.getQuery(DataStore.queryList.slice());
+    DataStore.setQuery(DataStore.queryList.slice());
     console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
@@ -238,7 +267,7 @@ export default function Table({ tableInfo, id }: TableProps) {
       rows.map((row) => (row.id === newRow.id ? updatedRow : row))
     );
     //console.log("this is updatedRow:", updatedRow);
-
+    setNumEdit(numEdit + 1);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -348,11 +377,11 @@ export default function Table({ tableInfo, id }: TableProps) {
     const dataAfterChange: any = {};
     const col: any = {};
     rows.forEach((obj: RowProps) => {
-      const { id, column, constraint, fk, pk, type } = obj;
+      const { id, column, constraint, fk, pk, type, reference } = obj;
       col[column] = {
         IsForeignKey: fk,
         IsPrimaryKey: pk,
-        References: [],
+        References: reference,
         TableName: tablename,
         additional_constraints: constraint,
         data_type: type,
@@ -361,10 +390,11 @@ export default function Table({ tableInfo, id }: TableProps) {
       dataAfterChange[tablename] = col;
     });
 
-    DataStore.getData({
-      ...DataStore.store.get(DataStore.store.size - 1),
+    DataStore.setData({
+      ...DataStore.getData(DataStore.store.size - 1),
       ...dataAfterChange,
     });
+    setFetchedData(DataStore.getData(DataStore.store.size - 1));
     console.log("this is dataStore2:", DataStore.store);
     console.log("this is data After Change: ", dataAfterChange);
   }

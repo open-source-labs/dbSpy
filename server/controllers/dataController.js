@@ -39,6 +39,57 @@ const writeSchema = async (command) => {
   }
 };
 
+dataController.testDrop = (req, res, next) => {
+let uri = 'postgres://cwoalfud:jqrPGXvWd8vqZydnDinBiWy1gS4C_a9J@arjuna.db.elephantsql.com/cwoalfud';
+
+/*
+  let querytest = "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema = 'public' AND table_constraints.table_name='films' AND constraint_type='UNIQUE' AND key_column_usage.column_name= 'title' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
+*/
+
+const ColAfterChange = { 
+  "column": "title_new",
+  "constraint": " ",
+  "fk": true,
+  "type": "integer",
+  "id": "title",
+  "isNew": false,
+  "pk": false,
+  
+  
+       "References": 
+              {
+                  "PrimaryKeyName": "_id",
+                  "ReferencesPropertyName": "person_id integer NOT NULL",
+                  "PrimaryKeyTableName": "public.people",
+                  "ReferencesTableName": "public.people_in_films",
+                  "IsDestination": false
+              }
+          
+  
+}
+
+let tableName = "public.alphabet";
+
+  let UQueryNewCol =  'ALTER TABLE ' + tableName +
+' ADD ' + ColAfterChange.column + ' ' + ColAfterChange.type;
+
+ //querySet.push( {type:'single', query:queryForeign});
+
+/*
+  const pool = new Pool({
+    connectionString: uri,
+  });
+
+
+  pool.query(querytest).then(data => {
+    return next();
+  });
+
+*/
+res.locals.testresponse = UQueryNewCol; 
+next();
+};
+
 //getSchema controller allows the user
 dataController.getSchema = (req, res, next) => {
   // let result = null;
@@ -837,76 +888,94 @@ dataController.openSchema = (req, res, next) => {
 dataController.postSchema = (req, res) => {};
 
 dataController.handleQueries = async (req, res, next) => {
-  // Assumption, being passed an array of queries in req.body
-  // grab PG_URI from user when they connect to DB
-  const {uri, queries} = req.body;
+  /* Assumption, being passed an array of queries in req.body
+  grab PG_URI from user when they connect to DB
 
-  //data structure in req.body
-  /*
-{
-  queries: [
+  Loop through array of queries and add them to a query string, if return query, add their outputs to the query string instead
+
+  Execute the resulting query string as a transaction */
+
+  /**
+   * Handshake block
+   */
+  // Production values
+  // const {uri, queries} = req.body;
+  // const PG_URI = uri;
+
+  // Test values
+  const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  console.log("Data received from Client", req.body);
+  const queries = [
     {
-      type: 'single', 
-      query: 'ALTER TABLE public.films RENAME COLUMN _id TO test;'
+      type: 'single',
+      query: 'SELECT * FROM public.films;',
     },
     {
       type: 'single',
-      query: 'ALTER TABLE public.films ADD CONSTRAINT UNIQUEtest UNIQUE test;'
-    },
-    {
-      type: 'returnQuery', 
-      query: "select concat('alter table public.films drop const…le_name='films' and constraint_type = 'NOT NULL';",
-      returnedQuery: 'fjkdjfkdj'
+      query: 'SELECT * FROM public.pefdgdfshsople;',
     }
-  ],
-  uri: "postgres://vjcmcaut:wcc8BHXNjyN4exqfuQVPzpdeOBJimLfg@castor.db.elephantsql.com:5432/vjcmcaut"
-}
-  */
+  ];
   
+  /**
+   * Function definition and initialization block
+   */
+  const pool = new Pool({
+    connectionString: PG_URI,
+  });
 
-  // const PG_URI =
-  //   'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  const PG_URI = uri//something
-  console.log("Data received from Client", req.body)
-  // const queryArray = ['SELECT * FROM public.films;', 'SELECT * FROM public.people;'].flat();
-  // const queryArray = [
-  //   "select concat('alter table public.people drop constraint ', constraint_name) as my_query from information_schema.table_constraints where table_schema = 'public' and table_name='people' and constraint_type = 'UNIQUE';",
-  // ].flat();
-  // , 'select concat(\'alter table public.species drop constraint \', constraint_name) as my_query from information_schema.table_constraints where table_schema = \'public\' and table_name=\'species\' and constraint_type = \'NOT NULL\';'
   const execQueries = (text, params, callback) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
   };
   
-  let queryStr = '';
-  for (let i=0; i<queries.length; i++) {
-    if (queries[i].type === 'returnQuery') {
-      //execute
-      //whatever returns, we concat to queryStr
-      // const newQuery = await execQueries(queries[i].query);
-      // queryStr = queryStr.concat(newQuery);
+  const transactionQuery = async (queryString) => {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query(queryString);
+      await client.query('COMMIT');
+    } catch (err) {
+      console.log('--Invalid query detected in handleQueries\n--Transaction declined');
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
     }
-    else queryStr = queryStr.concat(queries[i].query)
-  }
-  // const queryArray = req.body.queries;
-  // const text = queryArray.join(' ');
+  };
 
-  const pool = new Pool({
-    connectionString: PG_URI,
-  });
-  console.log(queryStr);
-  // execQueries(queryStr)
-  //   .then((data) => {
-      // console.log(data, '<-- data');
+  /**
+   * Build out query string
+   * Iterates through queries and conditionally adds either the query or the output of the query to queryStr
+   */
+  let queryStr = '';
+  for (let i = 0; i < queries.length; i++) {
+    if (queries[i].type === 'returnQuery') {
+      //execute & whatever returns, we concat to queryStr
+      const newQuery = await execQueries(queries[i].query);
+      queryStr = queryStr.concat(newQuery);
+    }
+    else queryStr = queryStr.concat(queries[i].query);
+  }
+
+  // console.log(queryStr);
+
+  /**
+   * Transaction implementation
+   * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do. CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
+   */
+  res.locals.success = false;
+
+  transactionQuery(queryStr)
+    .then(() => {
       res.locals.success = true;
-      next();
-    // })
-    // .catch((err) => {
-    //   next({
-    //     log: 'Error in handleQueries middleware',
-    //     message: { err: err },
-    //   });
-    // });
+      return next();
+    })
+    .catch((err) => {
+      next({
+        log: 'Error in handleQueries middleware',
+        message: { err: err },
+      });
+    });
 };
 
 dataController.saveSchema = (req, res) => {};

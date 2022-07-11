@@ -28,14 +28,18 @@ router.get('/getAllSchemas', controller.getAllSchemas, (req, res) => {
   res.status(200).json({ ok: 'ok' });
 });
 
+router.get('/testDrop', controller.testDrop, (req, res) => {
+  res.status(200).json(res.locals.testresponse);
+});
+
+
 router.post(
   '/getSchema',
    controller.getSchema,
    controller.objSchema,
   (req, res) => {
     console.log('called');
-    // res.status(200).json(dummydata);
-    // res.status(200).json(res.locals.data);
+    ;
     res.status(200).json(res.locals.result);
   }
 );

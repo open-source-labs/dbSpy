@@ -14,31 +14,37 @@ interface stateChangeProps {
   loggedIn: boolean;
 }
 
+/* "Home" Component - main launch page */
 export default function Home({ user, loggedIn }: stateChangeProps) {
   const navigate = useNavigate();
+
+  /*
+  "logout" - a function that fetches data from "/logout" route; 
+  it gets invoked when "LogOut" button is clicked and returns {logout: true | false}
+  Once logout is successful, navigate/redirect to "/login" route;
+  Leveraging localStorage for authentication status for component rendering;
+  */
   function logout() {
     localStorage.setItem("isLoggedIn", "false");
-
     fetch("/logout")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         navigate("/login");
       })
       .catch((err: {}) => {
-        console.log("Error:", err);
         navigate("/login");
       });
-
-    localStorage.console.log("clicked");
   }
 
-  console.log("LoggedIn?", loggedIn);
-
+  /*
+  Three main components under Home:
+  1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)
+  2. Body - contents describe dbSpy products
+  3. HomeFooter
+  */
   return (
     <div>
       <HomeNavbar />
-
       {localStorage.getItem("isLoggedIn") === "true" ? (
         <div>
           <Link to={"/"}>
@@ -57,7 +63,7 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
             <button>login</button>
           </Link>
           <Link to={"/login"}>
-            <button>display</button>
+            <button>Try for Free!</button>
           </Link>
         </div>
       )}
