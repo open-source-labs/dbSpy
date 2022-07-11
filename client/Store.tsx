@@ -84,6 +84,13 @@ class Store {
   }
 
   /* 
+  "setQuery" - a method that logs query data into "queries" Map object
+  */
+  getQuery(ind: number) {
+    return this.queries.get(ind);
+  }
+
+  /* 
   "connect" - a method that sets connectedToDB to "true"
   */
   connect() {

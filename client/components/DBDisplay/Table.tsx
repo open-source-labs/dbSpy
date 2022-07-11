@@ -228,7 +228,7 @@ export default function Table({
     console.log("tablename: ", tablename);
     console.log(
       "tableBeforechange: ",
-      DataStore.store.get(DataStore.store.size - 1)
+      DataStore.getData(DataStore.store.size - 1)
     );
     // console.log(
     //   "this is Query",
@@ -244,7 +244,7 @@ export default function Table({
       ColBeforeChange,
       newRow,
       tablename,
-      DataStore.store.get(DataStore.store.size - 1)
+      DataStore.getData(DataStore.store.size - 1)
     );
 
     if (Object.keys(queryResult[0])[0] === "status") {
@@ -391,10 +391,10 @@ export default function Table({
     });
 
     DataStore.setData({
-      ...DataStore.store.get(DataStore.store.size - 1),
+      ...DataStore.getData(DataStore.store.size - 1),
       ...dataAfterChange,
     });
-    setFetchedData(DataStore.store.get(DataStore.store.size - 1));
+    setFetchedData(DataStore.getData(DataStore.store.size - 1));
     console.log("this is dataStore2:", DataStore.store);
     console.log("this is data After Change: ", dataAfterChange);
   }

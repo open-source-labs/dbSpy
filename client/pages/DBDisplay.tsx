@@ -136,12 +136,7 @@ export default function DBDisplay({
         isErrorProps={isError}
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
-        // disconnect={DataStore.disconnect}
-        // connectedToDB={DataStore.connectedToDB}
-        // setConnectedToDB={setConnectedToDB}
-        sideBarOpened={sideBarOpened}
         setSideBarOpened={setSideBarOpened}
-        tablename={tablename}
         setNumEdit={setNumEdit}
         numEdit={numEdit}
       />

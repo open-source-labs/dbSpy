@@ -28,12 +28,7 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   isLoadingProps: boolean;
   isErrorProps: boolean;
-  // connectedToDB: boolean;
-  // disconnect: () => void;
-  // setConnectedToDB: (param: boolean) => void;
-  sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
-  tablename: string;
   setNumEdit: (numEdit: number) => void;
   numEdit: number;
 }
@@ -43,17 +38,10 @@ export default function Canvas({
   isErrorProps,
   fetchedData,
   setFetchedData,
-  // disconnect,
-  // connectedToDB,
-  // setConnectedToDB,
   setSideBarOpened,
-  tablename,
   setNumEdit,
   numEdit,
 }: CanvasProps) {
-  // const tables: JSX.Element[] = fetchedData.map((table: any, ind: number) => {
-  //   return <Table key={`Table${ind}`} id={`table${ind}`} tableInfo={table} />;
-  // });
   console.log("this is fetchedData from Canvas.tsx", fetchedData);
 
   // with new data structure
@@ -82,8 +70,6 @@ export default function Canvas({
       }
     }
   }
-
-  //console.log(refArray)
 
   const xa: JSX.Element[] = refArray.map((reff: any) => {
     return (
@@ -115,8 +101,7 @@ export default function Canvas({
     },
     {
       onSuccess: () => {
-        // console.log("clearing DataStore.queries");
-        const latestTableModel: any = DataStore.store.get(
+        const latestTableModel: any = DataStore.getData(
           DataStore.store.size - 1
         );
         DataStore.clearStore();
@@ -158,7 +143,7 @@ export default function Canvas({
     // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
 
     const dbQuery = {
-      queries: DataStore.queries.get(DataStore.queries.size - 1),
+      queries: DataStore.getQuery(DataStore.queries.size - 1),
       uri: db_uri,
     };
 
