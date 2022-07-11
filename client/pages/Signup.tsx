@@ -124,6 +124,8 @@ export default function Signup() {
             Sign up
           </Typography>
 
+          <br />
+          <br />
           <Box
             sx={{
               display: "flex",
@@ -133,6 +135,7 @@ export default function Signup() {
             }}
           >
             {/* Google & GitHub OAuth */}
+
             <Box
               sx={{
                 display: "flex",
@@ -143,7 +146,7 @@ export default function Signup() {
             >
               <Button
                 sx={{
-                  borderRadius: 5,
+                  borderRadius: 50,
                   padding: "25px 36px",
                   width: "270px",
                   fontSize: "14px",
@@ -156,7 +159,7 @@ export default function Signup() {
                 Sign up with Google
               </Button>
 
-              <Button
+              {/* <Button
                 sx={{
                   marginTop: 5,
                   borderRadius: 5,
@@ -169,11 +172,11 @@ export default function Signup() {
                 startIcon={<GitHubIcon />}
               >
                 Sign up with GitHub
-              </Button>
+              </Button> */}
             </Box>
 
             {/* Submit Form for SIGN UP */}
-            <Box
+            {/* <Box
               component="form"
               noValidate
               onSubmit={handleSubmit}
@@ -258,7 +261,7 @@ export default function Signup() {
                   <Link to="/login">Already have an account? Sign in</Link>
                 </Grid>
               </Grid>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />

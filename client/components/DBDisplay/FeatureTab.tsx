@@ -24,6 +24,7 @@ import {
   Plus,
   Upload,
 } from "tabler-icons-react";
+import { permissiveTableCheck } from "../../permissiveFn";
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
@@ -97,17 +98,40 @@ export default function FeatureTab({
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
-              setTablename(values.tablename);
-              setFetchedData({
-                ...fetchedData,
-                ["public." + values.tablename]: {},
-              });
-              // DataStore.getData({
-              //   ...fetchedData,
-              //   ["public." + values.tablename]: {},
-              // });
-              console.log("after creation of table", DataStore.store);
-              setModalOpened(false);
+              const result: any = permissiveTableCheck(
+                values.tablename,
+                fetchedData,
+                {
+                  ...fetchedData,
+                  ["public." + values.tablename]: {},
+                }
+              );
+
+              if (result[0].status) {
+                alert(result[0].errorMsg);
+              } else {
+                setTablename(values.tablename);
+                setFetchedData({
+                  ...fetchedData,
+                  ["public." + values.tablename]: {},
+                });
+                setModalOpened(false);
+                DataStore.setData({
+                  ...fetchedData,
+                  ["public." + values.tablename]: {},
+                });
+                DataStore.queryList.push(...result);
+                DataStore.setQuery(DataStore.queryList.slice());
+              }
+
+              console.log(
+                "DataStore.store after creation of table",
+                DataStore.store
+              );
+              console.log(
+                "DataStore.queries after creation of table",
+                DataStore.queries
+              );
               form.setValues({
                 tablename: "",
               });
