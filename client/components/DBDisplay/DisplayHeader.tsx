@@ -14,16 +14,16 @@ import MenuPopUp from "./MenuPopUp";
 import { Link } from "react-router-dom";
 
 interface DisplayHeaderProps {
-  opened: boolean;
-  setOpened: (opened: boolean) => void;
+  menuPopUpOpened: boolean;
+  setMenuPopUpOpened: (opened: boolean) => void;
   name: string | null;
   picture: string | null | undefined;
   setLoggedIn: (e: boolean) => void;
 }
 
 export default function DisplayHeader({
-  opened,
-  setOpened,
+  menuPopUpOpened,
+  setMenuPopUpOpened,
   name,
   picture,
   setLoggedIn,
@@ -70,7 +70,10 @@ export default function DisplayHeader({
           }}
         >
           <MediaQuery largerThan="sm" styles={{ display: "block" }}>
-            <MenuPopUp opened={opened} setOpened={setOpened} />
+            <MenuPopUp
+              opened={menuPopUpOpened}
+              setOpened={setMenuPopUpOpened}
+            />
           </MediaQuery>
 
           <Link to="/">

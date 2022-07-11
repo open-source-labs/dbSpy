@@ -1,4 +1,4 @@
-import React, { DragEvent, useState } from "react";
+import React, { DragEvent, useEffect, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -48,6 +48,9 @@ interface TableProps {
     };
   };
   id: string;
+  setNumEdit: (numEdit: number) => void;
+  numEdit: number;
+  setFetchedData: (fetchedData: any) => void;
 }
 
 interface RowProps {
@@ -59,7 +62,13 @@ interface RowProps {
   type: string;
 }
 
-export default function Table({ tableInfo, id }: TableProps) {
+export default function Table({
+  tableInfo,
+  id,
+  setNumEdit,
+  numEdit,
+  setFetchedData,
+}: TableProps) {
   // console.log("this is tableinfo from table: ", tableInfo);
   // const { Name, Properties } = tableInfo;
 
@@ -80,7 +89,25 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   const tablename = id;
   let rowArr: Array<any> = [];
-  console.log("this is the table we editted", tablename);
+
+  useEffect(() => {
+    let rowArr2: Array<any> = [];
+    if (Object.keys(tableInfo).length) {
+      Object.values(tableInfo).forEach((obj, ind) => {
+        rowArr2.push({
+          id: obj.field_name,
+          column: obj.field_name,
+          type: obj.data_type,
+          constraint: obj.additional_constraints,
+          pk: obj.IsPrimaryKey,
+          fk: obj.IsForeignKey,
+          // col6: obj.References,
+        });
+      });
+    }
+    setRows(rowArr2);
+  }, [tableInfo]);
+
   if (Object.keys(tableInfo).length) {
     Object.values(tableInfo).forEach((obj, ind) => {
       rowArr.push({
@@ -97,6 +124,7 @@ export default function Table({ tableInfo, id }: TableProps) {
 
   // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
+  // console.log(rows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
@@ -228,7 +256,7 @@ export default function Table({ tableInfo, id }: TableProps) {
     }
 
     DataStore.queryList.push(...queryResult);
-    DataStore.getQuery(DataStore.queryList.slice());
+    DataStore.setQuery(DataStore.queryList.slice());
     console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
@@ -238,7 +266,7 @@ export default function Table({ tableInfo, id }: TableProps) {
       rows.map((row) => (row.id === newRow.id ? updatedRow : row))
     );
     //console.log("this is updatedRow:", updatedRow);
-
+    setNumEdit(numEdit + 1);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -361,10 +389,11 @@ export default function Table({ tableInfo, id }: TableProps) {
       dataAfterChange[tablename] = col;
     });
 
-    DataStore.getData({
+    DataStore.setData({
       ...DataStore.store.get(DataStore.store.size - 1),
       ...dataAfterChange,
     });
+    setFetchedData(DataStore.store.get(DataStore.store.size - 1));
     console.log("this is dataStore2:", DataStore.store);
     console.log("this is data After Change: ", dataAfterChange);
   }

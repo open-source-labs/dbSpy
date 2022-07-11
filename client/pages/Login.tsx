@@ -1,23 +1,28 @@
+// React & React Router Modules
 import React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import GoogleIcon from "@mui/icons-material/Google";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 
+// UI components from MUI
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+
+// Icon components from MUI
+import CloseIcon from "@mui/icons-material/Close";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GoogleIcon from "@mui/icons-material/Google";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { IconButton } from "@mui/material";
+
+/* Copyright component that is used as a footer for login page */
 function Copyright(props: any) {
   return (
     <Typography
@@ -36,6 +41,7 @@ function Copyright(props: any) {
   );
 }
 
+/* styling theme set up for login page */
 const theme = createTheme({
   palette: {
     primary: {
@@ -50,31 +56,43 @@ const theme = createTheme({
   },
 });
 
+/* "Login" Component - login page for user login */
 export default function Login() {
+  /*
+  "google" - a function that gets invoked when Google login button is clicked;
+  Opens up "http://localhost:8080/auth/google", the page that asks for authorization for server to receive access token from Google;
+  */
   const google = () => {
     const strWindowFeatures =
       "toolbar=no, menubar=no, width=600, height=700, top=100, left=100";
-
     window.open(
       "http://localhost:8080/auth/google",
       "_self",
       strWindowFeatures
     );
-
-    console.log("clicked window ");
   };
 
+  /*
+  "handleSubmit" - a function that gets invoked when LOGIN button is clicked with user credentials.
+  Event is currently prevented with event.preventDefault() method
+  */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    if (data.get("email") === "") alert("Email is missing");
+    else if (data.get("password") === "") alert("Password is missing");
+    else {
+      console.log({
+        email: data.get("email"),
+        password: data.get("password"),
+        rememberMe: data.get("checked"),
+      });
+    }
   };
 
   return (
     <ThemeProvider theme={theme}>
+      {/* Closing Button X on right top */}
       <Link to="/">
         <IconButton
           aria-label="delete"
@@ -106,19 +124,7 @@ export default function Login() {
             Welcome Back!
           </Typography>
 
-          {/* <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          > */}
-
-          {/* <Typography sx={{ mr: 0, ml: 0, textAlign: "center" }}>
-              or...
-            </Typography> */}
-
+          {/* Submit Form for login credentials */}
           <Box
             component="form"
             noValidate
@@ -150,6 +156,7 @@ export default function Login() {
                   color="primary"
                 />
               </Grid>
+
               <Grid
                 container
                 sx={{
@@ -161,7 +168,7 @@ export default function Login() {
                 <Grid item>
                   <FormControlLabel
                     control={
-                      <Checkbox value="allowExtraEmails" color="primary" />
+                      <Checkbox name="checked" value="true" color="primary" />
                     }
                     label="Remember me?"
                   />
@@ -177,10 +184,8 @@ export default function Login() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                login
+                LOGIN
               </Button>
-
-              {/* </Box> */}
             </Grid>
           </Box>
 
@@ -188,40 +193,37 @@ export default function Login() {
             or sign in with:
           </Typography>
 
+          {/* Google & GitHub OAuth buttons */}
           <Box>
             <Button
               onClick={google}
               sx={{
                 borderRadius: 50,
-                // padding: "25px 36px",
                 padding: "25px 25px",
                 margin: "0px 5px",
-                // width: "200px",
                 fontSize: "14px",
               }}
               variant="contained"
               color="secondary"
-              //   startIcon={<GoogleIcon />}
             >
               <GoogleIcon fontSize="large" />
             </Button>
+
             <Button
               sx={{
                 borderRadius: 50,
-                // padding: "25px 36px",
                 padding: "25px 25px",
                 margin: "0px 5px",
-                // width: "200px",
                 fontSize: "14px",
               }}
               variant="contained"
               color="secondary"
-              //   startIcon={<GitHubIcon />}
             >
               <GitHubIcon fontSize="large" />
             </Button>
           </Box>
 
+          <br />
           <Link to="/signup">Don't have an account?</Link>
         </Box>
         <Copyright sx={{ mt: 5 }} />

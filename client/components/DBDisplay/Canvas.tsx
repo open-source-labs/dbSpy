@@ -34,6 +34,8 @@ interface CanvasProps {
   sideBarOpened: boolean;
   setSideBarOpened: (param: boolean) => void;
   tablename: string;
+  setNumEdit: (numEdit: number) => void;
+  numEdit: number;
 }
 
 export default function Canvas({
@@ -46,10 +48,13 @@ export default function Canvas({
   // setConnectedToDB,
   setSideBarOpened,
   tablename,
+  setNumEdit,
+  numEdit,
 }: CanvasProps) {
   // const tables: JSX.Element[] = fetchedData.map((table: any, ind: number) => {
   //   return <Table key={`Table${ind}`} id={`table${ind}`} tableInfo={table} />;
   // });
+  console.log("this is fetchedData from Canvas.tsx", fetchedData);
 
   // with new data structure
   const tables: JSX.Element[] = Object.keys(fetchedData).map(
@@ -59,11 +64,13 @@ export default function Canvas({
           key={`Table${ind}`}
           id={tablename}
           tableInfo={fetchedData[tablename]}
+          setNumEdit={setNumEdit}
+          numEdit={numEdit}
+          setFetchedData={setFetchedData}
         />
       );
     }
   );
-  //console.log("this is fetchedData from Canvas.tsx", fetchedData);
 
   let refArray: string[] = [];
 
@@ -105,8 +112,8 @@ export default function Canvas({
           DataStore.store.size - 1
         );
         DataStore.clearStore();
-        DataStore.getQuery([{ type: "", query: "" }]);
-        DataStore.getData(latestTableModel);
+        DataStore.setQuery([{ type: "", query: "" }]);
+        DataStore.setData(latestTableModel);
         setFetchedData(latestTableModel);
         console.log("is DataStore cleared?", DataStore);
       },
