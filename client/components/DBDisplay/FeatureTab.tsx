@@ -264,7 +264,10 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
-          onClick={() => setModalOpened(true)}
+          onClick={() => {
+            DataStore.connect();
+            setModalOpened(true);
+          }}
         >
           <Group>
             <ThemeIcon
