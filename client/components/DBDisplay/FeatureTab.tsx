@@ -24,7 +24,9 @@ import {
   Plus,
   Upload,
 } from "tabler-icons-react";
+
 import { permissiveTableCheck } from "../../permissiveFn";
+
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
@@ -98,6 +100,7 @@ export default function FeatureTab({
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
+
               const result: any = permissiveTableCheck(
                 values.tablename,
                 fetchedData,
@@ -132,6 +135,7 @@ export default function FeatureTab({
                 "DataStore.queries after creation of table",
                 DataStore.queries
               );
+
               form.setValues({
                 tablename: "",
               });

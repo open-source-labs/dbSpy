@@ -8,6 +8,7 @@ import DisplayHeader from "../components/DBDisplay/DisplayHeader";
 import FeatureTab from "../components/DBDisplay/FeatureTab";
 import Sidebar from "../components/DBDisplay/Sidebar";
 
+
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from "axios";
 import DataStore from "../Store";
@@ -58,6 +59,7 @@ export default function DBDisplay({
         setFetchedData(res.data);
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: "", query: "" }]);
+
         localStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
         );
@@ -74,6 +76,7 @@ export default function DBDisplay({
     {
       onSuccess: () => {
         DataStore.connect();
+
         localStorage.dbConnect = "true";
         localStorage.count = 0;
         setSideBarOpened(false);
@@ -126,6 +129,7 @@ export default function DBDisplay({
   // }, [DataStore.connectedToDB]);
 
   //OLD VERSION
+
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");

@@ -125,6 +125,7 @@ export default function Login() {
           </Typography>
 
           {/* Submit Form for login credentials */}
+
           {/* <Box
             component="form"
             noValidate
@@ -196,6 +197,7 @@ export default function Login() {
           {/* Google & GitHub OAuth buttons */}
           <br />
           <br />
+
           <Box>
             <Button
               onClick={google}
@@ -212,6 +214,7 @@ export default function Login() {
             >
               LOGIN WITH GOOGLE
             </Button>
+
 
             {/* <Button
               sx={{
