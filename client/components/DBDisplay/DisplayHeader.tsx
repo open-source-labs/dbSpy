@@ -79,7 +79,7 @@ export default function DisplayHeader({
         </div>
 
         <div style={{ color: "white", borderColor: "white", flex: "1fr" }}>
-          LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022
+          LATEST UPDATE: Version 1.0.0 Launched on July 23rd, 2022
         </div>
 
         <Box
