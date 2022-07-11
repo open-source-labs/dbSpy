@@ -5,10 +5,10 @@ import { useMutation } from "react-query";
 // Components Imported;
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
-import Sidebar from "../components/DBDisplay/Sidebar";
 import FeatureTab from "../components/DBDisplay/FeatureTab";
+import Sidebar from "../components/DBDisplay/Sidebar";
 
-//Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
+// Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";

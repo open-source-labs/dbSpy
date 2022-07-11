@@ -4,8 +4,6 @@ import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
 
 import {
-  Header,
-  AppShell,
   Navbar,
   ScrollArea,
   Text,
