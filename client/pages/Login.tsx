@@ -3,7 +3,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 // UI components from MUI
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,6 +13,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // Icon components from MUI
 import CloseIcon from "@mui/icons-material/Close";
