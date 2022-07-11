@@ -884,13 +884,13 @@ let impactedTable = TableBeforeChange[tableName];
 
    //check Col Name Change Before vs. After
 
-   if (ColAfterChange.isNew)
+   if (ColAfterChange.isNew == true )
    {
      let UQueryNewCol =  'ALTER TABLE ' + tableName +
     ' ADD ' + ColAfterChange.column + ' ' + ColAfterChange.type;
     querySet.push(UQueryNewCol);
    }
-   else (ColAfterChange.column !== ColBeforeChange.column);
+   else if (ColAfterChange.column !== ColBeforeChange.column);
    {
         
         console.log("hey",ColAfterChange)
