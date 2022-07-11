@@ -1099,7 +1099,7 @@ let impactedTable = TableBeforeChange[tableName];
    {
         
      
-        if (ColAfterChange.fk == true)
+        if (ColAfterChange.fk == true || ColAfterChange.fk == 'true')
         {
            
    // Assume informaiton is in references object of ColAfterChange as follows: 
@@ -1115,15 +1115,17 @@ let impactedTable = TableBeforeChange[tableName];
                     "constrainName": "profile_user_id_fkey"
                 }
 
-        */
+       
        
             const queryForeign = 'ALTER TABLE ' + ColAfterChange.References.ReferencesTableName + ' ADD CONSTRAINT ' + tableName.split(".")[1] + '_' + ColAfterChange.column + '_fkey  FOREIGN KEY (' + ColAfterChange.References.ReferencesPropertyName.split(' ')[0] + ') REFERENCES ' + ColAfterChange.References.PrimaryKeyTableName + '(' + ColAfterChange.References.PrimaryKeyName.split(' ')[0] + ');';
 
             querySet.push( {type:'single', query:queryForeign});
+             */
 
         }
         else
         {
+            console.log('data into function for fk: ', ColAfterChange.fk)
             objChangeSet.fk = {action: "remove"};
              
             let UQuery1 =  'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' + tableName.split(".")[0] + '\' AND table_constraints.table_name=\'' + tableName.split(".")[1] + '\'AND constraint_type=\'FOREIGN KEY\' AND key_column_usage.column_name= \'' + ColAfterChange.column + '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$' ;
