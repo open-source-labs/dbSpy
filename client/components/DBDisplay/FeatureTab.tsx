@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
+import parseSql from "../../parse";
 
 import {
   Header,
@@ -208,34 +209,20 @@ export default function FeatureTab({
           })}
 
           onClick={() => {
-            console.log('ive been clicked');
             const input = document.createElement("input");
             input.setAttribute("type", "file");
-            // input.setAttribute("onchange");
             input.click();
             input.onchange = (e:any):void => {
-              console.log('change has been triggered')
               const file = e.target.files[0];
               const reader = new FileReader();
               reader.readAsText(file);
-              reader.onload = () => {
-                console.log(file)
+              reader.onload = (event:any) => {
+                DataStore.connectedToDB = true;
+                setFetchedData(parseSql(event.target.result));
               }
             }
-          }}
-
-          // onChange={(e:any) => {
-          //   console.log('change has been triggered')
-          //   const file = e.target.files[0];
-          //   const reader = new FileReader();
-          //   reader.readAsText(file);
-          //   reader.onload = () => {
-          //     console.log('file uploaded')
-          //   }
-          // }}
-          
+          }} 
         >
-          {/* <input id="fileInput" type="file" hidden/> */}
           <Group>
             <ThemeIcon
               variant="outline"
