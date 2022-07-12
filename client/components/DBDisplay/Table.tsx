@@ -13,6 +13,9 @@ import {
   GridEventListener,
   GridRowId,
   GridRowModel,
+  GridRow,
+  GridCellEditCommitParams,
+ 
 } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
@@ -126,7 +129,11 @@ export default function Table({
   // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
   // console.log(rows);
+  // rowModesModel is current table state. 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+
+
+
 
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes("")) return "empty";
@@ -146,6 +153,7 @@ export default function Table({
     params: GridRowParams,
     event: MuiEvent<React.SyntheticEvent>
   ) => {
+    
     event.defaultMuiPrevented = true;
   };
 
@@ -324,7 +332,7 @@ export default function Table({
       width: 50,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["true", "false"],
+      valueOptions: ["true", "false"],  
     },
     {
       field: "actions",
@@ -333,9 +341,13 @@ export default function Table({
       width: 70,
       cellClassName: "actions",
       getActions: ({ id, getValue }) => {
+        
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
+        
         if (isInEditMode) {
+          console.log('GridRowModes-------------->');
+          console.log(getValue(id,'fk' ));
+          
           return [
             <GridActionsCellItem
               icon={<SaveIcon />}
@@ -395,8 +407,8 @@ export default function Table({
       ...dataAfterChange,
     });
     setFetchedData(DataStore.getData(DataStore.store.size - 1));
-    console.log("this is dataStore2:", DataStore.store);
-    console.log("this is data After Change: ", dataAfterChange);
+   // console.log("this is dataStore2:", DataStore.store);
+    //console.log("this is data After Change: ", dataAfterChange);
   }
 
   // console.log("this is updated rows: ", rows);
@@ -444,6 +456,11 @@ export default function Table({
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
+          
+          onStateChange={(state:any) => {
+            console.log('on state running');
+            console.log(state);
+          }}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => console.log("logic failed")}
           components={{
