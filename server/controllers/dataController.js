@@ -121,7 +121,7 @@ dataController.getSchema = (req, res, next) => {
   // });
 
   fs.readFile(
-    path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656611693.sql'),
+    path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
     'utf8',
     (error, data) => {
       if (error) {

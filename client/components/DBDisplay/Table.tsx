@@ -1,4 +1,4 @@
-import React, { DragEvent, useEffect, useState } from "react";
+import React, { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -35,10 +35,16 @@ import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
 import permissiveColumnCheck from "../../permissiveFn.js";
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface TableProps {
   tableInfo: {
-    [key: string]: {
+    [key: string]: {  
       IsForeignKey: boolean;
       IsPrimaryKey: boolean;
       Name: string;
@@ -123,6 +129,7 @@ export default function Table({
         fk: obj.IsForeignKey,
         reference: obj.References,
       });
+
     });
   }
 
@@ -132,9 +139,10 @@ export default function Table({
   // rowModesModel is current table state. 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
-
-
-
+  const [opens, setOpens]  = useState(false);
+  const [formDialogEditRow, setFormDialogEditRow] = useState({});
+  const [formDialogEditCol, setFormDialogEditCol] = useState('');
+   
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes("")) return "empty";
 
@@ -198,6 +206,8 @@ export default function Table({
   const processRowUpdate = (newRow: GridRowModel) => {
     if (logicCheck(newRow, rows) === "empty") {
       alert("Please make sure to fill out every cell!");
+      console.log(newRow)
+      console.log('new row in procesRowUpdate')
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
@@ -234,10 +244,10 @@ export default function Table({
     console.log("ColBeforechange: ", ColBeforeChange);
     console.log("ColeAfterChange: ", newRow);
     console.log("tablename: ", tablename);
-    console.log(
-      "tableBeforechange: ",
-      DataStore.getData(DataStore.store.size - 1)
-    );
+    //console.log(
+    //  "tableBeforechange: ",
+    //  DataStore.getData(DataStore.store.size - 1)
+    //);
     // console.log(
     //   "this is Query",
     //   permissiveColumnCheck(
@@ -286,6 +296,7 @@ export default function Table({
       headerName: "Column",
       width: 75,
       editable: true,
+     
     },
     {
       field: "type",
@@ -332,7 +343,8 @@ export default function Table({
       width: 50,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["true", "false"],  
+      valueOptions: ["true", "false"],
+      
     },
     {
       field: "actions",
@@ -345,8 +357,8 @@ export default function Table({
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         
         if (isInEditMode) {
-          console.log('GridRowModes-------------->');
-          console.log(getValue(id,'fk' ));
+          //console.log('GridRowModes-------------->');
+          //console.log(getValue(id,'fk' ));
           
           return [
             <GridActionsCellItem
@@ -439,8 +451,11 @@ export default function Table({
           <div style={{ fontSize: "24px" }}>{id}</div>
           {/* <div onDrag={handleDrag}>
             x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
-          </div> */}
+          </div> 
+            //
+          */}
         </div>
+        <FormDialog opens={opens} setOpens={setOpens}  setRows={setRows} setRowModesModel={setRowModesModel} formDialogEditRow={formDialogEditRow} formDialogEditCol={formDialogEditCol} setFormDialogEditCol={setFormDialogEditCol} setFormDialogEditRow={setFormDialogEditRow} rows={rows}/>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -456,11 +471,54 @@ export default function Table({
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
-          
+         
           onStateChange={(state:any) => {
-            console.log('on state running');
-            console.log(state);
-          }}
+          //  console.log('on state running');
+          //  console.log('fk button state: ', state);
+            if (state.editRows)
+            {
+              
+            for (let cols in state.editRows)
+            {
+            //console.log('editrow col', state.editRows[cols].fk.value)
+           // console.log('tableinfo row', tableInfo[cols].IsForeignKey )
+          
+              let focus = null; 
+
+              if (state.focus)
+               if (state.focus.cell)
+                 if (state.focus.cell.field)
+                    focus = state.focus.cell.field; 
+
+
+                    let currentRow = null; 
+                    for (let i = 0; i < rows.length; i++){
+                      if (rows[i].column == cols)
+                      {
+                        currentRow = rows[i]
+                        
+                      }
+                
+                    }
+            if (currentRow.fk == false && state.editRows[cols].fk.value == 'true' && focus=='fk' )
+            {
+              console.log('fk toggled to true from false');
+
+              //opens Dialog Box to Add FK information 
+              setFormDialogEditRow(state.editRows);
+              setFormDialogEditCol(cols);
+              setOpens(true);
+
+
+
+            }
+            }
+
+
+          
+          
+          }}}
+
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => console.log("logic failed")}
           components={{
@@ -514,3 +572,137 @@ function EditToolbar(props: EditToolbarProps) {
     </GridToolbarContainer>
   );
 }
+
+
+interface FormDialogProps {
+ 
+  setRowModesModel: (
+    newModel: (oldModel: GridRowModesModel) => GridRowModesModel
+  ) => void;
+
+  //setRows is used to update the table model, to revert changes upon cancel button hit
+  setRows: React.Dispatch<React.SetStateAction<any[]>>;
+
+  //opens is boolean to toggle the modal open or closed
+  opens: boolean; 
+
+  //setOpens used to set state for opens, which is used to open or close the box
+  setOpens: Dispatch<SetStateAction<boolean>>;
+
+  //formDialogEditRow is used to assign & edit the row object to FormDialog to/from parent object
+  formDialogEditRow: {};
+
+  //formDialogEditCol is used to assign Column Name of what is being edited by user
+  formDialogEditCol: string;
+
+  //used to set or reset the column edit assignment
+  setFormDialogEditCol: React.Dispatch<React.SetStateAction<string>>
+
+   //used to set or reset the row edit assignment
+  setFormDialogEditRow: React.Dispatch<React.SetStateAction<{}>>
+  
+  rows: any[]
+  
+}
+
+function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows}: FormDialogProps) {
+  console.log('rows from FormDialog');
+  console.log(rows);
+
+  const handleClose = () => {
+ let rowState:any = null; 
+ /*
+    for (let row in rows) {
+      if (rows[row].column == formDialogEditCol)
+      {
+        console.log('column match found------->')
+        console.log(rows[row]);
+        rowState = rows[row];
+        rowState.fk = false;
+        console.log('<---------------');
+        console.log('rowState----->')
+        console.log(rowState.)
+      }
+    }
+
+    rows.map((row) => {
+     console.log('rows in map');
+     console.log('column name', formDialogEditCol)
+     console.log(row);
+    })
+  
+  
+  setRows(rows.map((row) => (row.column == formDialogEditCol ?  rowState: row)));
+*/
+setOpens(false);
+  };
+
+  const handleSubmit = () => {
+    // Add state to prevent button 
+    setOpens(false);
+  };
+  
+  return (
+    <div>
+      <Dialog open={opens} onClose={handleClose}>
+        <DialogTitle>FOREIGN KEY FORM</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+           Details for FK here
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+
+
+
+
+
+/*
+function FormDialog({ opens, setOpens }: formDialogProps) {
+const handleClose = () => {
+  setOpens(false);
+};
+
+return (
+  <div>
+    <Dialog open={opens} onClose={handleClose}>
+      <DialogTitle>FOREIGN KEY FORM</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+         Details for FK here
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          fullWidth
+          variant="standard"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>Submit</Button>
+      </DialogActions>
+    </Dialog>
+  </div>
+);
+}
+*/
