@@ -84,7 +84,7 @@ class Store {
   }
 
   /* 
-  "setQuery" - a method that logs query data into "queries" Map object
+  "getQuery" - a method that gets query data into "queries" Map object
   */
   getQuery(ind: number) {
     return this.queries.get(ind);

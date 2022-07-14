@@ -87,57 +87,62 @@ export default function DBDisplay({
   Client-side caching implemented with latest update of table model. 
   */
 
-  // useEffect(() => {
-  //   console.log("hi from localStrogesa");
-  //   localStorage.Query = JSON.stringify(
-  //     Array.from(DataStore.queries.entries())
-  //   );
-  //   localStorage.Data = JSON.stringify(Array.from(DataStore.store.entries()));
-  // }, [fetchedData]);
+  useEffect(() => {
+    if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
+      localStorage.Query = JSON.stringify(
+        Array.from(DataStore.queries.entries())
+      );
+      localStorage.Data = JSON.stringify(Array.from(DataStore.store.entries()));
+    }
+    console.log("store size after reload", DataStore.store.size);
+  }, [fetchedData]);
 
-  // useEffect(() => {
-  //   // setLoggedIn(true);
-  //   // localStorage.setItem("isLoggedIn", "true");
-  //   // console.log(localStorage.dbConnect);
-  //   // console.log(localStorage.count);
-  //   // console.log(localStorage.isLoggedIn);
-
-  //   if (
-  //     localStorage.isLoggedIn &&
-  //     localStorage.dbConnect === "true" &&
-  //     localStorage.count >= 0
-  //   ) {
-  //     console.log("hola");
-  //     const savedData = new Map(JSON.parse(localStorage.Data));
-  //     const latestData: any = savedData.get(savedData.size - 1);
-  //     console.log("this is latest DAta: ", latestData);
-  //     // if (savedData) {
-  //     DataStore.connect();
-  //     setFetchedData(latestData);
-  //     console.log("this is saved: ", latestData);
-  //     // }
-  //   }
-  // }, []);
-
-  // console.log("fetchedData in DBDIsply", fetchedData);
-
-  // useEffect(() => {
-  //   localStorage.clear();
-  // }, [DataStore.connectedToDB]);
-
-  //OLD VERSION
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
-
-    if (loggedIn && DataStore.ind > 0) {
-      const savedData = DataStore.getData(DataStore.store.size - 1);
-      if (savedData) {
-        setFetchedData(savedData);
-        console.log("this is saved: ", savedData);
+    if (localStorage.dbConnect === "true" && localStorage.Data) {
+      DataStore.connect();
+      const savedData: any = new Map(JSON.parse(localStorage.Data));
+      const savedQuery: any = new Map(JSON.parse(localStorage.Query));
+      const latestData: any = savedData.get(savedData.size - 1);
+      if (Object.keys(latestData).length > 0) {
+        DataStore.store = savedData;
+        DataStore.queries = savedQuery;
+        DataStore.ind = DataStore.queryInd = DataStore.store.size;
+        DataStore.queryList = savedQuery.get(savedQuery.size - 1);
+        console.log(
+          "DataStore data",
+          DataStore.ind,
+          DataStore.queryInd,
+          DataStore.queryList
+        );
+        console.log("DataStore", DataStore.store, DataStore.queries);
+        setFetchedData(latestData);
       }
     }
   }, []);
+
+  //Prevent reload of the page
+  // useEffect(() => {
+  //   window.onbeforeunload = (e) => {
+  //     e.preventDefault();
+  //     e.returnValue = "";
+  //   };
+  // }, []);
+
+  //OLD VERSION
+  // useEffect(() => {
+  //   setLoggedIn(true);
+  //   localStorage.setItem("isLoggedIn", "true");
+
+  //   if (loggedIn && DataStore.ind > 0) {
+  //     const savedData = DataStore.getData(DataStore.store.size - 1);
+  //     if (savedData) {
+  //       setFetchedData(savedData);
+  //       console.log("this is saved: ", savedData);
+  //     }
+  //   }
+  // }, []);
 
   return (
     <AppShell

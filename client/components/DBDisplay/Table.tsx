@@ -1,4 +1,4 @@
-import React, { DragEvent, useEffect, useState } from "react";
+import React, { DragEvent, useCallback, useEffect, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -13,6 +13,7 @@ import {
   GridEventListener,
   GridRowId,
   GridRowModel,
+  GridEditRowsModel,
 } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
@@ -127,6 +128,7 @@ export default function Table({
 
   // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
+
   // console.log(rows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
@@ -446,12 +448,6 @@ export default function Table({
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
-          onEditRowsModelChange={function (
-            editRowsModel: any,
-            details: any
-          ): void {
-            console.log("hey there", editRowsModel);
-          }}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => alert("Logic Failed")}
           components={{
