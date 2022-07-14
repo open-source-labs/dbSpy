@@ -29,6 +29,7 @@ export default function DisplayHeader({
   // console.log(picture);
 
   const logout = () => {
+    localStorage.setItem("isLoggedIn", "false");
     sessionStorage.clear();
     fetch("/logout")
       .then((response) => response.json())
