@@ -19,6 +19,7 @@ import {
 } from "@mantine/core";
 import {
   ArrowBackUp,
+  ArrowForwardUp,
   Camera,
   Database,
   DatabaseImport,
@@ -76,6 +77,8 @@ export default function FeatureTab({
         onClick={() => {
           setHistoryClick(historyClick + 1);
           setFetchedData(data);
+          DataStore.counter = num;
+          console.log(DataStore.counter);
         }}
         key={num}
       >
@@ -88,6 +91,22 @@ export default function FeatureTab({
         </Group>
       </UnstyledButton>
     );
+  }
+
+  function undo() {
+    if (DataStore.counter > 0) {
+      const prev: any = DataStore.getData(DataStore.counter - 1);
+      setFetchedData(prev);
+      DataStore.counter--;
+    }
+  }
+
+  function redo() {
+    if (DataStore.counter < DataStore.store.size) {
+      const next: any = DataStore.getData(DataStore.counter);
+      setFetchedData(next);
+      DataStore.counter++;
+    }
   }
 
   return (
@@ -232,6 +251,7 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
+            // creating an input element for user to upload sql file
             const input = document.createElement("input");
             input.setAttribute("type", "file");
             input.click();
@@ -240,8 +260,18 @@ export default function FeatureTab({
               const reader = new FileReader();
               reader.readAsText(file);
               reader.onload = (event: any) => {
-                DataStore.connectedToDB = true;
-                setFetchedData(parseSql(event.target.result));
+                DataStore.loadedFile = true;
+                const parsedData = parseSql(event.target.result);
+                setFetchedData(parsedData);
+                DataStore.setData(parsedData);
+                DataStore.setQuery([{ type: "", query: "" }]);
+                sessionStorage.Data = JSON.stringify(
+                  Array.from(DataStore.store.entries())
+                );
+
+                sessionStorage.Query = JSON.stringify(
+                  Array.from(DataStore.queries.entries())
+                );
               };
             };
           }}
@@ -338,6 +368,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={undo}
         >
           <Group>
             <ThemeIcon
@@ -348,6 +379,35 @@ export default function FeatureTab({
               <ArrowBackUp />
             </ThemeIcon>
             <Text size="md">UNDO</Text>
+          </Group>
+        </UnstyledButton>
+        <UnstyledButton
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: theme.spacing.xs,
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+            },
+          })}
+          onClick={redo}
+        >
+          <Group>
+            <ThemeIcon
+              variant="outline"
+              color="dark"
+              style={{ border: "2px solid white" }}
+            >
+              <ArrowForwardUp />
+            </ThemeIcon>
+            <Text size="md">REDO</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton

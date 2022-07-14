@@ -273,6 +273,7 @@ export default function Table({
 
     DataStore.queryList.push(...queryResult);
     DataStore.setQuery(DataStore.queryList.slice());
+    DataStore.counter++;
     console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
