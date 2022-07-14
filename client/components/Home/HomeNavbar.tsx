@@ -25,15 +25,15 @@ export default function HomeNavbar() {
             
             <Button color="inherit">Team</Button>
             
+            <Link style={{textDecoration: 'none', color: "white" }} to={"/signup"}>
+              
+              <Button color="inherit">Sign Up</Button>
+            </Link>
             
             <Link style={{textDecoration: 'none', color: "white" }} to={"/login"}>
               <Button color="inherit">Log In</Button>
             </Link>
             
-            <Link style={{textDecoration: 'none', color: "white" }} to={"/signup"}>
-              
-              <Button color="inherit">Sign In</Button>
-            </Link>
           </Toolbar>
         </AppBar>
       </Box>
