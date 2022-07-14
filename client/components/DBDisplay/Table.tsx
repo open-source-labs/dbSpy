@@ -136,8 +136,20 @@ export default function Table({
     if (Object.values(newRow).includes("")) return "empty";
 
     for (let i = 0; i < oldRow.length; i++) {
-      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
+      console.log(
+        "checking logic",
+        oldRow[i].column,
+        newRow.column,
+        oldRow[i].id,
+        newRow.id
+      );
+
+      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id) {
         return "columnIssue";
+      }
+      if (oldRow[i].column === newRow.column && oldRow[i].id === newRow.id) {
+        return "sameName";
+      }
       if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
     }
 
@@ -201,6 +213,13 @@ export default function Table({
       return;
     } else if (logicCheck(newRow, rows) === "columnIssue") {
       alert("you cannot have duplicate column names!");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    } else if (logicCheck(newRow, rows) === "sameName") {
+      alert("Please cancel instead if you're not changing anything");
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
