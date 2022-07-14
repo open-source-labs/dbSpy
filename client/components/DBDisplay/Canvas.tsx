@@ -70,7 +70,7 @@ export default function Canvas({
         console.log("is DataStore cleared?", DataStore);
       },
       onError: () => {
-        console.log("Failed to execute changes");
+        alert("Failed to execute changes");
         // res?.success;
       },
     }
@@ -219,7 +219,10 @@ export default function Canvas({
             <Button
               color="white"
               leftIcon={<DatabaseImport />}
-              onClick={() => DataStore.disconnect()}
+              onClick={() => {
+                localStorage.clear();
+                DataStore.disconnect();
+              }}
             >
               Disconnect from DB
             </Button>
