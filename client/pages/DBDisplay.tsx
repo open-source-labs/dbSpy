@@ -58,11 +58,11 @@ export default function DBDisplay({
         setFetchedData(res.data);
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: "", query: "" }]);
-        localStorage.Data = JSON.stringify(
+        sessionStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
         );
 
-        localStorage.Query = JSON.stringify(
+        sessionStorage.Query = JSON.stringify(
           Array.from(DataStore.queries.entries())
         );
 
@@ -74,25 +74,27 @@ export default function DBDisplay({
     {
       onSuccess: () => {
         DataStore.connect();
-        localStorage.dbConnect = "true";
-        localStorage.count = 0;
+        sessionStorage.dbConnect = "true";
+        sessionStorage.count = 0;
         setSideBarOpened(false);
       },
     }
   );
 
   /* useEffect:
-  "loggedIn" gets set to "true"; localStorage also gets set to "true"
+  "loggedIn" gets set to "true"; sessionStorage also gets set to "true"
   gets triggered when table editting is done or History list is clicked.
   Client-side caching implemented with latest update of table model. 
   */
 
   useEffect(() => {
     if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
-      localStorage.Query = JSON.stringify(
+      sessionStorage.Query = JSON.stringify(
         Array.from(DataStore.queries.entries())
       );
-      localStorage.Data = JSON.stringify(Array.from(DataStore.store.entries()));
+      sessionStorage.Data = JSON.stringify(
+        Array.from(DataStore.store.entries())
+      );
     }
     console.log("store size after reload", DataStore.store.size);
   }, [fetchedData]);
@@ -100,10 +102,10 @@ export default function DBDisplay({
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
-    if (localStorage.dbConnect === "true" && localStorage.Data) {
+    if (sessionStorage.dbConnect === "true" && sessionStorage.Data) {
       DataStore.connect();
-      const savedData: any = new Map(JSON.parse(localStorage.Data));
-      const savedQuery: any = new Map(JSON.parse(localStorage.Query));
+      const savedData: any = new Map(JSON.parse(sessionStorage.Data));
+      const savedQuery: any = new Map(JSON.parse(sessionStorage.Query));
       const latestData: any = savedData.get(savedData.size - 1);
       if (Object.keys(latestData).length > 0) {
         DataStore.store = savedData;

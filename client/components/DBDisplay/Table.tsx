@@ -136,14 +136,6 @@ export default function Table({
     if (Object.values(newRow).includes("")) return "empty";
 
     for (let i = 0; i < oldRow.length; i++) {
-      console.log(
-        "checking logic",
-        oldRow[i].column,
-        newRow.column,
-        oldRow[i].id,
-        newRow.id
-      );
-
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id) {
         return "columnIssue";
       }

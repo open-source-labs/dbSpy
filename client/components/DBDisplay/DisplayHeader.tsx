@@ -29,7 +29,7 @@ export default function DisplayHeader({
   // console.log(picture);
 
   const logout = () => {
-    localStorage.clear();
+    sessionStorage.clear();
     fetch("/logout")
       .then((response) => response.json())
       .then((data) => {

@@ -220,7 +220,7 @@ export default function Canvas({
               color="white"
               leftIcon={<DatabaseImport />}
               onClick={() => {
-                localStorage.clear();
+                sessionStorage.clear();
                 DataStore.disconnect();
               }}
             >

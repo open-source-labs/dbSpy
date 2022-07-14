@@ -966,12 +966,10 @@ export default function permissiveColumnCheck(
       " ADD " +
       ColAfterChange.column +
       " " +
-      ColAfterChange.type;
-    querySet.push(UQueryNewCol);
+      ColAfterChange.type + ";";
+    querySet.push({type: "single", query: UQueryNewCol});
   } else ColAfterChange.column !== ColBeforeChange.column;
   {
-    console.log("hey", ColAfterChange);
-    console.log("ho", ColBeforeChange);
     //trim column name for whitespaces
     ColAfterChange.column = ColAfterChange.column.trim();
 
@@ -1021,6 +1019,7 @@ export default function permissiveColumnCheck(
       newValue: ColAfterChange.column,
       oldValue: ColBeforeChange.column,
     };
+    if (!ColAfterChange.isNew) {
     const nameQuery = "ALTER TABLE "
       .concat(tableName)
       .concat(" RENAME COLUMN ")
@@ -1029,7 +1028,7 @@ export default function permissiveColumnCheck(
       .concat(ColAfterChange.column)
       .concat(";");
     querySet.push({ type: "single", query: nameQuery });
-
+  }
     console.log(querySet);
   }
   console.log("after the column is done", querySet);
@@ -1083,11 +1082,11 @@ export default function permissiveColumnCheck(
 
             if (constr.toUpperCase() == "NOT NULL") {
                 const Query1 =
-                "alter table " +
+                "ALTER TABLE " +
                 tableName +
-                " alter column " +
+                " ALTER COLUMN " +
                 ColAfterChange.column +
-                " set not null;";
+                " SET NOT NULL;";
 
               querySet.push({ type: "single", query: Query1 });
             }
