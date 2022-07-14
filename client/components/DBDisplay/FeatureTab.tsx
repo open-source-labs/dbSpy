@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
+import parseSql from "../../parse";
 
 import {
   Navbar,
@@ -14,6 +15,7 @@ import {
   TextInput,
   Box,
   Button,
+  Input
 } from "@mantine/core";
 import {
   ArrowBackUp,
@@ -24,7 +26,9 @@ import {
   Plus,
   Upload,
 } from "tabler-icons-react";
+
 import { permissiveTableCheck } from "../../permissiveFn";
+
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
@@ -98,6 +102,7 @@ export default function FeatureTab({
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
+
               const result: any = permissiveTableCheck(
                 values.tablename,
                 fetchedData,
@@ -132,6 +137,7 @@ export default function FeatureTab({
                 "DataStore.queries after creation of table",
                 DataStore.queries
               );
+
               form.setValues({
                 tablename: "",
               });
@@ -227,6 +233,21 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+
+          onClick={() => {
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.click();
+            input.onchange = (e:any):void => {
+              const file = e.target.files[0];
+              const reader = new FileReader();
+              reader.readAsText(file);
+              reader.onload = (event:any) => {
+                DataStore.connectedToDB = true;
+                setFetchedData(parseSql(event.target.result));
+              }
+            }
+          }} 
         >
           <Group>
             <ThemeIcon
@@ -236,7 +257,7 @@ export default function FeatureTab({
             >
               <DatabaseImport />
             </ThemeIcon>
-            <Text size="md">LOAD SQL FILE</Text>
+            <Text size="md">LOAD SQL FILE </Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton

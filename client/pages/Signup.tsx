@@ -159,6 +159,7 @@ export default function Signup() {
                 Sign up with Google
               </Button>
 
+
               {/* <Button
                 sx={{
                   marginTop: 5,
@@ -176,6 +177,7 @@ export default function Signup() {
             </Box>
 
             {/* Submit Form for SIGN UP */}
+            
             {/* <Box
               component="form"
               noValidate

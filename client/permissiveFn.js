@@ -938,6 +938,7 @@ let ColAfterChange = {
 let tableName = "public.accounts"
 
 */
+
 export default function permissiveColumnCheck(
   ColBeforeChange,
   ColAfterChange,
@@ -989,6 +990,7 @@ export default function permissiveColumnCheck(
         },
       ];
     }
+
 
     //regex check valid Column Name against Postgres ruleset.
 
@@ -1147,6 +1149,7 @@ export default function permissiveColumnCheck(
 
           */
 
+
       objChangeSet.pk = {
         action: "add",
         type: "PRIMARY KEY",
@@ -1193,6 +1196,7 @@ export default function permissiveColumnCheck(
     if (ColAfterChange.fk == true) {
       // Assume informaiton is in references object of ColAfterChange as follows:
       /*
+
 
         References
                 {
