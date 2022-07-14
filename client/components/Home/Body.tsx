@@ -1,10 +1,10 @@
 import React from "react";
 
 const styles:object = {
-  display: "flex",
+  // display: "flex",
   border: "1px black solid",
   borderRadius: "25px",
-  margin: "30px 30px 0 30px",
+  margin: "30px",
   padding: "15px"
 }
 
@@ -13,12 +13,31 @@ const lorem = 'Contrary to popular belief, Lorem Ipsum is not simply random text
 export default function Body() {
   return (
     
-  <div style={{display: "flex", flexDirection: "column", justifyContent: "space-evenly", alignItems: "center"}}  className="mainContainer">
-      <div style={styles} className="container">{lorem}</div>
-      <div style={styles} className="container">{lorem}</div>
-      <div style={styles} className="container">{lorem}</div>
-      <div style={styles} className="container">{lorem}</div>
-      <div style={styles} className="container">{lorem}</div>
+  <div className="mainContainer" style={{display: "flex", flexDirection: "column", margin: "30px", justifyContent: "space-between", alignItems: "center", fontFamily:"Geneva"}}>
+      <div style={styles} className="container">
+        dbSpy Demo
+        <br /> 
+        {lorem}
+      </div>
+      <div style={styles} className="container">
+        Why us? 
+        <br /> 
+        {lorem}
+      </div>
+      <div style={styles} className="container">
+        What our users say
+        <br />
+        {lorem}
+      </div>
+      <div style={styles} className="container">
+        Latest Updates
+        <br />
+        {lorem}
+      </div>
+      <div style={styles} className="container">
+        Meet the team
+        <br /> 
+      </div>
   </div>
   )
 }
