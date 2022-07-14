@@ -5,10 +5,11 @@ import { useMutation } from "react-query";
 // Components Imported;
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
-import Sidebar from "../components/DBDisplay/Sidebar";
 import FeatureTab from "../components/DBDisplay/FeatureTab";
+import Sidebar from "../components/DBDisplay/Sidebar";
 
-//Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
+
+// Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
@@ -59,6 +60,14 @@ export default function DBDisplay({
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: "", query: "" }]);
 
+        localStorage.Data = JSON.stringify(
+          Array.from(DataStore.store.entries())
+        );
+
+        localStorage.Query = JSON.stringify(
+          Array.from(DataStore.queries.entries())
+        );
+
         //Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
         console.log("this is retrieved data from server,: ", res.data);
         console.log("this is dataStore: ", DataStore);
@@ -67,6 +76,9 @@ export default function DBDisplay({
     {
       onSuccess: () => {
         DataStore.connect();
+
+        localStorage.dbConnect = "true";
+        localStorage.count = 0;
         setSideBarOpened(false);
       },
     }
@@ -77,6 +89,47 @@ export default function DBDisplay({
   gets triggered when table editting is done or History list is clicked.
   Client-side caching implemented with latest update of table model. 
   */
+
+  // useEffect(() => {
+  //   console.log("hi from localStrogesa");
+  //   localStorage.Query = JSON.stringify(
+  //     Array.from(DataStore.queries.entries())
+  //   );
+  //   localStorage.Data = JSON.stringify(Array.from(DataStore.store.entries()));
+  // }, [fetchedData]);
+
+  // useEffect(() => {
+  //   // setLoggedIn(true);
+  //   // localStorage.setItem("isLoggedIn", "true");
+  //   // console.log(localStorage.dbConnect);
+  //   // console.log(localStorage.count);
+  //   // console.log(localStorage.isLoggedIn);
+
+  //   if (
+  //     localStorage.isLoggedIn &&
+  //     localStorage.dbConnect === "true" &&
+  //     localStorage.count >= 0
+  //   ) {
+  //     console.log("hola");
+  //     const savedData = new Map(JSON.parse(localStorage.Data));
+  //     const latestData: any = savedData.get(savedData.size - 1);
+  //     console.log("this is latest DAta: ", latestData);
+  //     // if (savedData) {
+  //     DataStore.connect();
+  //     setFetchedData(latestData);
+  //     console.log("this is saved: ", latestData);
+  //     // }
+  //   }
+  // }, []);
+
+  // console.log("fetchedData in DBDIsply", fetchedData);
+
+  // useEffect(() => {
+  //   localStorage.clear();
+  // }, [DataStore.connectedToDB]);
+
+  //OLD VERSION
+
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");

@@ -125,7 +125,8 @@ export default function Login() {
           </Typography>
 
           {/* Submit Form for login credentials */}
-          <Box
+
+          {/* <Box
             component="form"
             noValidate
             onSubmit={handleSubmit}
@@ -191,25 +192,31 @@ export default function Login() {
 
           <Typography sx={{ mb: 2, mt: 5, textAlign: "center" }}>
             or sign in with:
-          </Typography>
+          </Typography> */}
 
           {/* Google & GitHub OAuth buttons */}
+          <br />
+          <br />
+
           <Box>
             <Button
               onClick={google}
               sx={{
                 borderRadius: 50,
-                padding: "25px 25px",
+                padding: "25px 36px",
                 margin: "0px 5px",
                 fontSize: "14px",
+                width: "270px",
               }}
               variant="contained"
               color="secondary"
+              startIcon={<GoogleIcon fontSize="large" />}
             >
-              <GoogleIcon fontSize="large" />
+              LOGIN WITH GOOGLE
             </Button>
 
-            <Button
+
+            {/* <Button
               sx={{
                 borderRadius: 50,
                 padding: "25px 25px",
@@ -220,7 +227,7 @@ export default function Login() {
               color="secondary"
             >
               <GitHubIcon fontSize="large" />
-            </Button>
+            </Button> */}
           </Box>
 
           <br />

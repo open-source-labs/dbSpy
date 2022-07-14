@@ -31,7 +31,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
-import permissiveColumnCheck from "../../permissiveFn.js";
+import permissiveColumnCheck, {
+  permissiveTableCheck,
+} from "../../permissiveFn";
 
 interface TableProps {
   tableInfo: {
@@ -444,8 +446,14 @@ export default function Table({
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
+          onEditRowsModelChange={function (
+            editRowsModel: any,
+            details: any
+          ): void {
+            console.log("hey there", editRowsModel);
+          }}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => console.log("logic failed")}
+          onProcessRowUpdateError={(error) => alert("Logic Failed")}
           components={{
             Toolbar: EditToolbar,
           }}

@@ -1,8 +1,11 @@
+// React & React Router Modules
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import HomeNavbar from "../components/Home/HomeNavbar";
+
+//Components imported
 import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
+import HomeNavbar from "../components/Home/HomeNavbar";
 
 // UI components from MUI
 

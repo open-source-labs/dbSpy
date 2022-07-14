@@ -220,7 +220,10 @@ export default function Canvas({
             <Button id="disconnectButton"
               color="white"
               leftIcon={<DatabaseImport />}
-              onClick={() => DataStore.disconnect()}
+              onClick={() => {
+                localStorage.clear();
+                DataStore.disconnect();
+              }}
             >
               Disconnect from DB
             </Button>
