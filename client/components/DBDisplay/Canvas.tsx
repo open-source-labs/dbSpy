@@ -217,7 +217,7 @@ export default function Canvas({
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           <Group position="right">
-            <Button
+            <Button id="disconnectButton"
               color="white"
               leftIcon={<DatabaseImport />}
               onClick={() => DataStore.disconnect()}
@@ -226,7 +226,7 @@ export default function Canvas({
             </Button>
           </Group>
           <Group position="right">
-            <Button
+            <Button id="executeButton"
               styles={() => ({
                 root: {
                   marginTop: 20,
@@ -246,6 +246,47 @@ export default function Canvas({
           </Xwrapper>
         </>
       ) : (
+      Object.keys(fetchedData).length > 0 && DataStore.loadedFile ? (
+        <>
+        <Group position="right">
+            <Button
+              color="white"
+              leftIcon={<DatabaseImport />}
+              onClick={() => setSideBarOpened(true)}
+            >
+              Connect to DB
+            </Button>
+          </Group>
+          {/* <Group position="right">
+            <Button id="disconnectButton"
+              color="white"
+              leftIcon={<DatabaseImport />}
+              onClick={() => DataStore.disconnect()}
+            >
+              Disconnect from DB
+            </Button>
+          </Group>
+          <Group position="right">
+            <Button id="executeButton"
+              styles={() => ({
+                root: {
+                  marginTop: 20,
+                },
+              })}
+              color="red"
+              leftIcon={<DatabaseImport />}
+              onClick={() => executeChanges()}
+            >
+              Execute changes
+            </Button>
+          </Group> */}
+
+          <Xwrapper>
+            {tables}
+            {xa}
+          </Xwrapper>
+        </>
+      ) : (
         <>
           {/* "Please Connect to Your Database" */}
           <Group position="right">
@@ -258,14 +299,7 @@ export default function Canvas({
             </Button>
           </Group>
         </>
-      )}
-      {/* <Modal
-        opened={refOpened}
-        onClose={() => setRefOpened(false)}
-        title="Introduce yourself!"
-      >
-        hi
-      </Modal> */}
+      ))}
     </div>
   );
 }

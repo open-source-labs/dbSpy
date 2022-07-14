@@ -51,7 +51,9 @@ export default function FeatureTab({
     },
   });
 
+
   let historyComponent = [];
+  
   const cacheIterator = DataStore.store.keys();
   for (let cache of cacheIterator) {
     const data: any = DataStore.store.get(cache);
@@ -209,6 +211,7 @@ export default function FeatureTab({
           })}
 
           onClick={() => {
+            // creating an input element for user to upload sql file
             const input = document.createElement("input");
             input.setAttribute("type", "file");
             input.click();
@@ -217,8 +220,8 @@ export default function FeatureTab({
               const reader = new FileReader();
               reader.readAsText(file);
               reader.onload = (event:any) => {
-                DataStore.connectedToDB = true;
-                setFetchedData(parseSql(event.target.result));
+                DataStore.loadedFile = true;
+                setFetchedData(parseSql(event.target.result));  
               }
             }
           }} 

@@ -2,6 +2,7 @@
 class Store {
   store: Map<{}, {}>;
   ind: number;
+  loadedFile: boolean;
   connectedToDB: boolean;
   userDBInfo: object;
   queryInd: number;
@@ -54,6 +55,7 @@ class Store {
     this.queryList = [];
     this.queryInd = 0;
 
+    this.loadedFile = false;
     this.connectedToDB = false;
     this.userDBInfo = {};
   }
