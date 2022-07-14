@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
 import parseSql from "../../parse";
@@ -52,9 +52,7 @@ export default function FeatureTab({
     },
   });
 
-
-  let historyComponent = [];
-  
+  let historyComponent: any = [];
   const cacheIterator = DataStore.store.keys();
   for (let cache of cacheIterator) {
     const data: any = DataStore.store.get(cache);
@@ -191,7 +189,7 @@ export default function FeatureTab({
             <Text size="md">CREATE NEW</Text>
           </Group>
         </UnstyledButton>
-        <UnstyledButton
+        {/* <UnstyledButton
           sx={(theme) => ({
             display: "block",
             width: "100%",
@@ -218,7 +216,7 @@ export default function FeatureTab({
             </ThemeIcon>
             <Text size="md">LOAD JSON FILE</Text>
           </Group>
-        </UnstyledButton>
+        </UnstyledButton> */}
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -292,6 +290,8 @@ export default function FeatureTab({
           </Group>
         </UnstyledButton>
       </Navbar.Section>
+      <br />
+      <br />
       <Navbar.Section>
         <div style={{ fontSize: "24px", margin: "10px" }}>EDIT</div> <hr />
         <UnstyledButton
@@ -383,11 +383,13 @@ export default function FeatureTab({
           </Group>
         </UnstyledButton>
         <br />
+        <br />
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
         <div style={{ fontSize: "24px", margin: "10px" }}>HISTORY</div>
         <hr />
         {historyComponent}
+        {/* {historyComponent} */}
       </Navbar.Section>
     </Navbar>
   );
