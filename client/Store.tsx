@@ -122,7 +122,7 @@ class Store {
   }
 
   updateCounter() {
-    this.counter = DataStore.ind - 1;
+    this.counter++;
   }
 
   getCounter() {

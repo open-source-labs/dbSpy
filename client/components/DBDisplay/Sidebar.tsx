@@ -112,6 +112,7 @@ export default function Sidebar({
             onSubmit={form.onSubmit((values) => {
               // grabbing userDBInfo from values to send to server to make db changes
               DataStore.userDBInfo = values;
+              sessionStorage.userDBInfo = JSON.stringify(values);
               mutate(values);
               form.setValues({
                 hostname: "",
@@ -160,7 +161,9 @@ export default function Sidebar({
             />
 
             <Group position="right" mt="md">
-              <Button color="dark" size="md" compact type="submit">Connect</Button>
+              <Button color="dark" size="md" compact type="submit">
+                Connect
+              </Button>
             </Group>
           </form>
         </Box>
