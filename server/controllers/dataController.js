@@ -146,11 +146,7 @@ dataController.getSchema = (req, res, next) => {
 
   // Option 2 - Dev
   fs.readFile(
-<<<<<<< HEAD
     path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
-=======
-    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
->>>>>>> 6e1dcd455e43dc91a6de0cba239b698bbbfaf347
     'utf8',
     (error, data) => {
       if (error) {
