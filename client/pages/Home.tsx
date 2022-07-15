@@ -7,8 +7,6 @@ import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
 import HomeNavbar from "../components/Home/HomeNavbar";
 
-// UI components from MUI
-
 interface stateChangeProps {
   user: {
     email: string | null;
@@ -61,15 +59,9 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
         </div>
       ) : (
         <div>
-          <Link to={"/signup"}>
-            {/* <button>Sign up</button> */}
-          </Link>
-          <Link to={"/login"}>
-            {/* <button>Log in</button> */}
-          </Link>
-          <Link to={"/login"}>
-            {/* <button>Free demo</button> */}
-          </Link>
+          <Link to={"/signup"}>{/* <button>Sign up</button> */}</Link>
+          <Link to={"/login"}>{/* <button>Log in</button> */}</Link>
+          <Link to={"/login"}>{/* <button>Free demo</button> */}</Link>
         </div>
       )}
 
