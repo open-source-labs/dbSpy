@@ -25,7 +25,8 @@ import {
   DatabaseImport,
   DeviceFloppy,
   Plus,
-  Upload,
+  File,
+  FileUpload,
 } from "tabler-icons-react";
 
 import { permissiveTableCheck } from "../../permissiveFn";
@@ -34,11 +35,13 @@ interface FeatureTabProps {
   setTablename: (e: string) => void;
   fetchedData: {};
   setFetchedData: (e: {}) => void;
+  setSideBarOpened: (param: boolean) => void;
 }
 
 export default function FeatureTab({
   setTablename,
   setFetchedData,
+  setSideBarOpened,
   fetchedData,
 }: FeatureTabProps) {
   const [modalOpened, setModalOpened] = useState(false);
@@ -171,7 +174,7 @@ export default function FeatureTab({
       </Modal>
 
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>FILE</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>File</div>
         <hr />
         <UnstyledButton
           sx={(theme) => ({
@@ -189,6 +192,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert("Feature coming soon!")}
         >
           <Group>
             <ThemeIcon
@@ -196,12 +200,12 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <Database />
+              <File />
             </ThemeIcon>
-            <Text size="md">CREATE NEW</Text>
+            <Text size="md">Clear Canvas</Text>
           </Group>
         </UnstyledButton>
-        {/* <UnstyledButton
+        <UnstyledButton
           sx={(theme) => ({
             display: "block",
             width: "100%",
@@ -217,6 +221,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => setSideBarOpened(true)}
         >
           <Group>
             <ThemeIcon
@@ -224,11 +229,11 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <Upload />
+              <DatabaseImport />
             </ThemeIcon>
-            <Text size="md">LOAD JSON FILE</Text>
+            <Text size="md">Connect Database</Text>
           </Group>
-        </UnstyledButton> */}
+        </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -246,6 +251,12 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
+            if (DataStore.connectedToDB) {
+              alert(
+                "In order to upload a SQL file, you must first disconnect your database."
+              );
+              return;
+            }
             // creating an input element for user to upload sql file
             const input = document.createElement("input");
             input.setAttribute("type", "file");
@@ -277,9 +288,9 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <DatabaseImport />
+              <FileUpload />
             </ThemeIcon>
-            <Text size="md">LOAD SQL FILE </Text>
+            <Text size="md">Upload SQL File </Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -298,6 +309,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert("Feature coming soon!")}
         >
           <Group>
             <ThemeIcon
@@ -307,14 +319,14 @@ export default function FeatureTab({
             >
               <DeviceFloppy />
             </ThemeIcon>
-            <Text size="md">SAVE</Text>
+            <Text size="md">Save</Text>
           </Group>
         </UnstyledButton>
       </Navbar.Section>
       <br />
       <br />
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>EDIT</div> <hr />
+        <div style={{ fontSize: "24px", margin: "10px" }}>Edit</div> <hr />
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -344,7 +356,7 @@ export default function FeatureTab({
             >
               <Plus />
             </ThemeIcon>
-            <Text size="md">ADD TABLE</Text>
+            <Text size="md">Add Table</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -373,7 +385,7 @@ export default function FeatureTab({
             >
               <ArrowBackUp />
             </ThemeIcon>
-            <Text size="md">UNDO</Text>
+            <Text size="md">Undo</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -402,7 +414,7 @@ export default function FeatureTab({
             >
               <ArrowForwardUp />
             </ThemeIcon>
-            <Text size="md">REDO</Text>
+            <Text size="md">Redo</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -430,14 +442,14 @@ export default function FeatureTab({
             >
               <Camera />
             </ThemeIcon>
-            <Text size="md">SCREENSHOT</Text>
+            <Text size="md">Screenshot</Text>
           </Group>
         </UnstyledButton>
         <br />
         <br />
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <div style={{ fontSize: "24px", margin: "10px" }}>HISTORY</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>History</div>
         <hr />
         {historyComponent}
         {/* {historyComponent} */}

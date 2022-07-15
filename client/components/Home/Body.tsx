@@ -13,7 +13,7 @@ const lorem = 'Contrary to popular belief, Lorem Ipsum is not simply random text
 export default function Body() {
   return (
     
-  <div className="mainContainer" style={{display: "flex", flexDirection: "column", margin: "40px", justifyContent: "space-between", alignItems: "center", fontFamily:"Geneva"}}>
+  <div className="mainContainer" style={{display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", fontFamily:"Geneva"}}>
       <div style={styles} className="container">
         dbSpy Demo
         <br /> 

@@ -9,7 +9,7 @@ import Table from "./Table";
 import axios from "axios";
 import DataStore from "../../Store";
 import Xarrow, { Xwrapper } from "react-xarrows";
-import { Database, DatabaseImport } from "tabler-icons-react";
+import { Database, DatabaseImport, DatabaseOff } from "tabler-icons-react";
 import { Loader, Text, Button, Group, Modal } from "@mantine/core";
 
 interface CanvasProps {
@@ -161,7 +161,7 @@ export default function Canvas({
         key={ind}
         headSize={5}
         zIndex={-1}
-        color={"green"}
+        color={"black"}
         start={reff.PrimaryKeyTableName}
         end={reff.ReferencesTableName}
         endAnchor={[
@@ -188,7 +188,7 @@ export default function Canvas({
 
   /** Truthy when the user has an issue grabbing the inital table model */
   if (isErrorProps) {
-    return <>An Error Occurred: Check Your Internet Connection</>;
+    return <>An error occurred: Please check your connection</>;
   }
 
   /** Truthy when the user is executing the queries for database migration */
@@ -204,7 +204,7 @@ export default function Canvas({
 
   /** Truthy when the user fails to execute the queries for database migration */
   if (isError) {
-    return <h3>An Error Occurred: Check Your Internet Connection</h3>;
+    return <h3>An error occurred: Please check your connection</h3>;
   }
 
   return (
@@ -214,25 +214,30 @@ export default function Canvas({
           <Group position="right">
             <Button
               id="disconnectButton"
-              color="white"
-              leftIcon={<DatabaseImport />}
+              variant="outline"
+              color="dark"
+              size="md"
+              compact
+              leftIcon={<DatabaseOff />}
               onClick={() => {
                 sessionStorage.clear();
                 DataStore.disconnect();
               }}
             >
-              Disconnect from DB
+              Disconnect database
             </Button>
           </Group>
           <Group position="right">
             <Button
               id="executeButton"
+              color="dark"
+              size="md"
+              compact
               styles={() => ({
                 root: {
                   marginTop: 20,
                 },
               })}
-              color="red"
               leftIcon={<DatabaseImport />}
               onClick={() => executeChanges()}
             >
@@ -247,7 +252,7 @@ export default function Canvas({
         </>
       ) : Object.keys(fetchedData).length > 0 && DataStore.loadedFile ? (
         <>
-          <Group position="right">
+          {/* <Group position="right">
             <Button
               color="white"
               leftIcon={<DatabaseImport />}
@@ -255,7 +260,7 @@ export default function Canvas({
             >
               Connect to DB
             </Button>
-          </Group>
+          </Group> */}
           {/* <Group position="right">
             <Button id="disconnectButton"
               color="white"
@@ -288,7 +293,11 @@ export default function Canvas({
       ) : (
         <>
           {/* "Please Connect to Your Database" */}
-          <Group position="right">
+          <div>
+            Welcome to dbSpy! Please connect your database or upload a SQL file
+            to begin.
+          </div>
+          {/* <Group position="right">
             <Button
               color="white"
               leftIcon={<DatabaseImport />}
@@ -296,7 +305,7 @@ export default function Canvas({
             >
               Connect to DB
             </Button>
-          </Group>
+          </Group> */}
         </>
       )}
     </div>

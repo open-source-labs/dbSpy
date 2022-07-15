@@ -608,7 +608,7 @@ function EditToolbar(props: EditToolbarProps) {
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        style={{ position: "absolute", right: "3px", margin: 0 }}
+        style={{ position: "absolute", right: "3px", margin: 0, color: "black" }}
       >
         Add row
       </Button>
