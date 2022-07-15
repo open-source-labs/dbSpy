@@ -1133,13 +1133,15 @@ export default function permissiveColumnCheck(
     }
   }
 
-  console.log("ColBeforeChange", ColBeforeChange);
-  if (ColBeforeChange.pk !== '' && ColBeforeChange.fk !== '') {
+
+    console.log(ColBeforeChange.pk, ColBeforeChange.fk, 'hi')
+    console.log(ColAfterChange.pk, ColBeforeChange.fk, 'hi')
     if (ColAfterChange.pk !== ColBeforeChange.pk) {
       // check if another pk exist in table
-      if (ColAfterChange.pk == true) {
+      console.log(typeof ColAfterChange.pk, ColAfterChange.pk)
+      if (ColAfterChange.pk === "true") {
         for (const columns in impactedTable) {
-          if (impactedTable[columns].IsPrimaryKey == true) {
+          if (impactedTable[columns].IsPrimaryKey == "true") {
             console.log(impactedTable[columns]);
             console.log("duplicate primary key detected");
             return [
@@ -1177,14 +1179,14 @@ export default function permissiveColumnCheck(
           ");";
         //console.log(queryPrimary)
         querySet.push({ type: "single", query: queryPrimary });
-      } else {
+      } else if (ColAfterChange.pk === "false" && ColBeforeChange.pk === "true") {
         for (let i = 0; i < ColBeforeChange.References.length; i++) {
           if (ColBeforeChange.References.IsDestination == true)
             return [
               {
                 status: "failed",
                 errorMsg:
-                  "Postgres restriction. Primary Key cannot be dropped due to dependences",
+                  "Postgres restriction. Primary Key cannot be dropped due to dependencies",
               },
             ];
         }
@@ -1203,7 +1205,7 @@ export default function permissiveColumnCheck(
       }
     }
     if (ColAfterChange.fk !== ColBeforeChange.fk) {
-      if (ColAfterChange.fk == true) {
+      if (ColAfterChange.fk == "true") {
         // Assume informaiton is in references object of ColAfterChange as follows:
         /*
 
@@ -1236,7 +1238,7 @@ export default function permissiveColumnCheck(
           ");";
 
         querySet.push({ type: "single", query: queryForeign });
-      } else {
+      } else if (ColAfterChange.fk === "false" && ColBeforeChange.fk === "true") {
         objChangeSet.fk = { action: "remove" };
 
         const UQuery1 =
@@ -1251,7 +1253,7 @@ export default function permissiveColumnCheck(
         querySet.push({ type: "single", query: UQuery1 });
       }
     }
-}
+
 
   console.log(querySet);
   return querySet;
