@@ -139,6 +139,7 @@ export default function DBDisplay({
         setSideBarOpened={setSideBarOpened}
         setNumEdit={setNumEdit}
         numEdit={numEdit}
+        
       />
     </AppShell>
   );

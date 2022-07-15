@@ -142,6 +142,7 @@ export default function Canvas({
           setNumEdit={setNumEdit}
           numEdit={numEdit}
           setFetchedData={setFetchedData}
+          fetchedData={fetchedData}
         />
       );
     }

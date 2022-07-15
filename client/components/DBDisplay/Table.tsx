@@ -15,6 +15,8 @@ import {
   GridRowModel,
   GridRow,
   GridCellEditCommitParams,
+  GridCellValue,
+  GridCellParams,
  
 } from "@mui/x-data-grid";
 import {
@@ -41,6 +43,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 
 interface TableProps {
   tableInfo: {
@@ -60,6 +68,7 @@ interface TableProps {
   setNumEdit: (numEdit: number) => void;
   numEdit: number;
   setFetchedData: (fetchedData: any) => void;
+  fetchedData: any; 
 }
 
 interface RowProps {
@@ -78,6 +87,7 @@ export default function Table({
   setNumEdit,
   numEdit,
   setFetchedData,
+  fetchedData,
 }: TableProps) {
   // console.log("this is tableinfo from table: ", tableInfo);
   // const { Name, Properties } = tableInfo;
@@ -138,9 +148,9 @@ export default function Table({
   // console.log(rows);
   // rowModesModel is current table state. 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-
+  const [fkReference, setfkReference] = useState({});
   const [opens, setOpens]  = useState(false);
-  const [formDialogEditRow, setFormDialogEditRow] = useState({});
+  const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: ''}});
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
    
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
@@ -344,7 +354,24 @@ export default function Table({
       editable: true,
       type: "singleSelect",
       valueOptions: ["true", "false"],
-      
+      valueParser: (value: string, row:GridRowModel) => {
+       console.log('id:------->', id);
+       setfkReference({});
+       setFormDialogEditRow(row);
+        if (value =="true")
+        {
+          
+          console.log('row ----------->')
+          console.log(row);
+          setOpens(true);
+
+         
+        } else
+        {
+          setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 'ReferencesPropertyName':row.column, 'ReferencesTableName':tablename, 'isDestination': false, 'constrainName': '', type: 'remove'});
+        }    
+        return value;
+      }
     },
     {
       field: "actions",
@@ -357,8 +384,7 @@ export default function Table({
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         
         if (isInEditMode) {
-          //console.log('GridRowModes-------------->');
-          //console.log(getValue(id,'fk' ));
+          
           
           return [
             <GridActionsCellItem
@@ -455,7 +481,7 @@ export default function Table({
             //
           */}
         </div>
-        <FormDialog opens={opens} setOpens={setOpens}  setRows={setRows} setRowModesModel={setRowModesModel} formDialogEditRow={formDialogEditRow} formDialogEditCol={formDialogEditCol} setFormDialogEditCol={setFormDialogEditCol} setFormDialogEditRow={setFormDialogEditRow} rows={rows}/>
+        <FormDialog opens={opens} setOpens={setOpens}  setRows={setRows} setRowModesModel={setRowModesModel} formDialogEditRow={formDialogEditRow} formDialogEditCol={formDialogEditCol} setFormDialogEditCol={setFormDialogEditCol} setFormDialogEditRow={setFormDialogEditRow} rows={rows} fetchedData={fetchedData} fkReference={fkReference} tablename={tablename} setfkReference={setfkReference}/>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -471,7 +497,7 @@ export default function Table({
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
-         
+         /*
           onStateChange={(state:any) => {
           //  console.log('on state running');
           //  console.log('fk button state: ', state);
@@ -500,24 +526,11 @@ export default function Table({
                       }
                 
                     }
-            if (currentRow.fk == false && state.editRows[cols].fk.value == 'true' && focus=='fk' )
-            {
-              console.log('fk toggled to true from false');
-
-              //opens Dialog Box to Add FK information 
-              setFormDialogEditRow(state.editRows);
-              setFormDialogEditCol(cols);
-              setOpens(true);
-
-
-
-            }
-            }
-
+          
 
           
           
-          }}}
+          }}} */
 
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => console.log("logic failed")}
@@ -590,76 +603,174 @@ interface FormDialogProps {
   setOpens: Dispatch<SetStateAction<boolean>>;
 
   //formDialogEditRow is used to assign & edit the row object to FormDialog to/from parent object
-  formDialogEditRow: {};
+  formDialogEditRow: any;
 
   //formDialogEditCol is used to assign Column Name of what is being edited by user
   formDialogEditCol: string;
 
   //used to set or reset the column edit assignment
-  setFormDialogEditCol: React.Dispatch<React.SetStateAction<string>>
+  setFormDialogEditCol: React.Dispatch<React.SetStateAction<string>>;
 
    //used to set or reset the row edit assignment
-  setFormDialogEditRow: React.Dispatch<React.SetStateAction<{}>>
+  setFormDialogEditRow: React.Dispatch<React.SetStateAction<any>>;
   
-  rows: any[]
-  
+  rows: any[];
+
+  fetchedData: any;
+
+  fkReference:{};
+
+  tablename: string;
+
+  setfkReference: React.Dispatch<React.SetStateAction<any>>;
 }
 
-function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows}: FormDialogProps) {
-  console.log('rows from FormDialog');
-  console.log(rows);
+function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows, fetchedData, fkReference, tablename, setfkReference}: FormDialogProps) {
+ ;
 
-  const handleClose = () => {
- let rowState:any = null; 
- /*
-    for (let row in rows) {
-      if (rows[row].column == formDialogEditCol)
-      {
-        console.log('column match found------->')
-        console.log(rows[row]);
-        rowState = rows[row];
-        rowState.fk = false;
-        console.log('<---------------');
-        console.log('rowState----->')
-        console.log(rowState.)
-      }
-    }
-
-    rows.map((row) => {
-     console.log('rows in map');
-     console.log('column name', formDialogEditCol)
-     console.log(row);
-    })
-  
-  
-  setRows(rows.map((row) => (row.column == formDialogEditCol ?  rowState: row)));
-*/
+let temp:(JSX.Element | undefined)[] = []; 
+let references = {column_name:"", references:{}};
+const [columnList, setcolumnList] = useState<(JSX.Element| null | undefined)[]>([]);
+const [pkList, setpkList] = useState('');
+const [msg, setMsg] = useState('');
+const [selectedCol, setselectedCol] = useState('');
+const handleClose = () => {
+setFormDialogEditCol("false")
+console.log('formDialogEdit in handleClose', formDialogEditCol); 
 setOpens(false);
-  };
+};
 
-  const handleSubmit = () => {
-    // Add state to prevent button 
-    setOpens(false);
-  };
+const handleSubmit = () => {
+// Add state to prevent button
+setFormDialogEditCol("true")
+let PrimaryKeyTableName = fetchedData[pkList][selectedCol].Name; 
+let PrimaryKeyName= selectedCol + ' ' + fetchedData[pkList][selectedCol].data_type;
+let ReferencesPropertyName= formDialogEditRow.row.column+ ' ' + formDialogEditRow.row.type; 
+let ReferencesTableName:(string | null) = tablename; 
+let isDestination = false; 
+let constrainName = ReferencesTableName + '_' + ReferencesPropertyName + '_' + 'fkey';
+let obj = {};
+if (PrimaryKeyTableName == null )
+alert('Must Select Primary Table Name')
+else if (PrimaryKeyName == null )
+alert('Must Select Primary Key Column')
+else if (ReferencesPropertyName == null)
+alert('Error: Reference Property Name Not Set')
+else if (ReferencesTableName == null )
+alert('Error: References Table Not Set')
+else  
+{
   
+  setfkReference({PrimaryKeyTableName: PrimaryKeyTableName, 'PrimaryKeyName' :PrimaryKeyName, 'ReferencesPropertyName':ReferencesPropertyName, 'ReferencesTableName':ReferencesTableName, 'isDestination': false, 'constrainName': constrainName, type: 'add'});
+
+setOpens(false);
+}
+
+
+/*
+IsDestination: false
+PrimaryKeyName: "id integer NOT NULL"
+PrimaryKeyTableName: "public.user_accounts"
+ReferencesPropertyName: "user_id integer"
+ReferencesTableName: "public.profile"
+constrainName: "profile_user_id_fkey
+*/
+
+console.log('formDialogEdit Submit Complete', formDialogEditCol);
+
+};
+
+const handleChange = (event: SelectChangeEvent) => {
+  setpkList(event.target.value); 
+  console.log('Row in Edit in formDialogEdit ---->');
+ console.log(formDialogEditRow.row)
+  let temp = Object.keys(fetchedData[event.target.value]).map((key, index) => {
+    if (fetchedData[event.target.value][key].IsPrimaryKey == true)
+    return (
+      <MenuItem value={key}>{key}</MenuItem>
+    );
+  });
+  
+  setcolumnList(temp);
+  console.log(columnList);
+  
+
+
+}
+
+
+const handleColChange = (event: SelectChangeEvent) => {
+ 
+ setselectedCol(event.target.value);
+ 
+}
+
+let listOfTables = Object.keys(fetchedData).map((key, index) => {
+  if (key !== tablename)
+  return (
+    <MenuItem value={key}>{key}</MenuItem>
+  );
+});
+//formDialogEditRow.row.column
   return (
     <div>
-      <Dialog open={opens} onClose={handleClose}>
+      <Dialog open={opens} onClose={handleClose} 
+      PaperProps={{
+        style: {
+          //backgroundColor: 'grey', Add color styling here... 
+          boxShadow: 'ffff',
+          
+        }}}
+      
+      sx={{
+            
+            display: 'inline',
+            fontWeight: 'bold',  
+            width:'auto',
+            mx: 0.5,
+            fontSize: 14,
+
+          }}>
+    
         <DialogTitle>FOREIGN KEY FORM</DialogTitle>
-        <DialogContent>
+        <DialogContent >
           <DialogContentText>
-           Details for FK here
+          <br/>
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
+          <TextField id="fkTableName" label="FK Table Name" variant="outlined" defaultValue={tablename} contentEditable={false} inputProps={
+					{ readOnly: true, }
+				}/>
+          <TextField id="fkColumnName" label="FK Column Name" variant="outlined" defaultValue={formDialogEditRow == undefined ? "": formDialogEditRow.row.column} contentEditable={false} inputProps={
+					{ readOnly: true, }
+				}/>
+        <span>
+      <InputLabel id="demo-simple-select-label">Select Primary Key Table</InputLabel>
+    
+       <Select
+         labelId="demo-simple-select-label"
+
+        id="demo-simple-select"
+        value={pkList}
+        label="Primary Key"
+        onChange={handleChange}
+        >
+             {listOfTables}
+ 
+  </Select>
+     
+  <InputLabel id="demo-simple-select-label">Select Primary Column Table</InputLabel>
+       <Select
+         labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={selectedCol}
+        label="Primary Key"
+        onChange={handleColChange}
+        >
+             {columnList}
+ 
+  </Select>
+    </span>
+          </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSubmit}>Submit</Button>
@@ -673,36 +784,3 @@ setOpens(false);
 
 
 
-/*
-function FormDialog({ opens, setOpens }: formDialogProps) {
-const handleClose = () => {
-  setOpens(false);
-};
-
-return (
-  <div>
-    <Dialog open={opens} onClose={handleClose}>
-      <DialogTitle>FOREIGN KEY FORM</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-         Details for FK here
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Email Address"
-          type="email"
-          fullWidth
-          variant="standard"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleClose}>Submit</Button>
-      </DialogActions>
-    </Dialog>
-  </div>
-);
-}
-*/
