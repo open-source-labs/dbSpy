@@ -1,14 +1,14 @@
 // React & React Router & React Query Modules;
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 
 // Components Imported;
 import Canvas from "../components/DBDisplay/Canvas";
 import DisplayHeader from "../components/DBDisplay/DisplayHeader";
-import Sidebar from "../components/DBDisplay/Sidebar";
 import FeatureTab from "../components/DBDisplay/FeatureTab";
+import Sidebar from "../components/DBDisplay/Sidebar";
 
-//Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
+// Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
@@ -48,6 +48,22 @@ export default function DBDisplay({
   const [numEdit, setNumEdit] = useState(0);
   const [historyClick, setHistoryClick] = useState(0);
 
+  // const ref = createRef(null);
+
+  // const [image, takeScreenShot] = useScreenshot({
+  //   type: "image/jpeg",
+  //   quality: 1.0
+  // });
+
+  // const download = (image, { name = "img", extension = "jpg" } = {}) => {
+  //   const a = document.createElement("a");
+  //   a.href = image;
+  //   a.download = createFileName(extension, name);
+  //   a.click();
+  // };
+
+  // const downloadScreenshot = () => takeScreenShot(ref.current).then(download);
+
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
   initiate "fetchedData" and Map objects in "DataStore" 
   onSuccess: update connectedToDB global state to "true" and close the side bar
@@ -58,6 +74,13 @@ export default function DBDisplay({
         setFetchedData(res.data);
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: "", query: "" }]);
+        sessionStorage.Data = JSON.stringify(
+          Array.from(DataStore.store.entries())
+        );
+
+        sessionStorage.Query = JSON.stringify(
+          Array.from(DataStore.queries.entries())
+        );
 
         //Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
         console.log("this is retrieved data from server,: ", res.data);
@@ -67,28 +90,77 @@ export default function DBDisplay({
     {
       onSuccess: () => {
         DataStore.connect();
+        sessionStorage.dbConnect = "true";
+        sessionStorage.count = 0;
         setSideBarOpened(false);
       },
     }
   );
 
   /* useEffect:
-  "loggedIn" gets set to "true"; localStorage also gets set to "true"
+  "loggedIn" gets set to "true"; sessionStorage also gets set to "true"
   gets triggered when table editting is done or History list is clicked.
   Client-side caching implemented with latest update of table model. 
   */
+
+  useEffect(() => {
+    if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
+      sessionStorage.Query = JSON.stringify(
+        Array.from(DataStore.queries.entries())
+      );
+      sessionStorage.Data = JSON.stringify(
+        Array.from(DataStore.store.entries())
+      );
+    }
+    console.log("store size after reload", DataStore.store.size);
+  }, [fetchedData]);
+
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
-
-    if (loggedIn && DataStore.ind > 0) {
-      const savedData = DataStore.getData(DataStore.store.size - 1);
-      if (savedData) {
-        setFetchedData(savedData);
-        console.log("this is saved: ", savedData);
+    if (sessionStorage.dbConnect === "true" && sessionStorage.Data) {
+      DataStore.connect();
+      const savedData: any = new Map(JSON.parse(sessionStorage.Data));
+      const savedQuery: any = new Map(JSON.parse(sessionStorage.Query));
+      const latestData: any = savedData.get(savedData.size - 1);
+      if (Object.keys(latestData).length > 0) {
+        DataStore.store = savedData;
+        DataStore.queries = savedQuery;
+        DataStore.ind = DataStore.queryInd = DataStore.store.size;
+        DataStore.queryList = savedQuery.get(savedQuery.size - 1);
+        console.log(
+          "DataStore data",
+          DataStore.ind,
+          DataStore.queryInd,
+          DataStore.queryList
+        );
+        console.log("DataStore", DataStore.store, DataStore.queries);
+        setFetchedData(latestData);
       }
     }
   }, []);
+
+  //Prevent reload of the page
+  // useEffect(() => {
+  //   window.onbeforeunload = (e) => {
+  //     e.preventDefault();
+  //     e.returnValue = "";
+  //   };
+  // }, []);
+
+  //OLD VERSION
+  // useEffect(() => {
+  //   setLoggedIn(true);
+  //   localStorage.setItem("isLoggedIn", "true");
+
+  //   if (loggedIn && DataStore.ind > 0) {
+  //     const savedData = DataStore.getData(DataStore.store.size - 1);
+  //     if (savedData) {
+  //       setFetchedData(savedData);
+  //       console.log("this is saved: ", savedData);
+  //     }
+  //   }
+  // }, []);
 
   return (
     <AppShell

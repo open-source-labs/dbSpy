@@ -13,6 +13,17 @@ let tableList = [];
 let exportedTables = 0;
 
 const dataController = {};
+
+/**
+ * Postgres Dump Query
+ * Formulates an array with a pg_dump query at position 0, and a filename for dump location at position 1.
+ * @param {string} hostname - A required string with database hostname
+ * @param {string} password - A required string with database password
+ * @param {string} port - A required string with database port
+ * @param {string} username - A required string with database username
+ * @param {string} database_name - A required string with the database name
+ * @return {string[]} command - Array containing pg_dump query and destination filename
+ */
 function postgresDumpQuery(hostname, password, port, username, database_name) {
   const command = [];
   const currentDateTime = new Date();
@@ -29,6 +40,11 @@ function postgresDumpQuery(hostname, password, port, username, database_name) {
   return command;
 }
 
+/**
+ * writeSchema
+ * Executes pg_dump and writes to destination file
+ * @param {string[]} command - Array containing pg_dump query and destination filename
+ */
 const writeSchema = async (command) => {
   try {
     const { stdout, stderr } = await exec(command[0]);
@@ -39,59 +55,69 @@ const writeSchema = async (command) => {
   }
 };
 
+/**
+ * testDrop
+ * Usage unclear - Consider removing -- NOTE
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 dataController.testDrop = (req, res, next) => {
-let uri = 'postgres://cwoalfud:jqrPGXvWd8vqZydnDinBiWy1gS4C_a9J@arjuna.db.elephantsql.com/cwoalfud';
+  /*
+  let uri = 'postgres://cwoalfud:jqrPGXvWd8vqZydnDinBiWy1gS4C_a9J@arjuna.db.elephantsql.com/cwoalfud';
 
-/*
   let querytest = "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema = 'public' AND table_constraints.table_name='films' AND constraint_type='UNIQUE' AND key_column_usage.column_name= 'title' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
-*/
 
-const ColAfterChange = { 
-  "column": "title_new",
-  "constraint": " ",
-  "fk": true,
-  "type": "integer",
-  "id": "title",
-  "isNew": false,
-  "pk": false,
-  
-  
-       "References": 
-              {
-                  "PrimaryKeyName": "_id",
-                  "ReferencesPropertyName": "person_id integer NOT NULL",
-                  "PrimaryKeyTableName": "public.people",
-                  "ReferencesTableName": "public.people_in_films",
-                  "IsDestination": false
-              }
-          
-  
-}
+  const ColAfterChange = { 
+    "column": "title_new",
+    "constraint": " ",
+    "fk": true,
+    "type": "integer",
+    "id": "title",
+    "isNew": false,
+    "pk": false,
+      "References": 
+        {
+          "PrimaryKeyName": "_id",
+          "ReferencesPropertyName": "person_id integer NOT NULL",
+          "PrimaryKeyTableName": "public.people",
+          "ReferencesTableName": "public.people_in_films",
+          "IsDestination": false
+        }    
+  };
 
-let tableName = "public.alphabet";
+  let tableName = "public.alphabet";
 
   let UQueryNewCol =  'ALTER TABLE ' + tableName +
 ' ADD ' + ColAfterChange.column + ' ' + ColAfterChange.type;
 
  //querySet.push( {type:'single', query:queryForeign});
 
-/*
-  const pool = new Pool({
-    connectionString: uri,
-  });
+ 
+    const pool = new Pool({
+      connectionString: uri,
+    });
 
 
-  pool.query(querytest).then(data => {
-    return next();
-  });
+    pool.query(querytest).then(data => {
+      return next();
+    });
 
-*/
-res.locals.testresponse = UQueryNewCol; 
-next();
+  
+  res.locals.testresponse = UQueryNewCol; 
+  next();
+  */
 };
 
-//getSchema controller allows the user
+/**
+ * getSchema
+ * Option 1 - Production: 
+ * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
+ * 
+ * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware. 
+ */
 dataController.getSchema = (req, res, next) => {
+  // // Option 1 - Production
   // let result = null;
   // console.log("running getSchema controller...");
   // const hostname = req.body.hostname;
@@ -101,8 +127,8 @@ dataController.getSchema = (req, res, next) => {
   // const database_name = req.body.database_name;
   // const command = postgresDumpQuery(hostname,password,port, username, database_name);
   // console.log(command, '<-command');
-  // writeSchema(command).then(resq => {
 
+  // writeSchema(command).then(resq => {
   //   fs.readFile(command[1], 'utf8', (error, data) => {
   //     if (error)
   //       {
@@ -112,16 +138,19 @@ dataController.getSchema = (req, res, next) => {
   //         err: error});
   //       }
   //     result = parseSql(data);
-
   //     res.locals.data = result;
   //     next();
-
   //   });
-
   // });
+  // };
 
+  // Option 2 - Dev
   fs.readFile(
+<<<<<<< HEAD
     path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
+=======
+    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
+>>>>>>> 6e1dcd455e43dc91a6de0cba239b698bbbfaf347
     'utf8',
     (error, data) => {
       if (error) {
@@ -134,31 +163,29 @@ dataController.getSchema = (req, res, next) => {
       const result = parseSql(data);
       //console.log(result);
       //console.log('instance of table', result[records]);
-      for (let records in result) res.locals.testdata = result;
+      for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
       next();
     }
   );
 };
 
-//objSchema controller allows the user to obj data to more
-//usable format for front-end
+/**
+ * objSchema
+ * Iterates through testdata array of tables and grabs table name.
+ * Iterates through properties array and assigns field name as key for properties.
+ */
 dataController.objSchema = (req, res, next) => {
-  let testdata = res.locals.testdata;
-  let results = {};
-  //iterate through the testdata Array
-  //Grab name property for each element of array - Table Name
-  //Assign properties to name property of the table within new obj
-  // iterate through the Properties Array
-  // Assign field name as key for properties....
+  // Should this still be testdata???? -- NOTE
+  const testdata = res.locals.testdata;
+  const results = {};
 
   for (let i = 0; i < testdata.length; i++) {
     // this outer loop will iterate through tables within testdata
-    let properties = {};
+    const properties = {};
     for (let k = 0; k < testdata[i].Properties.length; k++) {
-      let key = testdata[i].Properties[k].field_name;
+      const key = testdata[i].Properties[k].field_name;
       properties[key] = testdata[i].Properties[k];
     }
-
     results[testdata[i].Name] = properties;
   }
 
@@ -202,8 +229,7 @@ foreignKeyList = [];
 primaryKeyList = [];
 tableList = [];
 
-/*  Function 
-      Section   */
+/*  Function Section   */
 
 // Creates propertyModel and assigns properties to arguments passed in
 function createProperty(name, tableName, foreignKey, isPrimaryKey) {

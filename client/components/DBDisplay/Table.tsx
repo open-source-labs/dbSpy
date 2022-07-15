@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
+=======
+import React, { DragEvent, useCallback, useEffect, useState } from "react";
+>>>>>>> 6e1dcd455e43dc91a6de0cba239b698bbbfaf347
 import {
   DataGrid,
   GridRowsProp,
@@ -13,11 +17,15 @@ import {
   GridEventListener,
   GridRowId,
   GridRowModel,
+<<<<<<< HEAD
   GridRow,
   GridCellEditCommitParams,
   GridCellValue,
   GridCellParams,
  
+=======
+  GridEditRowsModel,
+>>>>>>> 6e1dcd455e43dc91a6de0cba239b698bbbfaf347
 } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
@@ -36,6 +44,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
+<<<<<<< HEAD
 import permissiveColumnCheck from "../../permissiveFn.js";
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -49,6 +58,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+=======
+import permissiveColumnCheck, {
+  permissiveTableCheck,
+} from "../../permissiveFn";
+>>>>>>> 6e1dcd455e43dc91a6de0cba239b698bbbfaf347
 
 interface TableProps {
   tableInfo: {
@@ -145,6 +159,7 @@ export default function Table({
 
   // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
+
   // console.log(rows);
   // rowModesModel is current table state. 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -157,8 +172,19 @@ export default function Table({
     if (Object.values(newRow).includes("")) return "empty";
 
     for (let i = 0; i < oldRow.length; i++) {
-      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
+      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id) {
         return "columnIssue";
+      }
+      if (
+        oldRow[i].column === newRow.column &&
+        oldRow[i].type === newRow.type &&
+        oldRow[i].constraint === newRow.constraint &&
+        oldRow[i].pk === newRow.pk &&
+        oldRow[i].fk === newRow.fk &&
+        oldRow[i].id === newRow.id
+      ) {
+        return "sameName";
+      }
       if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
     }
 
@@ -230,6 +256,13 @@ export default function Table({
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
+    } else if (logicCheck(newRow, rows) === "sameName") {
+      alert("Please cancel instead if you're not changing anything");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
     } else if (logicCheck(newRow, rows) === "pkIssue") {
       alert("you cannot have more than one PK!");
       setRowModesModel({
@@ -286,6 +319,7 @@ export default function Table({
 
     DataStore.queryList.push(...queryResult);
     DataStore.setQuery(DataStore.queryList.slice());
+    DataStore.counter++;
     console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
@@ -533,7 +567,9 @@ export default function Table({
           }}} */
 
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => console.log("logic failed")}
+          onProcessRowUpdateError={(error) =>
+            alert("Please correct your values")
+          }
           components={{
             Toolbar: EditToolbar,
           }}

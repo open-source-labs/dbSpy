@@ -2,11 +2,13 @@
 class Store {
   store: Map<{}, {}>;
   ind: number;
+  loadedFile: boolean;
   connectedToDB: boolean;
   userDBInfo: object;
   queryInd: number;
   queries: Map<{}, {}[]>;
   queryList: {}[];
+  counter: number;
 
   /* Description for each global state:
   Manages seven states globally:
@@ -54,8 +56,11 @@ class Store {
     this.queryList = [];
     this.queryInd = 0;
 
+    this.loadedFile = false;
     this.connectedToDB = false;
     this.userDBInfo = {};
+
+    this.counter = 0;
   }
 
   /* 
@@ -84,7 +89,7 @@ class Store {
   }
 
   /* 
-  "setQuery" - a method that logs query data into "queries" Map object
+  "getQuery" - a method that gets query data into "queries" Map object
   */
   getQuery(ind: number) {
     return this.queries.get(ind);
@@ -114,6 +119,14 @@ class Store {
     this.ind = 0;
     this.queryInd = 0;
     this.queryList = [];
+  }
+
+  updateCounter() {
+    this.counter = DataStore.ind - 1;
+  }
+
+  getCounter() {
+    return this.counter;
   }
 }
 

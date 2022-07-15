@@ -1,8 +1,13 @@
+// React & React Router Modules
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import HomeNavbar from "../components/Home/HomeNavbar";
+
+//Components imported
 import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
+import HomeNavbar from "../components/Home/HomeNavbar";
+
+// UI components from MUI
 
 interface stateChangeProps {
   user: {
@@ -48,7 +53,7 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
       {localStorage.getItem("isLoggedIn") === "true" ? (
         <div>
           <Link to={"/"}>
-            <button onClick={logout}>logout</button>
+            <button onClick={logout}>Log Out</button>
           </Link>
           <Link to={`/display/${user.id}`}>
             <button>display</button>
@@ -57,13 +62,13 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
       ) : (
         <div>
           <Link to={"/signup"}>
-            <button>sign up</button>
+            {/* <button>Sign up</button> */}
           </Link>
           <Link to={"/login"}>
-            <button>login</button>
+            {/* <button>Log in</button> */}
           </Link>
           <Link to={"/login"}>
-            <button>Try for Free!</button>
+            {/* <button>Free demo</button> */}
           </Link>
         </div>
       )}
