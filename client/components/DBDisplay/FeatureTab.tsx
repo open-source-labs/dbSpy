@@ -438,7 +438,9 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert('Feature coming soon!')}
         >
+          
           <Group>
             <ThemeIcon
               variant="outline"

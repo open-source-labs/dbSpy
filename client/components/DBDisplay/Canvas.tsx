@@ -213,7 +213,7 @@ export default function Canvas({
   }
 
   const dbButtons = 
-          <div style={{display: "flex", flexDirection: "column", flexWrap: "wrap"}}>
+          <div >
           <Group position="right">
             <Button id="disconnectButton"
               variant="outline"
@@ -236,7 +236,7 @@ export default function Canvas({
               compact
               styles={() => ({
                 root: {
-                  marginTop: 20,
+                  marginTop: 10,
                 },
               })}
               
@@ -249,7 +249,8 @@ export default function Canvas({
         </div>
 
   return (
-    <div style={{ height: "100%", width: "80vw"}} >
+    // style={{ height: "100%"}}
+    <div>
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           {dbButtons}
