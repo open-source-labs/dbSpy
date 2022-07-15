@@ -172,7 +172,23 @@ export default function Table({
   };
 
   const handleEditClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    const modes: any = Object.values(rowModesModel);
+    if (modes.length > 0) {
+      for (let i = 0; i < modes.length; i++) {
+        console.log(modes);
+        if (modes[i].mode === "edit") {
+          setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View },
+          });
+          return;
+        }
+      }
+    }
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.Edit },
+    });
   };
 
   const currentRowEditting = "";
