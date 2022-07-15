@@ -367,10 +367,10 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
     .match(/\(([^()]+)\)/g)[0]
     .replace(/\(|\)/g, '');
 
-  console.log('foreign key Table', currentTableModel.Name);
-  console.log('ref property name', referencedPropertyName);
-  console.log('ref tablename', referencedTableName);
-  console.log('foreign key name', foreignKeyName);
+  // console.log('foreign key Table', currentTableModel.Name);
+  // console.log('ref property name', referencedPropertyName);
+  // console.log('ref tablename', referencedTableName);
+  // console.log('foreign key name', foreignKeyName);
 
   // Look through current table and reassign isForeignKey prop to true, reassign foreignKeyName to include type
   currentTableModel.Properties.forEach((property) => {
@@ -398,7 +398,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
         if (
           primaryTableModel[k][l].Name.indexOf(referencedPropertyName) !== -1
         ) {
-          console.log('name---->', primaryTableModel[k][l].Name);
+          // console.log('name---->', primaryTableModel[k][l].Name);
           referencedPropertyName = primaryTableModel[k][l].Name;
           break;
         }
@@ -435,7 +435,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
 
-  console.log('fk List--------->', foreignKeyList);
+  // console.log('fk List--------->', foreignKeyList);
 }
 
 // Iterates through primaryKeyList and checks every property in every table
@@ -520,7 +520,7 @@ function parseAlterTable(tableName, constraint) {
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
   const constrainName = constraint.match(regexConstraint);
 
-  if (constrainName !== null) console.log('constraintName', constrainName[0]);
+  // if (constrainName !== null) console.log('constraintName', constrainName[0]);
 
   tableName = tableName.trim();
   let currentTableModel;
@@ -935,23 +935,23 @@ dataController.handleQueries = async (req, res, next) => {
    * Handshake block
    */
   // Production values
-  // const {uri, queries} = req.body;
-  // const PG_URI = uri;
+  const {uri, queries} = req.body;
+  const PG_URI = uri;
 
-  // Test values
-  const PG_URI =
-    'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  console.log('Data received from Client', req.body);
-  const queries = [
-    {
-      type: 'single',
-      query: 'SELECT * FROM public.films;',
-    },
-    {
-      type: 'single',
-      query: 'SELECT * FROM public.pefdgdfshsople;',
-    },
-  ];
+  // // Test values
+  // const PG_URI =
+  //   'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  // console.log('Data received from Client', req.body);
+  // const queries = [
+  //   {
+  //     type: 'single',
+  //     query: 'SELECT * FROM public.films;',
+  //   },
+  //   {
+  //     type: 'single',
+  //     query: 'SELECT * FROM public.pefdgdfshsople;',
+  //   },
+  // ];
 
   /**
    * Function definition and initialization block
@@ -1002,6 +1002,8 @@ dataController.handleQueries = async (req, res, next) => {
    * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do. CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
    */
   res.locals.success = false;
+
+  console.log(queryStr);
 
   transactionQuery(queryStr)
     .then(() => {
