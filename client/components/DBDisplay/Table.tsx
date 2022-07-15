@@ -160,6 +160,16 @@ export default function Table({
     for (let i = 0; i < oldRow.length; i++) {
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
         return "columnIssue";
+      if (
+        oldRow[i].column === newRow.column &&
+        oldRow[i].type === newRow.type &&
+        oldRow[i].constraint === newRow.constraint &&
+        oldRow[i].pk === newRow.pk &&
+        oldRow[i].fk === newRow.fk &&
+        oldRow[i].id === newRow.id
+      ) {
+        return "sameName";
+      }
       if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
     }
 
@@ -247,6 +257,13 @@ export default function Table({
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
+    } else if (logicCheck(newRow, rows) === "sameName") {
+      alert("Please make changes before you save.");
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
     } else if (logicCheck(newRow, rows) === "pkIssue") {
       alert("you cannot have more than one PK!");
       setRowModesModel({
@@ -293,8 +310,9 @@ export default function Table({
     );
 
     //fix this with specific error message provided from permissiveFn
-    if (Object.keys(queryResult[0])[0] === "status") {
-      alert("you cannot use reserved keyword for a column name!");
+    if (Object.keys(queryResult[0])[1] === "errorMsg") {
+      const msg: any = queryResult[0];
+      alert(msg.errorMsg);
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },

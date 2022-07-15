@@ -995,6 +995,14 @@ export default function permissiveColumnCheck(
     //regex check valid Column Name against Postgres ruleset.
 
     const regex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+    const found = ColAfterChange.column.match(regex);
+    if (found === null) {
+      console.log('hello')
+      return [{
+        status: "failed",
+        errorMsg: "Postgres restricted column name violation",
+      }];
+    }
     //    console.log(ColAfterChange.column.match(regex));
     //    console.log(ColAfterChange.column);
     //    if (ColAfterChange.column.match(regex) == null )
