@@ -39,6 +39,21 @@ function postgresDumpQuery(hostname, password, port, username, database_name) {
   //console.log('command created:', command);
   return command;
 }
+// function postgresDumpQuery(uri) {
+//   const command = [];
+//   const currentDateTime = new Date();
+//   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
+//   const filename = path.join(
+//     __dirname,
+//     `../db_schemas/${resultInSeconds.toString()}.sql`
+//   );
+//   command.push(
+//     `pg_dump -s ${uri} > ${filename}`
+//   );
+//   command.push(filename);
+//   //console.log('command created:', command);
+//   return command;
+// }
 
 /**
  * writeSchema
@@ -117,53 +132,52 @@ dataController.testDrop = (req, res, next) => {
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware. 
  */
 dataController.getSchema = (req, res, next) => {
-  // // Option 1 - Production
-  // let result = null;
-  // console.log("running getSchema controller...");
-  // const hostname = req.body.hostname;
-  // const password = req.body.password;
-  // const port = req.body.port;
-  // const username = req.body.username;
-  // const database_name = req.body.database_name;
-  // const command = postgresDumpQuery(hostname,password,port, username, database_name);
-  // console.log(command, '<-command');
-
-  // writeSchema(command).then(resq => {
-  //   fs.readFile(command[1], 'utf8', (error, data) => {
-  //     if (error)
-  //       {
-  //         console.error(`error- in FS: ${error.message}`);
-  //         return next({
-  //         msg: 'Error reading database schema file',
-  //         err: error});
-  //       }
-  //     result = parseSql(data);
-  //     res.locals.data = result;
-  //     next();
-  //   });
-  // });
-  // };
-
-  // Option 2 - Dev
-  fs.readFile(
-    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-    'utf8',
-    (error, data) => {
-      if (error) {
-        console.error(`error- in FS: ${error.message}`);
-        return next({
+  // Option 1 - Production
+  let result = null;
+  console.log("running getSchema controller...");
+  const hostname = req.body.hostname;
+  const password = req.body.password;
+  const port = req.body.port;
+  const username = req.body.username;
+  const database_name = req.body.database_name;
+  const command = postgresDumpQuery(hostname,password,port, username, database_name);
+  console.log(command, '<-command');
+  writeSchema(command).then(resq => {
+    fs.readFile(command[1], 'utf8', (error, data) => {
+      if (error)
+        {
+          console.error(`error- in FS: ${error.message}`);
+          return next({
           msg: 'Error reading database schema file',
-          err: error,
-        });
-      }
-      const result = parseSql(data);
-      //console.log(result);
-      //console.log('instance of table', result[records]);
-      for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
+          err: error});
+        }
+      result = parseSql(data);
+      res.locals.data = result;
       next();
-    }
-  );
-};
+    });
+  });
+  };
+
+//   // Option 2 - Dev
+//   fs.readFile(
+//     path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
+//     'utf8',
+//     (error, data) => {
+//       if (error) {
+//         console.error(`error- in FS: ${error.message}`);
+//         return next({
+//           msg: 'Error reading database schema file',
+//           err: error,
+//         });
+//       }
+//       const result = parseSql(data);
+//       //console.log(result);
+//       //console.log('instance of table', result[records]);
+//       for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
+//       next();
+//     }
+//   );
+// };
 
 /**
  * objSchema
@@ -172,20 +186,20 @@ dataController.getSchema = (req, res, next) => {
  */
 dataController.objSchema = (req, res, next) => {
   // Should this still be testdata???? -- NOTE
-  const testdata = res.locals.testdata;
+  const data = res.locals.data;
   const results = {};
 
-  for (let i = 0; i < testdata.length; i++) {
-    // this outer loop will iterate through tables within testdata
+  for (let i = 0; i < data.length; i++) {
+    // this outer loop will iterate through tables within data
     const properties = {};
-    for (let k = 0; k < testdata[i].Properties.length; k++) {
-      const key = testdata[i].Properties[k].field_name;
-      properties[key] = testdata[i].Properties[k];
+    for (let k = 0; k < data[i].Properties.length; k++) {
+      const key = data[i].Properties[k].field_name;
+      properties[key] = data[i].Properties[k];
     }
-    results[testdata[i].Name] = properties;
+    results[data[i].Name] = properties;
   }
 
-  console.log('route for testObj works');
+  // console.log('route for Obj works');
   //console.log(results);
 
   res.locals.result = results;
