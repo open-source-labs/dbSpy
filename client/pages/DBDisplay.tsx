@@ -40,29 +40,9 @@ export default function DBDisplay({
   /* UI State
   "sideBarOpened" - a state that opens and closes the side bar for database connection;
   "menuPopUpOpened" - a state that opens and closes the Menu Pop Up for when burger icon is clicked;
-  "numEdit" - a state that tracks the table editting activity
-  "historyClick" - a state that tracks user click on Time Travel feature
   */
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
-  const [numEdit, setNumEdit] = useState(0);
-  const [historyClick, setHistoryClick] = useState(0);
-
-  // const ref = createRef(null);
-
-  // const [image, takeScreenShot] = useScreenshot({
-  //   type: "image/jpeg",
-  //   quality: 1.0
-  // });
-
-  // const download = (image, { name = "img", extension = "jpg" } = {}) => {
-  //   const a = document.createElement("a");
-  //   a.href = image;
-  //   a.download = createFileName(extension, name);
-  //   a.click();
-  // };
-
-  // const downloadScreenshot = () => takeScreenShot(ref.current).then(download);
 
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
   initiate "fetchedData" and Map objects in "DataStore" 
@@ -98,23 +78,10 @@ export default function DBDisplay({
   );
 
   /* useEffect:
-  "loggedIn" gets set to "true"; sessionStorage also gets set to "true"
-  gets triggered when table editting is done or History list is clicked.
+  "loggedIn" gets set to "true"; isLoggedIn in localStorage also gets set to "true"
+  Gets triggered when table editting is done or History list is clicked.
   Client-side caching implemented with latest update of table model. 
   */
-
-  useEffect(() => {
-    if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
-      sessionStorage.Query = JSON.stringify(
-        Array.from(DataStore.queries.entries())
-      );
-      sessionStorage.Data = JSON.stringify(
-        Array.from(DataStore.store.entries())
-      );
-    }
-    console.log("store size after reload", DataStore.store.size);
-  }, [fetchedData]);
-
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
@@ -128,19 +95,24 @@ export default function DBDisplay({
         DataStore.queries = savedQuery;
         DataStore.ind = DataStore.queryInd = DataStore.store.size;
         DataStore.queryList = savedQuery.get(savedQuery.size - 1);
-        console.log(
-          "DataStore data",
-          DataStore.ind,
-          DataStore.queryInd,
-          DataStore.queryList
-        );
-        console.log("DataStore", DataStore.store, DataStore.queries);
         setFetchedData(latestData);
       }
     }
   }, []);
 
-  //Prevent reload of the page
+  useEffect(() => {
+    if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
+      sessionStorage.Query = JSON.stringify(
+        Array.from(DataStore.queries.entries())
+      );
+      sessionStorage.Data = JSON.stringify(
+        Array.from(DataStore.store.entries())
+      );
+    }
+    console.log("store size after reload", DataStore.store.size);
+  }, [fetchedData]);
+
+  /** PREVENT RELOAD OF THE PAGE */
   // useEffect(() => {
   //   window.onbeforeunload = (e) => {
   //     e.preventDefault();
@@ -148,7 +120,7 @@ export default function DBDisplay({
   //   };
   // }, []);
 
-  //OLD VERSION
+  /** OLD VERSION TO MANAGE CACHING */
   // useEffect(() => {
   //   setLoggedIn(true);
   //   localStorage.setItem("isLoggedIn", "true");
@@ -180,8 +152,6 @@ export default function DBDisplay({
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
-          historyClick={historyClick}
-          setHistoryClick={setHistoryClick}
         ></FeatureTab>
       }
       styles={(theme) => ({
@@ -209,9 +179,6 @@ export default function DBDisplay({
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
         setSideBarOpened={setSideBarOpened}
-        setNumEdit={setNumEdit}
-        numEdit={numEdit}
-        
       />
     </AppShell>
   );

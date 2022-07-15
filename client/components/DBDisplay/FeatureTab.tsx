@@ -34,16 +34,12 @@ interface FeatureTabProps {
   setTablename: (e: string) => void;
   fetchedData: {};
   setFetchedData: (e: {}) => void;
-  historyClick: number;
-  setHistoryClick: (click: number) => void;
 }
 
 export default function FeatureTab({
   setTablename,
   setFetchedData,
   fetchedData,
-  historyClick,
-  setHistoryClick,
 }: FeatureTabProps) {
   const [modalOpened, setModalOpened] = useState(false);
   const form = useForm({
@@ -75,7 +71,6 @@ export default function FeatureTab({
           },
         })}
         onClick={() => {
-          setHistoryClick(historyClick + 1);
           setFetchedData(data);
           DataStore.counter = num;
           console.log(DataStore.counter);
