@@ -159,7 +159,7 @@ export default function Sidebar({
               {...form.getInputProps("database_name")}
             />
 
-            <Group position="right" mt="md">
+            <Group position="center" mt="md">
               <Button color="dark" size="md" compact type="submit">Connect</Button>
             </Group>
           </form>

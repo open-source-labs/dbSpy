@@ -185,32 +185,45 @@ export default function Canvas({
   /** Truthy when the user is connecting to the database to grab the intial table model */
   if (isLoadingProps) {
     return (
-      <Text>
-        Please wait. It can take a few minutes to process your request.
-        <Loader size="xl" variant="dots" />
-      </Text>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+        {/* <Text> */}
+          Please wait while we process your request.
+          <br/>
+          <Loader size="xl" variant="dots" />
+        {/* </Text> */}
+      </div>
     );
   }
 
   /** Truthy when the user has an issue grabbing the inital table model */
   if (isErrorProps) {
-    return <>An error occurred: Please check your connection</>;
+    return (
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+        An error occurred while we processed your request. Please check your connection.
+      </div>
+    )
   }
 
   /** Truthy when the user is executing the queries for database migration */
   if (isLoading) {
     return (
-      <h3>
-        Please Wait... It can take few minutes to complete the database
-        modification
-        <Loader size="xl" variant="dots" />
-      </h3>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+        {/* <Text> */}
+          Please wait while we process your request.
+          <br/>
+          <Loader size="xl" variant="dots" />
+        {/* </Text> */}
+      </div>
     );
   }
 
   /** Truthy when the user fails to execute the queries for database migration */
   if (isError) {
-    return <h3>An error occurred: Please check your connection</h3>;
+    return (
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+        An error occurred while we processed your request. Please check your connection.
+      </div>
+    )
   }
 
   const dbButtons = 
