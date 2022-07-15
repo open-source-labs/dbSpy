@@ -14,7 +14,7 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Database, DatabaseImport } from "tabler-icons-react";
+import { Database, DatabaseImport, DatabaseOff } from "tabler-icons-react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import DataStore from "../../Store";
@@ -101,7 +101,7 @@ export default function Sidebar({
         overlayBlur={3}
         opened={sideBarOpened}
         onClose={() => setSideBarOpened(false)}
-        title="Connect to Database"
+        title="Connect Database"
         padding="xl"
         size="md"
       >
@@ -160,7 +160,7 @@ export default function Sidebar({
             />
 
             <Group position="right" mt="md">
-              <Button type="submit">Connect</Button>
+              <Button color="dark" size="md" compact type="submit">Connect</Button>
             </Group>
           </form>
         </Box>

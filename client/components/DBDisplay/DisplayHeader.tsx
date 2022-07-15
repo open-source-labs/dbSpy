@@ -29,6 +29,7 @@ export default function DisplayHeader({
   // console.log(picture);
 
   const logout = () => {
+    localStorage.setItem("isLoggedIn", "false");
     sessionStorage.clear();
     fetch("/logout")
       .then((response) => response.json())
@@ -52,6 +53,7 @@ export default function DisplayHeader({
           display: "flex",
           alignItems: "center",
           height: "100%",
+          width: "100%",
           justifyContent: "space-between",
         }}
       >
@@ -60,7 +62,7 @@ export default function DisplayHeader({
             display: "flex",
             alignItems: "center",
             height: "100%",
-            width: "1fr",
+            width: "33.33%",
           }}
         >
           <MediaQuery largerThan="sm" styles={{ display: "block" }}>
@@ -75,7 +77,14 @@ export default function DisplayHeader({
           </Link>
         </div>
 
-        <div style={{ color: "white", borderColor: "white", width: "1fr" }}>
+        <div
+          style={{
+            color: "white",
+            borderColor: "white",
+            textAlign: "center",
+            width: "33.33%",
+          }}
+        >
           LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022
         </div>
 
@@ -84,7 +93,8 @@ export default function DisplayHeader({
             display: "flex",
             alignItems: "center",
             marginRight: "6px",
-            width: "1fr",
+            justifyContent: "flex-end",
+            width: "33.33%",
           }}
         >
           <Text color="white" style={{ fontSize: "12px" }}>

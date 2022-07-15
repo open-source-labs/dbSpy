@@ -15,25 +15,27 @@ import {
   TextInput,
   Box,
   Button,
-  Input
+  Input,
 } from "@mantine/core";
 import {
   ArrowBackUp,
+  ArrowForwardUp,
   Camera,
   Database,
   DatabaseImport,
   DeviceFloppy,
   Plus,
-  Upload,
+  File,
+  FileUpload,
 } from "tabler-icons-react";
 
 import { permissiveTableCheck } from "../../permissiveFn";
-
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
   fetchedData: {};
   setFetchedData: (e: {}) => void;
+  setSideBarOpened: (param: boolean) => void;
   historyClick: number;
   setHistoryClick: (click: number) => void;
 }
@@ -41,6 +43,7 @@ interface FeatureTabProps {
 export default function FeatureTab({
   setTablename,
   setFetchedData,
+  setSideBarOpened,
   fetchedData,
   historyClick,
   setHistoryClick,
@@ -77,6 +80,8 @@ export default function FeatureTab({
         onClick={() => {
           setHistoryClick(historyClick + 1);
           setFetchedData(data);
+          DataStore.counter = num;
+          console.log(DataStore.counter);
         }}
         key={num}
       >
@@ -91,6 +96,22 @@ export default function FeatureTab({
     );
   }
 
+  function undo() {
+    if (DataStore.counter > 0) {
+      const prev: any = DataStore.getData(DataStore.counter - 1);
+      setFetchedData(prev);
+      DataStore.counter--;
+    }
+  }
+
+  function redo() {
+    if (DataStore.counter < DataStore.store.size) {
+      const next: any = DataStore.getData(DataStore.counter);
+      setFetchedData(next);
+      DataStore.counter++;
+    }
+  }
+
   return (
     <Navbar width={{ base: 225 }} height={"100%"} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
@@ -102,7 +123,6 @@ export default function FeatureTab({
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
-
               const result: any = permissiveTableCheck(
                 values.tablename,
                 fetchedData,
@@ -159,7 +179,7 @@ export default function FeatureTab({
       </Modal>
 
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>FILE</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>File</div>
         <hr />
         <UnstyledButton
           sx={(theme) => ({
@@ -177,6 +197,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert('Feature coming soon!')}
         >
           <Group>
             <ThemeIcon
@@ -184,39 +205,11 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <Database />
+              <File />
             </ThemeIcon>
-            <Text size="md">CREATE NEW</Text>
+            <Text size="md">Clear Canvas</Text>
           </Group>
         </UnstyledButton>
-        {/* <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <Upload />
-            </ThemeIcon>
-            <Text size="md">LOAD JSON FILE</Text>
-          </Group>
-        </UnstyledButton> */}
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -232,23 +225,9 @@ export default function FeatureTab({
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
+            
           })}
-
-          onClick={() => {
-            // creating an input element for user to upload sql file
-            const input = document.createElement("input");
-            input.setAttribute("type", "file");
-            input.click();
-            input.onchange = (e:any):void => {
-              const file = e.target.files[0];
-              const reader = new FileReader();
-              reader.readAsText(file);
-              reader.onload = (event:any) => {
-                DataStore.loadedFile = true;
-                setFetchedData(parseSql(event.target.result));  
-              }
-            }
-          }} 
+          onClick={() => setSideBarOpened(true)}
         >
           <Group>
             <ThemeIcon
@@ -258,7 +237,7 @@ export default function FeatureTab({
             >
               <DatabaseImport />
             </ThemeIcon>
-            <Text size="md">LOAD SQL FILE </Text>
+            <Text size="md">Connect Database</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -277,6 +256,65 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => {
+
+            if (DataStore.connectedToDB) {
+              alert('In order to upload a SQL file, you must first disconnect your database.')
+              return;
+            }
+            // creating an input element for user to upload sql file
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.click();
+            input.onchange = (e: any): void => {
+              const file = e.target.files[0];
+              const reader = new FileReader();
+              reader.readAsText(file);
+              reader.onload = (event: any) => {
+                DataStore.loadedFile = true;
+                const parsedData = parseSql(event.target.result);
+                setFetchedData(parsedData);
+                DataStore.setData(parsedData);
+                DataStore.setQuery([{ type: "", query: "" }]);
+                sessionStorage.Data = JSON.stringify(
+                  Array.from(DataStore.store.entries())
+                );
+
+                sessionStorage.Query = JSON.stringify(
+                  Array.from(DataStore.queries.entries())
+                );
+              };
+            };
+          }}
+        >
+          <Group>
+            <ThemeIcon
+              variant="outline"
+              color="dark"
+              style={{ border: "2px solid white" }}
+            >
+              <FileUpload />
+            </ThemeIcon>
+            <Text size="md">Upload SQL File </Text>
+          </Group>
+        </UnstyledButton>
+        <UnstyledButton
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: theme.spacing.xs,
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+            },
+          })}
+          onClick={() => alert('Feature coming soon!')}
         >
           <Group>
             <ThemeIcon
@@ -286,14 +324,14 @@ export default function FeatureTab({
             >
               <DeviceFloppy />
             </ThemeIcon>
-            <Text size="md">SAVE</Text>
+            <Text size="md">Save</Text>
           </Group>
         </UnstyledButton>
       </Navbar.Section>
       <br />
       <br />
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>EDIT</div> <hr />
+        <div style={{ fontSize: "24px", margin: "10px" }}>Edit</div> <hr />
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -323,7 +361,7 @@ export default function FeatureTab({
             >
               <Plus />
             </ThemeIcon>
-            <Text size="md">ADD TABLE</Text>
+            <Text size="md">Add Table</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -342,6 +380,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={undo}
         >
           <Group>
             <ThemeIcon
@@ -351,7 +390,36 @@ export default function FeatureTab({
             >
               <ArrowBackUp />
             </ThemeIcon>
-            <Text size="md">UNDO</Text>
+            <Text size="md">Undo</Text>
+          </Group>
+        </UnstyledButton>
+        <UnstyledButton
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: theme.spacing.xs,
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+            },
+          })}
+          onClick={redo}
+        >
+          <Group>
+            <ThemeIcon
+              variant="outline"
+              color="dark"
+              style={{ border: "2px solid white" }}
+            >
+              <ArrowForwardUp />
+            </ThemeIcon>
+            <Text size="md">REDO</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -379,14 +447,14 @@ export default function FeatureTab({
             >
               <Camera />
             </ThemeIcon>
-            <Text size="md">SCREENSHOT</Text>
+            <Text size="md">Screenshot</Text>
           </Group>
         </UnstyledButton>
         <br />
         <br />
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <div style={{ fontSize: "24px", margin: "10px" }}>HISTORY</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>History</div>
         <hr />
         {historyComponent}
         {/* {historyComponent} */}

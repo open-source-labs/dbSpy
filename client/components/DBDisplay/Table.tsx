@@ -1,4 +1,4 @@
-import React, { DragEvent, useCallback, useEffect, useState } from "react";
+import React, { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -13,7 +13,11 @@ import {
   GridEventListener,
   GridRowId,
   GridRowModel,
-  GridEditRowsModel,
+  GridRow,
+  GridCellEditCommitParams,
+  GridCellValue,
+  GridCellParams,
+ 
 } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
@@ -32,13 +36,23 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
-import permissiveColumnCheck, {
-  permissiveTableCheck,
-} from "../../permissiveFn";
+import permissiveColumnCheck from "../../permissiveFn.js";
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 
 interface TableProps {
   tableInfo: {
-    [key: string]: {
+    [key: string]: {  
       IsForeignKey: boolean;
       IsPrimaryKey: boolean;
       Name: string;
@@ -54,6 +68,7 @@ interface TableProps {
   setNumEdit: (numEdit: number) => void;
   numEdit: number;
   setFetchedData: (fetchedData: any) => void;
+  fetchedData: any; 
 }
 
 interface RowProps {
@@ -72,6 +87,7 @@ export default function Table({
   setNumEdit,
   numEdit,
   setFetchedData,
+  fetchedData,
 }: TableProps) {
   // console.log("this is tableinfo from table: ", tableInfo);
   // const { Name, Properties } = tableInfo;
@@ -123,25 +139,26 @@ export default function Table({
         fk: obj.IsForeignKey,
         reference: obj.References,
       });
+
     });
   }
 
   // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
-
   // console.log(rows);
+  // rowModesModel is current table state. 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-
+  const [fkReference, setfkReference] = useState({});
+  const [opens, setOpens]  = useState(false);
+  const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: ''}});
+  const [formDialogEditCol, setFormDialogEditCol] = useState('');
+   
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes("")) return "empty";
 
     for (let i = 0; i < oldRow.length; i++) {
-      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id) {
+      if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
         return "columnIssue";
-      }
-      if (oldRow[i].column === newRow.column && oldRow[i].id === newRow.id) {
-        return "sameName";
-      }
       if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
     }
 
@@ -154,6 +171,7 @@ export default function Table({
     params: GridRowParams,
     event: MuiEvent<React.SyntheticEvent>
   ) => {
+    
     event.defaultMuiPrevented = true;
   };
 
@@ -196,8 +214,14 @@ export default function Table({
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    console.log('fkReference:')
+    console.log(fkReference);
+
+    
     if (logicCheck(newRow, rows) === "empty") {
       alert("Please make sure to fill out every cell!");
+      console.log(newRow)
+      console.log('new row in procesRowUpdate')
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
@@ -205,13 +229,6 @@ export default function Table({
       return;
     } else if (logicCheck(newRow, rows) === "columnIssue") {
       alert("you cannot have duplicate column names!");
-      setRowModesModel({
-        ...rowModesModel,
-        [newRow.id]: { mode: GridRowModes.Edit },
-      });
-      return;
-    } else if (logicCheck(newRow, rows) === "sameName") {
-      alert("Please cancel instead if you're not changing anything");
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
@@ -241,10 +258,10 @@ export default function Table({
     console.log("ColBeforechange: ", ColBeforeChange);
     console.log("ColeAfterChange: ", newRow);
     console.log("tablename: ", tablename);
-    console.log(
-      "tableBeforechange: ",
-      DataStore.getData(DataStore.store.size - 1)
-    );
+    //console.log(
+    //  "tableBeforechange: ",
+    //  DataStore.getData(DataStore.store.size - 1)
+    //);
     // console.log(
     //   "this is Query",
     //   permissiveColumnCheck(
@@ -293,6 +310,7 @@ export default function Table({
       headerName: "Column",
       width: 75,
       editable: true,
+     
     },
     {
       field: "type",
@@ -340,6 +358,24 @@ export default function Table({
       editable: true,
       type: "singleSelect",
       valueOptions: ["true", "false"],
+      valueParser: (value: string, row:GridRowModel) => {
+       console.log('id:------->', id);
+       setfkReference({});
+       setFormDialogEditRow(row);
+        if (value =="true")
+        {
+          
+          console.log('row ----------->')
+          console.log(row);
+          setOpens(true);
+
+         
+        } else
+        {
+          setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 'ReferencesPropertyName':row.column, 'ReferencesTableName':tablename, 'isDestination': false, 'constrainName': '', type: 'remove'});
+        }    
+        return value;
+      }
     },
     {
       field: "actions",
@@ -348,9 +384,12 @@ export default function Table({
       width: 70,
       cellClassName: "actions",
       getActions: ({ id, getValue }) => {
+        
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
+        
         if (isInEditMode) {
+          
+          
           return [
             <GridActionsCellItem
               icon={<SaveIcon />}
@@ -410,8 +449,8 @@ export default function Table({
       ...dataAfterChange,
     });
     setFetchedData(DataStore.getData(DataStore.store.size - 1));
-    console.log("this is dataStore2:", DataStore.store);
-    console.log("this is data After Change: ", dataAfterChange);
+   // console.log("this is dataStore2:", DataStore.store);
+    //console.log("this is data After Change: ", dataAfterChange);
   }
 
   // console.log("this is updated rows: ", rows);
@@ -442,8 +481,11 @@ export default function Table({
           <div style={{ fontSize: "24px" }}>{id}</div>
           {/* <div onDrag={handleDrag}>
             x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
-          </div> */}
+          </div> 
+            //
+          */}
         </div>
+        <FormDialog opens={opens} setOpens={setOpens}  setRows={setRows} setRowModesModel={setRowModesModel} formDialogEditRow={formDialogEditRow} formDialogEditCol={formDialogEditCol} setFormDialogEditCol={setFormDialogEditCol} setFormDialogEditRow={setFormDialogEditRow} rows={rows} fetchedData={fetchedData} fkReference={fkReference} tablename={tablename} setfkReference={setfkReference}/>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -459,8 +501,43 @@ export default function Table({
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
+         /*
+          onStateChange={(state:any) => {
+          //  console.log('on state running');
+          //  console.log('fk button state: ', state);
+            if (state.editRows)
+            {
+              
+            for (let cols in state.editRows)
+            {
+            //console.log('editrow col', state.editRows[cols].fk.value)
+           // console.log('tableinfo row', tableInfo[cols].IsForeignKey )
+          
+              let focus = null; 
+
+              if (state.focus)
+               if (state.focus.cell)
+                 if (state.focus.cell.field)
+                    focus = state.focus.cell.field; 
+
+
+                    let currentRow = null; 
+                    for (let i = 0; i < rows.length; i++){
+                      if (rows[i].column == cols)
+                      {
+                        currentRow = rows[i]
+                        
+                      }
+                
+                    }
+          
+
+          
+          
+          }}} */
+
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => alert("Logic Failed")}
+          onProcessRowUpdateError={(error) => console.log("logic failed")}
           components={{
             Toolbar: EditToolbar,
           }}
@@ -505,10 +582,209 @@ function EditToolbar(props: EditToolbarProps) {
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        style={{ position: "absolute", right: "3px", margin: 0 }}
+        style={{ position: "absolute", right: "3px", margin: 0, color: "black" }}
       >
         Add row
       </Button>
     </GridToolbarContainer>
   );
 }
+
+
+interface FormDialogProps {
+ 
+  setRowModesModel: (
+    newModel: (oldModel: GridRowModesModel) => GridRowModesModel
+  ) => void;
+
+  //setRows is used to update the table model, to revert changes upon cancel button hit
+  setRows: React.Dispatch<React.SetStateAction<any[]>>;
+
+  //opens is boolean to toggle the modal open or closed
+  opens: boolean; 
+
+  //setOpens used to set state for opens, which is used to open or close the box
+  setOpens: Dispatch<SetStateAction<boolean>>;
+
+  //formDialogEditRow is used to assign & edit the row object to FormDialog to/from parent object
+  formDialogEditRow: any;
+
+  //formDialogEditCol is used to assign Column Name of what is being edited by user
+  formDialogEditCol: string;
+
+  //used to set or reset the column edit assignment
+  setFormDialogEditCol: React.Dispatch<React.SetStateAction<string>>;
+
+   //used to set or reset the row edit assignment
+  setFormDialogEditRow: React.Dispatch<React.SetStateAction<any>>;
+  
+  rows: any[];
+
+  fetchedData: any;
+
+  fkReference:{};
+
+  tablename: string;
+
+  setfkReference: React.Dispatch<React.SetStateAction<any>>;
+}
+
+function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows, fetchedData, fkReference, tablename, setfkReference}: FormDialogProps) {
+ ;
+
+let temp:(JSX.Element | undefined)[] = []; 
+let references = {column_name:"", references:{}};
+const [columnList, setcolumnList] = useState<(JSX.Element| null | undefined)[]>([]);
+const [pkList, setpkList] = useState('');
+const [msg, setMsg] = useState('');
+const [selectedCol, setselectedCol] = useState('');
+const handleClose = () => {
+setFormDialogEditCol("false")
+console.log('formDialogEdit in handleClose', formDialogEditCol); 
+setOpens(false);
+};
+
+const handleSubmit = () => {
+// Add state to prevent button
+setFormDialogEditCol("true")
+let PrimaryKeyTableName = fetchedData[pkList][selectedCol].Name; 
+let PrimaryKeyName= selectedCol + ' ' + fetchedData[pkList][selectedCol].data_type;
+let ReferencesPropertyName= formDialogEditRow.row.column+ ' ' + formDialogEditRow.row.type; 
+let ReferencesTableName:(string | null) = tablename; 
+let isDestination = false; 
+let constrainName = ReferencesTableName + '_' + ReferencesPropertyName + '_' + 'fkey';
+let obj = {};
+if (PrimaryKeyTableName == null )
+alert('Must Select Primary Table Name')
+else if (PrimaryKeyName == null )
+alert('Must Select Primary Key Column')
+else if (ReferencesPropertyName == null)
+alert('Error: Reference Property Name Not Set')
+else if (ReferencesTableName == null )
+alert('Error: References Table Not Set')
+else  
+{
+  
+  setfkReference({PrimaryKeyTableName: PrimaryKeyTableName, 'PrimaryKeyName' :PrimaryKeyName, 'ReferencesPropertyName':ReferencesPropertyName, 'ReferencesTableName':ReferencesTableName, 'isDestination': false, 'constrainName': constrainName, type: 'add'});
+
+setOpens(false);
+}
+
+
+/*
+IsDestination: false
+PrimaryKeyName: "id integer NOT NULL"
+PrimaryKeyTableName: "public.user_accounts"
+ReferencesPropertyName: "user_id integer"
+ReferencesTableName: "public.profile"
+constrainName: "profile_user_id_fkey
+*/
+
+console.log('formDialogEdit Submit Complete', formDialogEditCol);
+
+};
+
+const handleChange = (event: SelectChangeEvent) => {
+  setpkList(event.target.value); 
+  console.log('Row in Edit in formDialogEdit ---->');
+ console.log(formDialogEditRow.row)
+  let temp = Object.keys(fetchedData[event.target.value]).map((key, index) => {
+    if (fetchedData[event.target.value][key].IsPrimaryKey == true)
+    return (
+      <MenuItem value={key}>{key}</MenuItem>
+    );
+  });
+  
+  setcolumnList(temp);
+  console.log(columnList);
+  
+
+
+}
+
+
+const handleColChange = (event: SelectChangeEvent) => {
+ 
+ setselectedCol(event.target.value);
+ 
+}
+
+let listOfTables = Object.keys(fetchedData).map((key, index) => {
+  if (key !== tablename)
+  return (
+    <MenuItem value={key}>{key}</MenuItem>
+  );
+});
+//formDialogEditRow.row.column
+  return (
+    <div>
+      <Dialog open={opens} onClose={handleClose} 
+      PaperProps={{
+        style: {
+          //backgroundColor: 'grey', Add color styling here... 
+          boxShadow: 'ffff',
+          
+        }}}
+      
+      sx={{
+            
+            display: 'inline',
+            fontWeight: 'bold',  
+            width:'auto',
+            mx: 0.5,
+            fontSize: 14,
+
+          }}>
+    
+        <DialogTitle>FOREIGN KEY FORM</DialogTitle>
+        <DialogContent >
+          <DialogContentText>
+          <br/>
+          </DialogContentText>
+          <TextField id="fkTableName" label="FK Table Name" variant="outlined" defaultValue={tablename} contentEditable={false} inputProps={
+					{ readOnly: true, }
+				}/>
+          <TextField id="fkColumnName" label="FK Column Name" variant="outlined" defaultValue={formDialogEditRow == undefined ? "": formDialogEditRow.row.column} contentEditable={false} inputProps={
+					{ readOnly: true, }
+				}/>
+        <span>
+      <InputLabel id="demo-simple-select-label">Select Primary Key Table</InputLabel>
+    
+       <Select
+         labelId="demo-simple-select-label"
+
+        id="demo-simple-select"
+        value={pkList}
+        label="Primary Key"
+        onChange={handleChange}
+        >
+             {listOfTables}
+ 
+  </Select>
+     
+  <InputLabel id="demo-simple-select-label">Select Primary Column Table</InputLabel>
+       <Select
+         labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={selectedCol}
+        label="Primary Key"
+        onChange={handleColChange}
+        >
+             {columnList}
+ 
+  </Select>
+    </span>
+          </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+
+
+
+
+

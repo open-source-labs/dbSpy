@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 
 // Components Imported;
@@ -47,6 +47,22 @@ export default function DBDisplay({
   const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
   const [numEdit, setNumEdit] = useState(0);
   const [historyClick, setHistoryClick] = useState(0);
+
+  // const ref = createRef(null);
+
+  // const [image, takeScreenShot] = useScreenshot({
+  //   type: "image/jpeg",
+  //   quality: 1.0
+  // });
+
+  // const download = (image, { name = "img", extension = "jpg" } = {}) => {
+  //   const a = document.createElement("a");
+  //   a.href = image;
+  //   a.download = createFileName(extension, name);
+  //   a.click();
+  // };
+
+  // const downloadScreenshot = () => takeScreenShot(ref.current).then(download);
 
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
   initiate "fetchedData" and Map objects in "DataStore" 
@@ -161,6 +177,7 @@ export default function DBDisplay({
       // navbarOffsetBreakpoint="sm"
       navbar={
         <FeatureTab
+          setSideBarOpened={setSideBarOpened}
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
@@ -172,7 +189,8 @@ export default function DBDisplay({
         root: { height: "100%" },
         body: { height: "100%" },
         main: {
-          backgroundColor: "transparent",
+          // backgroundColor: "transparent",
+          // zIndex: -5
           // backgroundColor:
           //   theme.colorScheme === "dark"
           //     ? theme.colors.dark[8]
@@ -195,6 +213,7 @@ export default function DBDisplay({
         setSideBarOpened={setSideBarOpened}
         setNumEdit={setNumEdit}
         numEdit={numEdit}
+        
       />
     </AppShell>
   );
