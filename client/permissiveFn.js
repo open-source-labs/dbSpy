@@ -1125,122 +1125,125 @@ export default function permissiveColumnCheck(
     }
   }
 
-  if (ColAfterChange.pk !== ColBeforeChange.pk) {
-    // check if another pk exist in table
-    if (ColAfterChange.pk == true) {
-      for (const columns in impactedTable) {
-        if (impactedTable[columns].IsPrimaryKey == true) {
-          console.log(impactedTable[columns]);
-          console.log("duplicate primary key detected");
-          return [
-            {
-              status: "failed",
-              errorMsg: "Postgres restriction. Duplicate primary key",
-            },
-          ];
+  console.log("ColBeforeChange", ColBeforeChange);
+  if (ColBeforeChange.pk !== '' && ColBeforeChange.fk !== '') {
+    if (ColAfterChange.pk !== ColBeforeChange.pk) {
+      // check if another pk exist in table
+      if (ColAfterChange.pk == true) {
+        for (const columns in impactedTable) {
+          if (impactedTable[columns].IsPrimaryKey == true) {
+            console.log(impactedTable[columns]);
+            console.log("duplicate primary key detected");
+            return [
+              {
+                status: "failed",
+                errorMsg: "Postgres restriction. Duplicate primary key",
+              },
+            ];
+          }
         }
+
+        /*
+
+              ALTER TABLE table_name
+              ADD CONSTRAINT [ constraint_name ]
+              PRIMARY KEY (index_col1, index_col2, ... index_col_n)
+
+            */
+
+
+        objChangeSet.pk = {
+          action: "add",
+          type: "PRIMARY KEY",
+          constraint_name: "pk_".concat(tableName.split(".")[1].toLowerCase()),
+          column: ColAfterChange.column,
+        };
+
+        const queryPrimary =
+          "ALTER TABLE " +
+          tableName.split(".")[1] +
+          " ADD CONSTRAINT pk_" +
+          tableName.split(".")[1] +
+          " PRIMARY KEY (" +
+          ColAfterChange.column +
+          ");";
+        //console.log(queryPrimary)
+        querySet.push({ type: "single", query: queryPrimary });
+      } else {
+        for (let i = 0; i < ColBeforeChange.References.length; i++) {
+          if (ColBeforeChange.References.IsDestination == true)
+            return [
+              {
+                status: "failed",
+                errorMsg:
+                  "Postgres restriction. Primary Key cannot be dropped due to dependences",
+              },
+            ];
+        }
+        objChangeSet.pk = { action: "remove" };
+
+        const UQuery1 =
+          "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
+          tableName.split(".")[0] +
+          "' AND table_constraints.table_name='" +
+          tableName.split(".")[1] +
+          "' AND constraint_type='PRIMARY KEY' AND key_column_usage.column_name= '" +
+          ColAfterChange.column +
+          "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
+        console.log(UQuery1);
+        querySet.push({ type: "single", query: UQuery1 });
       }
+    }
+    if (ColAfterChange.fk !== ColBeforeChange.fk) {
+      if (ColAfterChange.fk == true) {
+        // Assume informaiton is in references object of ColAfterChange as follows:
+        /*
 
-      /*
 
-            ALTER TABLE table_name
-            ADD CONSTRAINT [ constraint_name ]
-            PRIMARY KEY (index_col1, index_col2, ... index_col_n)
+          References
+                  {
+                      "PrimaryKeyName": "user_id integer",
+                      "ReferencesPropertyName": "id integer NOT NULL",
+                      "PrimaryKeyTableName": "public.profile",
+                      "ReferencesTableName": "public.user_accounts",
+                      "IsDestination": true,
+                      "constrainName": "profile_user_id_fkey"
+                  }
 
           */
 
+        const queryForeign =
+          "ALTER TABLE " +
+          ColAfterChange.References.ReferencesTableName +
+          " ADD CONSTRAINT " +
+          tableName.split(".")[1] +
+          "_" +
+          ColAfterChange.column +
+          "_fkey  FOREIGN KEY (" +
+          ColAfterChange.References.ReferencesPropertyName.split(" ")[0] +
+          ") REFERENCES " +
+          ColAfterChange.References.PrimaryKeyTableName +
+          "(" +
+          ColAfterChange.References.PrimaryKeyName.split(" ")[0] +
+          ");";
 
-      objChangeSet.pk = {
-        action: "add",
-        type: "PRIMARY KEY",
-        constraint_name: "pk_".concat(tableName.split(".")[1].toLowerCase()),
-        column: ColAfterChange.column,
-      };
+        querySet.push({ type: "single", query: queryForeign });
+      } else {
+        objChangeSet.fk = { action: "remove" };
 
-      const queryPrimary =
-        "ALTER TABLE " +
-        tableName.split(".")[1] +
-        " ADD CONSTRAINT pk_" +
-        tableName.split(".")[1] +
-        " PRIMARY KEY (" +
-        ColAfterChange.column +
-        ");";
-      //console.log(queryPrimary)
-      querySet.push({ type: "single", query: queryPrimary });
-    } else {
-      for (let i = 0; i < ColBeforeChange.References.length; i++) {
-        if (ColBeforeChange.References.IsDestination == true)
-          return [
-            {
-              status: "failed",
-              errorMsg:
-                "Postgres restriction. Primary Key cannot be dropped due to dependences",
-            },
-          ];
+        const UQuery1 =
+          "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
+          tableName.split(".")[0] +
+          "' AND table_constraints.table_name='" +
+          tableName.split(".")[1] +
+          "'AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
+          ColAfterChange.column +
+          "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
+        console.log(UQuery1);
+        querySet.push({ type: "single", query: UQuery1 });
       }
-      objChangeSet.pk = { action: "remove" };
-
-      const UQuery1 =
-        "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
-        tableName.split(".")[0] +
-        "' AND table_constraints.table_name='" +
-        tableName.split(".")[1] +
-        "' AND constraint_type='PRIMARY KEY' AND key_column_usage.column_name= '" +
-        ColAfterChange.column +
-        "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
-      console.log(UQuery1);
-      querySet.push({ type: "single", query: UQuery1 });
     }
-  }
-  if (ColAfterChange.fk !== ColBeforeChange.fk) {
-    if (ColAfterChange.fk == true) {
-      // Assume informaiton is in references object of ColAfterChange as follows:
-      /*
-
-
-        References
-                {
-                    "PrimaryKeyName": "user_id integer",
-                    "ReferencesPropertyName": "id integer NOT NULL",
-                    "PrimaryKeyTableName": "public.profile",
-                    "ReferencesTableName": "public.user_accounts",
-                    "IsDestination": true,
-                    "constrainName": "profile_user_id_fkey"
-                }
-
-        */
-
-      const queryForeign =
-        "ALTER TABLE " +
-        ColAfterChange.References.ReferencesTableName +
-        " ADD CONSTRAINT " +
-        tableName.split(".")[1] +
-        "_" +
-        ColAfterChange.column +
-        "_fkey  FOREIGN KEY (" +
-        ColAfterChange.References.ReferencesPropertyName.split(" ")[0] +
-        ") REFERENCES " +
-        ColAfterChange.References.PrimaryKeyTableName +
-        "(" +
-        ColAfterChange.References.PrimaryKeyName.split(" ")[0] +
-        ");";
-
-      querySet.push({ type: "single", query: queryForeign });
-    } else {
-      objChangeSet.fk = { action: "remove" };
-
-      const UQuery1 =
-        "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
-        tableName.split(".")[0] +
-        "' AND table_constraints.table_name='" +
-        tableName.split(".")[1] +
-        "'AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
-        ColAfterChange.column +
-        "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
-      console.log(UQuery1);
-      querySet.push({ type: "single", query: UQuery1 });
-    }
-  }
+}
 
   console.log(querySet);
   return querySet;

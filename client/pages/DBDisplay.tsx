@@ -12,6 +12,7 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
+import { session } from "passport";
 
 interface stateChangeProps {
   user: {
@@ -77,16 +78,26 @@ export default function DBDisplay({
     }
   );
 
-  /* useEffect:
-  "loggedIn" gets set to "true"; isLoggedIn in localStorage also gets set to "true"
-  Gets triggered when table editting is done or History list is clicked.
+  /* useEffect1:
+  "loggedIn" gets set to "true"; isLoggedIn in localStorage also gets set to "true".
+  Updates global state "DataStore" upon landing of the page with sessionStorage data.
+  Gets triggered once when landing of the page (i.e. refresh of browser, coming from different pages)
   Client-side caching implemented with latest update of table model. 
   */
   useEffect(() => {
     setLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
-    if (sessionStorage.dbConnect === "true" && sessionStorage.Data) {
-      DataStore.connect();
+    if (
+      (sessionStorage.dbConnect === "true" ||
+        sessionStorage.loadedFile === "true") &&
+      sessionStorage.Data
+    ) {
+      if (sessionStorage.dbConnect) {
+        DataStore.connect();
+        DataStore.userDBInfo = JSON.parse(sessionStorage.userDBInfo);
+      } else if (sessionStorage.loadedFile) {
+        DataStore.loadedFile = true;
+      }
       const savedData: any = new Map(JSON.parse(sessionStorage.Data));
       const savedQuery: any = new Map(JSON.parse(sessionStorage.Query));
       const latestData: any = savedData.get(savedData.size - 1);
@@ -100,6 +111,10 @@ export default function DBDisplay({
     }
   }, []);
 
+  /* useEffect2:
+  Updates sessionStorage with current "fetchedData"
+  Gets triggered on landing of the page and when table editting is done (updating "fetchedData")
+  */
   useEffect(() => {
     if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
       sessionStorage.Query = JSON.stringify(
@@ -112,7 +127,7 @@ export default function DBDisplay({
     console.log("store size after reload", DataStore.store.size);
   }, [fetchedData]);
 
-  /** PREVENT RELOAD OF THE PAGE */
+  /** UseEffect to PREVENT RELOAD OF THE PAGE */
   // useEffect(() => {
   //   window.onbeforeunload = (e) => {
   //     e.preventDefault();
@@ -120,7 +135,7 @@ export default function DBDisplay({
   //   };
   // }, []);
 
-  /** OLD VERSION TO MANAGE CACHING */
+  /** UseEffect of OLD VERSION TO MANAGE CACHING */
   // useEffect(() => {
   //   setLoggedIn(true);
   //   localStorage.setItem("isLoggedIn", "true");
@@ -158,14 +173,7 @@ export default function DBDisplay({
       styles={(theme) => ({
         root: { height: "100%" },
         body: { height: "100%" },
-        main: {
-          // backgroundColor: "transparent",
-          // zIndex: -5
-          // backgroundColor:
-          //   theme.colorScheme === "dark"
-          //     ? theme.colors.dark[8]
-          //     : theme.colors.gray[0],
-        },
+        main: {},
       })}
     >
       <Sidebar

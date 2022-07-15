@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Components imported;
@@ -16,6 +16,7 @@ interface DisplayHeaderProps {
   setMenuPopUpOpened: (opened: boolean) => void;
 }
 
+/** "DisplayHeader" Component - a header for DBDisplay page */
 export default function DisplayHeader({
   menuPopUpOpened,
   name,
@@ -26,24 +27,24 @@ export default function DisplayHeader({
   const navigate = useNavigate();
 
   if (picture === null) picture = undefined;
-  // console.log(picture);
 
+  /** "logout" - a function that gets invoked when logout button is clicked on DBDisplay page; GET request to "/logout" path;
+   * Receive a data with a format of {logout: true||false};
+   * Redirect to main homepage upon both success and failure;
+   */
   const logout = () => {
     localStorage.setItem("isLoggedIn", "false");
     sessionStorage.clear();
     fetch("/logout")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setLoggedIn(false);
         navigate("/");
       })
       .catch((err: {}) => {
-        console.log("Error:", err);
+        alert(`Logout failed. Error:${err}`);
         navigate("/");
       });
-
-    console.log("clicked");
   };
 
   return (

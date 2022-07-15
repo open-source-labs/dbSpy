@@ -608,7 +608,12 @@ function EditToolbar(props: EditToolbarProps) {
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        style={{ position: "absolute", right: "3px", margin: 0, color: "black" }}
+        style={{
+          position: "absolute",
+          right: "3px",
+          margin: 0,
+          color: "black",
+        }}
       >
         Add row
       </Button>
@@ -734,7 +739,11 @@ constrainName: "profile_user_id_fkey
     let temp = Object.keys(fetchedData[event.target.value]).map(
       (key, index) => {
         if (fetchedData[event.target.value][key].IsPrimaryKey == true)
-          return <MenuItem value={key}>{key}</MenuItem>;
+          return (
+            <MenuItem key={index} value={key}>
+              {key}
+            </MenuItem>
+          );
       }
     );
 
@@ -747,7 +756,12 @@ constrainName: "profile_user_id_fkey
   };
 
   let listOfTables = Object.keys(fetchedData).map((key, index) => {
-    if (key !== tablename) return <MenuItem value={key}>{key}</MenuItem>;
+    if (key !== tablename)
+      return (
+        <MenuItem key={index} value={key}>
+          {key}
+        </MenuItem>
+      );
   });
   //formDialogEditRow.row.column
   return (
