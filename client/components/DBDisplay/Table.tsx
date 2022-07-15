@@ -139,7 +139,14 @@ export default function Table({
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id) {
         return "columnIssue";
       }
-      if (oldRow[i].column === newRow.column && oldRow[i].id === newRow.id) {
+      if (
+        oldRow[i].column === newRow.column &&
+        oldRow[i].type === newRow.type &&
+        oldRow[i].constraint === newRow.constraint &&
+        oldRow[i].pk === newRow.pk &&
+        oldRow[i].fk === newRow.fk &&
+        oldRow[i].id === newRow.id
+      ) {
         return "sameName";
       }
       if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
@@ -273,6 +280,7 @@ export default function Table({
 
     DataStore.queryList.push(...queryResult);
     DataStore.setQuery(DataStore.queryList.slice());
+    DataStore.counter++;
     console.log("this is stored Queries", DataStore.queries);
 
     const updatedRow = { ...newRow, isNew: false };
@@ -460,7 +468,9 @@ export default function Table({
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => alert("Logic Failed")}
+          onProcessRowUpdateError={(error) =>
+            alert("Please correct your values")
+          }
           components={{
             Toolbar: EditToolbar,
           }}

@@ -47,10 +47,16 @@ export default function MenuPopUp({ opened, setOpened }: MenuPopUpProps) {
       <Divider />
       <Menu.Label>HELP</Menu.Label>
       <Menu.Item icon={<Help size={14} />}>Support/Docs</Menu.Item>
-      <Menu.Item icon={<MessageCircle size={14} />}>
-        Request a Feature
-      </Menu.Item>
-      <Menu.Item icon={<MessageReport size={14} />}>Report a Problem</Menu.Item>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdaPeCzo41VsJWHbbPzYwvu5Jd-FrXfJZnx23mtFdRVWDWCyg/viewform">
+        <Menu.Item icon={<MessageCircle size={14} />}>
+          Request a Feature
+        </Menu.Item>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScM8UUrZ-bg1My7WY8-XanMFr2o7m2qSUykEeihkis9oiDDpw/viewform">
+        <Menu.Item icon={<MessageReport size={14} />}>
+          Report a Problem
+        </Menu.Item>
+      </a>
     </Menu>
   );
 }
