@@ -197,6 +197,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert('Feature coming soon!')}
         >
           <Group>
             <ThemeIcon
@@ -206,7 +207,7 @@ export default function FeatureTab({
             >
               <File />
             </ThemeIcon>
-            <Text size="md">New Canvas</Text>
+            <Text size="md">Clear Canvas</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -256,6 +257,11 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
+
+            if (DataStore.connectedToDB) {
+              alert('In order to upload a SQL file, you must first disconnect your database.')
+              return;
+            }
             // creating an input element for user to upload sql file
             const input = document.createElement("input");
             input.setAttribute("type", "file");
@@ -308,7 +314,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
-          onClick={()=> alert('Feature coming soon!')}
+          onClick={() => alert('Feature coming soon!')}
         >
           <Group>
             <ThemeIcon
