@@ -185,7 +185,7 @@ export default function Canvas({
   if (isLoadingProps) {
     return (
       <Text>
-        Please Wait... It can take few minutes to complete the retrieval of data
+        Please wait. It can take a few minutes to process your request.
         <Loader size="xl" variant="dots" />
       </Text>
     );
@@ -212,10 +212,8 @@ export default function Canvas({
     return <h3>An error occurred: Please check your connection</h3>;
   }
 
-  return (
-    <div style={{ height: "100%"}} >
-      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
-        <>
+  const dbButtons = 
+          <div style={{display: "flex", flexDirection: "column", flexWrap: "wrap"}}>
           <Group position="right">
             <Button id="disconnectButton"
               variant="outline"
@@ -248,11 +246,19 @@ export default function Canvas({
               Execute changes
             </Button>
           </Group>
+        </div>
 
+  return (
+    <div style={{ height: "100%", width: "80vw"}} >
+      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
+        <>
+          {dbButtons}
+        <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent:"space-around", alignContent:"space-around"}}>
           <Xwrapper>
             {tables}
             {xa}
           </Xwrapper>
+        </div>
         </>
       ) : (
       Object.keys(fetchedData).length > 0 && DataStore.loadedFile ? (
@@ -290,15 +296,17 @@ export default function Canvas({
             </Button>
           </Group> */}
 
+          <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap"}}>
           <Xwrapper>
             {tables}
             {xa}
           </Xwrapper>
+        </div>
         </>
       ) : (
         <>
           {/* "Please Connect to Your Database" */}
-          <div>Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
+          <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}} >Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
           {/* <Group position="right">
             <Button
               color="white"
