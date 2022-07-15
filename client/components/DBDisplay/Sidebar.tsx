@@ -112,6 +112,7 @@ export default function Sidebar({
             onSubmit={form.onSubmit((values) => {
               // grabbing userDBInfo from values to send to server to make db changes
               DataStore.userDBInfo = values;
+              sessionStorage.userDBInfo = JSON.stringify(values);
               mutate(values);
               form.setValues({
                 hostname: "",
