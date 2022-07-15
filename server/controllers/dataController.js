@@ -9,6 +9,7 @@ const { Pool } = require('pg');
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
+let primaryKeyListArray = [];
 let tableList = [];
 let exportedTables = 0;
 
@@ -392,19 +393,12 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   }
 
   // Create ForeignKey
-  let foreignKeyOriginModel = createForeignKey(
-    foreignKeyName,
-    currentTableModel.Name,
-    referencedPropertyName,
-    referencedTableName,
-    true
-  );
+  /*
 
-  foreignKeyOriginModel.constrainName = constrainName;
 
-  // Add ForeignKey Origin
-  foreignKeyList.push(foreignKeyOriginModel);
 
+  */
+  
   //Add PrimaryKey Origin
   //foreignKeyList.push(primaryKeyOriginModel);
 
@@ -459,6 +453,16 @@ function processForeignKey() {
           }
         });
       }
+      if (tableModel.Name == foreignKeyModel.PrimaryKeyTableName) {
+        tableModel.Properties.forEach(function (propertyModel) {
+          
+          if (propertyModel.Name === foreignKeyModel.PrimaryKeyName) {
+            propertyModel.References.push({'PrimaryKeyName':foreignKeyModel.PrimaryKeyName, 'ReferencesPropertyName':foreignKeyModel.ReferencesPropertyName, 'PrimaryKeyTableName':foreignKeyModel.PrimaryKeyTableName, 'ReferencesTableName': foreignKeyModel.ReferencesTableName, 'IsDestination': true, 'constrainName':foreignKeyModel.constrainName}
+            );
+          }
+        });
+      }
+
     });
   });
 }

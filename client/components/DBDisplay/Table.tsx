@@ -1,4 +1,5 @@
-import React, { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
+import React, {  Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
+
 import {
   DataGrid,
   GridRowsProp,
@@ -148,7 +149,7 @@ export default function Table({
   // console.log(rows);
   // rowModesModel is current table state. 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [fkReference, setfkReference] = useState({});
+  const [fkReference, setfkReference] = useState({PrimaryKeyTableName: '', 'PrimaryKeyName' :'', 'ReferencesPropertyName':'', 'ReferencesTableName':'', 'isDestination': false, 'constrainName': '', type: ''});
   const [opens, setOpens]  = useState(false);
   const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: ''}});
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
@@ -162,7 +163,23 @@ export default function Table({
       if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
     }
 
-    if (newRow.fk === "true") return "assignRef";
+    if (newRow.fk === "true")
+    { 
+      console.log('fk reference in logic check')
+      console.log(fkReference)
+      
+      if (fkReference.type == 'add')
+      {
+        //assign the fkreference to the new row 
+        newRow.References
+
+      } 
+      else
+          return "assignRef";
+    
+    
+    }
+    
 
     return "";
   }
@@ -214,10 +231,10 @@ export default function Table({
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    console.log('fkReference:')
+    console.log('fkReference in process row update :')
     console.log(fkReference);
 
-    
+
     if (logicCheck(newRow, rows) === "empty") {
       alert("Please make sure to fill out every cell!");
       console.log(newRow)
@@ -242,10 +259,12 @@ export default function Table({
       });
       return;
     }
-
-    // else if (logicCheck(newRow, rows) === "assignRef") {
-    //   setRefOpened(true);
-    // }
+/*
+     else if (logicCheck(newRow, rows) === "assignRef") {
+       //setRefOpened(true);
+      // if (fkReference.)
+     }
+     */
     // console.log("permissiveColumnCheck runnning");
     //iterate through the beforeChange table.
     let ColBeforeChange;
@@ -360,7 +379,7 @@ export default function Table({
       valueOptions: ["true", "false"],
       valueParser: (value: string, row:GridRowModel) => {
        console.log('id:------->', id);
-       setfkReference({});
+       setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 'ReferencesPropertyName':row.column, 'ReferencesTableName':tablename, 'isDestination': false, 'constrainName': '', type: 'remove'});
        setFormDialogEditRow(row);
         if (value =="true")
         {
@@ -622,7 +641,7 @@ interface FormDialogProps {
 
   fetchedData: any;
 
-  fkReference:{};
+  fkReference:{PrimaryKeyTableName: string, 'PrimaryKeyName' :string, 'ReferencesPropertyName':string, 'ReferencesTableName':string, 'isDestination': boolean, 'constrainName': string, type: string};
 
   tablename: string;
 
@@ -647,7 +666,7 @@ setOpens(false);
 const handleSubmit = () => {
 // Add state to prevent button
 setFormDialogEditCol("true")
-let PrimaryKeyTableName = fetchedData[pkList][selectedCol].Name; 
+let PrimaryKeyTableName = pkList; 
 let PrimaryKeyName= selectedCol + ' ' + fetchedData[pkList][selectedCol].data_type;
 let ReferencesPropertyName= formDialogEditRow.row.column+ ' ' + formDialogEditRow.row.type; 
 let ReferencesTableName:(string | null) = tablename; 
@@ -664,7 +683,7 @@ else if (ReferencesTableName == null )
 alert('Error: References Table Not Set')
 else  
 {
-  
+   
   setfkReference({PrimaryKeyTableName: PrimaryKeyTableName, 'PrimaryKeyName' :PrimaryKeyName, 'ReferencesPropertyName':ReferencesPropertyName, 'ReferencesTableName':ReferencesTableName, 'isDestination': false, 'constrainName': constrainName, type: 'add'});
 
 setOpens(false);
