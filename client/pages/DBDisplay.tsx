@@ -177,6 +177,7 @@ export default function DBDisplay({
       // navbarOffsetBreakpoint="sm"
       navbar={
         <FeatureTab
+          setSideBarOpened={setSideBarOpened}
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
@@ -188,7 +189,8 @@ export default function DBDisplay({
         root: { height: "100%" },
         body: { height: "100%" },
         main: {
-          backgroundColor: "transparent",
+          // backgroundColor: "transparent",
+          // zIndex: -5
           // backgroundColor:
           //   theme.colorScheme === "dark"
           //     ? theme.colors.dark[8]
