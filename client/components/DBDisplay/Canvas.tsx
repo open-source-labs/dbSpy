@@ -11,7 +11,6 @@ import DataStore from "../../Store";
 import Xarrow, { Xwrapper } from "react-xarrows";
 import { DatabaseImport, DatabaseOff } from "tabler-icons-react";
 import { Loader, Text, Button, Group } from "@mantine/core";
-import { toPng } from "html-to-image";
 
 interface CanvasProps {
   fetchedData: {
