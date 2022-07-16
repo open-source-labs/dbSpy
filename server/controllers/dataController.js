@@ -171,7 +171,7 @@ dataController.getSchema = (req, res, next) => {
  */
 dataController.objSchema = (req, res, next) => {
   // Should this still be testdata???? -- NOTE
-  const data = res.locals.data;
+  const data = res.locals.testdata;
   const results = {};
 
   for (let i = 0; i < data.length; i++) {
