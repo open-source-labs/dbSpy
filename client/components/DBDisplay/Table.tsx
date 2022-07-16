@@ -338,6 +338,7 @@ export default function Table({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
+      
       return;
     }
 
