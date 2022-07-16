@@ -59,9 +59,9 @@ const writeSchema = async (command) => {
 /**
  * testDrop
  * Usage unclear - Consider removing -- NOTE
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 dataController.testDrop = (req, res, next) => {
   /*
@@ -112,10 +112,10 @@ dataController.testDrop = (req, res, next) => {
 
 /**
  * getSchema
- * Option 1 - Production: 
+ * Option 1 - Production:
  * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
- * 
- * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware. 
+ *
+ * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 dataController.getSchema = (req, res, next) => {
   // // Option 1 - Production
@@ -147,7 +147,7 @@ dataController.getSchema = (req, res, next) => {
 
   // Option 2 - Dev
   fs.readFile(
-    path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
+    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
     'utf8',
     (error, data) => {
       if (error) {
@@ -929,8 +929,9 @@ dataController.handleQueries = async (req, res, next) => {
   // const PG_URI = uri;
 
   // Test values
-  const PG_URI = 'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  console.log("Data received from Client", req.body);
+  const PG_URI =
+    'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  console.log('Data received from Client', req.body);
   const queries = [
     {
       type: 'single',
@@ -939,9 +940,9 @@ dataController.handleQueries = async (req, res, next) => {
     {
       type: 'single',
       query: 'SELECT * FROM public.pefdgdfshsople;',
-    }
+    },
   ];
-  
+
   /**
    * Function definition and initialization block
    */
@@ -953,7 +954,7 @@ dataController.handleQueries = async (req, res, next) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
   };
-  
+
   const transactionQuery = async (queryString) => {
     const client = await pool.connect();
     try {
@@ -961,7 +962,9 @@ dataController.handleQueries = async (req, res, next) => {
       await client.query(queryString);
       await client.query('COMMIT');
     } catch (err) {
-      console.log('--Invalid query detected in handleQueries\n--Transaction declined');
+      console.log(
+        '--Invalid query detected in handleQueries\n--Transaction declined'
+      );
       await client.query('ROLLBACK');
       throw err;
     } finally {
@@ -979,8 +982,7 @@ dataController.handleQueries = async (req, res, next) => {
       //execute & whatever returns, we concat to queryStr
       const newQuery = await execQueries(queries[i].query);
       queryStr = queryStr.concat(newQuery);
-    }
-    else queryStr = queryStr.concat(queries[i].query);
+    } else queryStr = queryStr.concat(queries[i].query);
   }
 
   // console.log(queryStr);

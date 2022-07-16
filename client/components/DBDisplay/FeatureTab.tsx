@@ -1,9 +1,13 @@
 // React & React Router & React Query Modules
 import React, { useEffect, useState } from "react";
-import { useForm } from "@mantine/form";
+
+// Components imported;
 import DataStore from "../../Store";
 import parseSql from "../../parse";
+import { permissiveTableCheck } from "../../permissiveFn";
 
+// UI Libraries - Mantine, tabler-icons
+import { useForm } from "@mantine/form";
 import {
   Navbar,
   ScrollArea,
@@ -15,84 +19,51 @@ import {
   TextInput,
   Box,
   Button,
-  Input,
 } from "@mantine/core";
 import {
   ArrowBackUp,
   ArrowForwardUp,
   Camera,
-  Database,
   DatabaseImport,
   DeviceFloppy,
   Plus,
-  Upload,
+  File,
+  FileUpload,
 } from "tabler-icons-react";
-
-import { permissiveTableCheck } from "../../permissiveFn";
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
   fetchedData: {};
   setFetchedData: (e: {}) => void;
-  historyClick: number;
-  setHistoryClick: (click: number) => void;
+  setSideBarOpened: (param: boolean) => void;
 }
 
+/** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab({
   setTablename,
   setFetchedData,
+  setSideBarOpened,
   fetchedData,
-  historyClick,
-  setHistoryClick,
 }: FeatureTabProps) {
-  const [modalOpened, setModalOpened] = useState(false);
+  /* Form Input State
+  "form" - a state that initializes the value of the form for Mantine;
+  */
   const form = useForm({
     initialValues: {
       tablename: "",
     },
   });
+  /* UI State
+  "modalOpened" - a state that opens and closes the input box for tablename when adding a new table to the Schema;
+  "history" - a state that tracks the list of history when table schema is editted
+  */
+  const [modalOpened, setModalOpened] = useState(false);
+  const [history, setHistory] = useState([]);
 
-  let historyComponent: any = [];
-  const cacheIterator = DataStore.store.keys();
-  for (let cache of cacheIterator) {
-    const data: any = DataStore.store.get(cache);
-    const num: any = cache;
-    historyComponent.push(
-      <UnstyledButton
-        sx={(theme) => ({
-          display: "block",
-          width: "100%",
-          padding: theme.spacing.xs,
-          borderRadius: theme.radius.sm,
-          color:
-            theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-          "&:hover": {
-            backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[6]
-                : theme.colors.gray[0],
-          },
-        })}
-        onClick={() => {
-          setHistoryClick(historyClick + 1);
-          setFetchedData(data);
-          DataStore.counter = num;
-          console.log(DataStore.counter);
-        }}
-        key={num}
-      >
-        <Group>
-          {num === 0 && <Text size="md">{`Initial Data`}</Text>}
-          {num === 1 && <Text size="md">{`${num}st Edit`}</Text>}
-          {num === 2 && <Text size="md">{`${num}nd Edit`}</Text>}
-          {num === 3 && <Text size="md">{`${num}rd Edit`}</Text>}
-          {num > 3 && <Text size="md">{`${num}th Edit`}</Text>}
-        </Group>
-      </UnstyledButton>
-    );
-  }
-
+  /* 
+  "undo" - a function that gets invoked when Undo button is clicked; render previous table
+  "redo" - a function that gets invoked when Redo button is clicked; render next table
+  */
   function undo() {
     if (DataStore.counter > 0) {
       const prev: any = DataStore.getData(DataStore.counter - 1);
@@ -108,6 +79,52 @@ export default function FeatureTab({
       DataStore.counter++;
     }
   }
+
+  /* useEffect:
+    Gets invoked when fetchedData is updated;
+    Updates "history" by iterating through the list of edits have made so far;
+  */
+  useEffect(() => {
+    let historyComponent: any = [];
+    const cacheIterator = DataStore.store.keys();
+    for (let cache of cacheIterator) {
+      const data: any = DataStore.store.get(cache);
+      const num: any = cache;
+      historyComponent.push(
+        <UnstyledButton
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: "2px 10px",
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+            },
+          })}
+          onClick={() => {
+            setFetchedData(data);
+            DataStore.counter = num;
+          }}
+          key={num}
+        >
+          <Group>
+            {num === 0 && <Text size="md">{`Initial Data`}</Text>}
+            {num === 1 && <Text size="md">{`${num}st Edit`}</Text>}
+            {num === 2 && <Text size="md">{`${num}nd Edit`}</Text>}
+            {num === 3 && <Text size="md">{`${num}rd Edit`}</Text>}
+            {num > 3 && <Text size="md">{`${num}th Edit`}</Text>}
+          </Group>
+        </UnstyledButton>
+      );
+    }
+    setHistory(historyComponent);
+  }, [fetchedData]);
 
   return (
     <Navbar width={{ base: 225 }} height={"100%"} p="xs">
@@ -129,7 +146,7 @@ export default function FeatureTab({
                 }
               );
 
-              if (result[0].status) {
+              if (result[0].errorMsg) {
                 alert(result[0].errorMsg);
               } else {
                 setTablename(values.tablename);
@@ -145,16 +162,6 @@ export default function FeatureTab({
                 DataStore.queryList.push(...result);
                 DataStore.setQuery(DataStore.queryList.slice());
               }
-
-              console.log(
-                "DataStore.store after creation of table",
-                DataStore.store
-              );
-              console.log(
-                "DataStore.queries after creation of table",
-                DataStore.queries
-              );
-
               form.setValues({
                 tablename: "",
               });
@@ -176,7 +183,7 @@ export default function FeatureTab({
       </Modal>
 
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>FILE</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>File</div>
         <hr />
         <UnstyledButton
           sx={(theme) => ({
@@ -194,6 +201,10 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => {
+            DataStore.disconnect();
+            sessionStorage.clear();
+          }}
         >
           <Group>
             <ThemeIcon
@@ -201,12 +212,12 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <Database />
+              <File />
             </ThemeIcon>
-            <Text size="md">CREATE NEW</Text>
+            <Text size="md">Clear Canvas</Text>
           </Group>
         </UnstyledButton>
-        {/* <UnstyledButton
+        <UnstyledButton
           sx={(theme) => ({
             display: "block",
             width: "100%",
@@ -222,6 +233,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => setSideBarOpened(true)}
         >
           <Group>
             <ThemeIcon
@@ -229,11 +241,11 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <Upload />
+              <DatabaseImport />
             </ThemeIcon>
-            <Text size="md">LOAD JSON FILE</Text>
+            <Text size="md">Connect Database</Text>
           </Group>
-        </UnstyledButton> */}
+        </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -251,6 +263,12 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
+            if (DataStore.connectedToDB) {
+              alert(
+                "In order to upload a SQL file, you must first disconnect your database."
+              );
+              return;
+            }
             // creating an input element for user to upload sql file
             const input = document.createElement("input");
             input.setAttribute("type", "file");
@@ -261,17 +279,11 @@ export default function FeatureTab({
               reader.readAsText(file);
               reader.onload = (event: any) => {
                 DataStore.loadedFile = true;
+                sessionStorage.loadedFile = "true";
                 const parsedData = parseSql(event.target.result);
                 setFetchedData(parsedData);
                 DataStore.setData(parsedData);
                 DataStore.setQuery([{ type: "", query: "" }]);
-                sessionStorage.Data = JSON.stringify(
-                  Array.from(DataStore.store.entries())
-                );
-
-                sessionStorage.Query = JSON.stringify(
-                  Array.from(DataStore.queries.entries())
-                );
               };
             };
           }}
@@ -282,9 +294,9 @@ export default function FeatureTab({
               color="dark"
               style={{ border: "2px solid white" }}
             >
-              <DatabaseImport />
+              <FileUpload />
             </ThemeIcon>
-            <Text size="md">LOAD SQL FILE </Text>
+            <Text size="md">Upload SQL File </Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -303,6 +315,7 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert("Feature coming soon!")}
         >
           <Group>
             <ThemeIcon
@@ -312,14 +325,14 @@ export default function FeatureTab({
             >
               <DeviceFloppy />
             </ThemeIcon>
-            <Text size="md">SAVE</Text>
+            <Text size="md">Save</Text>
           </Group>
         </UnstyledButton>
       </Navbar.Section>
       <br />
       <br />
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>EDIT</div> <hr />
+        <div style={{ fontSize: "24px", margin: "10px" }}>Edit</div> <hr />
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -337,7 +350,8 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
-            DataStore.connect();
+            DataStore.loadedFile = true;
+            sessionStorage.loadedFile = "true";
             setModalOpened(true);
           }}
         >
@@ -349,7 +363,7 @@ export default function FeatureTab({
             >
               <Plus />
             </ThemeIcon>
-            <Text size="md">ADD TABLE</Text>
+            <Text size="md">Add Table</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -378,7 +392,7 @@ export default function FeatureTab({
             >
               <ArrowBackUp />
             </ThemeIcon>
-            <Text size="md">UNDO</Text>
+            <Text size="md">Undo</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -407,7 +421,7 @@ export default function FeatureTab({
             >
               <ArrowForwardUp />
             </ThemeIcon>
-            <Text size="md">REDO</Text>
+            <Text size="md">Redo</Text>
           </Group>
         </UnstyledButton>
         <UnstyledButton
@@ -435,16 +449,16 @@ export default function FeatureTab({
             >
               <Camera />
             </ThemeIcon>
-            <Text size="md">SCREENSHOT</Text>
+            <Text size="md">Screenshot</Text>
           </Group>
         </UnstyledButton>
         <br />
         <br />
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <div style={{ fontSize: "24px", margin: "10px" }}>HISTORY</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>History</div>
         <hr />
-        {historyComponent}
+        {history}
         {/* {historyComponent} */}
       </Navbar.Section>
     </Navbar>

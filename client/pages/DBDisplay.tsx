@@ -12,6 +12,7 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
+import { session } from "passport";
 
 interface stateChangeProps {
   user: {
@@ -40,29 +41,9 @@ export default function DBDisplay({
   /* UI State
   "sideBarOpened" - a state that opens and closes the side bar for database connection;
   "menuPopUpOpened" - a state that opens and closes the Menu Pop Up for when burger icon is clicked;
-  "numEdit" - a state that tracks the table editting activity
-  "historyClick" - a state that tracks user click on Time Travel feature
   */
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
-  const [numEdit, setNumEdit] = useState(0);
-  const [historyClick, setHistoryClick] = useState(0);
-
-  // const ref = createRef(null);
-
-  // const [image, takeScreenShot] = useScreenshot({
-  //   type: "image/jpeg",
-  //   quality: 1.0
-  // });
-
-  // const download = (image, { name = "img", extension = "jpg" } = {}) => {
-  //   const a = document.createElement("a");
-  //   a.href = image;
-  //   a.download = createFileName(extension, name);
-  //   a.click();
-  // };
-
-  // const downloadScreenshot = () => takeScreenShot(ref.current).then(download);
 
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
   initiate "fetchedData" and Map objects in "DataStore" 
@@ -97,12 +78,43 @@ export default function DBDisplay({
     }
   );
 
-  /* useEffect:
-  "loggedIn" gets set to "true"; sessionStorage also gets set to "true"
-  gets triggered when table editting is done or History list is clicked.
+  /* useEffect1:
+  "loggedIn" gets set to "true"; isLoggedIn in localStorage also gets set to "true".
+  Updates global state "DataStore" upon landing of the page with sessionStorage data.
+  Gets triggered once when landing of the page (i.e. refresh of browser, coming from different pages)
   Client-side caching implemented with latest update of table model. 
   */
+  useEffect(() => {
+    setLoggedIn(true);
+    localStorage.setItem("isLoggedIn", "true");
+    if (
+      (sessionStorage.dbConnect === "true" ||
+        sessionStorage.loadedFile === "true") &&
+      sessionStorage.Data
+    ) {
+      if (sessionStorage.dbConnect) {
+        DataStore.connect();
+        DataStore.userDBInfo = JSON.parse(sessionStorage.userDBInfo);
+      } else if (sessionStorage.loadedFile) {
+        DataStore.loadedFile = true;
+      }
+      const savedData: any = new Map(JSON.parse(sessionStorage.Data));
+      const savedQuery: any = new Map(JSON.parse(sessionStorage.Query));
+      const latestData: any = savedData.get(savedData.size - 1);
+      if (Object.keys(latestData).length > 0) {
+        DataStore.store = savedData;
+        DataStore.queries = savedQuery;
+        DataStore.ind = DataStore.queryInd = DataStore.store.size;
+        DataStore.queryList = savedQuery.get(savedQuery.size - 1);
+        setFetchedData(latestData);
+      }
+    }
+  }, []);
 
+  /* useEffect2:
+  Updates sessionStorage with current "fetchedData"
+  Gets triggered on landing of the page and when table editting is done (updating "fetchedData")
+  */
   useEffect(() => {
     if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
       sessionStorage.Query = JSON.stringify(
@@ -115,32 +127,7 @@ export default function DBDisplay({
     console.log("store size after reload", DataStore.store.size);
   }, [fetchedData]);
 
-  useEffect(() => {
-    setLoggedIn(true);
-    localStorage.setItem("isLoggedIn", "true");
-    if (sessionStorage.dbConnect === "true" && sessionStorage.Data) {
-      DataStore.connect();
-      const savedData: any = new Map(JSON.parse(sessionStorage.Data));
-      const savedQuery: any = new Map(JSON.parse(sessionStorage.Query));
-      const latestData: any = savedData.get(savedData.size - 1);
-      if (Object.keys(latestData).length > 0) {
-        DataStore.store = savedData;
-        DataStore.queries = savedQuery;
-        DataStore.ind = DataStore.queryInd = DataStore.store.size;
-        DataStore.queryList = savedQuery.get(savedQuery.size - 1);
-        console.log(
-          "DataStore data",
-          DataStore.ind,
-          DataStore.queryInd,
-          DataStore.queryList
-        );
-        console.log("DataStore", DataStore.store, DataStore.queries);
-        setFetchedData(latestData);
-      }
-    }
-  }, []);
-
-  //Prevent reload of the page
+  /** UseEffect to PREVENT RELOAD OF THE PAGE */
   // useEffect(() => {
   //   window.onbeforeunload = (e) => {
   //     e.preventDefault();
@@ -148,7 +135,7 @@ export default function DBDisplay({
   //   };
   // }, []);
 
-  //OLD VERSION
+  /** UseEffect of OLD VERSION TO MANAGE CACHING */
   // useEffect(() => {
   //   setLoggedIn(true);
   //   localStorage.setItem("isLoggedIn", "true");
@@ -177,23 +164,16 @@ export default function DBDisplay({
       // navbarOffsetBreakpoint="sm"
       navbar={
         <FeatureTab
+          setSideBarOpened={setSideBarOpened}
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
-          historyClick={historyClick}
-          setHistoryClick={setHistoryClick}
         ></FeatureTab>
       }
       styles={(theme) => ({
         root: { height: "100%" },
         body: { height: "100%" },
-        main: {
-          backgroundColor: "transparent",
-          // backgroundColor:
-          //   theme.colorScheme === "dark"
-          //     ? theme.colors.dark[8]
-          //     : theme.colors.gray[0],
-        },
+        main: {},
       })}
     >
       <Sidebar
@@ -209,9 +189,6 @@ export default function DBDisplay({
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
         setSideBarOpened={setSideBarOpened}
-        setNumEdit={setNumEdit}
-        numEdit={numEdit}
-        
       />
     </AppShell>
   );

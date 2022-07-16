@@ -6,18 +6,13 @@ import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // Icon components from MUI
 import CloseIcon from "@mui/icons-material/Close";
-import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { IconButton } from "@mui/material";
@@ -159,7 +154,6 @@ export default function Signup() {
                 Sign up with Google
               </Button>
 
-
               {/* <Button
                 sx={{
                   marginTop: 5,
@@ -177,7 +171,7 @@ export default function Signup() {
             </Box>
 
             {/* Submit Form for SIGN UP */}
-            
+
             {/* <Box
               component="form"
               noValidate
