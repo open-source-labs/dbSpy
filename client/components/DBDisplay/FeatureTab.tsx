@@ -36,6 +36,7 @@ interface FeatureTabProps {
   fetchedData: {};
   setFetchedData: (e: {}) => void;
   setSideBarOpened: (param: boolean) => void;
+  screenshot: any;
 }
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
@@ -44,6 +45,7 @@ export default function FeatureTab({
   setFetchedData,
   setSideBarOpened,
   fetchedData,
+  screenshot,
 }: FeatureTabProps) {
   /* Form Input State
   "form" - a state that initializes the value of the form for Mantine;
@@ -151,6 +153,18 @@ export default function FeatureTab({
     setHistory(historyComponent);
   }, [fetchedData]);
 
+  // function screenshot() {
+  //   const ele: any = document.getElementsByClassName(
+  //     "mantine-AppShell-main"
+  //   )[0];
+
+  //   htmlToImage.toJpeg(ele, { quality: 0.95 }).then(function (dataUrl) {
+  //     var link = document.createElement("a");
+  //     link.download = "my-image-name.jpeg";
+  //     link.href = dataUrl;
+  //     link.click();
+  //   });
+  // }
   return (
     <Navbar width={{ base: 225 }} height={"100%"} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
@@ -228,16 +242,15 @@ export default function FeatureTab({
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert('Please disconnect your database first.')
-              return
+              alert("Please disconnect your database first.");
+              return;
             } else if (DataStore.loadedFile) {
               sessionStorage.clear();
               DataStore.loadedFile = false;
               location.reload();
             } else {
-              alert('Nothing to clear!')
+              alert("Nothing to clear!");
             }
-            
           }}
         >
           <Group>
@@ -269,8 +282,8 @@ export default function FeatureTab({
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert('Please disconnect your database first.')
-            } else setSideBarOpened(true)
+              alert("Please disconnect your database first.");
+            } else setSideBarOpened(true);
           }}
         >
           <Group>
@@ -302,7 +315,7 @@ export default function FeatureTab({
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert('Please disconnect your database first.')
+              alert("Please disconnect your database first.");
             } else uploadSQL();
           }}
         >
@@ -458,9 +471,8 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
-          onClick={() => alert('Feature coming soon!')}
+          onClick={screenshot}
         >
-          
           <Group>
             <ThemeIcon
               variant="outline"

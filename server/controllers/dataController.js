@@ -118,40 +118,34 @@ dataController.testDrop = (req, res, next) => {
  */
 dataController.getSchema = (req, res, next) => {
   // Option 1 - Production
-  //   let result = null;
-  //   console.log('running getSchema controller...');
-  //   const hostname = req.body.hostname;
-  //   const password = req.body.password;
-  //   const port = req.body.port;
-  //   const username = req.body.username;
-  //   const database_name = req.body.database_name;
-  //   const command = postgresDumpQuery(
-  //     hostname,
-  //     password,
-  //     port,
-  //     username,
-  //     database_name
-  //   );
-  //   console.log(command, '<-command');
-  //   writeSchema(command).then((resq) => {
-  //     fs.readFile(command[1], 'utf8', (error, data) => {
-  //       if (error) {
+  // let result = null;
+  // console.log("running getSchema controller...");
+  // const hostname = req.body.hostname;
+  // const password = req.body.password;
+  // const port = req.body.port;
+  // const username = req.body.username;
+  // const database_name = req.body.database_name;
+  // const command = postgresDumpQuery(hostname,password,port, username, database_name);
+  // console.log(command, '<-command');
+  // writeSchema(command).then(resq => {
+  //   fs.readFile(command[1], 'utf8', (error, data) => {
+  //     if (error)
+  //       {
   //         console.error(`error- in FS: ${error.message}`);
   //         return next({
-  //           msg: 'Error reading database schema file',
-  //           err: error,
-  //         });
+  //         msg: 'Error reading database schema file',
+  //         err: error});
   //       }
-  //       result = parseSql(data);
-  //       res.locals.data = result;
-  //       next();
-  //     });
+  //     result = parseSql(data);
+  //     res.locals.data = result;
+  //     next();
   //   });
+  // });
   // };
 
-  //   // Option 2 - Dev
+//   // Option 2 - Dev
   fs.readFile(
-    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657935209.sql'),
+    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
     'utf8',
     (error, data) => {
       if (error) {
@@ -177,7 +171,7 @@ dataController.getSchema = (req, res, next) => {
  */
 dataController.objSchema = (req, res, next) => {
   // Should this still be testdata???? -- NOTE
-  const data = res.locals.data;
+  const data = res.locals.testdata;
   const results = {};
 
   for (let i = 0; i < data.length; i++) {

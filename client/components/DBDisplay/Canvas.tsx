@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useMutation } from "react-query";
 
 //Components imported;
@@ -32,6 +32,7 @@ interface CanvasProps {
   isErrorProps: boolean;
   setFetchedData: (fetchedData: object) => void;
   setSideBarOpened: (param: boolean) => void;
+  reference: any;
 }
 
 /** Canvas Component - a canvas section where Tables being generated */
@@ -40,6 +41,7 @@ export default function Canvas({
   isErrorProps,
   fetchedData,
   setFetchedData,
+  reference,
 }: CanvasProps) {
   /** useMutation for handling 'POST' request to '/api/handleQueries' route for executing series of queries for DB migration; 
   onSuccess: Once queries get complete, it will clear out the sessionStorage and render the latestTableModel confirming the success of migration
@@ -146,11 +148,19 @@ export default function Canvas({
   /** Truthy when the user is connecting to the database to grab the intial table model */
   if (isLoadingProps) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "18px",
+          fontFamily: "Geneva",
+          marginTop: "40px",
+          marginRight: "225px",
+        }}
+      >
         {/* <Text> */}
-          Please wait while we process your request.
-          <br/>
-          <Loader size="xl" variant="dots" />
+        Please wait while we process your request.
+        <br />
+        <Loader size="xl" variant="dots" />
         {/* </Text> */}
       </div>
     );
@@ -159,20 +169,37 @@ export default function Canvas({
   /** Truthy when the user has an issue grabbing the inital table model */
   if (isErrorProps) {
     return (
-     <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
-        An error occurred while we processed your request. Please check your connection.
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "18px",
+          fontFamily: "Geneva",
+          marginTop: "40px",
+          marginRight: "225px",
+        }}
+      >
+        An error occurred while we processed your request. Please check your
+        connection.
       </div>
-    )
+    );
   }
 
   /** Truthy when the user is executing the queries for database migration */
   if (isLoading) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "18px",
+          fontFamily: "Geneva",
+          marginTop: "40px",
+          marginRight: "225px",
+        }}
+      >
         {/* <Text> */}
-          Please wait while we process your request.
-          <br/>
-          <Loader size="xl" variant="dots" />
+        Please wait while we process your request.
+        <br />
+        <Loader size="xl" variant="dots" />
         {/* </Text> */}
       </div>
     );
@@ -181,61 +208,78 @@ export default function Canvas({
   /** Truthy when the user fails to execute the queries for database migration */
   if (isError) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
-        An error occurred while we processed your request. Please check your connection.
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "18px",
+          fontFamily: "Geneva",
+          marginTop: "40px",
+          marginRight: "225px",
+        }}
+      >
+        An error occurred while we processed your request. Please check your
+        connection.
       </div>
-    )
+    );
   }
 
-  const dbButtons = 
-          <div >
-          <Group position="right">
-            <Button
-              id="disconnectButton"
-              variant="outline"
-              color="dark"
-              size="md"
-              compact
-              leftIcon={<DatabaseOff />}
-              onClick={() => {
-                sessionStorage.clear();
-                DataStore.disconnect();
-              }}
-            >
-              Disconnect database
-            </Button>
-          </Group>
-          <Group position="right">
-            <Button
-              id="executeButton"
-              color="dark"
-              size="md"
-              compact
-              styles={() => ({
-                root: {
-                  marginTop: 10,
-                },
-              })}
-              leftIcon={<DatabaseImport />}
-              onClick={() => executeChanges()}
-            >
-              Execute changes
-            </Button>
-          </Group>
-        </div>
+  const dbButtons = (
+    <div>
+      <Group position="right">
+        <Button
+          id="disconnectButton"
+          variant="outline"
+          color="dark"
+          size="md"
+          compact
+          leftIcon={<DatabaseOff />}
+          onClick={() => {
+            sessionStorage.clear();
+            DataStore.disconnect();
+          }}
+        >
+          Disconnect database
+        </Button>
+      </Group>
+      <Group position="right">
+        <Button
+          id="executeButton"
+          color="dark"
+          size="md"
+          compact
+          styles={() => ({
+            root: {
+              marginTop: 10,
+            },
+          })}
+          leftIcon={<DatabaseImport />}
+          onClick={() => executeChanges()}
+        >
+          Execute changes
+        </Button>
+      </Group>
+    </div>
+  );
 
   return (
     // style={{ height: "100%"}}
-    <div>
+    <div ref={reference}>
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           {dbButtons}
-        <div style={{display: "flex", flexFlow: "row wrap", justifyContent:"space-around", alignItems:"center"}}>
-          <Xwrapper>
-            {tables}
-            {xa}
-          </Xwrapper>
-        </div>
+          <div
+            style={{
+              display: "flex",
+              flexFlow: "row wrap",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <Xwrapper>
+              {tables}
+              {xa}
+            </Xwrapper>
+          </div>
         </>
       ) : Object.keys(fetchedData).length > 0 && DataStore.loadedFile ? (
         <>
@@ -272,18 +316,35 @@ export default function Canvas({
             </Button>
           </Group> */}
 
-        <div style={{display: "flex", flexFlow: "row wrap", justifyContent:"space-around", alignItems: "center"}}>
-          <Xwrapper>
-            {tables}
-            {xa}
-          </Xwrapper>
-        </div>
+          <div
+            style={{
+              display: "flex",
+              flexFlow: "row wrap",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <Xwrapper>
+              {tables}
+              {xa}
+            </Xwrapper>
+          </div>
         </>
       ) : (
         <>
           {/* "Please Connect to Your Database" */}
-          <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
-            Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: "18px",
+              fontFamily: "Geneva",
+              marginTop: "40px",
+              marginRight: "225px",
+            }}
+          >
+            Welcome to dbSpy! Please connect your database or upload a SQL file
+            to begin.
+          </div>
           {/* <Group position="right">
             <Button
               color="white"
