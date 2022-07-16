@@ -371,7 +371,7 @@ export default function Table({
       width: 100,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["NOT NULL", "UNIQUE"],
+      valueOptions: [" ", "NOT NULL", "UNIQUE"],
     },
     {
       field: "pk",
