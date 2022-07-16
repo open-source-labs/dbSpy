@@ -552,14 +552,13 @@ export default function Table({
           height: "auto",
           color: "white",
           width: "450px",
-          margin: "0px",
+          margin: "20px",
           background: "#2b3a42",
           borderRadius: "5px",
           padding: "3px",
-          fontFamily: "Arial"
+          fontFamily: "Arial",
           // marginTop: "35px",
           // marginBottom: "35px",
-
         }}
       >
         <div
@@ -694,7 +693,7 @@ function EditToolbar(props: EditToolbarProps) {
           color: "black",
         }}
       >
-        Column
+        Field
       </Button>
     </GridToolbarContainer>
   );
