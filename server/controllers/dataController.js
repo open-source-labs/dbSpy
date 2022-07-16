@@ -39,21 +39,6 @@ function postgresDumpQuery(hostname, password, port, username, database_name) {
   //console.log('command created:', command);
   return command;
 }
-// function postgresDumpQuery(uri) {
-//   const command = [];
-//   const currentDateTime = new Date();
-//   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-//   const filename = path.join(
-//     __dirname,
-//     `../db_schemas/${resultInSeconds.toString()}.sql`
-//   );
-//   command.push(
-//     `pg_dump -s ${uri} > ${filename}`
-//   );
-//   command.push(filename);
-//   //console.log('command created:', command);
-//   return command;
-// }
 
 /**
  * writeSchema
@@ -974,7 +959,7 @@ dataController.handleQueries = async (req, res, next) => {
       }
       await client.query('COMMIT');
     } catch (err) {
-      console.log(err, "<err\n\n");
+      console.log({err}, "<err\n\n");
       console.log(
         '--Invalid query detected in handleQueries\n--Transaction declined'
       );

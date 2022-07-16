@@ -122,17 +122,10 @@ export default function permissiveColumnCheck(
       " ADD " +
       ColAfterChange.column +
       " " +
-<<<<<<< HEAD
-      ColAfterChange.type + ";";
-    querySet.push({type: "single", query: UQueryNewCol});
-  } 
-  else if (ColAfterChange.column !== ColBeforeChange.column) {
-=======
       ColAfterChange.type +
       ";";
     querySet.push({ type: "single", query: UQueryNewCol });
   } else if (ColAfterChange.column !== ColBeforeChange.column) {
->>>>>>> dev
     //trim column name for whitespaces
     ColAfterChange.column = ColAfterChange.column.trim();
 
@@ -192,10 +185,7 @@ export default function permissiveColumnCheck(
       newValue: ColAfterChange.column,
       oldValue: ColBeforeChange.column,
     };
-<<<<<<< HEAD
     // Following block is executed if changes are permitted and changes exist on existing column
-=======
->>>>>>> dev
     const nameQuery = "ALTER TABLE "
       .concat(tableName)
       .concat(" RENAME COLUMN ")
