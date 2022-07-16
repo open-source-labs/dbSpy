@@ -114,7 +114,7 @@ export default function permissiveColumnCheck(
   const err = {}; //error response handler
 
   //check Col Name Change Before vs. After
-
+  console.log('col After Change.isNew Check')
   if (ColAfterChange.isNew) {
     const UQueryNewCol =
       "ALTER TABLE " +
@@ -126,6 +126,7 @@ export default function permissiveColumnCheck(
       ";";
     querySet.push({ type: "single", query: UQueryNewCol });
   } else if (ColAfterChange.column !== ColBeforeChange.column) {
+    
     //trim column name for whitespaces
     ColAfterChange.column = ColAfterChange.column.trim();
 
@@ -197,7 +198,7 @@ export default function permissiveColumnCheck(
     console.log(querySet);
   }
 
-
+ console.log('type comparasion check datatype!!')
   if (ColAfterChange.type !== ColBeforeChange.type && !ColAfterChange.isNew) {
     const typeQuery =
       "ALTER TABLE " +
@@ -210,7 +211,7 @@ export default function permissiveColumnCheck(
   }
 
 
-  console.log("after the column is done", querySet);
+  console.log("after the column is done-- in permissive", querySet);
   //check constraint col for changes. This should be an obj of objs, so we will code both
   //type for now
   if (typeof ColAfterChange.constraint == "string") {
@@ -301,7 +302,7 @@ export default function permissiveColumnCheck(
       }
     }
   }
-
+console.log('pk check');
   //BeforeChange is boolean, AfterChange is string
   if (ColAfterChange.pk !== ColBeforeChange.pk.toString()) {
     // check if another pk exist in table
@@ -346,7 +347,9 @@ export default function permissiveColumnCheck(
       querySet.push({ type: "single", query: queryPrimary });
 
     } else if (ColAfterChange.pk === "false" && ColBeforeChange.pk === true) {
+      console.log('pk loop length')
       for (let i = 0; i < ColBeforeChange.reference.length; i++) {
+        console.log('pk in loop length');
         if (ColBeforeChange.reference[i].IsDestination == true) {          
           return [
             {
@@ -455,7 +458,9 @@ export function permissiveTableCheck(
   }
 
   //check if table name is already existing
+  console.log('Table check Before CHange length')
   for (let i = 0; i < Object.keys(TableBeforeChange).length; i++) {
+    console.log('table check in length ')
     const name = Object.keys(TableBeforeChange)[i];
     if ("public." + tableName === name) {
       return [

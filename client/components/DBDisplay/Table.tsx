@@ -49,6 +49,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { getModeForFileReference } from "typescript";
+import { NetworkLockedTwoTone } from "@mui/icons-material";
 
 interface TableProps {
   tableInfo: {
@@ -145,7 +146,7 @@ export default function Table({
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [fkReference, setfkReference] = useState({PrimaryKeyTableName: '', 'PrimaryKeyName' :'', 'ReferencesPropertyName':'', 'ReferencesTableName':'', 'isDestination': false, 'constrainName': '', type: ''});
   const [opens, setOpens]  = useState(false);
-  const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: ''}});
+  const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: '', type: ''}});
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
    
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
@@ -182,15 +183,14 @@ export default function Table({
           return "assignRef";
     
     
-    } else
-    {
-       if (fkReference.type == 'remove')
+    } else if (fkReference.type == 'remove' && newRow.isNew == false)
        {
         newRow.references = fkReference;
        }
-
+      else
+    {
+      newRow.references = {type:''};
     }
-    
 
     return "";
   }
@@ -341,7 +341,7 @@ export default function Table({
       
       return;
     }
-
+    console.log('datastore.queryList ----->Before Store Update');
     DataStore.queryList.push(...queryResult);
     DataStore.setQuery(DataStore.queryList.slice());
     console.log("this is stored Queries", DataStore.queries);
@@ -359,6 +359,7 @@ export default function Table({
     {
       console.log('removed -------------------->')
       let arrayCopy = [];
+      console.log('\n\n--newRow --> ', newRow, '<-- newRow\n\n');
       for (let i = 0; i < newRow.reference.length; i++)
       { // remove IsDestinations set to false....
         if (newRow.reference[i].IsDestination == true)
@@ -392,6 +393,16 @@ export default function Table({
       headerName: "Column",
       width: 75,
       editable: true,
+      
+      valueParser: (value: string, row:GridRowModel) => {
+        //console.log('id:------->', id);
+        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 
+        console.log('valueParser - Column Name', value);
+        let copy = formDialogEditRow; 
+        copy.row.column = value; 
+        setFormDialogEditRow(copy);
+        return value;
+      }
     },
     {
       field: "type",
@@ -415,6 +426,16 @@ export default function Table({
         "timestamp",
         "varchar(255)",
       ],
+      valueParser: (value: string, row:GridRowModel) => {
+        //console.log('id:------->', id);
+        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 
+        console.log('valueParser - type', value);
+        let copy = formDialogEditRow; 
+        copy.row.type = value; 
+        setFormDialogEditRow(copy);
+         return value; 
+      }
+
     },
     {
       field: "constraint",
@@ -442,12 +463,10 @@ export default function Table({
       valueParser: (value: string, row:GridRowModel) => {
        //console.log('id:------->', id);
        setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 'ReferencesPropertyName':row.column, 'ReferencesTableName':tablename, 'isDestination': false, 'constrainName': '', type: ''});
-       setFormDialogEditRow(row);
+       //setFormDialogEditRow(row);
         if (value =="true")
         {
-          
-          //console.log('row ----------->')
-          //console.log(row);
+        
           setOpens(true);
         } else {
           console.log('setfkReference toggled to remove');
@@ -642,7 +661,8 @@ export default function Table({
           }}} */
 
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => console.log("logic failed")}
+          onProcessRowUpdateError={(error) => {console.log("logic failed");
+        console.log(error)}}
           components={{
             Toolbar: EditToolbar,
           }}
@@ -672,7 +692,7 @@ function EditToolbar(props: EditToolbarProps) {
     //console.log(id);
     setRows((oldRows) => [
       ...oldRows,
-      { id, column: "", type: "", constraint: "", pk: "", fk: "", isNew: true },
+      { id, column: "", type: "", constraint: "", pk: "", fk: "", reference: [], isNew: true },
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -739,9 +759,11 @@ interface FormDialogProps {
 
 function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows, fetchedData, fkReference, tablename, setfkReference}: FormDialogProps) {
 
+  console.log('FormDialog rows data');
+  console.log(rows);
 
 let temp:(JSX.Element | undefined)[] = []; 
-let references = {column_name:"", references:{}};
+let references = {column_name:"", references:{type:''}};
 const [columnList, setcolumnList] = useState<(JSX.Element| null | undefined)[]>([]);
 const [pkList, setpkList] = useState('');
 const [msg, setMsg] = useState('');
@@ -847,7 +869,7 @@ setOpens(false);
             label="FK Column Name"
             variant="outlined"
             defaultValue={
-              formDialogEditRow == undefined ? "" : formDialogEditRow.row.column
+            formDialogEditRow == undefined ? "" : formDialogEditRow.row.column
             }
             contentEditable={false}
             inputProps={{ readOnly: true }}
