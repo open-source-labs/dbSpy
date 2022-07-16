@@ -560,14 +560,14 @@ export default function Table({
       <div
         id={id}
         style={{
-          height: 'auto',
-          color: 'white',
-          width: '450px',
-          margin: '10px',
-          background: '#2b3a42',
-          borderRadius: '5px',
-          padding: '3px',
-          fontFamily: 'Arial',
+          height: "auto",
+          color: "white",
+          width: "450px",
+          margin: "20px",
+          background: "#2b3a42",
+          borderRadius: "5px",
+          padding: "3px",
+          fontFamily: "Arial",
           // marginTop: "35px",
           // marginBottom: "35px",
         }}

@@ -98,8 +98,9 @@ export default function FeatureTab({
         sessionStorage.removeItem("Query");
         sessionStorage.removeItem("Data");
 
-        //Then, we will make loadedFile to true to render Canvas without "Disconnect to DB" and "Execute" buttons
+        //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
         DataStore.loadedFile = true;
+        sessionStorage.loadedFile = "true";
 
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData = parseSql(event.target.result);
