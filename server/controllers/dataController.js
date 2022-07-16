@@ -9,6 +9,7 @@ const { Pool } = require('pg');
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
+let primaryKeyListArray = [];
 let tableList = [];
 let exportedTables = 0;
 
@@ -142,10 +143,11 @@ dataController.getSchema = (req, res, next) => {
   //   });
   // });
   // };
+console.log('running get schema');
 
 //   // Option 2 - Dev
   fs.readFile(
-    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
+    path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
     'utf8',
     (error, data) => {
       if (error) {
@@ -158,7 +160,8 @@ dataController.getSchema = (req, res, next) => {
       const result = parseSql(data);
       //console.log(result);
       //console.log('instance of table', result[records]);
-      for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
+      console.log('result--->', result) 
+      res.locals.data = result; // Is this for loop necessary? -- NOTE
       next();
     }
   );
@@ -171,7 +174,11 @@ dataController.getSchema = (req, res, next) => {
  */
 dataController.objSchema = (req, res, next) => {
   // Should this still be testdata???? -- NOTE
-  const data = res.locals.testdata;
+  console.log('running obj schema');
+  const data = res.locals.data;
+  console.log('data------>');
+  console.log(data)
+  console.log('<----------')
   const results = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -184,7 +191,7 @@ dataController.objSchema = (req, res, next) => {
     results[data[i].Name] = properties;
   }
 
-  // console.log('route for Obj works');
+  console.log('route for Obj works end');
   //console.log(results);
 
   res.locals.result = results;
@@ -391,19 +398,12 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   }
 
   // Create ForeignKey
-  let foreignKeyOriginModel = createForeignKey(
-    foreignKeyName,
-    currentTableModel.Name,
-    referencedPropertyName,
-    referencedTableName,
-    true
-  );
+  /*
 
-  foreignKeyOriginModel.constrainName = constrainName;
 
-  // Add ForeignKey Origin
-  foreignKeyList.push(foreignKeyOriginModel);
 
+  */
+  
   //Add PrimaryKey Origin
   //foreignKeyList.push(primaryKeyOriginModel);
 
@@ -458,6 +458,16 @@ function processForeignKey() {
           }
         });
       }
+      if (tableModel.Name == foreignKeyModel.PrimaryKeyTableName) {
+        tableModel.Properties.forEach(function (propertyModel) {
+          
+          if (propertyModel.Name === foreignKeyModel.PrimaryKeyName) {
+            propertyModel.References.push({'PrimaryKeyName':foreignKeyModel.PrimaryKeyName, 'ReferencesPropertyName':foreignKeyModel.ReferencesPropertyName, 'PrimaryKeyTableName':foreignKeyModel.PrimaryKeyTableName, 'ReferencesTableName': foreignKeyModel.ReferencesTableName, 'IsDestination': true, 'constrainName':foreignKeyModel.constrainName}
+            );
+          }
+        });
+      }
+
     });
   });
 }
