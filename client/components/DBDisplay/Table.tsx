@@ -192,6 +192,8 @@ export default function Table({
     event.defaultMuiPrevented = true;
   };
 
+  // style= {{border: "black 1px solid", margin: "0"}}
+
   const handleEditClick = (id: GridRowId) => () => {
     const modes: any = Object.values(rowModesModel);
     if (modes.length > 0) {
@@ -496,9 +498,16 @@ export default function Table({
         id={id}
         style={{
           height: "auto",
+          color: "white",
           width: "450px",
-          marginTop: "35px",
-          marginBottom: "35px",
+          margin: "0px",
+          background: "#2b3a42",
+          borderRadius: "5px",
+          padding: "3px",
+          fontFamily: "Arial"
+          // marginTop: "35px",
+          // marginBottom: "35px",
+
         }}
       >
         <div
