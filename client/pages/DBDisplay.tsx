@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { createRef, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 
 // Components Imported;
@@ -13,6 +13,7 @@ import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
 import { session } from "passport";
+import { toPng } from "html-to-image";
 
 interface stateChangeProps {
   user: {
@@ -37,6 +38,7 @@ export default function DBDisplay({
   */
   const [fetchedData, setFetchedData] = useState({});
   const [tablename, setTablename] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
 
   /* UI State
   "sideBarOpened" - a state that opens and closes the side bar for database connection;
@@ -149,6 +151,24 @@ export default function DBDisplay({
   //   }
   // }, []);
 
+  const screenshot = useCallback(() => {
+    if (ref.current === null) {
+      console.log("hi");
+      return;
+    }
+
+    toPng(ref.current, { cacheBust: true })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "dbScreenshot.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [ref]);
+
   return (
     <AppShell
       padding="md"
@@ -168,6 +188,7 @@ export default function DBDisplay({
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
+          screenshot={screenshot}
         ></FeatureTab>
       }
       styles={(theme) => ({
@@ -189,6 +210,7 @@ export default function DBDisplay({
         fetchedData={fetchedData}
         setFetchedData={setFetchedData}
         setSideBarOpened={setSideBarOpened}
+        reference={ref}
       />
     </AppShell>
   );
