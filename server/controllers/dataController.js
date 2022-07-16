@@ -117,36 +117,41 @@ dataController.testDrop = (req, res, next) => {
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 dataController.getSchema = (req, res, next) => {
-  // // Option 1 - Production
-  // let result = null;
-  // console.log("running getSchema controller...");
-  // const hostname = req.body.hostname;
-  // const password = req.body.password;
-  // const port = req.body.port;
-  // const username = req.body.username;
-  // const database_name = req.body.database_name;
-  // const command = postgresDumpQuery(hostname,password,port, username, database_name);
-  // console.log(command, '<-command');
-
-  // writeSchema(command).then(resq => {
-  //   fs.readFile(command[1], 'utf8', (error, data) => {
-  //     if (error)
-  //       {
+  // Option 1 - Production
+  //   let result = null;
+  //   console.log('running getSchema controller...');
+  //   const hostname = req.body.hostname;
+  //   const password = req.body.password;
+  //   const port = req.body.port;
+  //   const username = req.body.username;
+  //   const database_name = req.body.database_name;
+  //   const command = postgresDumpQuery(
+  //     hostname,
+  //     password,
+  //     port,
+  //     username,
+  //     database_name
+  //   );
+  //   console.log(command, '<-command');
+  //   writeSchema(command).then((resq) => {
+  //     fs.readFile(command[1], 'utf8', (error, data) => {
+  //       if (error) {
   //         console.error(`error- in FS: ${error.message}`);
   //         return next({
-  //         msg: 'Error reading database schema file',
-  //         err: error});
+  //           msg: 'Error reading database schema file',
+  //           err: error,
+  //         });
   //       }
-  //     result = parseSql(data);
-  //     res.locals.data = result;
-  //     next();
+  //       result = parseSql(data);
+  //       res.locals.data = result;
+  //       next();
+  //     });
   //   });
-  // });
   // };
 
-  // Option 2 - Dev
+  //   // Option 2 - Dev
   fs.readFile(
-    path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
+    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657935209.sql'),
     'utf8',
     (error, data) => {
       if (error) {
@@ -172,20 +177,20 @@ dataController.getSchema = (req, res, next) => {
  */
 dataController.objSchema = (req, res, next) => {
   // Should this still be testdata???? -- NOTE
-  const testdata = res.locals.testdata;
+  const data = res.locals.data;
   const results = {};
 
-  for (let i = 0; i < testdata.length; i++) {
-    // this outer loop will iterate through tables within testdata
+  for (let i = 0; i < data.length; i++) {
+    // this outer loop will iterate through tables within data
     const properties = {};
-    for (let k = 0; k < testdata[i].Properties.length; k++) {
-      const key = testdata[i].Properties[k].field_name;
-      properties[key] = testdata[i].Properties[k];
+    for (let k = 0; k < data[i].Properties.length; k++) {
+      const key = data[i].Properties[k].field_name;
+      properties[key] = data[i].Properties[k];
     }
-    results[testdata[i].Name] = properties;
+    results[data[i].Name] = properties;
   }
 
-  console.log('route for testObj works');
+  // console.log('route for Obj works');
   //console.log(results);
 
   res.locals.result = results;
@@ -353,10 +358,10 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
     .match(/\(([^()]+)\)/g)[0]
     .replace(/\(|\)/g, '');
 
-  console.log('foreign key Table', currentTableModel.Name);
-  console.log('ref property name', referencedPropertyName);
-  console.log('ref tablename', referencedTableName);
-  console.log('foreign key name', foreignKeyName);
+  // console.log('foreign key Table', currentTableModel.Name);
+  // console.log('ref property name', referencedPropertyName);
+  // console.log('ref tablename', referencedTableName);
+  // console.log('foreign key name', foreignKeyName);
 
   // Look through current table and reassign isForeignKey prop to true, reassign foreignKeyName to include type
   currentTableModel.Properties.forEach((property) => {
@@ -384,7 +389,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
         if (
           primaryTableModel[k][l].Name.indexOf(referencedPropertyName) !== -1
         ) {
-          console.log('name---->', primaryTableModel[k][l].Name);
+          // console.log('name---->', primaryTableModel[k][l].Name);
           referencedPropertyName = primaryTableModel[k][l].Name;
           break;
         }
@@ -421,7 +426,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
 
-  console.log('fk List--------->', foreignKeyList);
+  // console.log('fk List--------->', foreignKeyList);
 }
 
 // Iterates through primaryKeyList and checks every property in every table
@@ -506,7 +511,7 @@ function parseAlterTable(tableName, constraint) {
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
   const constrainName = constraint.match(regexConstraint);
 
-  if (constrainName !== null) console.log('constraintName', constrainName[0]);
+  // if (constrainName !== null) console.log('constraintName', constrainName[0]);
 
   tableName = tableName.trim();
   let currentTableModel;
@@ -921,23 +926,23 @@ dataController.handleQueries = async (req, res, next) => {
    * Handshake block
    */
   // Production values
-  // const {uri, queries} = req.body;
-  // const PG_URI = uri;
+  const { uri, queries } = req.body;
+  const PG_URI = uri;
 
-  // Test values
-  const PG_URI =
-    'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
-  console.log('Data received from Client', req.body);
-  const queries = [
-    {
-      type: 'single',
-      query: 'SELECT * FROM public.films;',
-    },
-    {
-      type: 'single',
-      query: 'SELECT * FROM public.pefdgdfshsople;',
-    },
-  ];
+  // // Test values
+  // const PG_URI =
+  //   'postgres://gmovmnlt:hXTU9fM8rDK7QAfxRczw-amgLDtry4v-@castor.db.elephantsql.com/gmovmnlt';
+  // console.log('Data received from Client', req.body);
+  // const queries = [
+  //   {
+  //     type: 'single',
+  //     query: 'SELECT * FROM public.films;',
+  //   },
+  //   {
+  //     type: 'single',
+  //     query: 'SELECT * FROM public.pefdgdfshsople;',
+  //   },
+  // ];
 
   /**
    * Function definition and initialization block
@@ -955,9 +960,12 @@ dataController.handleQueries = async (req, res, next) => {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(queryString);
+      for (let i = 0; i < arrQS.length - 1; i++) {
+        await client.query(arrQS[i]);
+      }
       await client.query('COMMIT');
     } catch (err) {
+      console.log({ err }, '<err\n\n');
       console.log(
         '--Invalid query detected in handleQueries\n--Transaction declined'
       );
@@ -989,7 +997,13 @@ dataController.handleQueries = async (req, res, next) => {
    */
   res.locals.success = false;
 
-  transactionQuery(queryStr)
+  console.log(queryStr, 'Query string');
+  const arrQS = queryStr.split(';');
+  for (let i = 0; i < arrQS.length; i++) {
+    arrQS[i] += ';';
+  }
+  console.log(arrQS, '<Query array');
+  transactionQuery(arrQS)
     .then(() => {
       res.locals.success = true;
       return next();

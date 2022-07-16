@@ -368,7 +368,8 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
-            DataStore.connect();
+            DataStore.loadedFile = true;
+            sessionStorage.loadedFile = "true";
             setModalOpened(true);
           }}
         >
