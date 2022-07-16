@@ -71,19 +71,19 @@ export default function Login() {
   "handleSubmit" - a function that gets invoked when LOGIN button is clicked with user credentials.
   Event is currently prevented with event.preventDefault() method
   */
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    if (data.get("email") === "") alert("Email is missing");
-    else if (data.get("password") === "") alert("Password is missing");
-    else {
-      console.log({
-        email: data.get("email"),
-        password: data.get("password"),
-        rememberMe: data.get("checked"),
-      });
-    }
-  };
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   if (data.get("email") === "") alert("Email is missing");
+  //   else if (data.get("password") === "") alert("Password is missing");
+  //   else {
+  //     console.log({
+  //       email: data.get("email"),
+  //       password: data.get("password"),
+  //       rememberMe: data.get("checked"),
+  //     });
+  //   }
+  // };
 
   return (
     <ThemeProvider theme={theme}>

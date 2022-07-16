@@ -1,10 +1,10 @@
 // React & React Router Modules
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
 
 //Components imported
 import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
+import HomeLoggedInNavbar from "../components/Home/HomeLoggedInNavbar";
 import HomeNavbar from "../components/Home/HomeNavbar";
 
 interface stateChangeProps {
@@ -14,31 +14,11 @@ interface stateChangeProps {
     name: string | null;
     picture: string | null;
   };
-  loggedIn: boolean;
+  setUser: (user: any) => void;
 }
 
 /* "Home" Component - main launch page */
-export default function Home({ user, loggedIn }: stateChangeProps) {
-  const navigate = useNavigate();
-
-  /*
-  "logout" - a function that fetches data from "/logout" route; 
-  it gets invoked when "LogOut" button is clicked and returns {logout: true | false}
-  Once logout is successful, navigate/redirect to "/login" route;
-  Leveraging localStorage for authentication status for component rendering;
-  */
-  function logout() {
-    localStorage.setItem("isLoggedIn", "false");
-    fetch("/logout")
-      .then((response) => response.json())
-      .then((data) => {
-        navigate("/login");
-      })
-      .catch((err: {}) => {
-        navigate("/login");
-      });
-  }
-
+export default function Home({ user, setUser }: stateChangeProps) {
   /*
   Three main components under Home:
   1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)
@@ -47,24 +27,11 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
   */
   return (
     <div>
-      <HomeNavbar />
-      {localStorage.getItem("isLoggedIn") === "true" ? (
-        <div>
-          <Link to={"/"}>
-            <button onClick={logout}>Log Out</button>
-          </Link>
-          <Link to={`/display/${user.id}`}>
-            <button>display</button>
-          </Link>
-        </div>
+      {user.id !== null ? (
+        <HomeLoggedInNavbar user={user} setUser={setUser} />
       ) : (
-        <div>
-          <Link to={"/signup"}>{/* <button>Sign up</button> */}</Link>
-          <Link to={"/login"}>{/* <button>Log in</button> */}</Link>
-          <Link to={"/login"}>{/* <button>Free demo</button> */}</Link>
-        </div>
+        <HomeNavbar />
       )}
-
       <Body />
       <HomeFooter />
     </div>

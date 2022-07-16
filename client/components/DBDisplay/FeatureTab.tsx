@@ -93,22 +93,35 @@ export default function FeatureTab({
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (event: any) => {
-        sessionStorage.clear();
+        //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
+        DataStore.clearStore();
+        sessionStorage.removeItem("Query");
+        sessionStorage.removeItem("Data");
+
+        //Then, we will make loadedFile to true to render Canvas without "Disconnect to DB" and "Execute" buttons
         DataStore.loadedFile = true;
+
+        //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData = parseSql(event.target.result);
-        setFetchedData(parsedData);
+
+        //Update DataStore data with parsedData and reset to an empty query
         DataStore.setData(parsedData);
         DataStore.setQuery([{ type: "", query: "" }]);
+
+        //Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
         );
-
         sessionStorage.Query = JSON.stringify(
           Array.from(DataStore.queries.entries())
         );
+
+        //Update the rendering of the tables with latest table model.
+        setFetchedData(parsedData);
       };
     };
   }
+
   /* useEffect:
     Gets invoked when fetchedData is updated;
     Updates "history" by iterating through the list of edits have made so far;
@@ -155,18 +168,6 @@ export default function FeatureTab({
     setHistory(historyComponent);
   }, [fetchedData]);
 
-  // function screenshot() {
-  //   const ele: any = document.getElementsByClassName(
-  //     "mantine-AppShell-main"
-  //   )[0];
-
-  //   htmlToImage.toJpeg(ele, { quality: 0.95 }).then(function (dataUrl) {
-  //     var link = document.createElement("a");
-  //     link.download = "my-image-name.jpeg";
-  //     link.href = dataUrl;
-  //     link.click();
-  //   });
-  // }
   return (
     <Navbar width={{ base: 225 }} height={"100%"} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
@@ -212,8 +213,6 @@ export default function FeatureTab({
               required
               data-autofocus
               label="Table Name: "
-              //   autoComplete="arjuna.db.elephantsql.com"
-              //   placeholder="Host"
               {...form.getInputProps("tablename")}
             />
             <Group position="right" mt="md">

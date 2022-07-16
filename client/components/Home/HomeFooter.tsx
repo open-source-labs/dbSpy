@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 export default function HomeFooter() {
   return (
     <Box sx={{flexGrow: 1}}>
-      <AppBar position="static" sx={{top: "auto", bottom: "0", bgcolor: "#2b3a42", left: "0", position: "unset"}}>
+      <AppBar sx={{top: "auto", bottom: "0", bgcolor: "#2b3a42", left: "0", position: "unset"}}>
         <Toolbar>
           
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
