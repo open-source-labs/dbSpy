@@ -12,7 +12,6 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
-import { session } from "passport";
 import { toPng } from "html-to-image";
 
 interface stateChangeProps {
@@ -22,16 +21,11 @@ interface stateChangeProps {
     name: string | null;
     picture: string | null;
   };
-  setLoggedIn: (e: boolean) => void;
-  loggedIn: boolean;
+  setUser: (user: any) => void;
 }
 
 /* "DBDisplay" Component - database visualization application page; only accessible when user is authorized; */
-export default function DBDisplay({
-  user,
-  setLoggedIn,
-  loggedIn,
-}: stateChangeProps) {
+export default function DBDisplay({ user, setUser }: stateChangeProps) {
   /* Server Cache State or Form Input State
   "fetchedData" - a state that stores database table model and is used to render database schema tables;
   "tablename" - a state that stores input data (table name for a new table) from "ADD TABLE" feature;
@@ -54,47 +48,62 @@ export default function DBDisplay({
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
       return axios.post("/api/getSchema", dataToSend).then((res) => {
-        setFetchedData(res.data);
+        // Once connected to Database, we need to clear DataStore and Query, Data, loadedFile from sessionStorage in case the user interacted with SQL load or New Canvas feature.
+        DataStore.clearStore();
+        sessionStorage.removeItem("Query");
+        sessionStorage.removeItem("Data");
+        sessionStorage.removeItem("loadedFile");
+
+        // Then, update DataStore table data with response data and set query to empty.
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: "", query: "" }]);
+
+        // Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
         );
-
         sessionStorage.Query = JSON.stringify(
           Array.from(DataStore.queries.entries())
         );
 
-        //Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
+        // Update the rendering of the tables with latest table model.
+        setFetchedData(res.data);
+
+        // Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
         console.log("this is retrieved data from server,: ", res.data);
         console.log("this is dataStore: ", DataStore);
       });
     },
     {
       onSuccess: () => {
+        // Upon success of DB connection, we dbConnect in DataStore to "true"
         DataStore.connect();
+
+        // Update sessionStorage.dbConnect to "true" also.
         sessionStorage.dbConnect = "true";
-        sessionStorage.count = 0;
+
+        // Then close the side bar that was opened.
         setSideBarOpened(false);
+      },
+      onError: () => {
+        // Upon error, we alert the user that there's an issue with DB connection.
+        alert("Database connection has failed.");
       },
     }
   );
 
   /* useEffect1:
-  "loggedIn" gets set to "true"; isLoggedIn in localStorage also gets set to "true".
   Updates global state "DataStore" upon landing of the page with sessionStorage data.
   Gets triggered once when landing of the page (i.e. refresh of browser, coming from different pages)
   Client-side caching implemented with latest update of table model. 
   */
   useEffect(() => {
-    setLoggedIn(true);
-    localStorage.setItem("isLoggedIn", "true");
     if (
       (sessionStorage.dbConnect === "true" ||
         sessionStorage.loadedFile === "true") &&
       sessionStorage.Data
     ) {
-      if (sessionStorage.dbConnect) {
+      if (sessionStorage.dbConnect && sessionStorage.userDBInfo) {
         DataStore.connect();
         DataStore.userDBInfo = JSON.parse(sessionStorage.userDBInfo);
       } else if (sessionStorage.loadedFile) {
@@ -139,9 +148,6 @@ export default function DBDisplay({
 
   /** UseEffect of OLD VERSION TO MANAGE CACHING */
   // useEffect(() => {
-  //   setLoggedIn(true);
-  //   localStorage.setItem("isLoggedIn", "true");
-
   //   if (loggedIn && DataStore.ind > 0) {
   //     const savedData = DataStore.getData(DataStore.store.size - 1);
   //     if (savedData) {
@@ -178,7 +184,7 @@ export default function DBDisplay({
           picture={user.picture}
           menuPopUpOpened={menuPopUpOpened}
           setMenuPopUpOpened={setMenuPopUpOpened}
-          setLoggedIn={setLoggedIn}
+          setUser={setUser}
         />
       }
       // navbarOffsetBreakpoint="sm"
