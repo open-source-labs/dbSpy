@@ -283,7 +283,9 @@ export default function Canvas({
         <>
           {/* "Please Connect to Your Database" */}
           <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
-            Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
+            <h3>Welcome to dbSpy!</h3>
+            Please connect your database, upload a SQL file, or build your database from scratch!
+          </div>
           {/* <Group position="right">
             <Button
               color="white"

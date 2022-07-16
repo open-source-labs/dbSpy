@@ -500,7 +500,7 @@ export default function Table({
           height: "auto",
           color: "white",
           width: "450px",
-          margin: "0px",
+          margin: "10px",
           background: "#2b3a42",
           borderRadius: "5px",
           padding: "3px",
