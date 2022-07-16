@@ -1,15 +1,5 @@
-<<<<<<< HEAD
 import React, {  Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
 
-=======
-import React, {
-  Dispatch,
-  DragEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
->>>>>>> 068cc305b22d3b03434bba146a2265fbd63e19c8
 import {
   DataGrid,
   GridRowsProp,
@@ -152,21 +142,11 @@ export default function Table({
   // console.log(rows);
   // rowModesModel is current table state.
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-<<<<<<< HEAD
   const [fkReference, setfkReference] = useState({PrimaryKeyTableName: '', 'PrimaryKeyName' :'', 'ReferencesPropertyName':'', 'ReferencesTableName':'', 'isDestination': false, 'constrainName': '', type: ''});
   const [opens, setOpens]  = useState(false);
   const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: ''}});
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
    
-=======
-  const [fkReference, setfkReference] = useState({});
-  const [opens, setOpens] = useState(false);
-  const [formDialogEditRow, setFormDialogEditRow] = useState({
-    row: { column: "" },
-  });
-  const [formDialogEditCol, setFormDialogEditCol] = useState("");
-
->>>>>>> 068cc305b22d3b03434bba146a2265fbd63e19c8
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes("")) return "empty";
 
@@ -194,7 +174,7 @@ export default function Table({
       if (fkReference.type == 'add')
       {
         //assign the fkreference to the new row 
-        newRow.References
+        newRow.References = fkReference;
 
       } 
       else
@@ -269,16 +249,10 @@ export default function Table({
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-<<<<<<< HEAD
     console.log('fkReference in process row update :')
     console.log(fkReference);
 
 
-=======
-    console.log("fkReference:");
-    console.log(fkReference);
-
->>>>>>> 068cc305b22d3b03434bba146a2265fbd63e19c8
     if (logicCheck(newRow, rows) === "empty") {
       alert("Please make sure to fill out every cell!");
       setRowModesModel({
@@ -426,7 +400,6 @@ export default function Table({
       editable: true,
       type: "singleSelect",
       valueOptions: ["true", "false"],
-<<<<<<< HEAD
       valueParser: (value: string, row:GridRowModel) => {
        console.log('id:------->', id);
        setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 'ReferencesPropertyName':row.column, 'ReferencesTableName':tablename, 'isDestination': false, 'constrainName': '', type: 'remove'});
@@ -435,14 +408,6 @@ export default function Table({
         {
           
           console.log('row ----------->')
-=======
-      valueParser: (value: string, row: GridRowModel) => {
-        console.log("id:------->", id);
-        setfkReference({});
-        setFormDialogEditRow(row);
-        if (value == "true") {
-          console.log("row ----------->");
->>>>>>> 068cc305b22d3b03434bba146a2265fbd63e19c8
           console.log(row);
           setOpens(true);
         } else {
@@ -718,20 +683,15 @@ interface FormDialogProps {
 
   fetchedData: any;
 
-<<<<<<< HEAD
   fkReference:{PrimaryKeyTableName: string, 'PrimaryKeyName' :string, 'ReferencesPropertyName':string, 'ReferencesTableName':string, 'isDestination': boolean, 'constrainName': string, type: string};
-=======
-  fkReference: {};
->>>>>>> 068cc305b22d3b03434bba146a2265fbd63e19c8
 
   tablename: string;
 
   setfkReference: React.Dispatch<React.SetStateAction<any>>;
 }
 
-<<<<<<< HEAD
 function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows, fetchedData, fkReference, tablename, setfkReference}: FormDialogProps) {
- ;
+
 
 let temp:(JSX.Element | undefined)[] = []; 
 let references = {column_name:"", references:{}};
@@ -765,71 +725,11 @@ else if (ReferencesTableName == null )
 alert('Error: References Table Not Set')
 else  
 {
-   
+
   setfkReference({PrimaryKeyTableName: PrimaryKeyTableName, 'PrimaryKeyName' :PrimaryKeyName, 'ReferencesPropertyName':ReferencesPropertyName, 'ReferencesTableName':ReferencesTableName, 'isDestination': false, 'constrainName': constrainName, type: 'add'});
 
 setOpens(false);
 }
-=======
-function FormDialog({
-  setRowModesModel,
-  setRows,
-  opens,
-  setOpens,
-  setFormDialogEditRow,
-  setFormDialogEditCol,
-  formDialogEditCol,
-  formDialogEditRow,
-  rows,
-  fetchedData,
-  fkReference,
-  tablename,
-  setfkReference,
-}: FormDialogProps) {
-  let temp: (JSX.Element | undefined)[] = [];
-  let references = { column_name: "", references: {} };
-  const [columnList, setcolumnList] = useState<
-    (JSX.Element | null | undefined)[]
-  >([]);
-  const [pkList, setpkList] = useState("");
-  const [msg, setMsg] = useState("");
-  const [selectedCol, setselectedCol] = useState("");
-  const handleClose = () => {
-    setFormDialogEditCol("false");
-    console.log("formDialogEdit in handleClose", formDialogEditCol);
-    setOpens(false);
-  };
-
-  const handleSubmit = () => {
-    // Add state to prevent button
-    setFormDialogEditCol("true");
-    let PrimaryKeyTableName = fetchedData[pkList][selectedCol].Name;
-    let PrimaryKeyName =
-      selectedCol + " " + fetchedData[pkList][selectedCol].data_type;
-    let ReferencesPropertyName =
-      formDialogEditRow.row.column + " " + formDialogEditRow.row.type;
-    let ReferencesTableName: string | null = tablename;
-    let isDestination = false;
-    let constrainName =
-      ReferencesTableName + "_" + ReferencesPropertyName + "_" + "fkey";
-    let obj = {};
-    if (PrimaryKeyTableName == null) alert("Must Select Primary Table Name");
-    else if (PrimaryKeyName == null) alert("Must Select Primary Key Column");
-    else if (ReferencesPropertyName == null)
-      alert("Error: Reference Property Name Not Set");
-    else if (ReferencesTableName == null)
-      alert("Error: References Table Not Set");
-    else {
-      setfkReference({
-        PrimaryKeyTableName: PrimaryKeyTableName,
-        PrimaryKeyName: PrimaryKeyName,
-        ReferencesPropertyName: ReferencesPropertyName,
-        ReferencesTableName: ReferencesTableName,
-        isDestination: false,
-        constrainName: constrainName,
-        type: "add",
-      });
->>>>>>> 068cc305b22d3b03434bba146a2265fbd63e19c8
 
       setOpens(false);
     }
