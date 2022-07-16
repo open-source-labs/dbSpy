@@ -493,21 +493,24 @@ export default function Table({
   // const {Name, Properties}: {Name: string; Properties: Array<any>} = tableInfo
   const updateXarrow = useXarrow();
   return (
-    <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
+    <Draggable
+      // bounds={".mantine-AppShell-body"}
+      onDrag={updateXarrow}
+      onStop={updateXarrow}
+    >
       <div
         id={id}
         style={{
           height: "auto",
           color: "white",
           width: "450px",
-          margin: "0px",
+          margin: "20px",
           background: "#2b3a42",
           borderRadius: "5px",
           padding: "3px",
-          fontFamily: "Arial"
+          fontFamily: "Arial",
           // marginTop: "35px",
           // marginBottom: "35px",
-
         }}
       >
         <div

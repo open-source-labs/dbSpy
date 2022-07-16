@@ -11,8 +11,18 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from "axios";
 import DataStore from "../Store";
-import { AppShell } from "@mantine/core";
+import {
+  AppShell,
+  Box,
+  Button,
+  Collapse,
+  Container,
+  Footer,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
 import { toPng } from "html-to-image";
+import { flexbox } from "@mui/system";
 
 interface stateChangeProps {
   user: {
@@ -32,6 +42,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   */
   const [fetchedData, setFetchedData] = useState({});
   const [tablename, setTablename] = useState("");
+
   const ref = useRef<HTMLDivElement>(null);
 
   /* UI State
@@ -40,6 +51,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   */
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
+  const [queryOpened, setQueryOpen] = useState(true);
 
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
   initiate "fetchedData" and Map objects in "DataStore" 
@@ -98,27 +110,34 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   Client-side caching implemented with latest update of table model. 
   */
   useEffect(() => {
+    // if the user is connected to either database or loaded a sql file, AND there's a Data store in sessionStorage, we will go through this useEffect
     if (
       (sessionStorage.dbConnect === "true" ||
         sessionStorage.loadedFile === "true") &&
       sessionStorage.Data
     ) {
+      // if the user is connected to Database, update DataStore with dbConnect and userDBInfo
       if (sessionStorage.dbConnect && sessionStorage.userDBInfo) {
         DataStore.connect();
         DataStore.userDBInfo = JSON.parse(sessionStorage.userDBInfo);
+        // if the user uploaded a sql file, update DataStore with loadedFile
       } else if (sessionStorage.loadedFile) {
         DataStore.loadedFile = true;
       }
+
+      // parse the Data and Query from sessionStorage and grab the latest table model from savedData
       const savedData: any = new Map(JSON.parse(sessionStorage.Data));
       const savedQuery: any = new Map(JSON.parse(sessionStorage.Query));
       const latestData: any = savedData.get(savedData.size - 1);
-      if (Object.keys(latestData).length > 0) {
-        DataStore.store = savedData;
-        DataStore.queries = savedQuery;
-        DataStore.ind = DataStore.queryInd = DataStore.store.size;
-        DataStore.queryList = savedQuery.get(savedQuery.size - 1);
-        setFetchedData(latestData);
-      }
+
+      //Update DataStore with all of the table models and queries saved before refresh of the browser.
+      DataStore.store = savedData;
+      DataStore.queries = savedQuery;
+      DataStore.ind = DataStore.queryInd = DataStore.store.size;
+      DataStore.queryList = savedQuery.get(savedQuery.size - 1);
+
+      //Update fetchedData to render the latest table model.
+      setFetchedData(latestData);
     }
   }, []);
 
@@ -127,6 +146,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   Gets triggered on landing of the page and when table editting is done (updating "fetchedData")
   */
   useEffect(() => {
+    // This logic ensures sessionStorage Query and Data gets updated upon either db connection or sql upload (when data's existing already)
     if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
       sessionStorage.Query = JSON.stringify(
         Array.from(DataStore.queries.entries())
@@ -159,10 +179,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
   const screenshot = useCallback(() => {
     if (ref.current === null) {
-      console.log("hi");
       return;
     }
-
     toPng(ref.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement("a");
@@ -174,6 +192,16 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         console.log(err);
       });
   }, [ref]);
+
+  let queries: any;
+  if (DataStore.queries.size > 0) {
+    queries = DataStore.queries.get(DataStore.queries.size - 1);
+    queries = queries.map(
+      (query: { type: string; query: string }, ind: number) => {
+        return <Text key={ind}>{`${query.query}`}</Text>;
+      }
+    );
+  }
 
   return (
     <AppShell
@@ -210,6 +238,45 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         isErrorProps={isError}
         mutate={mutate}
       />
+      {DataStore.loadedFile && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "end",
+            flexDirection: "column",
+          }}
+        >
+          <Button
+            sx={{
+              border: "1px solid white",
+              backgroundColor: "#2b3a42",
+            }}
+            onClick={() => setQueryOpen((o) => !o)}
+          >
+            {queryOpened ? "Hide Queries" : "Show Queries"}
+          </Button>
+
+          <Collapse in={queryOpened}>
+            <ScrollArea
+              style={{
+                height: 100,
+                width: 700,
+                backgroundColor: "white",
+                borderRadius: "5px",
+                border: "2px solid #2b3a42",
+              }}
+            >
+              <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
+                {" "}
+                Queries: Copy and Execute on Your Own!
+              </Text>
+              <hr />
+              <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
+            </ScrollArea>
+          </Collapse>
+        </Box>
+      )}
+
       <Canvas
         isLoadingProps={isLoading}
         isErrorProps={isError}
