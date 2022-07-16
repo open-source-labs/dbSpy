@@ -642,7 +642,7 @@ function EditToolbar(props: EditToolbarProps) {
           color: "black",
         }}
       >
-        Column
+        Field
       </Button>
     </GridToolbarContainer>
   );

@@ -150,6 +150,7 @@ export default function Canvas({
         {/* <Text> */}
           Please wait while we process your request.
           <br/>
+          <br/>
           <Loader size="xl" variant="dots" />
         {/* </Text> */}
       </div>

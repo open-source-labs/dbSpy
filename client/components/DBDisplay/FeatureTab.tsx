@@ -91,6 +91,7 @@ export default function FeatureTab({
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (event: any) => {
+        sessionStorage.clear();
         DataStore.loadedFile = true;
         const parsedData = parseSql(event.target.result);
         setFetchedData(parsedData);
@@ -412,6 +413,7 @@ export default function FeatureTab({
           onClick={() => {
             DataStore.loadedFile = true;
             sessionStorage.loadedFile = "true";
+            sessionStorage.clear();
             setModalOpened(true);
           }}
         >
