@@ -80,6 +80,31 @@ export default function FeatureTab({
     }
   }
 
+  function uploadSQL() {
+    // creating an input element for user to upload sql file
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.click();
+    input.onchange = (e: any): void => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = (event: any) => {
+        DataStore.loadedFile = true;
+        const parsedData = parseSql(event.target.result);
+        setFetchedData(parsedData);
+        DataStore.setData(parsedData);
+        DataStore.setQuery([{ type: "", query: "" }]);
+        sessionStorage.Data = JSON.stringify(
+          Array.from(DataStore.store.entries())
+        );
+
+        sessionStorage.Query = JSON.stringify(
+          Array.from(DataStore.queries.entries())
+        );
+      };
+    };
+  }
   /* useEffect:
     Gets invoked when fetchedData is updated;
     Updates "history" by iterating through the list of edits have made so far;
@@ -202,8 +227,17 @@ export default function FeatureTab({
             },
           })}
           onClick={() => {
-            DataStore.disconnect();
-            sessionStorage.clear();
+            if (DataStore.connectedToDB) {
+              alert('Please disconnect your database first.')
+              return
+            } else if (DataStore.loadedFile) {
+              sessionStorage.clear();
+              DataStore.loadedFile = false;
+              location.reload();
+            } else {
+              alert('Nothing to clear!')
+            }
+            
           }}
         >
           <Group>
@@ -233,7 +267,11 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
-          onClick={() => setSideBarOpened(true)}
+          onClick={() => {
+            if (DataStore.connectedToDB) {
+              alert('Please disconnect your database first.')
+            } else setSideBarOpened(true)
+          }}
         >
           <Group>
             <ThemeIcon
@@ -264,28 +302,8 @@ export default function FeatureTab({
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert(
-                "In order to upload a SQL file, you must first disconnect your database."
-              );
-              return;
-            }
-            // creating an input element for user to upload sql file
-            const input = document.createElement("input");
-            input.setAttribute("type", "file");
-            input.click();
-            input.onchange = (e: any): void => {
-              const file = e.target.files[0];
-              const reader = new FileReader();
-              reader.readAsText(file);
-              reader.onload = (event: any) => {
-                DataStore.loadedFile = true;
-                sessionStorage.loadedFile = "true";
-                const parsedData = parseSql(event.target.result);
-                setFetchedData(parsedData);
-                DataStore.setData(parsedData);
-                DataStore.setQuery([{ type: "", query: "" }]);
-              };
-            };
+              alert('Please disconnect your database first.')
+            } else uploadSQL();
           }}
         >
           <Group>
@@ -440,7 +458,9 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => alert('Feature coming soon!')}
         >
+          
           <Group>
             <ThemeIcon
               variant="outline"

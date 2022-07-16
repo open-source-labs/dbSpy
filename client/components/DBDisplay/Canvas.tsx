@@ -153,38 +153,49 @@ export default function Canvas({
   /** Truthy when the user is connecting to the database to grab the intial table model */
   if (isLoadingProps) {
     return (
-      <Text>
-        Please Wait... It can take few minutes to complete the retrieval of data
-        <Loader size="xl" variant="dots" />
-      </Text>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+        {/* <Text> */}
+          Please wait while we process your request.
+          <br/>
+          <Loader size="xl" variant="dots" />
+        {/* </Text> */}
+      </div>
     );
   }
 
   /** Truthy when the user has an issue grabbing the inital table model */
   if (isErrorProps) {
-    return <>An error occurred: Please check your connection</>;
+    return (
+     <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+        An error occurred while we processed your request. Please check your connection.
+      </div>
+    )
   }
 
   /** Truthy when the user is executing the queries for database migration */
   if (isLoading) {
     return (
-      <h3>
-        Please Wait... It can take few minutes to complete the database
-        modification
-        <Loader size="xl" variant="dots" />
-      </h3>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+        {/* <Text> */}
+          Please wait while we process your request.
+          <br/>
+          <Loader size="xl" variant="dots" />
+        {/* </Text> */}
+      </div>
     );
   }
 
   /** Truthy when the user fails to execute the queries for database migration */
   if (isError) {
-    return <h3>An error occurred: Please check your connection</h3>;
+    return (
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+        An error occurred while we processed your request. Please check your connection.
+      </div>
+    )
   }
 
-  return (
-    <div style={{ height: "100%" }}>
-      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
-        <>
+  const dbButtons = 
+          <div >
           <Group position="right">
             <Button
               id="disconnectButton"
@@ -209,7 +220,7 @@ export default function Canvas({
               compact
               styles={() => ({
                 root: {
-                  marginTop: 20,
+                  marginTop: 10,
                 },
               })}
               leftIcon={<DatabaseImport />}
@@ -218,11 +229,20 @@ export default function Canvas({
               Execute changes
             </Button>
           </Group>
+        </div>
 
+  return (
+    // style={{ height: "100%"}}
+    <div>
+      {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
+        <>
+          {dbButtons}
+        <div style={{display: "flex", flexFlow: "row wrap", justifyContent:"space-around", alignItems:"center"}}>
           <Xwrapper>
             {tables}
             {xa}
           </Xwrapper>
+        </div>
         </>
       ) : Object.keys(fetchedData).length > 0 && DataStore.loadedFile ? (
         <>
@@ -259,18 +279,18 @@ export default function Canvas({
             </Button>
           </Group> */}
 
+        <div style={{display: "flex", flexFlow: "row wrap", justifyContent:"space-around", alignItems: "center"}}>
           <Xwrapper>
             {tables}
             {xa}
           </Xwrapper>
+        </div>
         </>
       ) : (
         <>
           {/* "Please Connect to Your Database" */}
-          <div>
-            Welcome to dbSpy! Please connect your database or upload a SQL file
-            to begin.
-          </div>
+          <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+            Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
           {/* <Group position="right">
             <Button
               color="white"

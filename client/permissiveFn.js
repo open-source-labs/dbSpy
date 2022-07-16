@@ -185,6 +185,7 @@ export default function permissiveColumnCheck(
       newValue: ColAfterChange.column,
       oldValue: ColBeforeChange.column,
     };
+    // Following block is executed if changes are permitted and changes exist on existing column
     const nameQuery = "ALTER TABLE "
       .concat(tableName)
       .concat(" RENAME COLUMN ")
