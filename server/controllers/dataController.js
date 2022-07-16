@@ -920,7 +920,7 @@ dataController.handleQueries = async (req, res, next) => {
    * Handshake block
    */
   // Production values
-  const {uri, queries} = req.body;
+  const { uri, queries } = req.body;
   const PG_URI = uri;
 
   // // Test values
@@ -959,7 +959,7 @@ dataController.handleQueries = async (req, res, next) => {
       }
       await client.query('COMMIT');
     } catch (err) {
-      console.log({err}, "<err\n\n");
+      console.log({ err }, '<err\n\n');
       console.log(
         '--Invalid query detected in handleQueries\n--Transaction declined'
       );
@@ -991,12 +991,12 @@ dataController.handleQueries = async (req, res, next) => {
    */
   res.locals.success = false;
 
-  console.log(queryStr, "Query string");
+  console.log(queryStr, 'Query string');
   const arrQS = queryStr.split(';');
   for (let i = 0; i < arrQS.length; i++) {
     arrQS[i] += ';';
   }
-  console.log(arrQS, "<Query array");
+  console.log(arrQS, '<Query array');
   transactionQuery(arrQS)
     .then(() => {
       res.locals.success = true;
