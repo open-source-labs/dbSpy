@@ -969,8 +969,8 @@ export default function permissiveColumnCheck(
       " " +
       ColAfterChange.type + ";";
     querySet.push({type: "single", query: UQueryNewCol});
-  } else ColAfterChange.column !== ColBeforeChange.column;
-  {
+  } 
+  else if (ColAfterChange.column !== ColBeforeChange.column) {
     //trim column name for whitespaces
     ColAfterChange.column = ColAfterChange.column.trim();
 
@@ -1029,7 +1029,7 @@ export default function permissiveColumnCheck(
       newValue: ColAfterChange.column,
       oldValue: ColBeforeChange.column,
     };
-    if (!ColAfterChange.isNew) {
+    // Following block is executed if changes are permitted and changes exist on existing column
     const nameQuery = "ALTER TABLE "
       .concat(tableName)
       .concat(" RENAME COLUMN ")
@@ -1038,7 +1038,6 @@ export default function permissiveColumnCheck(
       .concat(ColAfterChange.column)
       .concat(";");
     querySet.push({ type: "single", query: nameQuery });
-  }
     console.log(querySet);
   }
   console.log("after the column is done", querySet);

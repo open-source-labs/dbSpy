@@ -969,9 +969,12 @@ dataController.handleQueries = async (req, res, next) => {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(queryString);
+      for (let i = 0; i < arrQS.length - 1; i++) {
+        await client.query(arrQS[i]);
+      }
       await client.query('COMMIT');
     } catch (err) {
+      console.log(err, "<err\n\n");
       console.log(
         '--Invalid query detected in handleQueries\n--Transaction declined'
       );
@@ -1003,9 +1006,13 @@ dataController.handleQueries = async (req, res, next) => {
    */
   res.locals.success = false;
 
-  console.log(queryStr);
-
-  transactionQuery(queryStr)
+  console.log(queryStr, "Query string");
+  const arrQS = queryStr.split(';');
+  for (let i = 0; i < arrQS.length; i++) {
+    arrQS[i] += ';';
+  }
+  console.log(arrQS, "<Query array");
+  transactionQuery(arrQS)
     .then(() => {
       res.locals.success = true;
       return next();
