@@ -631,7 +631,7 @@ function EditToolbar(props: EditToolbarProps) {
   return (
     <GridToolbarContainer style={{ height: "30px" }}>
       <Button
-        color="primary"
+        // color="primary"
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
@@ -642,7 +642,7 @@ function EditToolbar(props: EditToolbarProps) {
           color: "black",
         }}
       >
-        Add row
+        Column
       </Button>
     </GridToolbarContainer>
   );
