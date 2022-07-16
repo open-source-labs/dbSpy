@@ -52,16 +52,28 @@ export default function Canvas({
     },
     {
       onSuccess: () => {
+        //Upon success of query execution, we will store the latest Table Model from DataStore into a variable named "lastestTableModel".
         const latestTableModel: any = DataStore.getData(
           DataStore.store.size - 1
         );
+        //Then, we clear DataStore (global state that gets reset after refresh) and set the initial Table Model with latestTableModel and emtpy query.
         DataStore.clearStore();
         DataStore.setQuery([{ type: "", query: "" }]);
         DataStore.setData(latestTableModel);
-        sessionStorage.clear();
+
+        //Update sessionStorage Data and Query with recently updated DataStore.
+        sessionStorage.Data = JSON.stringify(
+          Array.from(DataStore.store.entries())
+        );
+        sessionStorage.Query = JSON.stringify(
+          Array.from(DataStore.queries.entries())
+        );
+
+        //Update the rendering of the tables with latest table model.
         setFetchedData(latestTableModel);
       },
       onError: () => {
+        //Upon error, alert the user with error message
         alert("Failed to execute changes");
       },
     }

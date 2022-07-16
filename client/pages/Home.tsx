@@ -4,6 +4,7 @@ import React from "react";
 //Components imported
 import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
+import HomeLoggedInNavbar from "../components/Home/HomeLoggedInNavbar";
 import HomeNavbar from "../components/Home/HomeNavbar";
 
 interface stateChangeProps {
@@ -13,11 +14,11 @@ interface stateChangeProps {
     name: string | null;
     picture: string | null;
   };
-  loggedIn: boolean;
+  setUser: (user: any) => void;
 }
 
 /* "Home" Component - main launch page */
-export default function Home({ user, loggedIn }: stateChangeProps) {
+export default function Home({ user, setUser }: stateChangeProps) {
   /*
   Three main components under Home:
   1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)
@@ -26,7 +27,11 @@ export default function Home({ user, loggedIn }: stateChangeProps) {
   */
   return (
     <div>
-      <HomeNavbar user={user} />
+      {user.id !== null ? (
+        <HomeLoggedInNavbar user={user} setUser={setUser} />
+      ) : (
+        <HomeNavbar />
+      )}
       <Body />
       <HomeFooter />
     </div>

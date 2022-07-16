@@ -8,10 +8,8 @@ import Signup from "./pages/Signup";
 export default function App() {
   /*
   States Declaration:
-  "loggedIn" - boolean that describes if any user is logged in;
   "user" - object that describes the user data coming back from OAuth2.0;
   */
-  const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
     name: null,
     email: null,
@@ -56,7 +54,7 @@ export default function App() {
   */
   return (
     <Routes>
-      <Route path={"/"} element={<Home user={user} loggedIn={loggedIn} />} />
+      <Route path={"/"} element={<Home user={user} setUser={setUser} />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
 
@@ -64,11 +62,7 @@ export default function App() {
         path="/display"
         element={
           user.id !== null ? (
-            <DBDisplay
-              user={user}
-              loggedIn={loggedIn}
-              setLoggedIn={setLoggedIn}
-            />
+            <DBDisplay user={user} setUser={setUser} />
           ) : (
             "Redirecting"
           )
@@ -79,11 +73,7 @@ export default function App() {
         path="/display/:id"
         element={
           user.id !== null ? (
-            <DBDisplay
-              user={user}
-              loggedIn={loggedIn}
-              setLoggedIn={setLoggedIn}
-            />
+            <DBDisplay user={user} setUser={setUser} />
           ) : (
             "Redirecting"
           )
