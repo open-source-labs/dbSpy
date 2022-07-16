@@ -146,7 +146,7 @@ export default function Canvas({
   /** Truthy when the user is connecting to the database to grab the intial table model */
   if (isLoadingProps) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
         {/* <Text> */}
           Please wait while we process your request.
           <br/>
@@ -159,7 +159,7 @@ export default function Canvas({
   /** Truthy when the user has an issue grabbing the inital table model */
   if (isErrorProps) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+     <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
         An error occurred while we processed your request. Please check your connection.
       </div>
     )
@@ -168,7 +168,7 @@ export default function Canvas({
   /** Truthy when the user is executing the queries for database migration */
   if (isLoading) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
         {/* <Text> */}
           Please wait while we process your request.
           <br/>
@@ -181,7 +181,7 @@ export default function Canvas({
   /** Truthy when the user fails to execute the queries for database migration */
   if (isError) {
     return (
-      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}}>
+      <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
         An error occurred while we processed your request. Please check your connection.
       </div>
     )
@@ -230,7 +230,7 @@ export default function Canvas({
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           {dbButtons}
-        <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent:"space-around", alignContent:"space-around"}}>
+        <div style={{display: "flex", flexFlow: "row wrap", justifyContent:"space-around", alignItems:"center"}}>
           <Xwrapper>
             {tables}
             {xa}
@@ -272,7 +272,7 @@ export default function Canvas({
             </Button>
           </Group> */}
 
-          <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap"}}>
+        <div style={{display: "flex", flexFlow: "row wrap", justifyContent:"space-around", alignItems: "center"}}>
           <Xwrapper>
             {tables}
             {xa}
@@ -282,7 +282,8 @@ export default function Canvas({
       ) : (
         <>
           {/* "Please Connect to Your Database" */}
-          <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px"}} >Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
+          <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+            Welcome to dbSpy! Please connect your database or upload a SQL file to begin.</div>
           {/* <Group position="right">
             <Button
               color="white"
