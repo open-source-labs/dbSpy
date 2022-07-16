@@ -177,9 +177,10 @@ export default function Canvas({
         }}
       >
         {/* <Text> */}
-        Please wait while we process your request.
-        <br />
-        <Loader size="xl" variant="dots" />
+          Please wait while we process your request.
+          <br/>
+          <br/>
+          <Loader size="xl" variant="dots" />
         {/* </Text> */}
       </div>
     );
@@ -352,17 +353,9 @@ export default function Canvas({
       ) : (
         <>
           {/* "Please Connect to Your Database" */}
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: "18px",
-              fontFamily: "Geneva",
-              marginTop: "40px",
-              marginRight: "225px",
-            }}
-          >
-            Welcome to dbSpy! Please connect your database or upload a SQL file
-            to begin.
+          <div style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}>
+            <h3>Welcome to dbSpy!</h3>
+            Please connect your database, upload a SQL file, or build your database from scratch!
           </div>
           {/* <Group position="right">
             <Button
