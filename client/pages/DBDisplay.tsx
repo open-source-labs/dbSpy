@@ -12,7 +12,6 @@ import Sidebar from "../components/DBDisplay/Sidebar";
 import axios from "axios";
 import DataStore from "../Store";
 import { AppShell } from "@mantine/core";
-import { session } from "passport";
 import { toPng } from "html-to-image";
 
 interface stateChangeProps {
@@ -54,13 +53,16 @@ export default function DBDisplay({
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
       return axios.post("/api/getSchema", dataToSend).then((res) => {
+        DataStore.clearStore();
+        sessionStorage.removeItem("Query");
+        sessionStorage.removeItem("Data");
+        sessionStorage.removeItem("loadedFile");
         setFetchedData(res.data);
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: "", query: "" }]);
         sessionStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
         );
-
         sessionStorage.Query = JSON.stringify(
           Array.from(DataStore.queries.entries())
         );
@@ -94,7 +96,7 @@ export default function DBDisplay({
         sessionStorage.loadedFile === "true") &&
       sessionStorage.Data
     ) {
-      if (sessionStorage.dbConnect) {
+      if (sessionStorage.dbConnect && sessionStorage.userDBInfo) {
         DataStore.connect();
         DataStore.userDBInfo = JSON.parse(sessionStorage.userDBInfo);
       } else if (sessionStorage.loadedFile) {

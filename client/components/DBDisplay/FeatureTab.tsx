@@ -92,6 +92,9 @@ export default function FeatureTab({
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (event: any) => {
+        DataStore.clearStore();
+        sessionStorage.removeItem("Query");
+        sessionStorage.removeItem("Data");
         DataStore.loadedFile = true;
         const parsedData = parseSql(event.target.result);
         setFetchedData(parsedData);
@@ -100,7 +103,6 @@ export default function FeatureTab({
         sessionStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
         );
-
         sessionStorage.Query = JSON.stringify(
           Array.from(DataStore.queries.entries())
         );

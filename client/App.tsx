@@ -78,11 +78,15 @@ export default function App() {
       <Route
         path="/display/:id"
         element={
-          <DBDisplay
-            user={user}
-            loggedIn={loggedIn}
-            setLoggedIn={setLoggedIn}
-          />
+          user.id !== null ? (
+            <DBDisplay
+              user={user}
+              loggedIn={loggedIn}
+              setLoggedIn={setLoggedIn}
+            />
+          ) : (
+            "Redirecting"
+          )
         }
       />
     </Routes>
