@@ -370,38 +370,24 @@ export default function permissiveColumnCheck(
       querySet.push({ type: "single", query: UQuery1 });
     }
   }
-  
+  console.log('ColBeforefk Check');
+  console.log(querySet);
   if (ColAfterChange.fk !== ColBeforeChange.fk.toString()) {
-    if (ColAfterChange.fk == "true") {
-      // Assume informaiton is in references object of ColAfterChange as follows:
-      /*
-
-
-          References
-                  {
-                      "PrimaryKeyName": "user_id integer",
-                      "ReferencesPropertyName": "id integer NOT NULL",
-                      "PrimaryKeyTableName": "public.profile",
-                      "ReferencesTableName": "public.user_accounts",
-                      "IsDestination": true,
-                      "constrainName": "profile_user_id_fkey"
-                  }
-
-          */
-
+    if (ColAfterChange.fk == "true" ) {
+      
       const queryForeign =
         "ALTER TABLE " +
-        ColAfterChange.References.ReferencesTableName +
+        ColAfterChange.references.ReferencesTableName +
         " ADD CONSTRAINT " +
         tableName.split(".")[1] +
         "_" +
         ColAfterChange.column +
         "_fkey  FOREIGN KEY (" +
-        ColAfterChange.References.ReferencesPropertyName.split(" ")[0] +
+        ColAfterChange.references.ReferencesPropertyName.split(" ")[0] +
         ") REFERENCES " +
-        ColAfterChange.References.PrimaryKeyTableName +
+        ColAfterChange.references.PrimaryKeyTableName +
         "(" +
-        ColAfterChange.References.PrimaryKeyName.split(" ")[0] +
+        ColAfterChange.references.PrimaryKeyName.split(" ")[0] +
         ");";
 
       querySet.push({ type: "single", query: queryForeign });
