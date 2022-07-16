@@ -347,22 +347,29 @@ export default function Table({
     
     if (newRow.references.type == 'add')
     {
-
+      newRow.fk = true; 
      let copyRef = {PrimaryKeyTableName: newRow.references.PrimaryKeyTableName, 'PrimaryKeyName' :newRow.references.PrimaryKeyName, 'ReferencesPropertyName':newRow.references.ReferencesPropertyName, 'ReferencesTableName':newRow.references.ReferencesTableName, 'IsDestination': newRow.references.IsDestination, 'constrainName': newRow.references.constrainName}
 
      newRow.reference.push(copyRef);
      console.log('newRow after processing of add fk')
      console.log(newRow);
     }
-    if (newRow.references.type == 'remove')
+    if (fkReference.type == 'remove')
     {
+      console.log('removed -------------------->')
       let arrayCopy = [];
       for (let i = 0; i < newRow.reference.length; i++)
-      {
-        if (!(newRow.reference[i].PrimaryKeyTableName == newRow.references.PrimaryKeyTableName && newRow.reference[i].PrimaryKeyName == newRow.references.PrimaryKeyName))
-        arrayCopy.push(newRow.reference[i]);
+      { // remove IsDestinations set to false....
+        if (newRow.reference[i].IsDestination == true)
+         {
+          console.log('set new Reference')
+          console.log(newRow.reference[i])
+          arrayCopy.push(newRow.reference[i]);
+
+         }
       }
-      newRow.references = arrayCopy; 
+      newRow.fk = false;
+      newRow.reference = arrayCopy; 
       //console.log('newRow after processing of delete fk')
       //console.log(newRow);
     }
@@ -442,6 +449,7 @@ export default function Table({
           //console.log(row);
           setOpens(true);
         } else {
+          console.log('setfkReference toggled to remove');
           setfkReference({
             PrimaryKeyTableName: " ",
             PrimaryKeyName: " ",

@@ -149,6 +149,7 @@ dataController.getSchema = (req, res, next) => {
   //     });
   //   });
   // };
+console.log('running get schema');
 
   //   // Option 2 - Dev
   fs.readFile(
@@ -165,7 +166,8 @@ dataController.getSchema = (req, res, next) => {
       const result = parseSql(data);
       //console.log(result);
       //console.log('instance of table', result[records]);
-      for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
+      console.log('result--->', result) 
+      res.locals.data = result; // Is this for loop necessary? -- NOTE
       next();
     }
   );
@@ -178,7 +180,11 @@ dataController.getSchema = (req, res, next) => {
  */
 dataController.objSchema = (req, res, next) => {
   // Should this still be testdata???? -- NOTE
+  console.log('running obj schema');
   const data = res.locals.data;
+  console.log('data------>');
+  console.log(data)
+  console.log('<----------')
   const results = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -191,7 +197,7 @@ dataController.objSchema = (req, res, next) => {
     results[data[i].Name] = properties;
   }
 
-  // console.log('route for Obj works');
+  console.log('route for Obj works end');
   //console.log(results);
 
   res.locals.result = results;
