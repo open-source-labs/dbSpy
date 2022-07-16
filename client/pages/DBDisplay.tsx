@@ -247,10 +247,19 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
           }}
         >
           <Button
-            sx={{
-              border: "1px solid white",
-              backgroundColor: "#2b3a42",
-            }}
+            styles={(theme) => ({
+              root: {
+                backgroundColor: "#3c4e58",
+                border: 0,
+                height: 42,
+                paddingLeft: 20,
+                paddingRight: 20,
+
+                "&:hover": {
+                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                },
+              },
+            })}
             onClick={() => setQueryOpen((o) => !o)}
           >
             {queryOpened ? "Hide Queries" : "Show Queries"}
@@ -268,7 +277,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
             >
               <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
                 {" "}
-                Queries: Copy and Execute on Your Own!
+                Copy and Execute on Your Own!
               </Text>
               <hr />
               <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
