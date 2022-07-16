@@ -70,7 +70,7 @@ export default function App() {
               setLoggedIn={setLoggedIn}
             />
           ) : (
-            "PLEASE LOG IN..."
+            "Redirecting"
           )
         }
       />

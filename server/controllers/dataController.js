@@ -118,51 +118,57 @@ dataController.testDrop = (req, res, next) => {
  */
 dataController.getSchema = (req, res, next) => {
   // Option 1 - Production
-  let result = null;
-  console.log("running getSchema controller...");
-  const hostname = req.body.hostname;
-  const password = req.body.password;
-  const port = req.body.port;
-  const username = req.body.username;
-  const database_name = req.body.database_name;
-  const command = postgresDumpQuery(hostname,password,port, username, database_name);
-  console.log(command, '<-command');
-  writeSchema(command).then(resq => {
-    fs.readFile(command[1], 'utf8', (error, data) => {
-      if (error)
-        {
-          console.error(`error- in FS: ${error.message}`);
-          return next({
-          msg: 'Error reading database schema file',
-          err: error});
-        }
-      result = parseSql(data);
-      res.locals.data = result;
-      next();
-    });
-  });
-  };
+  //   let result = null;
+  //   console.log('running getSchema controller...');
+  //   const hostname = req.body.hostname;
+  //   const password = req.body.password;
+  //   const port = req.body.port;
+  //   const username = req.body.username;
+  //   const database_name = req.body.database_name;
+  //   const command = postgresDumpQuery(
+  //     hostname,
+  //     password,
+  //     port,
+  //     username,
+  //     database_name
+  //   );
+  //   console.log(command, '<-command');
+  //   writeSchema(command).then((resq) => {
+  //     fs.readFile(command[1], 'utf8', (error, data) => {
+  //       if (error) {
+  //         console.error(`error- in FS: ${error.message}`);
+  //         return next({
+  //           msg: 'Error reading database schema file',
+  //           err: error,
+  //         });
+  //       }
+  //       result = parseSql(data);
+  //       res.locals.data = result;
+  //       next();
+  //     });
+  //   });
+  // };
 
-//   // Option 2 - Dev
-//   fs.readFile(
-//     path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-//     'utf8',
-//     (error, data) => {
-//       if (error) {
-//         console.error(`error- in FS: ${error.message}`);
-//         return next({
-//           msg: 'Error reading database schema file',
-//           err: error,
-//         });
-//       }
-//       const result = parseSql(data);
-//       //console.log(result);
-//       //console.log('instance of table', result[records]);
-//       for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
-//       next();
-//     }
-//   );
-// };
+  //   // Option 2 - Dev
+  fs.readFile(
+    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657935209.sql'),
+    'utf8',
+    (error, data) => {
+      if (error) {
+        console.error(`error- in FS: ${error.message}`);
+        return next({
+          msg: 'Error reading database schema file',
+          err: error,
+        });
+      }
+      const result = parseSql(data);
+      //console.log(result);
+      //console.log('instance of table', result[records]);
+      for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
+      next();
+    }
+  );
+};
 
 /**
  * objSchema
@@ -920,7 +926,7 @@ dataController.handleQueries = async (req, res, next) => {
    * Handshake block
    */
   // Production values
-  const {uri, queries} = req.body;
+  const { uri, queries } = req.body;
   const PG_URI = uri;
 
   // // Test values
@@ -959,7 +965,7 @@ dataController.handleQueries = async (req, res, next) => {
       }
       await client.query('COMMIT');
     } catch (err) {
-      console.log({err}, "<err\n\n");
+      console.log({ err }, '<err\n\n');
       console.log(
         '--Invalid query detected in handleQueries\n--Transaction declined'
       );
@@ -991,12 +997,12 @@ dataController.handleQueries = async (req, res, next) => {
    */
   res.locals.success = false;
 
-  console.log(queryStr, "Query string");
+  console.log(queryStr, 'Query string');
   const arrQS = queryStr.split(';');
   for (let i = 0; i < arrQS.length; i++) {
     arrQS[i] += ';';
   }
-  console.log(arrQS, "<Query array");
+  console.log(arrQS, '<Query array');
   transactionQuery(arrQS)
     .then(() => {
       res.locals.success = true;
