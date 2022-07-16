@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useMutation } from "react-query";
 
 //Components imported;
@@ -11,6 +11,7 @@ import DataStore from "../../Store";
 import Xarrow, { Xwrapper } from "react-xarrows";
 import { DatabaseImport, DatabaseOff } from "tabler-icons-react";
 import { Loader, Text, Button, Group } from "@mantine/core";
+import { toPng } from "html-to-image";
 
 interface CanvasProps {
   fetchedData: {
@@ -32,6 +33,7 @@ interface CanvasProps {
   isErrorProps: boolean;
   setFetchedData: (fetchedData: object) => void;
   setSideBarOpened: (param: boolean) => void;
+  reference: any;
 }
 
 /** Canvas Component - a canvas section where Tables being generated */
@@ -40,6 +42,7 @@ export default function Canvas({
   isErrorProps,
   fetchedData,
   setFetchedData,
+  reference,
 }: CanvasProps) {
   /** useMutation for handling 'POST' request to '/api/handleQueries' route for executing series of queries for DB migration; 
   onSuccess: Once queries get complete, it will clear out the sessionStorage and render the latestTableModel confirming the success of migration
@@ -175,7 +178,7 @@ export default function Canvas({
   }
 
   return (
-    <div style={{ height: "100%" }}>
+    <div ref={reference} style={{ height: "100%" }}>
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           <Group position="right">
