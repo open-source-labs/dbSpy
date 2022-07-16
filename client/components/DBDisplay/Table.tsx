@@ -813,12 +813,14 @@ setOpens(false);
   return (
     <div>
       <Dialog
+        color="dark"
         open={opens}
         onClose={handleClose}
         PaperProps={{
           style: {
             //backgroundColor: 'grey', Add color styling here...
             boxShadow: "ffff",
+            color: "black"
           },
         }}
         sx={{
@@ -829,7 +831,7 @@ setOpens(false);
           fontSize: 14,
         }}
       >
-        <DialogTitle>FOREIGN KEY FORM</DialogTitle>
+        <DialogTitle>Foreign Key Form</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <br />
@@ -853,11 +855,29 @@ setOpens(false);
             inputProps={{ readOnly: true }}
           />
           <span>
-            <InputLabel id="demo-simple-select-label">
+            <InputLabel id="demo-simple-select-label" sx={{
+              width: "235px",
+              display: "inline-block",
+              fontSize: 16,
+              paddingTop: "10px"
+            }}>
               Select Primary Key Table
             </InputLabel>
-
+            <InputLabel id="demo-simple-select-label" sx={{
+             width: "235px",
+             display: "inline-block",
+             fontSize: 16,
+             paddingTop: "10px"
+            }}>
+              Select Primary Column Table
+            </InputLabel>
+</span>
+            <span>
             <Select
+              sx={{
+                width: "235px",
+                
+              }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={pkList}
@@ -866,11 +886,13 @@ setOpens(false);
             >
               {listOfTables}
             </Select>
-
-            <InputLabel id="demo-simple-select-label">
-              Select Primary Column Table
-            </InputLabel>
+            
+            
             <Select
+             sx={{
+                width: "235px",
+                
+              }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={selectedCol}
@@ -882,8 +904,12 @@ setOpens(false);
           </span>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button style={{
+          color: "black",
+        }} onClick={handleClose}>Cancel</Button>
+          <Button style={{
+          color: "black",
+        }} onClick={handleSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>
