@@ -396,7 +396,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   let primaryTableModel = null;
   // console.log("Primary Table Model", PrimaryTableModel);
 
-  for (let i of tableList) {
+  for (let i in tableList) {
     if (tableList[i].Name === referencedTableName) {
       // console.log('primary table name', tableList[i].Name)
       // console.log('primary table found', tableList[i]);
