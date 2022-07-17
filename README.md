@@ -26,6 +26,12 @@
 
 5. Screenshot to share with your team!
 
+6. execute Query on your own. 
+
+7. Time Travel for easier editing
+
+8. export into SQL file - coming soon 
+
 ## How to Use
 1. Instruction on how to connect to DB
 2. Instruction on how to load up sql file
@@ -44,3 +50,6 @@
 - Make changes with comments
 - Add appropriate tests and make sure they pass
 - Commit and PR
+
+### If you have any requests for features
+- 
