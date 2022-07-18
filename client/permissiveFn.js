@@ -114,7 +114,7 @@ export default function permissiveColumnCheck(
   const err = {}; //error response handler
 
   //check Col Name Change Before vs. After
-  console.log('col After Change.isNew Check')
+  
   if (ColAfterChange.isNew) {
     const UQueryNewCol =
       "ALTER TABLE " +
@@ -387,7 +387,7 @@ console.log('pk check');
         "_" +
         ColAfterChange.column +
         "_fkey  FOREIGN KEY (" +
-        ColAfterChange.references.ReferencesPropertyName.split(" ")[0] +
+        ColAfterChange.column +
         ") REFERENCES " +
         ColAfterChange.references.PrimaryKeyTableName +
         "(" +
@@ -403,10 +403,10 @@ console.log('pk check');
         tableName.split(".")[0] +
         "' AND table_constraints.table_name='" +
         tableName.split(".")[1] +
-        "'AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
+        "' AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
         ColAfterChange.column +
         "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
-      console.log(UQuery1);
+     
       querySet.push({ type: "single", query: UQuery1 });
     }
   }
@@ -423,7 +423,7 @@ export function permissiveTableCheck(
   //trim column name for whitespaces
   tableName = tableName.trim();
   console.log(
-    "tableName: ",
+    "in permissive tableName: ",
     tableName,
     "TableBeforeChange: ",
     TableBeforeChange,
@@ -458,7 +458,7 @@ export function permissiveTableCheck(
   }
 
   //check if table name is already existing
-  console.log('Table check Before CHange length')
+ 
   for (let i = 0; i < Object.keys(TableBeforeChange).length; i++) {
     console.log('table check in length ')
     const name = Object.keys(TableBeforeChange)[i];
