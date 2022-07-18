@@ -1,4 +1,10 @@
-import React, {  Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  DragEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   DataGrid,
@@ -18,38 +24,37 @@ import {
   GridCellEditCommitParams,
   GridCellValue,
   GridCellParams,
-} from "@mui/x-data-grid";
+} from '@mui/x-data-grid';
 import {
   randomCreatedDate,
   randomTraderName,
   randomUpdatedDate,
   randomId,
   useDemoData,
-} from "@mui/x-data-grid-generator";
-import Draggable from "react-draggable";
-import { useXarrow } from "react-xarrows";
-import { Modal, Text } from "@mantine/core";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
-import { Button } from "@mui/material";
-import DataStore from "../../Store";
-import permissiveColumnCheck from "../../permissiveFn.js";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { getModeForFileReference } from "typescript";
-import { NetworkLockedTwoTone } from "@mui/icons-material";
+} from '@mui/x-data-grid-generator';
+import Draggable from 'react-draggable';
+import { useXarrow } from 'react-xarrows';
+import { Modal, Text } from '@mantine/core';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
+import { Button } from '@mui/material';
+import DataStore from '../../Store';
+import permissiveColumnCheck from '../../permissiveFn.js';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { getModeForFileReference } from 'typescript';
 
 interface TableProps {
   tableInfo: {
@@ -142,17 +147,27 @@ export default function Table({
   const [rows, setRows] = useState(rowArr);
 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [fkReference, setfkReference] = useState({PrimaryKeyTableName: '', 'PrimaryKeyName' :'', 'ReferencesPropertyName':'', 'ReferencesTableName':'', 'isDestination': false, 'constrainName': '', type: ''});
-  const [opens, setOpens]  = useState(false);
-  const [formDialogEditRow, setFormDialogEditRow] = useState({row: {column: '', type: ''}});
+  const [fkReference, setfkReference] = useState({
+    PrimaryKeyTableName: '',
+    PrimaryKeyName: '',
+    ReferencesPropertyName: '',
+    ReferencesTableName: '',
+    isDestination: false,
+    constrainName: '',
+    type: '',
+  });
+  const [opens, setOpens] = useState(false);
+  const [formDialogEditRow, setFormDialogEditRow] = useState({
+    row: { column: '' },
+  });
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
-   
+
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
-    if (Object.values(newRow).includes("")) return "empty";
+    if (Object.values(newRow).includes('')) return 'empty';
 
     for (let i = 0; i < oldRow.length; i++) {
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
-        return "columnIssue";
+        return 'columnIssue';
       if (
         oldRow[i].column === newRow.column &&
         oldRow[i].type === newRow.type &&
@@ -161,9 +176,9 @@ export default function Table({
         oldRow[i].fk === newRow.fk &&
         oldRow[i].id === newRow.id
       ) {
-        return "sameName";
+        return 'sameName';
       }
-      if (oldRow[i].pk === true && newRow.pk === "true") return "pkIssue";
+      if (oldRow[i].pk === true && newRow.pk === 'true') return 'pkIssue';
     }
 
     if (newRow.fk === "true")
@@ -189,7 +204,7 @@ export default function Table({
       newRow.references = {type:''};
     }
 
-    return "";
+    return '';
   }
 
   const handleRowEditStart = (
@@ -199,7 +214,7 @@ export default function Table({
     event.defaultMuiPrevented = true;
   };
 
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
     event
   ) => {
@@ -228,7 +243,7 @@ export default function Table({
     });
   };
 
-  const currentRowEditting = "";
+  const currentRowEditting = '';
   const handleSaveClick =
     (id: GridRowId, getValue: (id: GridRowId, field: string) => any) => () => {
    
@@ -254,39 +269,35 @@ export default function Table({
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-   
-
-    
-    if (logicCheck(newRow, rows) === "empty") {
-      alert("Please make sure to fill out every cell!");
+    if (logicCheck(newRow, rows) === 'empty') {
+      alert('Please make sure to fill out every cell!');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === "columnIssue") {
-      alert("you cannot have duplicate column names!");
+    } else if (logicCheck(newRow, rows) === 'columnIssue') {
+      alert('you cannot have duplicate column names!');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === "sameName") {
-      alert("Please make changes before you save.");
+    } else if (logicCheck(newRow, rows) === 'sameName') {
+      alert('Please make changes before you save.');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === "pkIssue") {
-      alert("you cannot have more than one PK!");
+    } else if (logicCheck(newRow, rows) === 'pkIssue') {
+      alert('you cannot have more than one PK!');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
     }
-
     let ColBeforeChange;
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === newRow.id) {
@@ -303,14 +314,14 @@ export default function Table({
     );
 
     //fix this with specific error message provided from permissiveFn
-    if (Object.keys(queryResult[0])[1] === "errorMsg") {
+    if (Object.keys(queryResult[0])[1] === 'errorMsg') {
       const msg: any = queryResult[0];
       alert(msg.errorMsg);
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
-      
+
       return;
     }
     //console.log('datastore.queryList ----->Before Store Update');
@@ -339,8 +350,7 @@ export default function Table({
          {
          
           arrayCopy.push(newRow.reference[i]);
-
-         }
+        }
       }
       newRow.fk = false;
       newRow.reference = arrayCopy; 
@@ -359,8 +369,8 @@ export default function Table({
 
   const columns: GridColumns = [
     {
-      field: "column",
-      headerName: "Column",
+      field: 'column',
+      headerName: 'Column',
       width: 75,
       editable: true,
       
@@ -375,26 +385,26 @@ export default function Table({
       }
     },
     {
-      field: "type",
-      headerName: "Type",
+      field: 'type',
+      headerName: 'Type',
       width: 100,
       editable: true,
-      type: "singleSelect",
+      type: 'singleSelect',
       valueOptions: [
-        "binary",
-        "blob",
-        "boolean",
-        "date",
-        "datetime",
-        "decimal",
-        "float",
-        "integer",
-        "serial",
-        "string",
-        "text",
-        "time",
-        "timestamp",
-        "varchar(255)",
+        'binary',
+        'blob',
+        'boolean',
+        'date',
+        'datetime',
+        'decimal',
+        'float',
+        'integer',
+        'serial',
+        'string',
+        'text',
+        'time',
+        'timestamp',
+        'varchar(255)',
       ],
       valueParser: (value: string, row:GridRowModel) => {
         //console.log('id:------->', id);
@@ -410,24 +420,24 @@ export default function Table({
 
     },
     {
-      field: "constraint",
-      headerName: "Constraints",
+      field: 'constraint',
+      headerName: 'Constraints',
       width: 100,
       editable: true,
-      type: "singleSelect",
-      valueOptions: [" ", "NOT NULL", "UNIQUE"],
+      type: 'singleSelect',
+      valueOptions: [' ', 'NOT NULL', 'UNIQUE'],
     },
     {
-      field: "pk",
-      headerName: "PK",
+      field: 'pk',
+      headerName: 'PK',
       width: 50,
       editable: true,
-      type: "singleSelect",
-      valueOptions: ["true", "false"],
+      type: 'singleSelect',
+      valueOptions: ['true', 'false'],
     },
     {
-      field: "fk",
-      headerName: "FK",
+      field: 'fk',
+      headerName: 'FK',
       width: 50,
       editable: true,
       type: "singleSelect",
@@ -463,11 +473,11 @@ export default function Table({
       },
     },
     {
-      field: "actions",
-      type: "actions",
-      headerName: "",
+      field: 'actions',
+      type: 'actions',
+      headerName: '',
       width: 70,
-      cellClassName: "actions",
+      cellClassName: 'actions',
       getActions: ({ id, getValue }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -608,24 +618,23 @@ export default function Table({
           height: "auto",
           color: "white",
           width: "450px",
-          margin: "0px",
+          margin: "20px",
           background: "#2b3a42",
           borderRadius: "5px",
           padding: "3px",
-          fontFamily: "Arial"
+          fontFamily: "Arial",
           // marginTop: "35px",
           // marginBottom: "35px",
-
         }}
       >
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
-          <div style={{ fontSize: "24px" }}>{id}</div>
+          <div style={{ fontSize: '24px' }}>{id}</div>
           {/* <div onDrag={handleDrag}>
             x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
           </div> 
@@ -653,7 +662,7 @@ export default function Table({
           rowsPerPageOptions={[10]}
           rowHeight={30}
           autoHeight={true}
-          editMode={"row"}
+          editMode={'row'}
           hideFooter={true}
           disableColumnMenu={true}
           disableColumnFilter={true}
@@ -673,7 +682,7 @@ export default function Table({
             toolbar: { setRows, setRowModesModel },
           }}
           experimentalFeatures={{ newEditingApi: true }}
-          sx={{ bgcolor: "white", fontSize: "12px" }}
+          sx={{ bgcolor: 'white', fontSize: '12px' }}
         />
       </div>
     </Draggable>
@@ -699,25 +708,25 @@ function EditToolbar(props: EditToolbarProps) {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "column" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'column' },
     }));
   };
 
   return (
-    <GridToolbarContainer style={{ height: "30px" }}>
+    <GridToolbarContainer style={{ height: '30px' }}>
       <Button
         // color="primary"
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
         style={{
-          position: "absolute",
-          right: "3px",
+          position: 'absolute',
+          right: '3px',
           margin: 0,
-          color: "black",
+          color: 'black',
         }}
       >
-        Column
+        Field
       </Button>
     </GridToolbarContainer>
   );
@@ -753,7 +762,15 @@ interface FormDialogProps {
 
   fetchedData: any;
 
-  fkReference:{PrimaryKeyTableName: string, 'PrimaryKeyName' :string, 'ReferencesPropertyName':string, 'ReferencesTableName':string, 'isDestination': boolean, 'constrainName': string, type: string};
+  fkReference: {
+    PrimaryKeyTableName: string;
+    PrimaryKeyName: string;
+    ReferencesPropertyName: string;
+    ReferencesTableName: string;
+    isDestination: boolean;
+    constrainName: string;
+    type: string;
+  };
 
   tablename: string;
 
@@ -836,23 +853,25 @@ setOpens(false);
   return (
     <div>
       <Dialog
+        color="dark"
         open={opens}
         onClose={handleClose}
         PaperProps={{
           style: {
             //backgroundColor: 'grey', Add color styling here...
-            boxShadow: "ffff",
+            boxShadow: 'ffff',
+            color: 'black',
           },
         }}
         sx={{
-          display: "inline",
-          fontWeight: "bold",
-          width: "auto",
+          display: 'inline',
+          fontWeight: 'bold',
+          width: 'auto',
           mx: 0.5,
           fontSize: 14,
         }}
       >
-        <DialogTitle>FOREIGN KEY FORM</DialogTitle>
+        <DialogTitle>Foreign Key Form</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <br />
@@ -870,17 +889,40 @@ setOpens(false);
             label="FK Column Name"
             variant="outlined"
             defaultValue={
-            formDialogEditRow == undefined ? "" : formDialogEditRow.row.column
+              formDialogEditRow == undefined ? '' : formDialogEditRow.row.column
             }
             contentEditable={false}
             inputProps={{ readOnly: true }}
           />
           <span>
-            <InputLabel id="demo-simple-select-label">
+            <InputLabel
+              id="demo-simple-select-label"
+              sx={{
+                width: '235px',
+                display: 'inline-block',
+                fontSize: 16,
+                paddingTop: '10px',
+              }}
+            >
               Select Primary Key Table
             </InputLabel>
-
+            <InputLabel
+              id="demo-simple-select-label"
+              sx={{
+                width: '235px',
+                display: 'inline-block',
+                fontSize: 16,
+                paddingTop: '10px',
+              }}
+            >
+              Select Primary Column Table
+            </InputLabel>
+          </span>
+          <span>
             <Select
+              sx={{
+                width: '235px',
+              }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={pkList}
@@ -890,10 +932,10 @@ setOpens(false);
               {listOfTables}
             </Select>
 
-            <InputLabel id="demo-simple-select-label">
-              Select Primary Column Table
-            </InputLabel>
             <Select
+              sx={{
+                width: '235px',
+              }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={selectedCol}
@@ -905,8 +947,22 @@ setOpens(false);
           </span>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button
+            style={{
+              color: 'black',
+            }}
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={{
+              color: 'black',
+            }}
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

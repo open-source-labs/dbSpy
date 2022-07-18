@@ -29,6 +29,7 @@ import {
   Plus,
   File,
   FileUpload,
+  Eraser
 } from "tabler-icons-react";
 
 interface FeatureTabProps {
@@ -97,8 +98,9 @@ export default function FeatureTab({
         sessionStorage.removeItem("Query");
         sessionStorage.removeItem("Data");
 
-        //Then, we will make loadedFile to true to render Canvas without "Disconnect to DB" and "Execute" buttons
+        //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
         DataStore.loadedFile = true;
+        sessionStorage.loadedFile = "true";
 
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData = parseSql(event.target.result);
@@ -173,7 +175,7 @@ export default function FeatureTab({
       <Modal
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
-        title="Type new table name: "
+        title="What is the name of your table?"
       >
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
@@ -215,7 +217,7 @@ export default function FeatureTab({
               {...form.getInputProps("tablename")}
             />
             <Group position="right" mt="md">
-              <Button type="submit">Create</Button>
+              <Button color="dark" type="submit">Create</Button>
             </Group>
           </form>
         </Box>
@@ -224,46 +226,7 @@ export default function FeatureTab({
       <Navbar.Section>
         <div style={{ fontSize: "24px", margin: "10px" }}>File</div>
         <hr />
-        <UnstyledButton
-          sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-          onClick={() => {
-            if (DataStore.connectedToDB) {
-              alert("Please disconnect your database first.");
-              return;
-            } else if (DataStore.loadedFile) {
-              sessionStorage.clear();
-              DataStore.loadedFile = false;
-              location.reload();
-            } else {
-              alert("Nothing to clear!");
-            }
-          }}
-        >
-          <Group>
-            <ThemeIcon
-              variant="outline"
-              color="dark"
-              style={{ border: "2px solid white" }}
-            >
-              <File />
-            </ThemeIcon>
-            <Text size="md">Clear Canvas</Text>
-          </Group>
-        </UnstyledButton>
+        
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -346,6 +309,87 @@ export default function FeatureTab({
                   : theme.colors.gray[0],
             },
           })}
+          onClick={() => {
+            if (DataStore.connectedToDB) {
+              alert('Please disconnect your database first.')
+              return
+            } else if (DataStore.loadedFile) {
+              alert('Please clear the canvas first.')
+              return
+            } else {
+              DataStore.loadedFile = true;
+              sessionStorage.loadedFile = "true";
+              setModalOpened(true);
+            }
+            
+          }}
+        >
+          <Group>
+            <ThemeIcon
+              variant="outline"
+              color="dark"
+              style={{ border: "2px solid white" }}
+            >
+              <File />
+            </ThemeIcon>
+            <Text size="md">Build Database</Text>
+          </Group>
+        </UnstyledButton>
+        <UnstyledButton
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: theme.spacing.xs,
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+            },
+          })}
+          onClick={() => {
+            if (DataStore.connectedToDB) {
+              alert('Please disconnect your database first.')
+              return
+            } else if (DataStore.loadedFile) {
+              sessionStorage.clear();
+              DataStore.loadedFile = false;
+              location.reload();
+            }
+            
+          }}
+        >
+          <Group>
+            <ThemeIcon
+              variant="outline"
+              color="dark"
+              style={{ border: "2px solid white" }}
+            >
+              <Eraser />
+            </ThemeIcon>
+            <Text size="md">Clear Canvas</Text>
+          </Group>
+        </UnstyledButton>
+        <UnstyledButton
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: theme.spacing.xs,
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+            },
+          })}
           onClick={() => alert("Feature coming soon!")}
         >
           <Group>
@@ -383,6 +427,7 @@ export default function FeatureTab({
           onClick={() => {
             DataStore.loadedFile = true;
             sessionStorage.loadedFile = "true";
+            sessionStorage.clear();
             setModalOpened(true);
           }}
         >
