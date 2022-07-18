@@ -11,8 +11,6 @@
 ![logo 5](https://user-images.githubusercontent.com/11093217/179366043-624ba23a-408d-499a-a1aa-162acf56d247.jpg)
 
 </div>
-<h1 align="center">dbSpy</h1>
-
 <h3 align="center">Visualize and modify your database with dbSpy!</h3>
 **dbSpy** is an open-source database visualization tool to facilitate relational database model development and homogeneous database migration.
 
