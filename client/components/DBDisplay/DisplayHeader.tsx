@@ -1,6 +1,7 @@
 // React & React Router & React Query Modules;
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo5-white-small.png";
 
 // Components imported;
 import MenuPopUp from "./MenuPopUp";
@@ -12,8 +13,8 @@ interface DisplayHeaderProps {
   menuPopUpOpened: boolean;
   name: string | null;
   picture: string | null | undefined;
-  setLoggedIn: (e: boolean) => void;
   setMenuPopUpOpened: (opened: boolean) => void;
+  setUser: (user: any) => void;
 }
 
 /** "DisplayHeader" Component - a header for DBDisplay page */
@@ -21,8 +22,8 @@ export default function DisplayHeader({
   menuPopUpOpened,
   name,
   picture,
-  setLoggedIn,
   setMenuPopUpOpened,
+  setUser,
 }: DisplayHeaderProps) {
   const navigate = useNavigate();
 
@@ -33,16 +34,16 @@ export default function DisplayHeader({
    * Redirect to main homepage upon both success and failure;
    */
   const logout = () => {
-    localStorage.setItem("isLoggedIn", "false");
     sessionStorage.clear();
     fetch("/logout")
       .then((response) => response.json())
       .then((data) => {
-        setLoggedIn(false);
+        setUser({ name: null, email: null, id: null, picture: null });
         navigate("/");
       })
       .catch((err: {}) => {
         alert(`Logout failed. Error:${err}`);
+        setUser({ name: null, email: null, id: null, picture: null });
         navigate("/");
       });
   };
@@ -74,7 +75,8 @@ export default function DisplayHeader({
           </MediaQuery>
 
           <Link to="/">
-            <Text color="white">Logo</Text>
+            {/* <Text color="white">Logo</Text> */}
+            <img src={logo} alt="Logo" />
           </Link>
         </div>
 

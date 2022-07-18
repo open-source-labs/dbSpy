@@ -1,10 +1,15 @@
 import React from "react";
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { Link } from "react-router-dom";
 
 const styles:object = {
-  // display: "flex",
-  border: "1px black solid",
+  display: "flex",
+  justifyContent: "space-evenly", alignItems: "center", 
+  border: "2px black solid",
   borderRadius: "25px",
-  margin: "40px",
+  margin: "20px",
   padding: "30px"
 }
 
@@ -13,7 +18,7 @@ const lorem = 'Contrary to popular belief, Lorem Ipsum is not simply random text
 export default function Body() {
   return (
     
-  <div className="mainContainer" style={{display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", fontFamily:"Geneva"}}>
+  <div className="mainContainer" style={{display: "flex", flexDirection: "column", fontFamily:"Geneva", width: "50vw", margin:"auto"}}>
       <div style={styles} className="container">
         dbSpy Demo
         <br /> 
@@ -38,6 +43,18 @@ export default function Body() {
         Meet the team
         <br /> 
       </div>
+      {/* <footer style={{top: "auto", bottom: "0", backgroundColor: "#2b3a42", position: 'fixed', left: "0", width: "100%"}}>
+        <Toolbar>
+           
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              dbSpy
+            </Typography>
+            <Link style={{textDecoration: 'none', color: "white" }} to={"/"}>
+              
+              <Button color="inherit">About Us</Button>
+            </Link>
+          </Toolbar>
+      </footer> */}
   </div>
   )
 }

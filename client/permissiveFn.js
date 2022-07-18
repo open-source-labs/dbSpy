@@ -114,7 +114,7 @@ export default function permissiveColumnCheck(
   const err = {}; //error response handler
 
   //check Col Name Change Before vs. After
-
+  
   if (ColAfterChange.isNew) {
     const UQueryNewCol =
       "ALTER TABLE " +
@@ -126,6 +126,7 @@ export default function permissiveColumnCheck(
       ";";
     querySet.push({ type: "single", query: UQueryNewCol });
   } else if (ColAfterChange.column !== ColBeforeChange.column) {
+    
     //trim column name for whitespaces
     ColAfterChange.column = ColAfterChange.column.trim();
 
@@ -197,7 +198,7 @@ export default function permissiveColumnCheck(
     console.log(querySet);
   }
 
-
+ console.log('type comparasion check datatype!!')
   if (ColAfterChange.type !== ColBeforeChange.type && !ColAfterChange.isNew) {
     const typeQuery =
       "ALTER TABLE " +
@@ -210,7 +211,7 @@ export default function permissiveColumnCheck(
   }
 
 
-  console.log("after the column is done", querySet);
+  console.log("after the column is done-- in permissive", querySet);
   //check constraint col for changes. This should be an obj of objs, so we will code both
   //type for now
   if (typeof ColAfterChange.constraint == "string") {
@@ -301,7 +302,7 @@ export default function permissiveColumnCheck(
       }
     }
   }
-
+console.log('pk check');
   //BeforeChange is boolean, AfterChange is string
   if (ColAfterChange.pk !== ColBeforeChange.pk.toString()) {
     // check if another pk exist in table
@@ -346,7 +347,9 @@ export default function permissiveColumnCheck(
       querySet.push({ type: "single", query: queryPrimary });
 
     } else if (ColAfterChange.pk === "false" && ColBeforeChange.pk === true) {
+      console.log('pk loop length')
       for (let i = 0; i < ColBeforeChange.reference.length; i++) {
+        console.log('pk in loop length');
         if (ColBeforeChange.reference[i].IsDestination == true) {          
           return [
             {
@@ -371,38 +374,24 @@ export default function permissiveColumnCheck(
       querySet.push({ type: "single", query: UQuery1 });
     }
   }
-  
+  console.log('ColBeforefk Check');
+  console.log(querySet);
   if (ColAfterChange.fk !== ColBeforeChange.fk.toString()) {
-    if (ColAfterChange.fk == "true") {
-      // Assume informaiton is in references object of ColAfterChange as follows:
-      /*
-
-
-          References
-                  {
-                      "PrimaryKeyName": "user_id integer",
-                      "ReferencesPropertyName": "id integer NOT NULL",
-                      "PrimaryKeyTableName": "public.profile",
-                      "ReferencesTableName": "public.user_accounts",
-                      "IsDestination": true,
-                      "constrainName": "profile_user_id_fkey"
-                  }
-
-          */
-
+    if (ColAfterChange.fk == "true" ) {
+      
       const queryForeign =
         "ALTER TABLE " +
-        ColAfterChange.References.ReferencesTableName +
+        ColAfterChange.references.ReferencesTableName +
         " ADD CONSTRAINT " +
         tableName.split(".")[1] +
         "_" +
         ColAfterChange.column +
         "_fkey  FOREIGN KEY (" +
-        ColAfterChange.References.ReferencesPropertyName.split(" ")[0] +
+        ColAfterChange.column +
         ") REFERENCES " +
-        ColAfterChange.References.PrimaryKeyTableName +
+        ColAfterChange.references.PrimaryKeyTableName +
         "(" +
-        ColAfterChange.References.PrimaryKeyName.split(" ")[0] +
+        ColAfterChange.references.PrimaryKeyName.split(" ")[0] +
         ");";
 
       querySet.push({ type: "single", query: queryForeign });
@@ -414,10 +403,10 @@ export default function permissiveColumnCheck(
         tableName.split(".")[0] +
         "' AND table_constraints.table_name='" +
         tableName.split(".")[1] +
-        "'AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
+        "' AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
         ColAfterChange.column +
         "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
-      console.log(UQuery1);
+     
       querySet.push({ type: "single", query: UQuery1 });
     }
   }
@@ -434,7 +423,7 @@ export function permissiveTableCheck(
   //trim column name for whitespaces
   tableName = tableName.trim();
   console.log(
-    "tableName: ",
+    "in permissive tableName: ",
     tableName,
     "TableBeforeChange: ",
     TableBeforeChange,
@@ -469,7 +458,9 @@ export function permissiveTableCheck(
   }
 
   //check if table name is already existing
+ 
   for (let i = 0; i < Object.keys(TableBeforeChange).length; i++) {
+    console.log('table check in length ')
     const name = Object.keys(TableBeforeChange)[i];
     if ("public." + tableName === name) {
       return [
