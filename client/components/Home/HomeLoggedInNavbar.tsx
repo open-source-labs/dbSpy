@@ -50,7 +50,7 @@ export default function HomeLoggedInNavbar({
           </Typography>
           <Link
             style={{ textDecoration: "none", color: "white" }}
-            to={`/display/${user.id}`}
+            to={`/display/access/${user.id}`}
           >
             <Button color="inherit">My Canvas</Button>
           </Link>

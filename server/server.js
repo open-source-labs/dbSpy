@@ -49,7 +49,7 @@ app.get('/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] }));
 
   app.get('/google/callback', passport.authenticate('google', { 
-    successRedirect: '/display', 
+    successRedirect: '/display/access', 
     failureRedirect: '/',
   }));
 

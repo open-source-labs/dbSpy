@@ -42,7 +42,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 import DataStore from '../../Store';
-import permissiveColumnCheck from '../../permissiveFn.js';
+import permissiveColumnCheck, { permissiveColumnDropCheck } from '../../permissiveFn.js';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -91,26 +91,9 @@ export default function Table({
   setFetchedData,
   fetchedData,
 }: TableProps) {
-
-
-  // const [activeDrags, setActiveDrags] = useState(0);
-  const [deltaPosition, setDeltaPosition] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  function handleDrag(e: DragEvent<HTMLDivElement>, ui: any) {
-    const { x, y } = deltaPosition;
-    setDeltaPosition({
-      x: x + ui.deltaX,
-      y: y + ui.deltaY,
-    });
-    // console.log(deltaPosition);
-  }
-
   const tablename = id;
-  let rowArr: Array<any> = [];
 
+  /** useEffect is to update tables with the latest data after changes in tables upon browser reload */
   useEffect(() => {
     let rowArr2: Array<any> = [];
     if (Object.keys(tableInfo).length) {
@@ -129,6 +112,8 @@ export default function Table({
     setRows(rowArr2);
   }, [tableInfo]);
 
+  /** rowArr models the rows of the table for MUI X-DATA-GRID */
+  let rowArr: Array<any> = [];
   if (Object.keys(tableInfo).length) {
     Object.values(tableInfo).forEach((obj, ind) => {
       rowArr.push({
@@ -143,9 +128,7 @@ export default function Table({
     });
   }
 
-  // let rows: GridRowsProp = rowArr;
   const [rows, setRows] = useState(rowArr);
-
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [fkReference, setfkReference] = useState({
     PrimaryKeyTableName: '',
@@ -162,12 +145,18 @@ export default function Table({
   });
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
 
+  /* "logicCheck" - a function that checks the logic for column addition and edit. 
+    "empty" = when all the cells are not filled
+    "existingColName" = if there's an existing column already with the same name
+    "saveWithoutChange" = if user tries to save without any changes - implemented to prevent generation of queries when nothing changed.
+    "pkIssue" = if there's a duplicate primary key
+  */
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes('')) return 'empty';
 
     for (let i = 0; i < oldRow.length; i++) {
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
-        return 'columnIssue';
+        return "existingColName";
       if (
         oldRow[i].column === newRow.column &&
         oldRow[i].type === newRow.type &&
@@ -176,7 +165,7 @@ export default function Table({
         oldRow[i].fk === newRow.fk &&
         oldRow[i].id === newRow.id
       ) {
-        return 'sameName';
+        return "saveWithoutChange";
       }
       if (oldRow[i].pk === true && newRow.pk === 'true') return 'pkIssue';
     }
@@ -207,6 +196,30 @@ export default function Table({
     return '';
   }
 
+  // function updatedRowsToTable(rows: RowProps[]) {
+  //   const dataAfterChange: any = {};
+  //   const col: any = {};
+  //   rows.forEach((obj: RowProps) => {
+  //     const { id, column, constraint, fk, pk, type, reference } = obj;
+  //     col[column] = {
+  //       IsForeignKey: fk,
+  //       IsPrimaryKey: pk,
+  //       References: reference,
+  //       TableName: tablename,
+  //       additional_constraints: constraint,
+  //       data_type: type,
+  //       field_name: column,
+  //     };
+  //     dataAfterChange[tablename] = col;
+  //   });
+
+  //   DataStore.setData({
+  //     ...DataStore.getData(DataStore.store.size - 1),
+  //     ...dataAfterChange,
+  //   });
+  //   setFetchedData(DataStore.getData(DataStore.store.size - 1));
+  // }
+
   const handleRowEditStart = (
     params: GridRowParams,
     event: MuiEvent<React.SyntheticEvent>
@@ -221,8 +234,9 @@ export default function Table({
     event.defaultMuiPrevented = true;
   };
 
-  // style= {{border: "black 1px solid", margin: "0"}}
-
+  /* "handleEditClick" - a function that is triggered when Edit button is clicked. 
+    Implemented a restriction when the user tries to edit multiple rows at the same time to prevent issues in query generation.
+  */
   const handleEditClick = (id: GridRowId) => () => {
     const modes: any = Object.values(rowModesModel);
     if (modes.length > 0) {
@@ -243,19 +257,44 @@ export default function Table({
     });
   };
 
-  const currentRowEditting = '';
-  const handleSaveClick =
-    (id: GridRowId, getValue: (id: GridRowId, field: string) => any) => () => {
-   
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  
-    };
-
-  const handleDeleteClick = (id: GridRowId) => () => {
-    updatedRowsToTable(rows.filter((row) => row.id !== id), null);
-    setRows(rows.filter((row) => row.id !== id));
+  /* "handleSaveClick" - a function that is triggered when Save button is clicked. 
+    Changing the rowModes to View mode.
+  */
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
+  /* "handleDeleteClick" - a function that is triggered when Delete (Trash Bin) button is clicked. 
+    Implemented a restriction when the user tries to drop a column that is primary key or foreign key. Also protects unexpected deletion of data.
+  */
+  const handleDeleteClick = (id: GridRowId) => () => {
+    let ColToDrop = rows.filter((row) => row.id === id);
+    const dropQuery = permissiveColumnDropCheck(ColToDrop[0], tablename);
+    let isDelete;
+    if (dropQuery.length === 1) {
+      if (dropQuery[0].status === "failed") {
+        alert(dropQuery[0].errorMsg);
+        return;
+      }
+      isDelete = confirm(
+        `Do you want to proceed with dropping "${ColToDrop[0].column}"?\nThe data stored under "${ColToDrop[0].column}" will be deleted.`
+      );
+    } else if (dropQuery.length === 2) {
+      let warning = dropQuery[1].errorMsg;
+      isDelete = confirm(
+        `WARNING: ${warning}\n\nDo you want to proceed with dropping "\n${ColToDrop[0].column}"?`
+      );
+    }
+    if (isDelete) {
+      DataStore.queryList.push(dropQuery[0]);
+      DataStore.setQuery(DataStore.queryList.slice());
+      updatedRowsToTable(rows.filter((row) => row.id !== id), null);
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  /* "handleCancelClick" - a function that is triggered when Cancel button is clicked.
+   */
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
@@ -268,23 +307,29 @@ export default function Table({
     }
   };
 
+  /* "processRowUpdate" - a function that gets triggered to update the "rows" when row is being processed after hitting save button.
+   */
   const processRowUpdate = (newRow: GridRowModel) => {
-    if (logicCheck(newRow, rows) === 'empty') {
-      alert('Please make sure to fill out every cell!');
+    console.log("fkReference:");
+    console.log(fkReference);
+
+    // check the logic first, if error, go back to Edit mode.
+    if (logicCheck(newRow, rows) === "empty") {
+      alert("Please make sure to fill out every cell!");
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === 'columnIssue') {
-      alert('you cannot have duplicate column names!');
+    } else if (logicCheck(newRow, rows) === "existingColName") {
+      alert("you cannot have duplicate column names!");
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === 'sameName') {
-      alert('Please make changes before you save.');
+    } else if (logicCheck(newRow, rows) === "saveWithoutChange") {
+      alert("Please make changes before you save.");
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
@@ -298,6 +343,8 @@ export default function Table({
       });
       return;
     }
+
+    // Iterate through the beforeChange table to grab the column that is being edited before the change.
     let ColBeforeChange;
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === newRow.id) {
@@ -305,7 +352,7 @@ export default function Table({
       }
     }
 
-    
+    // permissiveColumnCheck in permissiveFn.js file. Returns the query for the change.
     const queryResult = permissiveColumnCheck(
       ColBeforeChange,
       newRow,
@@ -313,8 +360,8 @@ export default function Table({
       DataStore.getData(DataStore.store.size - 1)
     );
 
-    //fix this with specific error message provided from permissiveFn
-    if (Object.keys(queryResult[0])[1] === 'errorMsg') {
+    // Another logic check with permissiveFn. Alerts specific error message provided from permissiveFn and revert back to Edit mode.
+    if (Object.keys(queryResult[0])[1] === "errorMsg") {
       const msg: any = queryResult[0];
       alert(msg.errorMsg);
       setRowModesModel({
@@ -324,7 +371,8 @@ export default function Table({
 
       return;
     }
-    //console.log('datastore.queryList ----->Before Store Update');
+
+    // Update DataStore with the queries just generated.
     DataStore.queryList.push(...queryResult);
     DataStore.setQuery(DataStore.queryList.slice());
     //console.log("this is stored Queries", DataStore.queries);
@@ -362,8 +410,8 @@ export default function Table({
     updatedRowsToTable(
       rows.map((row) => (row.id === newRow.id ? updatedRow : row)), updatedRow
     );
-    //console.log("this is updatedRow:", updatedRow);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+
     return updatedRow;
   };
 
@@ -486,7 +534,7 @@ export default function Table({
             <GridActionsCellItem
               icon={<SaveIcon />}
               label="Save"
-              onClick={handleSaveClick(id, getValue)}
+              onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
@@ -610,6 +658,7 @@ export default function Table({
 
   
   const updateXarrow = useXarrow();
+
   return (
     <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
       <div
@@ -623,8 +672,6 @@ export default function Table({
           borderRadius: "5px",
           padding: "3px",
           fontFamily: "Arial",
-          // marginTop: "35px",
-          // marginBottom: "35px",
         }}
       >
         <div
@@ -634,12 +681,7 @@ export default function Table({
             alignItems: 'center',
           }}
         >
-          <div style={{ fontSize: '24px' }}>{id}</div>
-          {/* <div onDrag={handleDrag}>
-            x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}
-          </div> 
-            //
-          */}
+          <div style={{ fontSize: "24px" }}>{id}</div>
         </div>
         <FormDialog
           opens={opens}
