@@ -16,13 +16,10 @@ import {
   Box,
   Button,
   Collapse,
-  Container,
-  Footer,
   ScrollArea,
   Text,
 } from "@mantine/core";
 import { toPng } from "html-to-image";
-import { flexbox } from "@mui/system";
 
 interface stateChangeProps {
   user: {
@@ -274,10 +271,11 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
                 borderRadius: "5px",
                 border: "2px solid #2b3a42",
               }}
+              type="always"
             >
               <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
                 {" "}
-                Copy and Execute on Your Own!
+                Copy and Execute on Your Own! Scroll..
               </Text>
               <hr />
               <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>

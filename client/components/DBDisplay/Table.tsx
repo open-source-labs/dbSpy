@@ -41,7 +41,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import DataStore from "../../Store";
-import permissiveColumnCheck from "../../permissiveFn.js";
+import permissiveColumnCheck, {
+  permissiveColumnDropCheck,
+} from "../../permissiveFn.js";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -53,6 +55,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { RowingOutlined } from "@mui/icons-material";
 
 interface TableProps {
   tableInfo: {
@@ -225,8 +228,31 @@ export default function Table({
     };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    updatedRowsToTable(rows.filter((row) => row.id !== id));
-    setRows(rows.filter((row) => row.id !== id));
+    let ColToDrop = rows.filter((row) => row.id === id);
+    const dropQuery = permissiveColumnDropCheck(ColToDrop[0], tablename);
+
+    let isDelete;
+    if (dropQuery.length === 1) {
+      if (dropQuery[0].status === "failed") {
+        alert(dropQuery[0].errorMsg);
+        return;
+      }
+      isDelete = confirm(
+        `Do you want to proceed with dropping "${ColToDrop[0].column}"?\nThe data stored under "${ColToDrop[0].column}" will be deleted.`
+      );
+    } else if (dropQuery.length === 2) {
+      let warning = dropQuery[1].errorMsg;
+      isDelete = confirm(
+        `WARNING: ${warning}\n\nDo you want to proceed with dropping "\n${ColToDrop[0].column}"?`
+      );
+    }
+
+    if (isDelete) {
+      DataStore.queryList.push(dropQuery[0]);
+      DataStore.setQuery(DataStore.queryList.slice());
+      updatedRowsToTable(rows.filter((row) => row.id !== id));
+      setRows(rows.filter((row) => row.id !== id));
+    }
   };
 
   const handleCancelClick = (id: GridRowId) => () => {

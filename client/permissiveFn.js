@@ -484,3 +484,30 @@ export function permissiveTableCheck(
 
   return querySet;
 }
+
+export function permissiveColumnDropCheck(
+  ColToDrop,
+  tableName
+) {
+
+  const querySet = [];
+
+  if (ColToDrop.reference.length > 0 && ColToDrop.reference[0].IsDestination === true) {
+    querySet.push(({status: "failed", errorMsg: `Postgres restriction. Column "${ColToDrop.column}" cannot be dropped due to dependencies`}));
+    return querySet;
+  }
+
+  console.log(ColToDrop);
+  const QueryDropColumn = "ALTER TABLE " + tableName + " DROP COLUMN " + ColToDrop.column + ";";
+  querySet.push({ type: "single", query: QueryDropColumn });
+
+  if (ColToDrop.pk === true && ColToDrop.fk === true) {
+    querySet.push({ status: "failed", errorMsg: `You are about to drop a primary key & foreign key column, in "${tableName}".\nIt may lose the relationship with other tables.` });
+  } else if (ColToDrop.pk === true) {
+    querySet.push({ status: "failed", errorMsg: `You are about to drop a primary key column, in "${tableName}".\nIt may lose the relationship with other tables.` });
+  } else if (ColToDrop.fk === true) {
+    querySet.push({ status: "failed", errorMsg: `You are about to drop a foreign key column, in "${tableName}".\nIt may lose the relationship with other tables.` });
+  }
+
+  return querySet;
+}
