@@ -158,7 +158,7 @@ export default function Table({
   });
   const [opens, setOpens] = useState(false);
   const [formDialogEditRow, setFormDialogEditRow] = useState({
-    row: { column: '' },
+    row: { column: '', type: '' },
   });
   const [formDialogEditCol, setFormDialogEditCol] = useState('');
 
