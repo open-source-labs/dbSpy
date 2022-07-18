@@ -1,6 +1,7 @@
 // React & React Router & React Query Modules;
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo5-white-small.png";
 
 // Components imported;
 import MenuPopUp from "./MenuPopUp";
@@ -74,7 +75,8 @@ export default function DisplayHeader({
           </MediaQuery>
 
           <Link to="/">
-            <Text color="white">Logo</Text>
+            {/* <Text color="white">Logo</Text> */}
+            <img src={logo} alt="Logo" />
           </Link>
         </div>
 

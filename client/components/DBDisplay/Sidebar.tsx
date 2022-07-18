@@ -72,6 +72,7 @@ export default function Sidebar({
                 port: "",
                 database_name: "",
               });
+              setSideBarOpened(false);
             })}
           >
             <TextInput
