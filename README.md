@@ -1,5 +1,4 @@
 <div align="center">
-
   <a href="https://makeapullrequest.com">![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)</a>
   <a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-1.0.1-blue)</a>
   ![GitHub Stars](https://img.shields.io/github/stars/oslabs-beta/JAKT?color=%23fb7182)
@@ -14,7 +13,6 @@
 
 <h1 align="center">Visualize and Modify your database with dbSpy!</h1>
 <p>dbSpy is an open-source database visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration.</p>
-<br></br>
 
 ### Use Cases
 <details><summary>Connecting to an existing database</summary>
@@ -46,42 +44,50 @@ Provides a canvas for users to create a database by using ER diagrams, thus crea
 
 6. **Query Generator:** Generate an executable SQL query with every modification to your schema
 
-7. **Screeshot:** Take a screenshot of the canvas (BETA)
+7. **Screenshot:** Take a screenshot of the canvas with all your tables (BETA)
 
 7. **Time Travel:** Provides a history of edits for easier backtracking
 
 ### How to Use
-1. Instructions on how to connect to DB
-2. Instructions on how to upload sql file
+Connecting to an existing database
+1. Locate the Feature bar on the left side of the page and click on "Connect database". This will open a sidebar on the right side of the page.
+2. Input the database information to your Postgres database and click on "Connect". It may take a couple of seconds to connect to your database.
+3. Once the connection to your database is established, you will see the page populate with the tables in your database and the relationships between your tables. 
+4. You will then be able to make changes to the schema of your database. Updated the field names, the values, 
+2. Instructions on how to upload sql file.
 3. Instructions on how to start design from scratch
 
 
 ### How to contribute
-The following is a list of features and improvements for which you can contribute. If you have any additional ideas, please raise the issue or implement them as well!
-- Screenshot feature - The screenshot feature does presently does not capture the tables with the arrows. 
-- SQL file export feature - After a user creates a database from scratch on dbSpy, this feature would create a list of executable queries for them to actually create that database.
-- Save feature - Saves queries made into a SQL file and allowing user to execute queries on their own.
-- query box when design from scratch
+Below is a list of features and improvements to which you can contribute. If you have any additional ideas, please raise the issue or implement them as well!
+- Screenshot feature - The screenshot feature does presently does not capture the tables with the arrows. It would be best if the features captures everything as it is rendered on the canvas.
+- SQL File Export feature (for new databases) - After a user creates a database from scratch on dbSpy, this feature would create a SQL file with a list of executable queries for them to create that new database on their own.
+- SQL File Export feature (for existing databases) - After a user makes changes to their databases's schema, this feature would create a SQL file with a list of executable queries for them to execute those changes on their existing database.
 
 ---
-### If you'd like to contribute to our project
-- Fork the project
+### Getting started
+- Fork and clone this repo
+- Install the dependencies:
 ```bash
 $ npm install
 ```
-- Run the project in development mode: $ npm run dev
+- Run the project in development mode: 
+```bash
+$ npm run dev
+```
 - Make changes with comments
-- Add appropriate tests and make sure they pass
-- Commit and PR
+- Add appropriate tests and ensure they pass
+- Commit your changes and make a pull request
+
+### Request a feature
+- Submit an appropriately tagged GitHub issue 
+- Submit your request <a href="https://docs.google.com/forms/d/e/1FAIpQLSdaPeCzo41VsJWHbbPzYwvu5Jd-FrXfJZnx23mtFdRVWDWCyg/viewform">here</a>
 
 ### Credits/Contributors
-- Contributor • [LinkedIn](link) • [Github](link)
-- Contributor • [LinkedIn](link) • [Github](link)
-- Contributor • [LinkedIn](link) • [Github](link)
-- Contributor • [LinkedIn](link) • [Github](link)
+- Angel Giron • [LinkedIn](https://www.linkedin.com/in/acgiron/) • [Github](https://github.com/g94angel)
+- John Paul Adigwu • [LinkedIn](https://www.linkedin.com/in/johnpaul-adigwu/) • [Github](https://github.com/engineerous)
+- Kevin Park-Lee • [LinkedIn](https://www.linkedin.com/in/kevin38424/) • [Github](https://github.com/kevin38424)
+- Tarik Mokhtech • [LinkedIn](http://linkedin.com/in/tarik-mokhtech) • [Github](https://github.com/MockTech)
 
 ### License
 - dbSpy is developed under the MIT license.
-
-### How to request a feature
-- Submit an appropriately tagged github issue 
