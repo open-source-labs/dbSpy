@@ -396,27 +396,52 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   let primaryTableModel = null;
   // console.log("Primary Table Model", PrimaryTableModel);
 
-  for (let i in tableList) {
-    if (tableList[i].Name === referencedTableName) {
-      // console.log('primary table name', tableList[i].Name)
-      // console.log('primary table found', tableList[i]);
-      primaryTableModel = tableList[i];
+  const tlKeys = Object.keys(tableList);
+  for (let i = 0; i < tlKeys.length; i++) {
+    if (tableList[tlKeys[i]].Name === referencedTableName) {
+      primaryTableModel = tableList[tlKeys[i]];
       break;
     }
   }
 
-  for (let k in primaryTableModel) {
-    for (let l in primaryTableModel[k])
-      if (primaryTableModel[k][l].Name !== undefined) {
-        if (
-          primaryTableModel[k][l].Name.indexOf(referencedPropertyName) !== -1
-        ) {
-          // console.log('name---->', primaryTableModel[k][l].Name);
-          referencedPropertyName = primaryTableModel[k][l].Name;
-          break;
-        }
+  // for (let i in tableList) {
+  //   if (tableList[i].Name === referencedTableName) {
+  //     // console.log('primary table name', tableList[i].Name)
+  //     // console.log('primary table found', tableList[i]);
+  //     primaryTableModel = tableList[i];
+  //     break;
+  //   }
+  // }
+
+  const ptmKeys = Object.keys(primaryTableModel);
+  for (let i = 0; i < ptmKeys.length; i++) {
+    const ptmSubKeys = Object.keys(primaryTableModel[ptmKeys[i]]);
+    for (let j = 0; j < ptmSubKeys.length; j++) {
+      if (
+        primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name !== undefined &&
+        primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name.indexOf(
+          referencedPropertyName
+        ) !== -1
+      ) {
+        referencedPropertyName =
+          primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name;
+        break;
       }
+    }
   }
+
+  // for (let k in primaryTableModel) {
+  //   for (let l in primaryTableModel[k])
+  //     if (primaryTableModel[k][l].Name !== undefined) {
+  //       if (
+  //         primaryTableModel[k][l].Name.indexOf(referencedPropertyName) !== -1
+  //       ) {
+  //         // console.log('name---->', primaryTableModel[k][l].Name);
+  //         referencedPropertyName = primaryTableModel[k][l].Name;
+  //         break;
+  //       }
+  //     }
+  // }
 
   // Create ForeignKey
   /*
