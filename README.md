@@ -70,7 +70,7 @@ Connecting to an existing database
 4. Each table is editable. Editing the tables does not automatically change the schema of your database.
 5. Every change you make will generate an executable SQL query. After you are done making all your changes, click on the "Execute changes" button to make those changes to your database.
 
-[INSERT GIF HERE]
+![dbSpy_connectToDB](https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif)
 
 Uploading your database's SQL file
 
@@ -79,7 +79,9 @@ Uploading your database's SQL file
 3. Each table is editable. Editing the tables does not automatically change the schema of your database.
 4. You'll notice that after making a change to a table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to execute the changes on your own database.
 
-[INSERT GIF HERE]
+![dbSpy_uploadSQLFile](https://user-images.githubusercontent.com/83368864/179806547-52b4ffd3-bb15-4d13-b9d6-27fd1e777da3.gif)
+![dbSpy_makeAndExecuteChanges](https://user-images.githubusercontent.com/83368864/179806700-4f67386b-d66d-469b-a92d-856d7bacc677.gif)
+
 
 Starting an ER diagram from scratch
 
@@ -87,7 +89,7 @@ Starting an ER diagram from scratch
 2. The table will then be rendered on the page. You will then be able to edit the table and add the columns that you wish to this table.
 3. You'll notice that after making a change to the table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to create the database that you just designed.
 
-[INSERT GIF HERE]
+![dbSpy_buildDatabase](https://user-images.githubusercontent.com/83368864/179806594-fa665842-43a4-4cd0-9da2-abbb05d76d89.gif)
 
 ---
 
