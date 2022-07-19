@@ -65,6 +65,9 @@ Connecting to an existing database
 4. Each table is editable. Editing the tables does not automatically change the schema of your database.
 5. Every change you make will generate an executable SQL query. After you are done making all your changes, click on the "Execute changes" button to make those changes to your database.
 
+![dbSpy_connectToDB](https://user-images.githubusercontent.com/85323481/179799857-049cc429-b3ce-4d32-974d-742deff5256a.gif)
+
+
 Uploading your databases's SQL file
 
 1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a window for you to select the SQL file you wish to upload. It may take a couple of seconds to upload the file.
