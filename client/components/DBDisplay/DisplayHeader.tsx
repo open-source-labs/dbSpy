@@ -88,7 +88,7 @@ export default function DisplayHeader({
             width: "33.33%",
           }}
         >
-          LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022
+          {/* LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022 */}
         </div>
 
         <Box
@@ -100,7 +100,7 @@ export default function DisplayHeader({
             width: "33.33%",
           }}
         >
-          <Text color="white" style={{ fontSize: "12px" }}>
+          <Text color="white" style={{ fontSize: "16px" }}>
             {" "}
             Welcome, {name == null ? " " : name.concat(" ")}{" "}
           </Text>
@@ -112,7 +112,7 @@ export default function DisplayHeader({
           />
           <Button
             variant="outline"
-            style={{ color: "white", border: "1px solid white" }}
+            style={{ color: "white", border: "1px solid whitesmoke" }}
             onClick={logout}
           >
             Sign Out

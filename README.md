@@ -13,7 +13,7 @@
 
 </div>
 
-<h1 align="center">Visualize and Modify your database with dbSpy!</h1>
+<h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p>dbSpy is an open-source visualization tool to facilitate relational database development.</p>
 
 <!-- dbSpy is an open-source visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration -->
@@ -35,7 +35,7 @@ Renders an ER diagram for the provided SQL file (db dump) and provides an interf
 Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
 </ul>
 </details>
-
+<br/>
 ### Key Features
 
 1. **Connect:** Connect to a PostgreSQL database
@@ -53,6 +53,7 @@ Provides a canvas for users to create a database by using ER diagrams, thus crea
 7. **Screenshot:** Take a screenshot of the canvas with all your tables (BETA)
 
 8. **Time Travel:** Provides a history of edits for easier backtracking
+   <br/>
 
 ### How to Use
 
@@ -60,18 +61,22 @@ Connecting to an existing database
 
 1. Locate and click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
 2. Input your Postgres database URI information and click on "Connect". It may take a couple of seconds to connect to your database.
-3. Once the connection to your database is established, you will see the page populate with the tables in your database and the relationships between your tables.
+3. Once the connection to your database is established, the page will populate with the tables in your database and the relationships between your tables.
 4. Each table is editable. Editing the tables does not automatically change the schema of your database.
-5. Every change you make will generate an executable SQL query. After you are done making all your changes, click on the "Execute changes" button to actually make those changes to your database.
+5. Every change you make will generate an executable SQL query. After you are done making all your changes, click on the "Execute changes" button to make those changes to your database.
 
 Uploading your databases's SQL file
 
 1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a window for you to select the SQL file you wish to upload. It may take a couple of seconds to upload the file.
-2. Once the file uploads, you will see the page populate with the tables in your database and the relationships between your tables.
+2. Once the file uploads, the page will populate with the tables in your database and the relationships between your tables.
 3. Each table is editable. Editing the tables does not automatically change the schema of your database.
-4. Every change you make will generate an executable SQL query. These queries will be available for you to execute on your own
+4. You'll notice that after making a change to a table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to execute the changes on your own database. You are welcome to copy and execute them.
 
 Instructions on how to start design from scratch
+
+1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will open a window for you to create and name a table.
+2. The table will then be rendered on the page. You will then be able to edit the table and add the columns that you wish to this table.
+3. You'll notice that after making a change to the table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to create the database that you just designed. You are welcome to copy and execute them.
 
 ### How to contribute
 
@@ -80,6 +85,7 @@ Below is a list of features and improvements to which you can contribute. If you
 - Screenshot feature - The screenshot feature does presently does not capture the tables with the arrows. It would be best if the features captures everything as it is rendered on the canvas.
 - SQL File Export feature (for new databases) - After a user creates a database from scratch on dbSpy, this feature would create a SQL file with a list of executable queries for them to create that new database on their own.
 - SQL File Export feature (for existing databases) - After a user makes changes to their databases's schema, this feature would create a SQL file with a list of executable queries for them to execute those changes on their existing database.
+- Refactoring - We need help refactoring the codebase according to the Airbnb style guide.
 
 ---
 

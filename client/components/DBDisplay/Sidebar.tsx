@@ -113,7 +113,22 @@ export default function Sidebar({
             />
 
             <Group position="center" mt="md">
-              <Button color="dark" size="md" compact type="submit">
+              <Button 
+                styles={(theme) => ({
+                  root: {
+                    backgroundColor: "#3c4e58",
+                    color: "white",
+                    border: 0,
+                    height: 42,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    "&:hover": {
+                      backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                    },
+                  },
+                })}
+                size="md"
+                compact type="submit">
                 Connect
               </Button>
             </Group>
