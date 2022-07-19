@@ -265,19 +265,20 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
           <Collapse in={queryOpened}>
             <ScrollArea
               style={{
-                height: 100,
-                width: 700,
+                height: 80,
+                width: 500,
                 backgroundColor: "white",
                 borderRadius: "5px",
                 border: "2px solid #2b3a42",
+                padding: "5px"
               }}
               type="always"
             >
               <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
                 {" "}
-                Copy and Execute on Your Own! Scroll..
+                SQL Query Generator
               </Text>
-              <hr />
+              <hr style={{margin: "5px"}}/>
               <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
             </ScrollArea>
           </Collapse>

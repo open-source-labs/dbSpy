@@ -217,14 +217,30 @@ export default function FeatureTab({
               {...form.getInputProps("tablename")}
             />
             <Group position="right" mt="md">
-              <Button color="dark" type="submit">Create</Button>
+              <Button 
+                styles={(theme) => ({
+                  root: {
+                    backgroundColor: "#3c4e58",
+                    color: "white",
+                    border: 0,
+                    height: 42,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    "&:hover": {
+                      backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                    },
+                  },
+                })}
+                type="submit">
+                  Create
+              </Button>
             </Group>
           </form>
         </Box>
       </Modal>
 
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>File</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>Action</div>
         <hr />
         
         <UnstyledButton
