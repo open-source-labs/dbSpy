@@ -72,6 +72,8 @@ Connecting to an existing database
 
 ![dbSpy_connectToDB](https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif)
 
+![dbSpy_makeAndExecuteChanges](https://user-images.githubusercontent.com/83368864/179806700-4f67386b-d66d-469b-a92d-856d7bacc677.gif)
+
 Uploading your database's SQL file
 
 1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a window for you to select the SQL file you wish to upload. It may take a couple of seconds to upload the file.
@@ -80,8 +82,6 @@ Uploading your database's SQL file
 4. You'll notice that after making a change to a table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to execute the changes on your own database.
 
 ![dbSpy_uploadSQLFile](https://user-images.githubusercontent.com/83368864/179806547-52b4ffd3-bb15-4d13-b9d6-27fd1e777da3.gif)
-![dbSpy_makeAndExecuteChanges](https://user-images.githubusercontent.com/83368864/179806700-4f67386b-d66d-469b-a92d-856d7bacc677.gif)
-
 
 Starting an ER diagram from scratch
 
