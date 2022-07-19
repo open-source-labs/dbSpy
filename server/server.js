@@ -94,26 +94,22 @@ if (process.env.NODE_ENV === 'production') {
     return res.status(200).sendFile(path.join(__dirname, '../index.html'));
   });
 
-  
-  // app.get('/login', (req, res) => {
-  //   return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  // });
+  app.get('/login', (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+  });
 
-  // app.get('/signup', (req, res) => {
-  //   return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  // });
+  app.get('/signup', (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+  });
 
-  // app.get('/display/access', (req, res) => {
-  //   return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  // });
+  app.get('/display/access', (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+  });
 
-  // app.get('/display/access/:id', (req, res) => {
-  //   return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  // });
+  app.get('/display/access/:id', (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+  });
 
-  // app.get('/', (req, res) => {
-  //   return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  // });
 }
 
 // Catch-all error handler

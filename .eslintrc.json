@@ -6,8 +6,9 @@
     "browser": true,
     "es2021": true
   },
-  "plugins": ["react", "prettier"],
-  "extends": ["airbnb", "prettier", "eslint:recommended", "plugin:react/recommended"],
+  // "plugins": ["react", "prettier"],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  // "extends": ["airbnb", "prettier", "eslint:recommended", "plugin:react/recommended"],
   "parserOptions": {
     "sourceType": "module",
     "ecmaFeatures": {
