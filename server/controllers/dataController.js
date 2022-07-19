@@ -144,7 +144,6 @@ dataController.getSchema = (req, res, next) => {
   // });
   // };
 
-
   // Option 2 - Dev
   fs.readFile(
     path.join(__dirname, '../db_schemas/twvoyfdatwvoyfda1656566683.sql'),
@@ -160,7 +159,7 @@ dataController.getSchema = (req, res, next) => {
       const result = parseSql(data);
       //console.log(result);
       //console.log('instance of table', result[records]);
-      console.log('result--->', result) 
+      console.log('result--->', result);
       res.locals.data = result; // Is this for loop necessary? -- NOTE
       next();
     }

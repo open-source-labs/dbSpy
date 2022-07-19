@@ -59,7 +59,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
 
       <Route
-        path="/display"
+        path="/display/access"
         element={
           user.id !== null ? (
             <DBDisplay user={user} setUser={setUser} />
@@ -70,7 +70,7 @@ export default function App() {
       />
 
       <Route
-        path="/display/:id"
+        path="/display/access/:id"
         element={
           user.id !== null ? (
             <DBDisplay user={user} setUser={setUser} />
