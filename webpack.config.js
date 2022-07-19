@@ -4,11 +4,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './client/index.tsx',
   output: {
-    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
+    path: path.join(__dirname, 'dist'),
+    clean: true,
     publicPath: '/',
   },
-  devtool: 'eval-source-map', //comment it out when doing the production run
+  // devtool: 'eval-source-map', //comment it out when doing the production run
   devServer: {
     host: 'localhost',
     port: 8080,
@@ -28,15 +29,15 @@ module.exports = {
       },
       '/protected': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: false,
       },
       '/logout': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: false,
       },
       '/google/**': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: false,
       },
     },
     static: {

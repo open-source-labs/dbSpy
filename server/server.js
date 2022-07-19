@@ -3,6 +3,8 @@
 const express = require('express');
 const session = require("express-session");
 const passport = require('passport');
+const path = require('path');
+
 require('dotenv').config();
 require('./auth');
 
@@ -82,6 +84,15 @@ app.get('/logout', ( req,res)=> {
 
 // Implementation is flexibile, can change if needed
 app.use('/api', apiRouter);
+
+// statically serve everything in the build folder on the route '/build'
+if (process.env.NODE_ENV === 'production') {
+  app.use('/dist', express.static(path.join(__dirname, '../dist')));
+  // serve index.html on the route '/'
+  app.get('/', (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+  });
+}
 
 // Catch-all error handler
 app.use('*', (req, res) => {
