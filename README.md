@@ -1,17 +1,9 @@
 <div align="center">
-<<<<<<< HEAD
 
-<a href="https://makeapullrequest.com">![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)</a>
-<a href="https://opensource.org/licenses/MIT">![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)</a>
-<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-1.0.1-blue)</a>
-
-=======
 <a href="https://makeapullrequest.com">![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)</a>
 <a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-1.0.1-blue)</a>
 ![GitHub Stars](https://img.shields.io/github/stars/oslabs-beta/JAKT?color=%23fb7182)
 ![MIT License](https://img.shields.io/badge/license-MIT-yellow)
-
-> > > > > > > dev
 
 </div>
 
@@ -22,7 +14,9 @@
 </div>
 
 <h1 align="center">Visualize and Modify your database with dbSpy!</h1>
-<p>dbSpy is an open-source database visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration.</p>
+<p>dbSpy is an open-source visualization tool to facilitate relational database development.</p>
+
+<!-- dbSpy is an open-source visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration -->
 
 ### Use Cases
 
@@ -52,7 +46,7 @@ Provides a canvas for users to create a database by using ER diagrams, thus crea
 
 4. **Modify:** Modify a databases's schema
 
-5. **Blueprint:** Create a new database from scratch using entity relationship diagrams
+5. **Build Database:** Create a new database from scratch using entity relationship diagrams
 
 6. **Query Generator:** Generate an executable SQL query with every modification to your schema
 
@@ -64,12 +58,20 @@ Provides a canvas for users to create a database by using ER diagrams, thus crea
 
 Connecting to an existing database
 
-1. Locate the Feature bar on the left side of the page and click on "Connect database". This will open a sidebar on the right side of the page.
-2. Input the database information to your Postgres database and click on "Connect". It may take a couple of seconds to connect to your database.
+1. Locate and click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
+2. Input your Postgres database URI information and click on "Connect". It may take a couple of seconds to connect to your database.
 3. Once the connection to your database is established, you will see the page populate with the tables in your database and the relationships between your tables.
-4. You will then be able to make changes to the schema of your database. Updated the field names, the values,
-5. Instructions on how to upload sql file.
-6. Instructions on how to start design from scratch
+4. Each table is editable. Editing the tables does not automatically change the schema of your database.
+5. Every change you make will generate an executable SQL query. After you are done making all your changes, click on the "Execute changes" button to actually make those changes to your database.
+
+Uploading your databases's SQL file
+
+1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a window for you to select the SQL file you wish to upload. It may take a couple of seconds to upload the file.
+2. Once the file uploads, you will see the page populate with the tables in your database and the relationships between your tables.
+3. Each table is editable. Editing the tables does not automatically change the schema of your database.
+4. Every change you make will generate an executable SQL query. These queries will be available for you to execute on your own
+
+Instructions on how to start design from scratch
 
 ### How to contribute
 

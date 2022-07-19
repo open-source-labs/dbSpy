@@ -224,7 +224,7 @@ export default function FeatureTab({
       </Modal>
 
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>File</div>
+        <div style={{ fontSize: "24px", margin: "10px" }}>Action</div>
         <hr />
         
         <UnstyledButton
