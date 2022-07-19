@@ -247,6 +247,18 @@ export default function Canvas({
     <div>
       <Group position="right">
         <Button
+          styles={(theme) => ({
+            root: {
+              height: 42,
+              paddingLeft: 20,
+              paddingRight: 20,
+              "&:hover": {
+                backgroundColor: theme.fn.darken("#3c4e58", 0.1),
+                color: "white",
+              },
+            },
+          })}
+        
           id="disconnectButton"
           variant="outline"
           color="dark"
@@ -263,15 +275,24 @@ export default function Canvas({
       </Group>
       <Group position="right">
         <Button
-          id="executeButton"
-          color="dark"
-          size="md"
-          compact
-          styles={() => ({
+          styles={(theme) => ({
             root: {
+              backgroundColor: "#3c4e58",
+              color: "white",
+              border: 0,
+              height: 42,
+              paddingLeft: 20,
+              paddingRight: 20,
               marginTop: 10,
+
+              "&:hover": {
+                backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+              },
             },
           })}
+          id="executeButton"
+          size="md"
+          compact
           leftIcon={<DatabaseImport />}
           onClick={() => executeChanges()}
         >
