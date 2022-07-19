@@ -1,21 +1,21 @@
 // React & React Router Modules
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 // UI components from MUI
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 // Icon components from MUI
-import CloseIcon from "@mui/icons-material/Close";
-import GoogleIcon from "@mui/icons-material/Google";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import GoogleIcon from '@mui/icons-material/Google';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { IconButton } from '@mui/material';
 
 /* Copyright component that is used as a footer for login page */
 function Copyright(props: any) {
@@ -26,12 +26,12 @@ function Copyright(props: any) {
       align="center"
       {...props}
     >
-      {"Copyright © "}
+      {'Copyright © '}
       <Link color="inherit" to="/">
         dbSpy
-      </Link>{" "}
+      </Link>{' '}
       {new Date().getFullYear()}
-      {"."}
+      {'.'}
     </Typography>
   );
 }
@@ -40,13 +40,13 @@ function Copyright(props: any) {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#2b3a42",
+      main: '#2b3a42',
     },
     secondary: {
-      main: "#2b3a42",
+      main: '#2b3a42',
     },
     background: {
-      default: "#fcfcfcfa",
+      default: '#fcfcfcfa',
     },
   },
 });
@@ -59,10 +59,10 @@ export default function Login() {
   */
   const google = () => {
     const strWindowFeatures =
-      "toolbar=no, menubar=no, width=600, height=700, top=100, left=100";
+      'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
     window.open(
-      "http://localhost:8080/auth/google",
-      "_self",
+      'http://localhost:3000/auth/google',
+      '_self',
       strWindowFeatures
     );
   };
@@ -93,12 +93,12 @@ export default function Login() {
           aria-label="delete"
           color="primary"
           sx={{
-            position: "absolute",
-            right: "50px",
-            top: "50px",
+            position: 'absolute',
+            right: '50px',
+            top: '50px',
           }}
         >
-          <CloseIcon sx={{ fontSize: "50px" }} />
+          <CloseIcon sx={{ fontSize: '50px' }} />
         </IconButton>
       </Link>
 
@@ -107,12 +107,12 @@ export default function Login() {
         <Box
           sx={{
             marginTop: 15,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -198,10 +198,10 @@ export default function Login() {
               onClick={google}
               sx={{
                 borderRadius: 50,
-                padding: "25px 36px",
-                margin: "0px 5px",
-                fontSize: "14px",
-                width: "270px",
+                padding: '25px 36px',
+                margin: '0px 5px',
+                fontSize: '14px',
+                width: '270px',
               }}
               variant="contained"
               color="secondary"
