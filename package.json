@@ -15,8 +15,8 @@
   "author": "",
   "license": "ISC",
   "engines" : { 
-    "npm" : ">=7.0.0",
-    "node" : ">=16.0.0"
+    "npm" : "6.x",
+    "node" : "16.x"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
