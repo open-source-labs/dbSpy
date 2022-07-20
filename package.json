@@ -14,9 +14,9 @@
   },
   "author": "",
   "license": "ISC",
-  "engines" : { 
-    "npm" : "6.x",
-    "node" : "16.x"
+  "engines": {
+    "npm": "6.x",
+    "node": "16.x"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -38,12 +38,9 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
-    "global-npm": "^0.5.0",
     "html-to-image": "^1.9.0",
-    "i": "^0.3.7",
     "jest": "^28.1.1",
     "node-fetch": "^3.2.6",
-    "npm": "^8.14.0",
     "pg": "^8.7.3",
     "pg-dump": "^0.10.0",
     "react": "^18.2.0",
