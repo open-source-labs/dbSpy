@@ -10,7 +10,8 @@
     "start": "cross-env NODE_ENV=production node server/server.js",
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "cross-env NODE_ENV=development webpack serve --open & nodemon server/server.js",
-    "docker-prod": "cross-env NODE_ENV=production webpack & cross-env NODE_ENV=production node server/server.js"
+    "docker-prod": "cross-env NODE_ENV=production webpack & cross-env NODE_ENV=production node server/server.js",
+    "heroku-postbuild": "npm run install-client && npm run build"
   },
   "author": "",
   "license": "ISC",
