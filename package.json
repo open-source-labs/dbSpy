@@ -7,11 +7,10 @@
     "test2": "tldr curl",
     "test": "jest",
     "test:watch": "jest --watch",
-    "start": "NODE_ENV=production node server/server.js",
-    "build": "NODE_ENV=production webpack",
+    "start": "node server/server.js",
+    "build": "webpack",
     "dev": "NODE_ENV=development webpack serve --open & nodemon server/server.js",
     "docker-prod": "NODE_ENV=production webpack & NODE_ENV=production node server/server.js",
-    "heroku-postbuild": "npm install && npm run build --prod"
   },
   "author": "",
   "license": "ISC",
