@@ -1,11 +1,12 @@
-import React from "react";
+import React from 'react';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
-import {BrandGithub, BrandLinkedin} from "tabler-icons-react";
-// import '../../../carousel.css';
+import { Link } from 'react-router-dom';
+import { BrandGithub, BrandLinkedin } from 'tabler-icons-react';
 
+import logo from "../../assets/logo5-blue-cropped_all_sides.png";
+import gif from "../../assets/SQL.gif";
 
 
 export default function Body() {
@@ -14,12 +15,14 @@ export default function Body() {
   return (
     <>
       <head>
-
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossOrigin="anonymous" />
-
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+          crossOrigin="anonymous"
+        />
 
         {/* <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/carousel/"/> */}
-
 
         {/*<style>
        {const bd-placeholder-img = {
@@ -76,179 +79,234 @@ export default function Body() {
 
         {/* <link href="carousel.css" rel="stylesheet"/> */}
       </head>
-      <body>
-
-        {/* <header>
-  <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div className="container-fluid">
-      <a className="navbar-brand" href="#">Carousel</a>
-      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarCollapse">
-        <ul className="navbar-nav me-auto mb-2 mb-md-0">
-          <li className="nav-item">
-            <a className="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">Link</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link disabled">Disabled</a>
-          </li>
-        </ul>
-        <form className="d-flex" role="search">
-          <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-          <button className="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header> */}
+      <body style={{backgroundColor: "whitesmoke"}}>
+        
 
         <main>
          
-
-      
-
-
-          {/* <!-- Marketing messaging and featurettes
-  ================================================== -->
-  <!-- Wrap the rest of the page in another container to center all the content. --> */}
-
           <div className="container marketing">
-            
-           
-
-
             {/* <!-- START THE FEATURETTES --> */}
-
-            {/* <hr className="featurette-divider" /> */}
-
-            <div className="row featurette" style={{ padding: "50"}}>
-              <div className="col-md-7">
-                <h2 className="featurette-heading fw-normal lh-1">First featurette heading. <span className="text-muted">It’ll blow your mind.</span></h2>
-                <p className="lead">c habitasse platea dictumst. Nulla feugiat erat sit amet eros mattis, eu ullamcorper dolor ullamcorper. Quisque fermentum nulla eu felis lacinia, ut dapibus leo interdum. Aenean tempus est ut quam mollis, in tempus nisi ornare. Curabitur feugiat, dolor suscipit pulvinar fringilla, ma</p>
+{/* dbSpy intro */}
+            <div className="row featurette" style={{ padding: '50' }}>
+              <div className="col-md-6" style={{textAlign: "left", margin: "auto"}} >
+                <h2 className="featurette-heading fw-normal lh-2" style={{lineHeight: "2"}}>
+                  Database development simplified{' '}
+                  
+                </h2>
+                <h4 className="text-muted" style={{fontWeight: "400", lineHeight: "1.5"}}>
+                  dbSpy is an open-source tool to facilitate relational database development. It's the only tool you need to visualize, modify, and build your database. 
+                </h4>
               </div>
-              <div className="col-md-5">
-                <svg className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee" /><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-
-              </div>
-            </div>
-
-            <hr className="featurette-divider" />
-
-            <div className="row featurette" style={{ padding: "50"}}>
-              <div className="col-md-7 order-md-2">
-                <h2 className="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span className="text-muted">See for yourself.</span></h2>
-                <p className="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
-              </div>
-              <div className="col-md-5 order-md-1">
-                <svg className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee" /><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-
+              <div className="col-md-6" style={{margin: "auto"}}>
+                <img style={{width: "100%"}}
+                  src={logo} alt="dbSpy logo"
+                />
+               
               </div>
             </div>
 
             <hr className="featurette-divider" />
 
-            <div className="row featurette" style={{ padding: "50"}}>
+            {/* dbSpy gif */}
+            <div className="row featurette" style={{ padding: '50' }}>
+              <div className="col-md-7" style={{padding: "50 0 50 0", textAlign: "left", margin: "auto"}} >
+                <img style={{border: "1px solid black", borderRadius:"5px", width: "100%"}}
+                  src={"https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif"} alt="dbSpy gif"
+                />
+              </div>
+                
+            
+            <div className="col-md-5" style={{margin: "auto", textAlign: "right"}}>
+              <h2 className="featurette-heading fw-normal lh-1">
+                  Key features{' '}
+                </h2>
+                <h4 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
+                    Database connection
+                    <br/>
+                    Schema modification
+                    <br/>
+                    SQL query generator
+                    <br/>
+                    ER diagrams
+                    <br/>
+                    and much more!
+                </h4>
+            </div>
+            </div>
+
+            {/* <div className="row featurette" style={{ padding: "50 0 50 0" }}>
               <div className="col-md-7">
-                <h2 className="featurette-heading fw-normal lh-1">And lastly, this one. <span className="text-muted">Checkmate.</span></h2>
-                <p className="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
+                
+              <div className="col-md-5" style={{padding: '50', textAlign: 'right'}}>
+                <h2 className="featurette-heading fw-normal lh-1">
+                  Key features{' '}
+                </h2>
+                <h3 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
+                  
+                    Database connection
+                    <br/>
+                    Schema modification
+                    <br/>
+                    SQL query generator
+                    <br/>
+                    ER diagrams
+                    <br/>
+                    and much more!
+                  
+                </h3>
+              </div>
+              
+            </div>
+
+            <hr className="featurette-divider" />
+
+            <div className="row featurette" style={{ padding: '50' }}>
+              <div className="col-md-7">
+                <h2 className="featurette-heading fw-normal lh-1">
+                  Database development{' '}
+                  <span className="text-muted">simplified.</span>
+                </h2>
+                <h3 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
+                  
+                    Database connection
+                    <br/>
+                    Schema modification
+                    <br/>
+                    SQL query generator
+                    <br/>
+                    ER diagrams
+                    <br/>
+                    and much more!
+                  
+                </h3>
               </div>
               <div className="col-md-5">
-                <svg className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee" /><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-
+                <svg
+                  className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                  width="500"
+                  height="500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="Placeholder: 500x500"
+                  preserveAspectRatio="xMidYMid slice"
+                  focusable="false"
+                >
+                  <title>Placeholder</title>
+                  <rect width="100%" height="100%" fill="#eee" />
+                  <text x="50%" y="50%" fill="#aaa" dy=".3em">
+                    500x500
+                  </text>
+                </svg>
               </div>
-            </div>
+            </div> */}
 
             <hr className="featurette-divider" />
 
             {/* <!-- /END THE FEATURETTES --> */}
-            <div className="row" style={{ padding: "0 50 50 50"}}>
-              <h2 className="fw-normal" style={{textAlign: "center", padding: "30px"}} >Meet the Team</h2>
-              <div className="col-lg-3" style={{textAlign: "center"}}>
-                <svg className="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid slice" focusable="false"><title></title><rect width="100%" height="100%" fill="#777" /><text x="50%" y="50%" fill="#777" dy=".3em"></text></svg>
+            <div className="row" style={{ padding: '50px 0' }}>
+              <h2
+                className="fw-normal"
+                style={{ textAlign: 'center', marginBottom: '70px' }}
+              >
+                Meet the Team
+              </h2>
+              <div className="col-lg-3" style={{ textAlign: 'center' }}>
+                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/85323481?v=4" alt="AngelGiron" />
 
-                <h3 className="fw-normal" style={{ paddingTop: "10px"}}>Angel Giron</h3>
-                <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-                <p><a className="btn btn-secondary" href="#">LinkedIn</a></p>
-                <p><a className="btn btn-secondary" href="#">GitHub</a></p>
+                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
+                  Angel Giron
+                </h3>
+                <p style={{ margin: '10px' }}>
+                  Software Engineer
+                </p>
+                <div style={{marginBottom: "20px"}}>
+                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/acgiron/" style={{margin: "10px"}}>
+                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                  <a className="btn btn-dark btn-sm" href="https://github.com/g94angel" style={{margin: "10px"}}>
+                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                </div>
               </div>
-              
-              <div className="col-lg-3" style={{textAlign: "center"}}>
-                <svg className="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid slice" focusable="false"><title></title><rect width="100%" height="100%" fill="#777" /><text x="50%" y="50%" fill="#777" dy=".3em"></text></svg>
 
-                <h3 className="fw-normal" style={{ paddingTop: "10px"}}>JP Adigwu</h3>
-                <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-                <p><a className="btn btn-secondary" href="#">LinkedIn</a></p>
-                <p><a className="btn btn-secondary" href="#">GitHub</a></p>
+              <div className="col-lg-3" style={{ textAlign: 'center' }}>
+                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/20432738?v=4" alt="JohnPaulAdigwu" />
+
+                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
+                  John Paul Adigwu
+                </h3>
+                <p style={{ margin: '10px' }}>
+                  Software Engineer
+                </p>
+                <div style={{marginBottom: "20px"}}>
+                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/johnpaul-adigwu/" style={{margin: "10px"}}>
+                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                  <a className="btn btn-dark btn-sm" href="https://github.com/engineerous" style={{margin: "10px"}}>
+                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                </div>
               </div>
-             
-              <div className="col-lg-3" style={{textAlign: "center"}}>
-                <svg className="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid slice" focusable="false"><title></title><rect width="100%" height="100%" fill="#777" /><text x="50%" y="50%" fill="#777" dy=".3em"></text></svg>
 
-                <h3 className="fw-normal" style={{ paddingTop: "10px"}}>Kevin Park-Lee</h3>
-                <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-                <p><a className="btn btn-secondary" href="#">LinkedIn</a></p>
-                <p><a className="btn btn-secondary" href="#">GitHub</a></p>
+              <div className="col-lg-3" style={{ textAlign: 'center' }}>
+                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/11093217?v=4" alt="KevinParkLee" />
+
+                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
+                  Kevin Park-Lee
+                </h3>
+                <p style={{ margin: '10px' }}>
+                  Software Engineer
+                </p>
+               <div style={{marginBottom: "20px"}}>
+                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/kevin38424/" style={{margin: "10px"}}>
+                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                  <a className="btn btn-dark btn-sm" href="https://github.com/kevin38424" style={{margin: "10px"}}>
+                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                </div>
               </div>
-            
-              <div className="col-lg-3" style={{textAlign: "center"}}>
-                <svg className="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid slice" focusable="false"><title></title><rect width="100%" height="100%" fill="#777" /><text x="50%" y="50%" fill="#777" dy=".3em"></text></svg>
 
-                <h3 className="fw-normal" style={{ paddingTop: "10px"}}>Tarik Mokhtech</h3>
-                <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-                <p><a className="btn btn-secondary" href="#">LinkedIn</a></p>
-                <BrandGithub/>
-                <BrandLinkedin/>
+              <div className="col-lg-3" style={{ textAlign: 'center' }}>
+                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/83368864?v=4" alt="TarikMokhtech" />
 
-                <p><a className="btn btn-secondary" href="#">GitHub</a></p>
+                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
+                  Tarik Mokhtech
+                </h3>
+                <p style={{ margin: '10px' }}>
+                  Software Engineer
+                </p>
+                <div style={{marginBottom: "20px"}}>
+                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/tarik-mokhtech/" style={{margin: "10px"}}>
+                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                  <a className="btn btn-dark btn-sm" href="https://github.com/MockTech" style={{margin: "10px"}}>
+                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  </a>
+                </div>
               </div>
             </div>
-
           </div>
           {/* <!-- /.container --> */}
 
-          <hr className="featurette-divider" />
+          {/* <hr className="featurette-divider" /> */}
 
           {/* <!-- FOOTER --> */}
-          <footer className="container">
-            <p className="float-end"><a href="#">Back to top</a></p>
-            <p>&copy; dbSpy {date} </p>
-          </footer>
+          {/* <footer className="container" style={{color: "red"}}>
+            <p className="float-end">
+              <a style={{textDecoration: "none", color:"black", margin:"70px"}} href="#">Back to top</a>
+            </p>
+            <p>dbSpy {date} </p>
+          </footer> */}
         </main>
 
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossOrigin="anonymous"></script>
-
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+          crossOrigin="anonymous"
+        ></script>
       </body>
     </>
-    //   {/* <div className="mainContainer" style={{display: "flex", flexDirection: "column", fontFamily:"Geneva", width: "50vw", margin:"auto"}}>
-    //   <div style={styles} className="container">
-    //   dbSpy Demo
-    //   <br /> 
-    //  {lorem}
-    //  </div>
-    //   <div style={styles} className="container">
-    //    Why us? 
-    //   <br /> 
-    //    {lorem}
-    //   </div>
-    //   <div style={styles} className="container">
-    //   What our users say
-    //   <br />
-    //   {lorem}
-    //   </div>
-    //   div style={styles} className="container">
-    //   Latest Updates
-    //   <br />
-    //   {lorem}
-    //   </div>
-    //   <div style={styles} className="container">
-    //   Meet the team
-    //   <br /> 
-    //   </div>
-    //   </div>  */}
-  )
+    
+  );
 }

@@ -39,14 +39,19 @@ export default function MenuPopUp({ opened, setOpened }: MenuPopUpProps) {
         setOpened(!opened);
       }}
     >
-      <Menu.Label>ABOUT</Menu.Label>
+      {/* <Menu.Label>ABOUT</Menu.Label>
       <Link to="/">
         <Menu.Item icon={<Database size={14} />}>dbSpy</Menu.Item>
       </Link>
       <Menu.Item icon={<Users size={14} />}>Team</Menu.Item>
-      <Divider />
+      <Divider /> */}
       <Menu.Label>HELP</Menu.Label>
-      <Menu.Item icon={<Help size={14} />}>Support/Docs</Menu.Item>
+        <a href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md"> <Menu.Item icon={<Help size={14} />}>
+            Documentation
+          </Menu.Item>
+        </a>
+
+        
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSdaPeCzo41VsJWHbbPzYwvu5Jd-FrXfJZnx23mtFdRVWDWCyg/viewform">
         <Menu.Item icon={<MessageCircle size={14} />}>
           Request a Feature
