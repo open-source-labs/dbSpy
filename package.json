@@ -24,6 +24,7 @@
     "@emotion/styled": "^11.9.3",
     "@mantine/core": "^4.2.12",
     "@mantine/form": "^4.2.11",
+    "@mantine/hooks": "^4.2.12",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.6",
     "@mui/x-data-grid": "^5.12.3",
