@@ -10,7 +10,7 @@
     "start": "node server/server.js",
     "build": "webpack",
     "dev": "NODE_ENV=development webpack serve --open & nodemon server/server.js",
-    "docker-prod": "NODE_ENV=production webpack & NODE_ENV=production node server/server.js",
+    "docker-prod": "NODE_ENV=production webpack & NODE_ENV=production node server/server.js"
   },
   "author": "",
   "license": "ISC",
