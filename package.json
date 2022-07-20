@@ -22,7 +22,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@mantine/core": "^4.2.11",
+    "@mantine/core": "^4.2.12",
     "@mantine/form": "^4.2.11",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.6",
