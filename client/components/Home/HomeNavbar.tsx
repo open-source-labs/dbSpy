@@ -7,13 +7,16 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
+
+import logo from "../../assets/logo5-white-small.png";
+
 export default function HomeNavbar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: "#2b3a42" }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Logo dbSpy
+            <img src={logo} alt="Logo" />
           </Typography>
           <Link
             style={{ textDecoration: "none", color: "white" }}
