@@ -60,11 +60,7 @@ export default function Signup() {
   const google = () => {
     const strWindowFeatures =
       'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open(
-      'http://localhost:3000/auth/google',
-      '_self',
-      strWindowFeatures
-    );
+    window.open('http://dbspy.net/auth/google', '_self', strWindowFeatures);
   };
 
   /*
