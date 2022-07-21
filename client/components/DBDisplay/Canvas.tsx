@@ -71,8 +71,8 @@ export default function Canvas({
 
         //Update the rendering of the tables with latest table model.
         setFetchedData(latestTableModel);
-        alert('Execution of queries successful!');
         location.reload();
+        alert('Execution Successful!');
       },
       onError: () => {
         //Upon error, alert the user with error message
