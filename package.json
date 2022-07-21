@@ -9,6 +9,8 @@
     "test:watch": "jest --watch",
     "start": "node server/server.js",
     "build": "webpack",
+    "prod-start": "NODE_ENV=production node server/server.js",
+    "prod-build": "cross-env NODE_ENV=production webpack",
     "dev": "NODE_ENV=development webpack serve --open & nodemon server/server.js",
     "docker-prod": "NODE_ENV=production webpack & NODE_ENV=production node server/server.js",
     "heroku-postbuild": "npm install && npm run build"
