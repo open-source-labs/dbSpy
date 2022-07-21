@@ -22,17 +22,17 @@
 
 ### Key Features
 
-1. **Connect:** Connect to a PostgreSQL database
+1. **Database Connection:** Connect to a PostgreSQL database
 
-2. **Upload:** Upload a database's SQL file
+2. **Database File Upload:** Upload a database's SQL file
 
-3. **ER Diagram:** Visualize the entity relationship diagram of a database
+3. **ER Diagrams:** Visualize the entity relationship diagram of a database
 
-4. **Modify:** Modify a database's schema
+4. **Schema Modification:** Modify a database's schema
 
-5. **Build Database:** Create a new database from scratch using entity relationship diagrams
+5. **Database Building:** Create a new database from scratch using entity relationship diagrams
 
-6. **Query Generator:** Generate an executable SQL query with every modification to your schema
+6. **SQL Query Generator:** Generate an executable SQL query with every modification to your schema
 
 7. **Screenshot:** Take a screenshot of the canvas with all your tables (BETA)
 

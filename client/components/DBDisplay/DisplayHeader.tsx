@@ -1,7 +1,7 @@
 // React & React Router & React Query Modules;
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/logo5-white-small.png";
+import logo from "../../assets/logo5-white-100-rectangle.png";
 
 // Components imported;
 import MenuPopUp from "./MenuPopUp";

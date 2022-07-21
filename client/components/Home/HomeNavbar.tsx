@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 
-import logo from "../../assets/logo5-white-small.png";
+import logo from "../../assets/logo5-white-100-rectangle.png";
 
 export default function HomeNavbar() {
   return (
@@ -24,9 +24,15 @@ export default function HomeNavbar() {
           >
             <Button color="inherit">Free Demo</Button>
           </Link>
-          <Button color="inherit">Docs</Button>
 
-          <Button color="inherit">Team</Button>
+          <Button 
+            color="inherit">
+            <a style={{ textDecoration: "none", color: "white" }}
+            href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>
+            
+          </Button>
+          
+          {/* <Button color="inherit">Team</Button> */}
 
           <Link
             style={{ textDecoration: "none", color: "white" }}
