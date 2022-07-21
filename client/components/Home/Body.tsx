@@ -5,8 +5,8 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { BrandGithub, BrandLinkedin } from 'tabler-icons-react';
 
-import logo from '../../assets/logo1.png';
-import gif from '../../assets/SQL.gif';
+import gif from "../../assets/SQL.gif";
+
 
 export default function Body() {
   const date = new Date().getFullYear();
@@ -103,8 +103,12 @@ export default function Body() {
                   and build your database.
                 </h4>
               </div>
-              <div className="col-md-6" style={{ margin: 'auto' }}>
-                <img style={{ width: '100%' }} src={logo} alt="dbSpy logo" />
+
+              <div className="col-md-6" style={{margin: "auto"}}>
+                <img style={{width: "100%"}}
+                  src="https://user-images.githubusercontent.com/83368864/180262134-87e050c5-4a45-491b-b7aa-57c5fabbb57b.png" alt="dbSpy logo"
+                />
+
               </div>
             </div>
 
