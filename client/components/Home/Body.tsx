@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { BrandGithub, BrandLinkedin } from 'tabler-icons-react';
 
-import logo from "../../assets/logo5-blue-cropped_all_sides.png";
 import gif from "../../assets/SQL.gif";
 
 
@@ -99,7 +98,7 @@ export default function Body() {
               </div>
               <div className="col-md-6" style={{margin: "auto"}}>
                 <img style={{width: "100%"}}
-                  src={logo} alt="dbSpy logo"
+                  src="https://user-images.githubusercontent.com/83368864/180262134-87e050c5-4a45-491b-b7aa-57c5fabbb57b.png" alt="dbSpy logo"
                 />
                
               </div>
