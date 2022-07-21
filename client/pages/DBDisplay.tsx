@@ -1,16 +1,16 @@
 // React & React Router & React Query Modules;
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useMutation } from "react-query";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useMutation } from 'react-query';
 
 // Components Imported;
-import Canvas from "../components/DBDisplay/Canvas";
-import DisplayHeader from "../components/DBDisplay/DisplayHeader";
-import FeatureTab from "../components/DBDisplay/FeatureTab";
-import Sidebar from "../components/DBDisplay/Sidebar";
+import Canvas from '../components/DBDisplay/Canvas';
+import DisplayHeader from '../components/DBDisplay/DisplayHeader';
+import FeatureTab from '../components/DBDisplay/FeatureTab';
+import Sidebar from '../components/DBDisplay/Sidebar';
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
-import axios from "axios";
-import DataStore from "../Store";
+import axios from 'axios';
+import DataStore from '../Store';
 import {
   AppShell,
   Box,
@@ -18,8 +18,8 @@ import {
   Collapse,
   ScrollArea,
   Text,
-} from "@mantine/core";
-import { toPng } from "html-to-image";
+} from '@mantine/core';
+import { toPng } from 'html-to-image';
 
 interface stateChangeProps {
   user: {
@@ -38,7 +38,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   "tablename" - a state that stores input data (table name for a new table) from "ADD TABLE" feature;
   */
   const [fetchedData, setFetchedData] = useState({});
-  const [tablename, setTablename] = useState("");
+  const [tablename, setTablename] = useState('');
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -56,16 +56,16 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   */
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
-      return axios.post("/api/getSchema", dataToSend).then((res) => {
+      return axios.post('/api/getSchema', dataToSend).then((res) => {
         // Once connected to Database, we need to clear DataStore and Query, Data, loadedFile from sessionStorage in case the user interacted with SQL load or New Canvas feature.
         DataStore.clearStore();
-        sessionStorage.removeItem("Query");
-        sessionStorage.removeItem("Data");
-        sessionStorage.removeItem("loadedFile");
+        sessionStorage.removeItem('Query');
+        sessionStorage.removeItem('Data');
+        sessionStorage.removeItem('loadedFile');
 
         // Then, update DataStore table data with response data and set query to empty.
         DataStore.setData(res.data);
-        DataStore.setQuery([{ type: "", query: "" }]);
+        DataStore.setQuery([{ type: '', query: '' }]);
 
         // Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
@@ -79,8 +79,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         setFetchedData(res.data);
 
         // Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
-        console.log("this is retrieved data from server,: ", res.data);
-        console.log("this is dataStore: ", DataStore);
+        console.log('this is retrieved data from server,: ', res.data);
+        console.log('this is dataStore: ', DataStore);
       });
     },
     {
@@ -89,14 +89,14 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         DataStore.connect();
 
         // Update sessionStorage.dbConnect to "true" also.
-        sessionStorage.dbConnect = "true";
+        sessionStorage.dbConnect = 'true';
 
         // Then close the side bar that was opened.
         setSideBarOpened(false);
       },
       onError: () => {
         // Upon error, we alert the user that there's an issue with DB connection.
-        alert("Database connection has failed.");
+        alert('Database connection has failed.');
       },
     }
   );
@@ -109,8 +109,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   useEffect(() => {
     // if the user is connected to either database or loaded a sql file, AND there's a Data store in sessionStorage, we will go through this useEffect
     if (
-      (sessionStorage.dbConnect === "true" ||
-        sessionStorage.loadedFile === "true") &&
+      (sessionStorage.dbConnect === 'true' ||
+        sessionStorage.loadedFile === 'true') &&
       sessionStorage.Data
     ) {
       // if the user is connected to Database, update DataStore with dbConnect and userDBInfo
@@ -152,7 +152,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         Array.from(DataStore.store.entries())
       );
     }
-    console.log("store size after reload", DataStore.store.size);
+    console.log('store size after reload', DataStore.store.size);
   }, [fetchedData]);
 
   /** UseEffect to PREVENT RELOAD OF THE PAGE */
@@ -180,8 +180,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     }
     toPng(ref.current, { cacheBust: true })
       .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.download = "dbScreenshot.png";
+        const link = document.createElement('a');
+        link.download = 'dbScreenshot.png';
         link.href = dataUrl;
         link.click();
       })
@@ -223,8 +223,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         ></FeatureTab>
       }
       styles={(theme) => ({
-        root: { height: "100%" },
-        body: { height: "100%" },
+        root: { height: '100%' },
+        body: { height: '100%' },
         main: {},
       })}
     >
@@ -235,31 +235,31 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         isErrorProps={isError}
         mutate={mutate}
       />
-      {DataStore.loadedFile && (
+      {(DataStore.loadedFile || DataStore.connectedToDB) && (
         <Box
           sx={{
-            display: "flex",
-            alignItems: "end",
-            flexDirection: "column",
+            display: 'flex',
+            alignItems: 'end',
+            flexDirection: 'column',
           }}
         >
           <Button
             styles={(theme) => ({
               root: {
-                backgroundColor: "#3c4e58",
+                backgroundColor: '#3c4e58',
                 border: 0,
                 height: 42,
                 paddingLeft: 20,
                 paddingRight: 20,
 
-                "&:hover": {
-                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                '&:hover': {
+                  backgroundColor: theme.fn.darken('#2b3a42', 0.1),
                 },
               },
             })}
             onClick={() => setQueryOpen((o) => !o)}
           >
-            {queryOpened ? "Hide Queries" : "Show Queries"}
+            {queryOpened ? 'Hide Queries' : 'Show Queries'}
           </Button>
 
           <Collapse in={queryOpened}>
@@ -267,19 +267,20 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
               style={{
                 height: 80,
                 width: 500,
-                backgroundColor: "white",
-                borderRadius: "5px",
-                border: "2px solid #2b3a42",
-                padding: "5px"
+                backgroundColor: 'white',
+                borderRadius: '5px',
+                border: '2px solid #2b3a42',
+                padding: '5px',
+                marginBottom: '10px',
               }}
               type="always"
             >
-              <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
-                {" "}
+              <Text sx={{ fontSize: '20px', paddingLeft: '10px' }}>
+                {' '}
                 SQL Query Generator
               </Text>
-              <hr style={{margin: "5px"}}/>
-              <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
+              <hr style={{ margin: '5px' }} />
+              <Text sx={{ paddingLeft: '10px' }}>{queries}</Text>
             </ScrollArea>
           </Collapse>
         </Box>
