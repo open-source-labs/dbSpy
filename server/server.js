@@ -50,10 +50,10 @@ app.use(express.urlencoded({extended: true }));
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] }));
 
-  app.get('/google/callback', passport.authenticate('google', { 
-    successRedirect: '/display/access', 
-    failureRedirect: '/',
-  }));
+app.get('/google/callback', passport.authenticate('google', { 
+  successRedirect: '/display/access', 
+  failureRedirect: '/',
+}));
 
 app.get('/auth/failure', (req, res)=> {
   res.send('something went wrong');
@@ -128,6 +128,6 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log(`listening on port: ${PORT}`);
 });
