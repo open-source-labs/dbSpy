@@ -119,52 +119,52 @@ dataController.testDrop = (req, res, next) => {
  */
 dataController.getSchema = (req, res, next) => {
   // // Option 1 - Production
-  // let result = null;
-  // console.log("running getSchema controller...");
-  // const hostname = req.body.hostname;
-  // const password = req.body.password;
-  // const port = req.body.port;
-  // const username = req.body.username;
-  // const database_name = req.body.database_name;
-  // const command = postgresDumpQuery(hostname,password,port, username, database_name);
-  // console.log(command, '<-command');
-  // writeSchema(command).then(resq => {
-  //   fs.readFile(command[1], 'utf8', (error, data) => {
-  //     if (error)
-  //       {
-  //         console.error(`error- in FS: ${error.message}`);
-  //         return next({
-  //         msg: 'Error reading database schema file',
-  //         err: error});
-  //       }
-  //     result = parseSql(data);
-  //     res.locals.data = result;
-  //     next();
-  //   });
-  // });
-  // };
+  let result = null;
+  console.log("running getSchema controller...");
+  const hostname = req.body.hostname;
+  const password = req.body.password;
+  const port = req.body.port;
+  const username = req.body.username;
+  const database_name = req.body.database_name;
+  const command = postgresDumpQuery(hostname,password,port, username, database_name);
+  console.log(command, '<-command');
+  writeSchema(command).then(resq => {
+    fs.readFile(command[1], 'utf8', (error, data) => {
+      if (error)
+        {
+          console.error(`error- in FS: ${error.message}`);
+          return next({
+          msg: 'Error reading database schema file',
+          err: error});
+        }
+      result = parseSql(data);
+      res.locals.data = result;
+      next();
+    });
+  });
+};
 
   // Option 2 - Dev
-  fs.readFile(
-    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-    'utf8',
-    (error, data) => {
-      if (error) {
-        console.error(`error- in FS: ${error.message}`);
-        return next({
-          msg: 'Error reading database schema file',
-          err: error,
-        });
-      }
-      const result = parseSql(data);
-      //console.log(result);
-      //console.log('instance of table', result[records]);
-      console.log('result--->', result);
-      res.locals.data = result; // Is this for loop necessary? -- NOTE
-      next();
-    }
-  );
-};
+  // fs.readFile(
+  //   path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
+  //   'utf8',
+  //   (error, data) => {
+  //     if (error) {
+  //       console.error(`error- in FS: ${error.message}`);
+  //       return next({
+  //         msg: 'Error reading database schema file',
+  //         err: error,
+  //       });
+  //     }
+  //     const result = parseSql(data);
+  //     //console.log(result);
+  //     //console.log('instance of table', result[records]);
+  //     console.log('result--->', result);
+  //     res.locals.data = result; // Is this for loop necessary? -- NOTE
+  //     next();
+  //   }
+  // );
+// };
 
 //   // Option 2 - Dev
 //   fs.readFile(

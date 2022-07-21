@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   TextInput,
   Button,
@@ -8,9 +8,9 @@ import {
   Drawer,
   useMantineTheme,
   LoadingOverlay,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import DataStore from "../../Store";
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import DataStore from '../../Store';
 
 interface SideBarProps {
   isLoadingProps: boolean;
@@ -29,11 +29,11 @@ export default function Sidebar({
 }: SideBarProps) {
   const form = useForm({
     initialValues: {
-      hostname: "castor.db.elephantsql.com",
-      username: "vjcmcaut",
-      password: "wcc8BHXNjyN4exqfuQVPzpdeOBJimLfg",
-      port: "5432",
-      database_name: "vjcmcaut",
+      hostname: '',
+      username: '',
+      password: '',
+      port: '5432',
+      database_name: '',
     },
   });
 
@@ -44,7 +44,7 @@ export default function Sidebar({
       <Drawer
         position="right"
         overlayColor={
-          theme.colorScheme === "dark"
+          theme.colorScheme === 'dark'
             ? theme.colors.dark[9]
             : theme.colors.gray[2]
         }
@@ -66,11 +66,11 @@ export default function Sidebar({
               sessionStorage.userDBInfo = JSON.stringify(values);
               mutate(values);
               form.setValues({
-                hostname: "",
-                username: "",
-                password: "",
-                port: "",
-                database_name: "",
+                hostname: '',
+                username: '',
+                password: '',
+                port: '',
+                database_name: '',
               });
               setSideBarOpened(false);
             })}
@@ -81,54 +81,56 @@ export default function Sidebar({
               label="Host"
               //   autoComplete="arjuna.db.elephantsql.com"
               //   placeholder="Host"
-              {...form.getInputProps("hostname")}
+              {...form.getInputProps('hostname')}
             />
             <TextInput
               required
               label="Port"
               //   placeholder="Port"
               //   autoComplete="5432"
-              {...form.getInputProps("port")}
+              {...form.getInputProps('port')}
             />
             <TextInput
               required
               label="Database Username"
               //   placeholder="Username"
               //   autoComplete="twvoyfda"
-              {...form.getInputProps("username")}
+              {...form.getInputProps('username')}
             />
             <PasswordInput
               required
               label="Database Password"
               //   placeholder="Password"
               //   autoComplete="qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR"
-              {...form.getInputProps("password")}
+              {...form.getInputProps('password')}
             />
             <TextInput
               required
               label="Database Name"
               //   placeholder="Database name"
               //   autoComplete="twvoyfda"
-              {...form.getInputProps("database_name")}
+              {...form.getInputProps('database_name')}
             />
 
             <Group position="center" mt="md">
-              <Button 
+              <Button
                 styles={(theme) => ({
                   root: {
-                    backgroundColor: "#3c4e58",
-                    color: "white",
+                    backgroundColor: '#3c4e58',
+                    color: 'white',
                     border: 0,
                     height: 42,
                     paddingLeft: 20,
                     paddingRight: 20,
-                    "&:hover": {
-                      backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                    '&:hover': {
+                      backgroundColor: theme.fn.darken('#2b3a42', 0.1),
                     },
                   },
                 })}
                 size="md"
-                compact type="submit">
+                compact
+                type="submit"
+              >
                 Connect
               </Button>
             </Group>
