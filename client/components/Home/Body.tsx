@@ -5,9 +5,8 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { BrandGithub, BrandLinkedin } from 'tabler-icons-react';
 
-import logo from "../../assets/logo5-blue-cropped_all_sides.png";
-import gif from "../../assets/SQL.gif";
-
+import logo from '../../assets/logo1.png';
+import gif from '../../assets/SQL.gif';
 
 export default function Body() {
   const date = new Date().getFullYear();
@@ -79,29 +78,33 @@ export default function Body() {
 
         {/* <link href="carousel.css" rel="stylesheet"/> */}
       </head>
-      <body style={{backgroundColor: "whitesmoke"}}>
-        
-
+      <body style={{ backgroundColor: 'whitesmoke' }}>
         <main>
-         
           <div className="container marketing">
             {/* <!-- START THE FEATURETTES --> */}
-{/* dbSpy intro */}
+            {/* dbSpy intro */}
             <div className="row featurette" style={{ padding: '50' }}>
-              <div className="col-md-6" style={{textAlign: "left", margin: "auto"}} >
-                <h2 className="featurette-heading fw-normal lh-2" style={{lineHeight: "2"}}>
+              <div
+                className="col-md-6"
+                style={{ textAlign: 'left', margin: 'auto' }}
+              >
+                <h2
+                  className="featurette-heading fw-normal lh-2"
+                  style={{ lineHeight: '2' }}
+                >
                   Database development simplified{' '}
-                  
                 </h2>
-                <h4 className="text-muted" style={{fontWeight: "400", lineHeight: "1.5"}}>
-                  dbSpy is an open-source tool to facilitate relational database development. It's the only tool you need to visualize, modify, and build your database. 
+                <h4
+                  className="text-muted"
+                  style={{ fontWeight: '400', lineHeight: '1.5' }}
+                >
+                  dbSpy is an open-source tool to facilitate relational database
+                  development. It's the only tool you need to visualize, modify,
+                  and build your database.
                 </h4>
               </div>
-              <div className="col-md-6" style={{margin: "auto"}}>
-                <img style={{width: "100%"}}
-                  src={logo} alt="dbSpy logo"
-                />
-               
+              <div className="col-md-6" style={{ margin: 'auto' }}>
+                <img style={{ width: '100%' }} src={logo} alt="dbSpy logo" />
               </div>
             </div>
 
@@ -109,29 +112,49 @@ export default function Body() {
 
             {/* dbSpy gif */}
             <div className="row featurette" style={{ padding: '50' }}>
-              <div className="col-md-7" style={{padding: "50 0 50 0", textAlign: "left", margin: "auto"}} >
-                <img style={{border: "1px solid black", borderRadius:"5px", width: "100%"}}
-                  src={"https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif"} alt="dbSpy gif"
+              <div
+                className="col-md-7"
+                style={{
+                  padding: '50 0 50 0',
+                  textAlign: 'left',
+                  margin: 'auto',
+                }}
+              >
+                <img
+                  style={{
+                    border: '1px solid black',
+                    borderRadius: '5px',
+                    width: '100%',
+                  }}
+                  src={
+                    'https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif'
+                  }
+                  alt="dbSpy gif"
                 />
               </div>
-                
-            
-            <div className="col-md-5" style={{margin: "auto", textAlign: "right"}}>
-              <h2 className="featurette-heading fw-normal lh-1">
+
+              <div
+                className="col-md-5"
+                style={{ margin: 'auto', textAlign: 'right' }}
+              >
+                <h2 className="featurette-heading fw-normal lh-1">
                   Key features{' '}
                 </h2>
-                <h4 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
-                    Database connection
-                    <br/>
-                    Schema modification
-                    <br/>
-                    SQL query generator
-                    <br/>
-                    ER diagrams
-                    <br/>
-                    and much more!
+                <h4
+                  className=" text-muted"
+                  style={{ fontWeight: '400', lineHeight: '2' }}
+                >
+                  Database connection
+                  <br />
+                  Schema modification
+                  <br />
+                  SQL query generator
+                  <br />
+                  ER diagrams
+                  <br />
+                  and much more!
                 </h4>
-            </div>
+              </div>
             </div>
 
             {/* <div className="row featurette" style={{ padding: "50 0 50 0" }}>
@@ -211,77 +234,149 @@ export default function Body() {
                 Meet the Team
               </h2>
               <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/85323481?v=4" alt="AngelGiron" />
+                <img
+                  style={{ width: '140px', borderRadius: '50%' }}
+                  src="https://avatars.githubusercontent.com/u/85323481?v=4"
+                  alt="AngelGiron"
+                />
 
                 <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
                   Angel Giron
                 </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-                <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/acgiron/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                <p style={{ margin: '10px' }}>Software Engineer</p>
+                <div style={{ marginBottom: '20px' }}>
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://www.linkedin.com/in/acgiron/"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandLinkedin
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/g94angel" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://github.com/g94angel"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandGithub
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
                 </div>
               </div>
 
               <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/20432738?v=4" alt="JohnPaulAdigwu" />
+                <img
+                  style={{ width: '140px', borderRadius: '50%' }}
+                  src="https://avatars.githubusercontent.com/u/20432738?v=4"
+                  alt="JohnPaulAdigwu"
+                />
 
                 <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
                   John Paul Adigwu
                 </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-                <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/johnpaul-adigwu/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                <p style={{ margin: '10px' }}>Software Engineer</p>
+                <div style={{ marginBottom: '20px' }}>
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://www.linkedin.com/in/johnpaul-adigwu/"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandLinkedin
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/engineerous" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://github.com/engineerous"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandGithub
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
                 </div>
               </div>
 
               <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/11093217?v=4" alt="KevinParkLee" />
+                <img
+                  style={{ width: '140px', borderRadius: '50%' }}
+                  src="https://avatars.githubusercontent.com/u/11093217?v=4"
+                  alt="KevinParkLee"
+                />
 
                 <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
                   Kevin Park-Lee
                 </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-               <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/kevin38424/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                <p style={{ margin: '10px' }}>Software Engineer</p>
+                <div style={{ marginBottom: '20px' }}>
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://www.linkedin.com/in/kevin38424/"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandLinkedin
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/kevin38424" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://github.com/kevin38424"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandGithub
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
                 </div>
               </div>
 
               <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/83368864?v=4" alt="TarikMokhtech" />
+                <img
+                  style={{ width: '140px', borderRadius: '50%' }}
+                  src="https://avatars.githubusercontent.com/u/83368864?v=4"
+                  alt="TarikMokhtech"
+                />
 
                 <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
                   Tarik Mokhtech
                 </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-                <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/tarik-mokhtech/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                <p style={{ margin: '10px' }}>Software Engineer</p>
+                <div style={{ marginBottom: '20px' }}>
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://www.linkedin.com/in/tarik-mokhtech/"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandLinkedin
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/MockTech" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
+                  <a
+                    className="btn btn-dark btn-sm"
+                    href="https://github.com/MockTech"
+                    style={{ margin: '10px' }}
+                  >
+                    <BrandGithub
+                      size={40}
+                      strokeWidth={1.5}
+                      color={'#FFFFFF'}
+                    />
                   </a>
                 </div>
               </div>
@@ -307,6 +402,5 @@ export default function Body() {
         ></script>
       </body>
     </>
-    
   );
 }
