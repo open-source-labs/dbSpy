@@ -408,7 +408,7 @@ export default function Table({
     const updatedRow = { ...newRow, isNew: false };
    
     updatedRowsToTable(
-      rows.map((row) => (row.id === newRow.id ? updatedRow : row)), updatedRow
+      rows.map((row) => (row.id === newRow.id ? updatedRow : row)), newRow
     );
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
