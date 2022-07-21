@@ -33,6 +33,7 @@ export default function Home({ user, setUser }: stateChangeProps) {
         <HomeNavbar />
       )}
       <Body />
+      
       <HomeFooter />
     </div>
   );

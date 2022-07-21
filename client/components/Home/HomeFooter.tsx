@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import logo from "../../assets/logo5-white-100-rectangle.png";
 
 export default function HomeFooter() {
   return (
@@ -14,12 +15,12 @@ export default function HomeFooter() {
         <Toolbar>
           
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            dbSpy
+            <img src={logo} alt="Logo" />
           </Typography>
-          <Link style={{textDecoration: 'none', color: "white" }} to={"/"}>
+          {/* <Link style={{textDecoration: 'none', color: "white" }} to={"#"}> */}
             
-            <Button color="inherit">About Us</Button>
-          </Link>
+            {/* <Button color="inherit">About Us</Button> */}
+          {/* </Link> */}
         </Toolbar>
       </AppBar>
     </Box>

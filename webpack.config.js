@@ -57,12 +57,12 @@ module.exports = {
         },
       },
       {
-        test: /\.scss?/,
+        test: /\.(css|scss)/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(png|jpg)$/,
-        use: ['url-loader?limit=8192'],
+        test: /\.(png|jpg|gif)$/,
+        use: ['file-loader'],
       },
       {
         test: /\.tsx?$/,
