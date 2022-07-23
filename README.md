@@ -14,7 +14,7 @@
 </div>
 
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
-<p>dbSpy is an open-source visualization tool to facilitate relational database development.</p>
+<p>dbSpy is an open-source data modeling tool to facilitate relational database development.</p>
 
 <!-- dbSpy is an open-source visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration -->
 
