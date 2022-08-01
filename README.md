@@ -107,6 +107,16 @@ Below is a list of features and improvements to which you can contribute. If you
 ### Getting started
 
 - Fork and clone this repo
+- Add a .env file to the root directory
+- Go to the Google Cloud Platform Console
+- Set up OAuth 2.0 credentials as laid out  <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a> 
+- Populate the .env file with the newly created:
+```bash
+CLIENT_ID = "client-id-goes-here"
+CLIENT_SECRET = "client-secret-goes-here"
+CALLBACK= http://localhost:8080/google/callback
+TEAM_SECRET = "team-secret-goes-here"
+```
 - Install the dependencies:
 
 ```bash
