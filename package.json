@@ -11,18 +11,24 @@
     "test2": "tldr curl",
     "test": "jest",
     "test:watch": "jest --watch",
-    "start": "cross-env NODE_ENV=production node server/server.js",
-    "build": "cross-env NODE_ENV=production webpack",
-    "dev": "cross-env NODE_ENV=development webpack serve --open & nodemon server/server.js",
-    "docker-prod": "cross-env NODE_ENV=production webpack & cross-env NODE_ENV=production node server/server.js"
+    "start": "node server/server.js",
+    "build": "webpack",
+    "dev": "NODE_ENV=development webpack serve --open & nodemon server/server.js",
+    "docker-prod": "NODE_ENV=production webpack & NODE_ENV=production node server/server.js",
+    "heroku-postbuild": "npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "npm": "6.x",
+    "node": "16.x"
+  },
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@mantine/core": "^4.2.11",
+    "@mantine/core": "^4.2.12",
     "@mantine/form": "^4.2.11",
+    "@mantine/hooks": "^4.2.12",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.6",
     "@mui/x-data-grid": "^5.12.3",
@@ -38,12 +44,18 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
+<<<<<<< HEAD
    
     "html-to-image": "^1.9.0",
    
     "jest": "^28.1.1",
     "node-fetch": "^3.2.6",
     
+=======
+    "html-to-image": "^1.9.0",
+    "jest": "^28.1.1",
+    "node-fetch": "^3.2.6",
+>>>>>>> 342d51b7256a6ae08cc11165302b8bca3999415a
     "pg": "^8.7.3",
     "pg-dump": "^0.10.0",
     "react": "^18.2.0",

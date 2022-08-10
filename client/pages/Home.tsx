@@ -34,7 +34,7 @@ export default function Home({ user, setUser }: stateChangeProps) {
       )}
       <Body />
       
-      {/* <HomeFooter /> */}
+      <HomeFooter />
     </div>
   );
 }

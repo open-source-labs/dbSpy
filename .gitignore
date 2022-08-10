@@ -11,6 +11,7 @@ dist/
 # package-lock
 package-lock.json
 
+<<<<<<< HEAD
 #EBStalk
 .elasticbeanstalk/
 
@@ -19,3 +20,6 @@ package-lock.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+=======
+.env
+>>>>>>> 342d51b7256a6ae08cc11165302b8bca3999415a

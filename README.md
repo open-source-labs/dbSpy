@@ -14,7 +14,7 @@
 </div>
 
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
-<p>dbSpy is an open-source visualization tool to facilitate relational database development.</p>
+<p>dbSpy is an open-source data modeling tool to facilitate relational database development.</p>
 
 <!-- dbSpy is an open-source visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration -->
 
@@ -22,17 +22,17 @@
 
 ### Key Features
 
-1. **Connect:** Connect to a PostgreSQL database
+1. **Database Connection:** Connect to a PostgreSQL database
 
-2. **Upload:** Upload a database's SQL file
+2. **Database File Upload:** Upload a database's SQL file
 
-3. **ER Diagram:** Visualize the entity relationship diagram of a database
+3. **ER Diagrams:** Visualize the entity relationship diagram of a database
 
-4. **Modify:** Modify a database's schema
+4. **Schema Modification:** Modify a database's schema
 
-5. **Build Database:** Create a new database from scratch using entity relationship diagrams
+5. **Database Building:** Create a new database from scratch using entity relationship diagrams
 
-6. **Query Generator:** Generate an executable SQL query with every modification to your schema
+6. **SQL Query Generator:** Generate an executable SQL query with every modification to your schema
 
 7. **Screenshot:** Take a screenshot of the canvas with all your tables (BETA)
 
@@ -107,6 +107,16 @@ Below is a list of features and improvements to which you can contribute. If you
 ### Getting started
 
 - Fork and clone this repo
+- Add a .env file to the root directory
+- Go to the Google Cloud Platform Console
+- Set up OAuth 2.0 credentials as laid out  <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a> 
+- Populate the .env file with the newly created:
+```bash
+CLIENT_ID = "client-id-goes-here"
+CLIENT_SECRET = "client-secret-goes-here"
+CALLBACK= http://localhost:8080/google/callback
+TEAM_SECRET = "team-secret-goes-here"
+```
 - Install the dependencies:
 
 ```bash
