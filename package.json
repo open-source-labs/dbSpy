@@ -11,10 +11,10 @@
     "test2": "tldr curl",
     "test": "jest",
     "test:watch": "jest --watch",
-    "start": "node server/server.js",
-    "build": "webpack",
+    "start": "cross-env NODE_ENV=production node server/server.js",
+    "build": "cross-env NODE_ENV=production webpack",
     "dev": "cross-env NODE_ENV=development webpack serve --open & nodemon server/server.js",
-    "docker-prod": "docker-compose -f docker-compose-prod.yml up"
+    "docker-prod": "cross-env NODE_ENV=production webpack & cross-env NODE_ENV=production node server/server.js"
   },
   "author": "",
   "license": "ISC",

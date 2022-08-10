@@ -1,0 +1,13 @@
+version: "3.0"  
+services:
+  dev:
+    image: dbspy/mm-prod:latest
+    container_name: "mm-prod"
+    ports: 
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    command: npm run docker-prod
+volumes:
+  node_modules:
