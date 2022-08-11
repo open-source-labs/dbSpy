@@ -51,7 +51,7 @@ app.get('/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] }));
 
 app.get('/google/callback', passport.authenticate('google', { 
-  successRedirect: '/display/access', 
+  successRedirect: 'http://localhost:8080/display/access', 
   failureRedirect: '/',
 }));
 
