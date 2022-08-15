@@ -146,7 +146,7 @@ dataController.getSchema = (req, res, next) => {
 
   // Option 2 - Dev
   fs.readFile(
-    path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
+    path.join(__dirname, '../db_schemas/rpvgbcdirpvgbcdi1660582287.sql'),
     'utf8',
     (error, data) => {
       if (error) {
@@ -557,6 +557,8 @@ function parseTableName(name) {
 }
 
 function parseAlterTable(tableName, constraint) {
+  
+
   // const tableName = tmp.match(/(?<=ALTER\sTABLE\s)([a-zA-Z_]+)(?=\sADD\sCONSTRAINT)/)[0];
 
   // console.log('tableName in parseAlterTable------>', tableName);
@@ -686,7 +688,8 @@ function parseSql(text) {
           tname = tableList[i].Name;
         }
       }
-
+      //check for TableName and following line with constraint bound on database
+    if (tname !== null && lines[i+1] !== null)
       parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }

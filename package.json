@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Visualizing existing database",
   "main": "index.js",
+  "engines": {
+    "npm": "6.x",
+    "node": "16.x"
+  },
   "scripts": {
     "test2": "tldr curl",
     "test": "jest",
