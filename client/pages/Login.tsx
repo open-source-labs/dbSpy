@@ -61,7 +61,7 @@ export default function Login() {
     const strWindowFeatures =
       'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
     window.open(
-      'https://dbspy.net/auth/google',
+      'http://localhost:8080/auth/google',
       '_self',
       strWindowFeatures
     );
