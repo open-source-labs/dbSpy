@@ -60,7 +60,7 @@ export default function Login() {
   const google = () => {
     const strWindowFeatures =
       'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open('/auth/google', '_self', strWindowFeatures);
+    window.open('http://localhost:8080/auth/google', '_self', strWindowFeatures);
   };
 
   /*
