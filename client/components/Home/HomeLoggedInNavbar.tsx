@@ -50,21 +50,26 @@ export default function HomeLoggedInNavbar({
              <img src={logo} alt="Logo" />
           </Typography>
           <Link
-            style={{ textDecoration: "none", color: "white" }}
+            className="HomeLoggedInNavbarLink"
+            // style={{ textDecoration: "none", color: "white" }}
             to={`/display/access/${user.id}`}
           >
             <Button color="inherit">My Canvas</Button>
           </Link>
           <Button 
             color="inherit">
-            <a style={{ textDecoration: "none", color: "white" }}
+            <a className="HomeLoggedInNavbarA" 
+            // style={{ textDecoration: "none", color: "white" }}
             href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>
             
           </Button>
 
           {/* <Button color="inherit">Team</Button> */}
 
-          <Link style={{ textDecoration: "none", color: "white" }} to={"/"}>
+          <Link 
+          className="HomeLoggedInNavbarLink"
+          // style={{ textDecoration: "none", color: "white" }} 
+          to={"/"}>
             <Button color="inherit" onClick={logout}>
               Logout
             </Button>

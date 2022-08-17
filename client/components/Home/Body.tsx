@@ -79,7 +79,9 @@ export default function Body() {
 
         {/* <link href="carousel.css" rel="stylesheet"/> */}
       </head>
-      <body style={{backgroundColor: "whitesmoke"}}>
+      <body className='body-Body' 
+      // style={{backgroundColor: "whitesmoke"}}
+      >
         
 
         <main>
@@ -87,18 +89,33 @@ export default function Body() {
           <div className="container marketing">
             {/* <!-- START THE FEATURETTES --> */}
 {/* dbSpy intro */}
-            <div className="row featurette" style={{ padding: '50' }}>
-              <div className="col-md-6" style={{textAlign: "left", margin: "auto"}} >
-                <h2 className="featurette-heading fw-normal lh-2" style={{lineHeight: "2"}}>
+            {/* //changing className from className="row featurette"  */}
+            <div className="body-Main-Div" 
+            // style={{ padding: '50' }}
+            >
+
+              {/* //changing className from className="col-md-6"  */}
+              <div className="body-Main-Div-Div" 
+              // style={{textAlign: "left", margin: "auto"}} 
+              >
+              {/* //changing className="featurette-heading fw-normal lh-2" */}
+                <h2 className="body-Main-H2" 
+                // style={{lineHeight: "2"}}
+                >
                   Database development simplified{' '}
                   
                 </h2>
-                <h4 className="text-muted" style={{fontWeight: "400", lineHeight: "1.5"}}>
+                <h4 className="body-Text-Muted-1" 
+                // style={{fontWeight: "400", lineHeight: "1.5"}}
+                >
                   dbSpy is an open-source tool to facilitate relational database development. It's the only tool you need to visualize, modify, and build your database. 
                 </h4>
               </div>
-              <div className="col-md-6" style={{margin: "auto"}}>
-                <img style={{width: "100%"}}
+              <div className="body-Main-Div-Logo" 
+              // style={{margin: "auto"}}
+              >
+                <img className='body-Main-Div-Div-Img'
+                // style={{width: "100%"}}
                   src={logo} alt="dbSpy logo"
                 />
                
@@ -108,19 +125,30 @@ export default function Body() {
             <hr className="featurette-divider" />
 
             {/* dbSpy gif */}
-            <div className="row featurette" style={{ padding: '50' }}>
-              <div className="col-md-7" style={{padding: "50 0 50 0", textAlign: "left", margin: "auto"}} >
-                <img style={{border: "1px solid black", borderRadius:"5px", width: "100%"}}
+            {/* // formerly className="row featurette" */}
+            <div className="body-Main-Div" 
+            // style={{ padding: '50' }}
+            >
+              {/* //body-Main-Div-Div formerly className="col-md-7"  */}
+              <div className="body-Main-Div-col-md-7" 
+              // style={{padding: "50 0 50 0", textAlign: "left", margin: "auto"}} 
+              >
+                <img className='body-Main-Div-Div-Div-Img'
+                // style={{border: "1px solid black", borderRadius:"5px", width: "100%"}}
                   src={"https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif"} alt="dbSpy gif"
                 />
               </div>
                 
-            
-            <div className="col-md-5" style={{margin: "auto", textAlign: "right"}}>
-              <h2 className="featurette-heading fw-normal lh-1">
+            {/* formerly className="col-md-5"  */}
+            <div className="body-Main-Div-col-md-5" 
+            // style={{margin: "auto", textAlign: "right"}}
+            >
+              <h2 className="featurette-heading-fw-normal-lh-1">
                   Key features{' '}
                 </h2>
-                <h4 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
+                <h4 className="body-Text-Muted-2" 
+                // style={{fontWeight: "400", lineHeight: "2"}}
+                >
                     Database connection
                     <br/>
                     Schema modification
@@ -141,7 +169,7 @@ export default function Body() {
                 <h2 className="featurette-heading fw-normal lh-1">
                   Key features{' '}
                 </h2>
-                <h3 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
+                <h3 className=" body-Text-Muted" style={{fontWeight: "400", lineHeight: "2"}}>
                   
                     Database connection
                     <br/>
@@ -164,9 +192,9 @@ export default function Body() {
               <div className="col-md-7">
                 <h2 className="featurette-heading fw-normal lh-1">
                   Database development{' '}
-                  <span className="text-muted">simplified.</span>
+                  <span className="body-Text-Muted">simplified.</span>
                 </h2>
-                <h3 className=" text-muted" style={{fontWeight: "400", lineHeight: "2"}}>
+                <h3 className="body-Text-Muted" style={{fontWeight: "400", lineHeight: "2"}}>
                   
                     Database connection
                     <br/>
@@ -203,88 +231,165 @@ export default function Body() {
             <hr className="featurette-divider" />
 
             {/* <!-- /END THE FEATURETTES --> */}
-            <div className="row" style={{ padding: '50px 0' }}>
+            
+            <div className="Body-row" 
+            // style={{ padding: '50px 0' }}
+            >
               <h2
-                className="fw-normal"
-                style={{ textAlign: 'center', marginBottom: '70px' }}
+                className="Body-fw-normal-h2"
+                // style={{ textAlign: 'center', marginBottom: '70px' }}
               >
                 Meet the Team
               </h2>
-              <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/85323481?v=4" alt="AngelGiron" />
+              <div className='body-Team-Container'>
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://avatars.githubusercontent.com/u/85323481?v=4" alt="AngelGiron" />
 
-                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
-                  Angel Giron
-                </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-                <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/acgiron/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/g94angel" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    Angel Giron
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer"
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/acgiron/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/g94angel" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/20432738?v=4" alt="JohnPaulAdigwu" />
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://avatars.githubusercontent.com/u/20432738?v=4" alt="JohnPaulAdigwu" />
 
-                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
-                  John Paul Adigwu
-                </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-                <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/johnpaul-adigwu/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/engineerous" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    John Paul Adigwu
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer" 
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/johnpaul-adigwu/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/engineerous" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/11093217?v=4" alt="KevinParkLee" />
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col" 
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://avatars.githubusercontent.com/u/11093217?v=4" alt="KevinParkLee" />
 
-                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
-                  Kevin Park-Lee
-                </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-               <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/kevin38424/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/kevin38424" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    Kevin Park-Lee
+                  </h3>
+                  <p className="Body-p-software" 
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                <div className="Body-footer"
+                //  style={{marginBottom: "20px"}}
+                >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/kevin38424/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'}
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/kevin38424" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'}
+                      />
+                    </a>
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-lg-3" style={{ textAlign: 'center' }}>
-                <img style={{width:"140px", borderRadius:"50%"}} src="https://avatars.githubusercontent.com/u/83368864?v=4" alt="TarikMokhtech" />
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://avatars.githubusercontent.com/u/83368864?v=4" alt="TarikMokhtech" />
 
-                <h3 className="fw-normal" style={{ paddingTop: '10px' }}>
-                  Tarik Mokhtech
-                </h3>
-                <p style={{ margin: '10px' }}>
-                  Software Engineer
-                </p>
-                <div style={{marginBottom: "20px"}}>
-                  <a className="btn btn-dark btn-sm" href="https://www.linkedin.com/in/tarik-mokhtech/" style={{margin: "10px"}}>
-                    <BrandLinkedin size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
-                  <a className="btn btn-dark btn-sm" href="https://github.com/MockTech" style={{margin: "10px"}}>
-                    <BrandGithub size={40} strokeWidth={1.5} color={'#FFFFFF'} />
-                  </a>
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    Tarik Mokhtech
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer" 
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/tarik-mokhtech/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'}
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/MockTech" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand" 
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
                 </div>
-              </div>
+              </div>  
             </div>
           </div>
           {/* <!-- /.container --> */}

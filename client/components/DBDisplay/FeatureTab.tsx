@@ -6,6 +6,10 @@ import DataStore from "../../Store";
 import parseSql from "../../parse";
 import { permissiveTableCheck } from "../../permissiveFn";
 
+//CSS IMPORT
+// import  "./styles.css"
+
+
 // UI Libraries - Mantine, tabler-icons
 import { useForm } from "@mantine/form";
 import {
@@ -134,7 +138,7 @@ export default function FeatureTab({
       const data: any = DataStore.store.get(cache);
       const num: any = cache;
       historyComponent.push(
-        <UnstyledButton
+        <UnstyledButton className = 'button-FeatureTab'
           sx={(theme) => ({
             display: "block",
             width: "100%",
@@ -156,7 +160,7 @@ export default function FeatureTab({
           }}
           key={num}
         >
-          <Group>
+          <Group className ='group-FeatureTab'>
             {num === 0 && <Text size="md">{`Initial Data`}</Text>}
             {num === 1 && <Text size="md">{`${num}st Edit`}</Text>}
             {num === 2 && <Text size="md">{`${num}nd Edit`}</Text>}
@@ -170,9 +174,9 @@ export default function FeatureTab({
   }, [fetchedData]);
 
   return (
-    <Navbar width={{ base: 225 }} height={"100%"} p="xs">
+    <Navbar className = 'navbar-FeatureTab' width={{ base: 225 }} height={"100%"} p="xs">
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
-      <Modal
+      <Modal className = 'modal-FeatureTab'
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
         title="What is the name of your table?"
@@ -240,7 +244,7 @@ export default function FeatureTab({
       </Modal>
 
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>Action</div>
+        <div className ='FeatureTab-Navbar' /*style={{ fontSize: "24px", margin: "10px" }}*/>Action</div>
         <hr />
         
         <UnstyledButton
@@ -266,10 +270,10 @@ export default function FeatureTab({
           }}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <DatabaseImport />
             </ThemeIcon>
@@ -299,10 +303,10 @@ export default function FeatureTab({
           }}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <FileUpload />
             </ThemeIcon>
@@ -341,10 +345,10 @@ export default function FeatureTab({
           }}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <File />
             </ThemeIcon>
@@ -380,10 +384,10 @@ export default function FeatureTab({
           }}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <Eraser />
             </ThemeIcon>
@@ -409,10 +413,10 @@ export default function FeatureTab({
           onClick={() => alert("Feature coming soon!")}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <DeviceFloppy />
             </ThemeIcon>
@@ -423,7 +427,7 @@ export default function FeatureTab({
       <br />
       <br />
       <Navbar.Section>
-        <div style={{ fontSize: "24px", margin: "10px" }}>Edit</div> <hr />
+        <div className='FeatureTab-NavBar' /*style={{ fontSize: "24px", margin: "10px" }}*/>Edit</div> <hr />
         <UnstyledButton
           sx={(theme) => ({
             display: "block",
@@ -448,10 +452,10 @@ export default function FeatureTab({
           }}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <Plus />
             </ThemeIcon>
@@ -477,10 +481,10 @@ export default function FeatureTab({
           onClick={undo}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <ArrowBackUp />
             </ThemeIcon>
@@ -506,10 +510,10 @@ export default function FeatureTab({
           onClick={redo}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <ArrowForwardUp />
             </ThemeIcon>
@@ -535,10 +539,10 @@ export default function FeatureTab({
           onClick={screenshot}
         >
           <Group>
-            <ThemeIcon
+            <ThemeIcon className='FeatureTab-ThemeIcon'
               variant="outline"
               color="dark"
-              style={{ border: "2px solid white" }}
+              /*style={{ border: "2px solid white" }}*/
             >
               <Camera />
             </ThemeIcon>
@@ -548,8 +552,8 @@ export default function FeatureTab({
         <br />
         <br />
       </Navbar.Section>
-      <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <div style={{ fontSize: "24px", margin: "10px" }}>History</div>
+      <Navbar.Section  className='FeatureTab-Navbar' grow component={ScrollArea} mx="-xs" px="xs">
+        <div /*style={{ fontSize: "24px", margin: "10px" }}*/>History</div>
         <hr />
         {history}
         {/* {historyComponent} */}

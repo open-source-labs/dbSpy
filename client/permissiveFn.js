@@ -445,7 +445,7 @@ export function permissiveTableCheck(
     ];
   }
 
-  //regex
+  //regex 
   const regex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
   const found = tableName.match(regex);
   if (found === null) {
