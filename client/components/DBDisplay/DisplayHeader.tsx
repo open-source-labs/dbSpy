@@ -50,24 +50,28 @@ export default function DisplayHeader({
 
   return (
     <Header height={60} p="xs" sx={{ backgroundColor: "#2b3a42" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          height: "100%",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
+      <div className="DisplayHeaderHeader"
+        // style={{
+        //   display: "flex",
+        //   alignItems: "center",
+        //   height: "100%",
+        //   width: "100%",
+        //   justifyContent: "space-between",
+        // }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-            width: "33.33%",
-          }}
+        <div className="DisplayHeaderHeaderSub"
+          // style={{
+          //   display: "flex",
+          //   alignItems: "center",
+          //   height: "100%",
+          //   width: "33.33%",
+          // }}
         >
-          <MediaQuery largerThan="sm" styles={{ display: "block" }}>
+          <MediaQuery 
+          className="DisplayHeaderMediaQuery"
+          largerThan="sm" 
+          styles={{ display: "block" }}
+          >
             <MenuPopUp
               opened={menuPopUpOpened}
               setOpened={setMenuPopUpOpened}
@@ -80,39 +84,46 @@ export default function DisplayHeader({
           </Link>
         </div>
 
-        <div
-          style={{
-            color: "white",
-            borderColor: "white",
-            textAlign: "center",
-            width: "33.33%",
-          }}
+        <div className="DisplayHeaderHeaderSub1"
+          // style={{
+          //   color: "white",
+          //   borderColor: "white",
+          //   textAlign: "center",
+          //   width: "33.33%",
+          // }}
         >
           {/* LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022 */}
         </div>
 
         <Box
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginRight: "6px",
-            justifyContent: "flex-end",
-            width: "33.33%",
-          }}
+          className="DisplayHeaderBox"
+          // style={{
+          //   display: "flex",
+          //   alignItems: "center",
+          //   marginRight: "6px",
+          //   justifyContent: "flex-end",
+          //   width: "33.33%",
+          // }}
         >
-          <Text color="white" style={{ fontSize: "16px" }}>
+          <Text 
+          className="DisplayHeaderText"
+          color="white" 
+          style={{ fontSize: "16px" }}
+          >
             {" "}
             Welcome, {name == null ? " " : name.concat(" ")}{" "}
           </Text>
           <Image
+            className="DisplayHeaderImage"
             radius="lg"
             src="https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236__340.png"
             alt="profile pic"
-            style={{ width: "30px", margin: "0px 10px" }}
+            // style={{ width: "30px", margin: "0px 10px" }}
           />
           <Button
+            className="DisplayHeaderButton"
             variant="outline"
-            style={{ color: "white", border: "1px solid whitesmoke" }}
+            // style={{ color: "white", border: "1px solid whitesmoke" }}
             onClick={logout}
           >
             Sign Out

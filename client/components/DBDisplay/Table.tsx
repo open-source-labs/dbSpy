@@ -661,27 +661,29 @@ export default function Table({
 
   return (
     <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
-      <div
+      <div className="table-Draggable"
         id={id}
-        style={{
-          height: "auto",
-          color: "white",
-          width: "450px",
-          margin: "20px",
-          background: "#2b3a42",
-          borderRadius: "5px",
-          padding: "3px",
-          fontFamily: "Arial",
-        }}
+        // style={{
+        //   height: "auto",
+        //   color: "white",
+        //   width: "450px",
+        //   margin: "20px",
+        //   background: "#2b3a42",
+        //   borderRadius: "5px",
+        //   padding: "3px",
+        //   fontFamily: "Arial",
+        // }}
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
+        <div className="table-DraggableSub1"
+          // style={{
+          //   display: 'flex',
+          //   justifyContent: 'space-between',
+          //   alignItems: 'center',
+          // }}
         >
-          <div style={{ fontSize: "24px" }}>{id}</div>
+          <div className='table-DraggableSub2' 
+          // style={{ fontSize: "24px" }}
+          >{id}</div>
         </div>
         <FormDialog
           opens={opens}
@@ -755,18 +757,21 @@ function EditToolbar(props: EditToolbarProps) {
   };
 
   return (
-    <GridToolbarContainer style={{ height: '30px' }}>
+    <GridToolbarContainer className='table-GridToolbarContainer' 
+    // style={{ height: '30px' }}
+    >
       <Button
         // color="primary"
+        className='table-GridToolbarContainer-Button'
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        style={{
-          position: 'absolute',
-          right: '3px',
-          margin: 0,
-          color: 'black',
-        }}
+        // style={{
+        //   position: 'absolute',
+        //   right: '3px',
+        //   margin: 0,
+        //   color: 'black',
+        // }}
       >
         Field
       </Button>
@@ -894,16 +899,17 @@ setOpens(false);
   //formDialogEditRow.row.column
   return (
     <div>
-      <Dialog
+      <Dialog 
+        className='table-Dialog'
         color="dark"
         open={opens}
         onClose={handleClose}
         PaperProps={{
-          style: {
-            //backgroundColor: 'grey', Add color styling here...
-            boxShadow: 'ffff',
-            color: 'black',
-          },
+          // style: {
+          //   //backgroundColor: 'grey', Add color styling here...
+          //   boxShadow: 'ffff',
+          //   color: 'black',
+          // },
         }}
         sx={{
           display: 'inline',
@@ -989,18 +995,20 @@ setOpens(false);
           </span>
         </DialogContent>
         <DialogActions>
-          <Button
-            style={{
-              color: 'black',
-            }}
+          <Button 
+            className='table-DialogActions-Button'
+            // style={{
+            //   color: 'black',
+            // }}
             onClick={handleClose}
           >
             Cancel
           </Button>
           <Button
-            style={{
-              color: 'black',
-            }}
+            className='table-DialogActions-Button'
+            // style={{
+            //   color: 'black',
+            // }}
             onClick={handleSubmit}
           >
             Submit

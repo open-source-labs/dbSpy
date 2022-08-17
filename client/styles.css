@@ -1,0 +1,386 @@
+/*
+Canvas.tsx styling below
+*/
+
+.canvas-LoadingProps {
+    text-align: center;
+    font-size: 18px;
+    font-family: Geneva;
+    margin-top: 40px;
+    margin-right: 225px;
+}
+
+.canvas-ErrorProps {
+    text-align: center;
+    font-size: 18px;
+    font-family: Geneva;
+    margin-top: 40px; 
+    margin-right: 225px;
+
+}
+
+.canvas-Loading {
+    text-align: center;
+    font-size: 18px;
+    font-family: Geneva;
+    margin-top: 40px; 
+    margin-right: 225px;
+
+}
+
+.canvas-IsError {
+    text-align: center;
+    font-size: 18px;
+    font-family: Geneva;
+    margin-top: 40px; 
+    margin-right: 225px;
+}
+
+.canvas-Line311 {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.canvas-Line360 {
+    display: flex; 
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.canvas-ConnectToDatabase {
+    text-align: center;
+    font-size: 18px;
+    font-family: Geneva;
+    margin-top: 40px;
+    margin-right: 225px;
+    
+}
+
+/*
+HomeNavBar.tsx styling below
+*/
+
+.homeNavBar-LinkSignUp {
+    text-decoration: none;
+    color: white;
+}
+
+.homeNavBar-aDocs {
+    text-decoration: none;
+    color: white;  
+}
+
+.homeNavBar-LinkSignUp {
+    text-decoration: none;
+    color: white;
+}
+
+.homeNavBar-LinkLogIn {
+    text-decoration: none;
+    color: white;
+}
+
+/*
+Table.tsx styling below
+*/
+
+.table-Draggable {
+    height: auto;
+    color: pink;
+    width: 450px; 
+    margin: 20px;
+    background-color: blueviolet;
+    border-radius: 5px;
+    padding: 3px;
+    font-family: Arial;
+}
+
+.table-DraggableSub1{
+  display: 'flex';
+  justify-content: 'space-between';
+  align-items: 'center';
+}
+
+.table-DraggableSub2{ 
+    font-size: 24px; 
+}
+
+.table-GridToolbarContainer{
+    height: 30px;
+}
+
+.table-GridToolbarContainer-Button{
+    position: absolute;
+    right: 3px;
+    margin: 0;
+    color: black;
+}
+
+.table-Dialog{
+    box-shadow: #ffff;
+    color: black;
+}
+
+.table-DialogActions-Button{
+    color: black;
+}
+
+/*
+Body.tsx styling below
+*/
+
+.body-Body{
+    background-color: whitesmoke;
+}
+
+.body-Main-Div{
+    display: flex;
+    padding: 50px;
+    justify-content: space-between;
+
+}
+.body-Main-Div-Div{
+    width: 70%;
+    text-align: left;
+    margin: auto;
+}
+
+.body-Main-Div-Logo {
+    margin: auto;
+}
+
+.body-Main-H2{
+    line-height: 2em;
+}
+
+.body-Text-Muted-1 {
+    font-weight: 400;
+    line-height: 1.5;
+    color:#808080;
+    padding-right: 80px;
+}
+.body-Text-Muted-2 {
+    font-weight: 400;
+    line-height: 2em;
+    font-size: 1.25em;
+    color: #808080;
+    width: 130%;
+}
+
+.body-Main-Div-Div-Img {
+    width: 100%;
+    vertical-align: middle; 
+    padding-left: 20px;
+}
+
+.body-Main-Div-col-md-7{
+    display: flex;
+    padding-right: 200px;
+    text-align: left; 
+    margin: auto;
+}
+
+.body-Main-Div-Div-Div-Img{
+    border: 1px solid black;
+    border-radius:"5px";
+    width: 100%;
+}
+
+.body-Main-Div-col-md-5{
+    margin: auto;
+    text-align: right;
+}
+
+.Body-row{
+    padding: 50px 0 
+}
+
+.body-Team-Container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.Body-fw-normal-h2{
+    text-align: center;
+    margin-bottom: 70px; 
+}
+
+.Body-img-col{
+    width:140px;
+    border-radius:50%;
+}
+
+.Body-col-lg-3{ 
+    text-align: center;
+}
+
+.Body-fw-normal{
+    padding-top: 10px;
+}
+
+.Body-p-software{
+    margin: 10px;
+}
+
+.Body-footer{
+    margin-bottom: 20px;
+}
+
+.Body-btn-btn-dark-btn-sm{
+    margin: 10px;
+}
+
+.body-brand{
+    size:40;
+    stroke-width:1.5;
+    color:#000000;
+}
+
+.featurette-heading-fw-normal-lh-1 {
+    width: 130%;
+    padding-left: 20px;
+    font-weight: 500;
+
+}
+
+
+/* .row featurette{
+
+} */
+
+
+
+
+
+.FeatureTab-Navbar {
+    font-Size: 24px;
+    margin: 10px,10px,10px,10px; 
+}
+
+.FeatureTab-ThemeIcon {
+    border: 2px solid white; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*displayHeader*/
+.DisplayHeaderHeader{
+    display: flex;
+    align-items: center; 
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.DisplayHeaderHeaderSub{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 33.33%;
+}
+
+.DisplayHeaderHeaderSub1{
+    color: white;
+    border-color: white;
+    text-align: center;
+    width: 33.33%;
+}
+
+/* 
+This style is being controlled by mantine in-line styling. It is passing styling down through props
+.DisplayHeaderMediaQuery {
+    display: block;
+} */
+
+.DisplayHeaderBox{
+    display: flex;
+    align-items: center;
+    margin-right: 6px;
+    justify-content: flex-end;
+    width: 33.33%;
+}
+
+.DisplayHeaderText{
+    font-size: 16px;
+}
+
+.DisplayHeaderImage{
+    width: 30px;
+    margin: 0px 10px;
+}
+
+.DisplayHeaderButton{
+    color: white;
+    border: 1px solid whitesmoke;
+}
+
+/*HomeFooter*/
+/*No style, only sx*/
+
+
+
+/*HomeLoggedInNavbar*/
+.HomeLoggedInNavbarLink{ 
+    text-decoration: none;
+    color: white 
+}
+
+.HomeLoggedInNavbarA{
+    text-decoration: none; 
+    color: white;
+}
+
+
+
+

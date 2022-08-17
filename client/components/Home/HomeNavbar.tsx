@@ -18,8 +18,8 @@ export default function HomeNavbar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <img src={logo} alt="Logo" />
           </Typography>
-          <Link
-            style={{ textDecoration: "none", color: "white" }}
+          <Link className="homeNavBar-linkSignUp"
+            // style={{ textDecoration: "none", color: "white" }}
             to={"/signup"}
           >
             <Button color="inherit">Free Demo</Button>
@@ -27,22 +27,23 @@ export default function HomeNavbar() {
 
           <Button 
             color="inherit">
-            <a style={{ textDecoration: "none", color: "white" }}
+            <a className="homeNavBar-aDocs"
+            // style={{ textDecoration: "none", color: "white" }}
             href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>
             
           </Button>
           
           {/* <Button color="inherit">Team</Button> */}
 
-          <Link
-            style={{ textDecoration: "none", color: "white" }}
+          <Link className="homeNavBar-LinkSignUp"
+            // style={{ textDecoration: "none", color: "white" }}
             to={"/signup"}
           >
             <Button color="inherit">Sign Up</Button>
           </Link>
 
-          <Link
-            style={{ textDecoration: "none", color: "white" }}
+          <Link className="homeNavBar-LinkLogin"
+            // style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
             <Button color="inherit">Log In</Button>
