@@ -13,6 +13,7 @@ import Draggable from "react-draggable";
 import { DatabaseImport, DatabaseOff } from "tabler-icons-react";
 import { Loader, Text, Button, Group } from "@mantine/core";
 
+
 interface CanvasProps {
   fetchedData: {
     [key: string]: {

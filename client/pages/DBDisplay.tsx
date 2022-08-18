@@ -21,6 +21,8 @@ import {
 } from "@mantine/core";
 import { toPng } from "html-to-image";
 
+
+
 interface stateChangeProps {
   user: {
     email: string | null;
@@ -264,14 +266,14 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
           <Collapse in={queryOpened}>
             <ScrollArea
-              style={{
-                height: 80,
-                width: 500,
-                backgroundColor: "white",
-                borderRadius: "5px",
-                border: "2px solid #2b3a42",
-                padding: "5px"
-              }}
+              // style={{
+              //   height: 80,
+              //   width: 500,
+              //   backgroundColor: "white",
+              //   borderRadius: "5px",
+              //   border: "2px solid #2b3a42",
+              //   padding: "5px"
+              // }}
               type="always"
             >
               <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>

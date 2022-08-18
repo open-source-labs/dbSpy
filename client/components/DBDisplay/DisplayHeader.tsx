@@ -9,6 +9,10 @@ import MenuPopUp from "./MenuPopUp";
 // UI Libraries - Mantine
 import { Header, Text, MediaQuery, Button, Image, Box } from "@mantine/core";
 
+// D A R K M O D E 
+import darkMode from '../../darkMode.js'
+
+
 interface DisplayHeaderProps {
   menuPopUpOpened: boolean;
   name: string | null;
@@ -59,6 +63,7 @@ export default function DisplayHeader({
         //   justifyContent: "space-between",
         // }}
       >
+  
         <div className="DisplayHeaderHeaderSub"
           // style={{
           //   display: "flex",
@@ -77,12 +82,15 @@ export default function DisplayHeader({
               setOpened={setMenuPopUpOpened}
             />
           </MediaQuery>
-
+          
           <Link to="/">
             {/* <Text color="white">Logo</Text> */}
             <img src={logo} alt="Logo" />
           </Link>
+          <Button className="darkMode" color="inherit" onClick={darkMode}>Dark Mode</Button>
         </div>
+
+       
 
         <div className="DisplayHeaderHeaderSub1"
           // style={{
@@ -107,8 +115,8 @@ export default function DisplayHeader({
         >
           <Text 
           className="DisplayHeaderText"
-          color="white" 
-          style={{ fontSize: "16px" }}
+          // color="white" 
+          // style={{ fontSize: "16px" }}
           >
             {" "}
             Welcome, {name == null ? " " : name.concat(" ")}{" "}
@@ -124,8 +132,7 @@ export default function DisplayHeader({
             className="DisplayHeaderButton"
             variant="outline"
             // style={{ color: "white", border: "1px solid whitesmoke" }}
-            onClick={logout}
-          >
+            onClick={logout}>
             Sign Out
           </Button>
         </Box>
