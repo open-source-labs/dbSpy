@@ -541,7 +541,7 @@ export default function Table({
               label="Cancel"
               className="textPrimary"
               onClick={handleCancelClick(id)}
-              color="inherit"
+              // color="inherit"
             />,
           ];
         }
@@ -552,13 +552,13 @@ export default function Table({
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id)}
-            color="inherit"
+            // color="inherit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
-            color="inherit"
+            // color="inherit"
           />,
         ];
       },
@@ -726,7 +726,7 @@ export default function Table({
             toolbar: { setRows, setRowModesModel },
           }}
           experimentalFeatures={{ newEditingApi: true }}
-          sx={{ bgcolor: 'white', fontSize: '12px' }}
+          sx={{ bgcolor: 'whitesmoke', fontSize: '12px' }}
         />
       </div>
     </Draggable>
@@ -761,17 +761,17 @@ function EditToolbar(props: EditToolbarProps) {
     // style={{ height: '30px' }}
     >
       <Button
-        // color="primary"
+        color="primary"
         className='table-GridToolbarContainer-Button'
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        // style={{
-        //   position: 'absolute',
-        //   right: '3px',
-        //   margin: 0,
-        //   color: 'black',
-        // }}
+        style={{
+          position: 'absolute',
+          right: '3px',
+          margin: 0,
+          color: '#2b3a42',
+        }}
       >
         Field
       </Button>
