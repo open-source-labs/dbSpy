@@ -50,6 +50,10 @@ Canvas.tsx styling below
     align-items: center;
 }
 
+.canvas-Line360:hover {
+    
+}
+
 .canvas-ConnectToDatabase {
     text-align: center;
     font-size: 18px;
