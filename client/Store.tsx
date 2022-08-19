@@ -128,6 +128,10 @@ class Store {
   getCounter() {
     return this.counter;
   }
+
+  disconnect1() {
+    this.connectedToDB = false;
+  }
 }
 
 //instance of Store object and assign it to "DataStore"
