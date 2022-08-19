@@ -1,17 +1,16 @@
 // React & React Router & React Query Modules
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 // Components imported;
-import DataStore from "../../Store";
-import parseSql from "../../parse";
-import { permissiveTableCheck } from "../../permissiveFn";
+import DataStore from '../../Store';
+import parseSql from '../../parse';
+import { permissiveTableCheck } from '../../permissiveFn';
 
 //CSS IMPORT
 // import  "./styles.css"
 
-
 // UI Libraries - Mantine, tabler-icons
-import { useForm } from "@mantine/form";
+import { useForm } from '@mantine/form';
 import {
   Navbar,
   ScrollArea,
@@ -23,7 +22,7 @@ import {
   TextInput,
   Box,
   Button,
-} from "@mantine/core";
+} from '@mantine/core';
 import {
   ArrowBackUp,
   ArrowForwardUp,
@@ -33,8 +32,8 @@ import {
   Plus,
   File,
   FileUpload,
-  Eraser
-} from "tabler-icons-react";
+  Eraser,
+} from 'tabler-icons-react';
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
@@ -57,7 +56,7 @@ export default function FeatureTab({
   */
   const form = useForm({
     initialValues: {
-      tablename: "",
+      tablename: '',
     },
   });
   /* UI State
@@ -89,8 +88,8 @@ export default function FeatureTab({
 
   function uploadSQL() {
     // creating an input element for user to upload sql file
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
     input.click();
     input.onchange = (e: any): void => {
       const file = e.target.files[0];
@@ -99,19 +98,19 @@ export default function FeatureTab({
       reader.onload = (event: any) => {
         //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
         DataStore.clearStore();
-        sessionStorage.removeItem("Query");
-        sessionStorage.removeItem("Data");
+        sessionStorage.removeItem('Query');
+        sessionStorage.removeItem('Data');
 
         //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
         DataStore.loadedFile = true;
-        sessionStorage.loadedFile = "true";
+        sessionStorage.loadedFile = 'true';
 
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData = parseSql(event.target.result);
 
         //Update DataStore data with parsedData and reset to an empty query
         DataStore.setData(parsedData);
-        DataStore.setQuery([{ type: "", query: "" }]);
+        DataStore.setQuery([{ type: '', query: '' }]);
 
         //Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
@@ -138,18 +137,19 @@ export default function FeatureTab({
       const data: any = DataStore.store.get(cache);
       const num: any = cache;
       historyComponent.push(
-        <UnstyledButton className = 'button-FeatureTab'
+        <UnstyledButton
+          className="button-FeatureTab"
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
-            padding: "2px 10px",
+            display: 'block',
+            width: '100%',
+            padding: '2px 10px',
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
@@ -160,7 +160,7 @@ export default function FeatureTab({
           }}
           key={num}
         >
-          <Group className ='group-FeatureTab'>
+          <Group className="group-FeatureTab">
             {num === 0 && <Text size="md">{`Initial Data`}</Text>}
             {num === 1 && <Text size="md">{`${num}st Edit`}</Text>}
             {num === 2 && <Text size="md">{`${num}nd Edit`}</Text>}
@@ -174,9 +174,15 @@ export default function FeatureTab({
   }, [fetchedData]);
 
   return (
-    <Navbar className = 'navbar-FeatureTab' width={{ base: 225 }} height={"100%"} p="xs">
+    <Navbar
+      className="navbar-FeatureTab"
+      width={{ base: 225 }}
+      height={'100%'}
+      p="xs"
+    >
       {/* <Navbar.Section>LOGO</Navbar.Section> */}
-      <Modal className = 'modal-FeatureTab'
+      <Modal
+        className="modal-FeatureTab"
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
         title="What is the name of your table?"
@@ -189,7 +195,7 @@ export default function FeatureTab({
                 fetchedData,
                 {
                   ...fetchedData,
-                  ["public." + values.tablename]: {},
+                  ['public.' + values.tablename]: {},
                 }
               );
 
@@ -199,18 +205,18 @@ export default function FeatureTab({
                 setTablename(values.tablename);
                 setFetchedData({
                   ...fetchedData,
-                  ["public." + values.tablename]: {},
+                  ['public.' + values.tablename]: {},
                 });
                 setModalOpened(false);
                 DataStore.setData({
                   ...fetchedData,
-                  ["public." + values.tablename]: {},
+                  ['public.' + values.tablename]: {},
                 });
                 DataStore.queryList.push(...result);
                 DataStore.setQuery(DataStore.queryList.slice());
               }
               form.setValues({
-                tablename: "",
+                tablename: '',
               });
             })}
           >
@@ -218,25 +224,26 @@ export default function FeatureTab({
               required
               data-autofocus
               label="Table Name: "
-              {...form.getInputProps("tablename")}
+              {...form.getInputProps('tablename')}
             />
             <Group position="right" mt="md">
-              <Button 
+              <Button
                 styles={(theme) => ({
                   root: {
-                    backgroundColor: "#3c4e58",
-                    color: "white",
+                    backgroundColor: '#3c4e58',
+                    color: 'white',
                     border: 0,
                     height: 42,
                     paddingLeft: 20,
                     paddingRight: 20,
-                    "&:hover": {
-                      backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                    '&:hover': {
+                      backgroundColor: theme.fn.darken('#2b3a42', 0.1),
                     },
                   },
                 })}
-                type="submit">
-                  Create
+                type="submit"
+              >
+                Create
               </Button>
             </Group>
           </form>
@@ -244,33 +251,41 @@ export default function FeatureTab({
       </Modal>
 
       <Navbar.Section>
-        <div className ='FeatureTab-Navbar' /*style={{ fontSize: "24px", margin: "10px" }}*/>Action</div>
+        <div
+          className="FeatureTab-Navbar" /*style={{ fontSize: "24px", margin: "10px" }}*/
+        >
+          Action
+        </div>
         <hr />
-        
+
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert("Please disconnect your database first.");
+              //alert("Please disconnect your database first.");
+              sessionStorage.clear();
+              DataStore.disconnect1();
+              setSideBarOpened(true);
             } else setSideBarOpened(true);
           }}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -282,28 +297,29 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert("Please disconnect your database first.");
+              alert('Please disconnect your database first.');
             } else uploadSQL();
           }}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -315,37 +331,37 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert('Please disconnect your database first.')
-              return
+              alert('Please disconnect your database first.');
+              return;
             } else if (DataStore.loadedFile) {
-              alert('Please clear the canvas first.')
-              return
+              alert('Please clear the canvas first.');
+              return;
             } else {
               DataStore.loadedFile = true;
-              sessionStorage.loadedFile = "true";
+              sessionStorage.loadedFile = 'true';
               setModalOpened(true);
             }
-            
           }}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -357,34 +373,34 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              alert('Please disconnect your database first.')
-              return
+              alert('Please disconnect your database first.');
+              return;
             } else if (DataStore.loadedFile) {
               sessionStorage.clear();
               DataStore.loadedFile = false;
               location.reload();
             }
-            
           }}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -396,24 +412,25 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
           })}
-          onClick={() => alert("Feature coming soon!")}
+          onClick={() => alert('Feature coming soon!')}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -427,32 +444,38 @@ export default function FeatureTab({
       <br />
       <br />
       <Navbar.Section>
-        <div className='FeatureTab-NavBar' /*style={{ fontSize: "24px", margin: "10px" }}*/>Edit</div> <hr />
+        <div
+          className="FeatureTab-NavBar" /*style={{ fontSize: "24px", margin: "10px" }}*/
+        >
+          Edit
+        </div>{' '}
+        <hr />
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
           })}
           onClick={() => {
             DataStore.loadedFile = true;
-            sessionStorage.loadedFile = "true";
+            sessionStorage.loadedFile = 'true';
             sessionStorage.clear();
             setModalOpened(true);
           }}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -464,16 +487,16 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
@@ -481,7 +504,8 @@ export default function FeatureTab({
           onClick={undo}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -493,16 +517,16 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
@@ -510,7 +534,8 @@ export default function FeatureTab({
           onClick={redo}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -522,16 +547,16 @@ export default function FeatureTab({
         </UnstyledButton>
         <UnstyledButton
           sx={(theme) => ({
-            display: "block",
-            width: "100%",
+            display: 'block',
+            width: '100%',
             padding: theme.spacing.xs,
             borderRadius: theme.radius.sm,
             color:
-              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-            "&:hover": {
+            '&:hover': {
               backgroundColor:
-                theme.colorScheme === "dark"
+                theme.colorScheme === 'dark'
                   ? theme.colors.dark[6]
                   : theme.colors.gray[0],
             },
@@ -539,7 +564,8 @@ export default function FeatureTab({
           onClick={screenshot}
         >
           <Group>
-            <ThemeIcon className='FeatureTab-ThemeIcon'
+            <ThemeIcon
+              className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
               /*style={{ border: "2px solid white" }}*/
@@ -552,7 +578,13 @@ export default function FeatureTab({
         <br />
         <br />
       </Navbar.Section>
-      <Navbar.Section  className='FeatureTab-Navbar' grow component={ScrollArea} mx="-xs" px="xs">
+      <Navbar.Section
+        className="FeatureTab-Navbar"
+        grow
+        component={ScrollArea}
+        mx="-xs"
+        px="xs"
+      >
         <div /*style={{ fontSize: "24px", margin: "10px" }}*/>History</div>
         <hr />
         {history}
