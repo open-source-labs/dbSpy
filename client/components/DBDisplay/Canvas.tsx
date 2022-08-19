@@ -218,7 +218,7 @@ export default function Canvas({
     for (let i = 0; i < tables.length; i += 1) {
       //grab that tables id
       const eachTableId = tables[i].props.id;
-      console.log('THIS IS THE TABLE ID FROM INSIDE LOOP', tables[1].props, tables[1].props.id)
+      console.log('THIS IS THE TABLE ID FROM INSIDE LOOP', tables[1].props)
       //grab the ids of the document
       const documentId = document.getElementById(`${eachTableId}`);
       console.log('THIS IS DOCUMENTID', document.getElementById('public.films'))
@@ -247,6 +247,8 @@ export default function Canvas({
     for (let i = 0; i < tables.length; i += 1) {
       const eachTableId = tables[i].props.id;
       const documentId = document.getElementById(`${eachTableId}`);
+      console.log('THIS IS EACHTABLEID', eachTableId)
+      console.log('THIS IS DOCUMENTID', documentId)
       // documentId.addEventListener('mouseover', mouseOverTable);
 
       console.log('THIS IS INSIDE RENDERARROWS', tables[i].key, tables[i].props)
