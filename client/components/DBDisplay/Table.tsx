@@ -45,6 +45,7 @@ import DataStore from '../../Store';
 import permissiveColumnCheck, {
   permissiveColumnDropCheck,
 } from '../../permissiveFn.js';
+import mySqlPermissiveColumnCheck, { mySqlPermissiveColumnDropCheck } from '../../mySqlPermissiveFn.js';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -57,6 +58,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { getModeForFileReference } from 'typescript';
+
+type Props = {
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
+}
 
 interface TableProps {
   tableInfo: {
@@ -74,7 +80,10 @@ interface TableProps {
   };
   id: string;
   setFetchedData: (fetchedData: any) => void;
+  setSqlOpen: (sqlOpen: boolean) => void;
   fetchedData: any;
+  sqlOpen: boolean;
+  
 }
 
 interface RowProps {
@@ -91,6 +100,8 @@ export default function Table({
   tableInfo,
   id,
   setFetchedData,
+  setSqlOpen,
+  sqlOpen,
   fetchedData,
 }: TableProps) {
   const tablename = id;
@@ -352,6 +363,14 @@ export default function Table({
       DataStore.getData(DataStore.store.size - 1)
     );
 
+      // mySqlpermissiveColumnCheck in mysql/permissiveFn.js file. Returns the query for the MySQL change.
+      const mySqlQueryResult = mySqlPermissiveColumnCheck(
+        ColBeforeChange,
+        newRow,
+        tablename,
+        DataStore.getData(DataStore.store.size - 1)
+      ); 
+
     // Another logic check with permissiveFn. Alerts specific error message provided from permissiveFn and revert back to Edit mode.
     if (Object.keys(queryResult[0])[1] === 'errorMsg') {
       const msg: any = queryResult[0];
@@ -364,8 +383,25 @@ export default function Table({
       return;
     }
 
+    // Another logic check with mySQLpermissiveFn. Alerts specific error message provided from mySQLpermissiveFn and revert back to Edit mode.
+    if (Object.keys(mySqlQueryResult[0])[1] === "errorMsg") {
+      const msg: any = mySqlQueryResult[0];
+      alert(msg.errorMsg);
+      setRowModesModel({
+        ...rowModesModel,
+       [newRow.id]: { mode: GridRowModes.Edit },
+      });
+   
+      return;
+    }
+
     // Update DataStore with the queries just generated.
-    DataStore.queryList.push(...queryResult);
+    if (sqlOpen === true){
+      DataStore.queryList.push("postgres", ...queryResult);
+    }else {
+      DataStore.queryList.push("mySql", ...mySqlQueryResult)
+    }
+    console.log('this is SQLOpen', DataStore.queryList);
     DataStore.setQuery(DataStore.queryList.slice());
     //console.log("this is stored Queries", DataStore.queries);
     let copyRef = null;
@@ -378,7 +414,7 @@ export default function Table({
         ReferencesTableName: newRow.references.ReferencesTableName,
         IsDestination: newRow.references.IsDestination,
         constrainName:
-          newRow.references.PrimaryKeyTableName +
+          newRow.references.PrimaryKeyTableName +  
           '_' +
           newRow.column +
           '_' +

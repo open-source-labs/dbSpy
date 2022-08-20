@@ -2,6 +2,9 @@
 1. Discuss addition of references array for fk insertion
 2. DIscuss how we might want to handle request to change datatype
 
+
+For PostgreSQL
+
 */
 // constraints
 const objConstraints = {

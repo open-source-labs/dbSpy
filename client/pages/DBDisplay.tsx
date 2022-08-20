@@ -51,6 +51,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
   const [queryOpened, setQueryOpen] = useState(true);
+  //state to keep track of which SQL syntax Query Generator is generating, Postgres or MySQL. 
+  const [sqlOpen, setSqlOpen] = useState(true);
 
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
   initiate "fetchedData" and Map objects in "DataStore" 
@@ -202,6 +204,11 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     );
   }
 
+  let queryGen: string;
+  if (sqlOpen === true){
+    queryGen = "PostgreSQL";
+  }else {queryGen = "MySQL";}
+
   return (
     <AppShell
       padding="md"
@@ -245,6 +252,25 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
             flexDirection: "column",
           }}
         >
+         <Button
+            styles={(theme: any) => ({
+              root: {
+                backgroundColor: "#3c4e58",
+                border: 0,
+                height: 42,
+                paddingLeft: 20,
+                paddingRight: 20,
+                marginBottom: 20,
+
+                "&:hover": {
+                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                },
+              },
+            })}
+            onClick={() => setSqlOpen((o) => !o)}
+            >
+              {sqlOpen ? "PostgreSQL" : "MySQL"}
+          </Button>
           <Button
             styles={(theme) => ({
               root: {
@@ -266,19 +292,19 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
           <Collapse in={queryOpened}>
             <ScrollArea
-              // style={{
-              //   height: 80,
-              //   width: 500,
-              //   backgroundColor: "white",
-              //   borderRadius: "5px",
-              //   border: "2px solid #2b3a42",
-              //   padding: "5px"
-              // }}
+              style={{
+                height: 250,
+                width: 500,
+                backgroundColor: "white",
+                borderRadius: "5px",
+                border: "2px solid #2b3a42",
+                padding: "5px"
+              }}
               type="always"
             >
               <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
                 {" "}
-                SQL Query Generator
+                {queryGen} Query Generator
               </Text>
               <hr style={{margin: "5px"}}/>
               <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
@@ -288,6 +314,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
       )}
 
       <Canvas
+        sqlOpen={sqlOpen}
+        setSqlOpen={setSqlOpen}
         isLoadingProps={isLoading}
         isErrorProps={isError}
         fetchedData={fetchedData}
