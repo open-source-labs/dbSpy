@@ -12,8 +12,14 @@ import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import Draggable from "react-draggable";
 import { DatabaseImport, DatabaseOff } from "tabler-icons-react";
 import { Loader, Text, Button, Group } from "@mantine/core";
+import { BooleanSupportOption } from "prettier";
 
 
+
+type Props = {
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
+}
 interface CanvasProps {
   fetchedData: {
     [key: string]: {
@@ -35,6 +41,8 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   setSideBarOpened: (param: boolean) => void;
   reference: any;
+  setSqlOpen: (sqlOpen: boolean) => void;
+  sqlOpen: boolean;
 }
 
 /** Canvas Component - a canvas section where Tables being generated */
@@ -44,6 +52,8 @@ export default function Canvas({
   fetchedData,
   setFetchedData,
   reference,
+  setSqlOpen,
+  sqlOpen,
 }: CanvasProps) {
   /** useMutation for handling 'POST' request to '/api/handleQueries' route for executing series of queries for DB migration; 
   onSuccess: Once queries get complete, it will clear out the sessionStorage and render the latestTableModel confirming the success of migration
@@ -117,6 +127,8 @@ export default function Canvas({
         <Table
           key={`Table${ind}`}
           id={tablename}
+          setSqlOpen={setSqlOpen}
+          sqlOpen={sqlOpen}
           tableInfo={fetchedData[tablename]}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
