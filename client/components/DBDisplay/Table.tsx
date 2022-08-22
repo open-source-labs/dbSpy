@@ -70,6 +70,8 @@ interface TableProps {
       field_name: string;
     };
   };
+  onMouseOver?: any;
+  onMouseDown?: any;
   id: string;
   setFetchedData: (fetchedData: any) => void;
   fetchedData: any;
@@ -655,9 +657,9 @@ export default function Table({
 
 
   }
-
   
   const updateXarrow = useXarrow();
+
 
   return (
     <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
@@ -681,7 +683,7 @@ export default function Table({
           //   alignItems: 'center',
           // }}
         >
-          <div className='table-DraggableSub2' 
+          <div className='table-DraggableSub2'
           // style={{ fontSize: "24px" }}
           >{id}</div>
         </div>
@@ -887,6 +889,8 @@ setOpens(false);
     setselectedCol(event.target.value);
    
   };
+
+
 
   let listOfTables = Object.keys(fetchedData).map((key, index) => {
     if (key !== tablename)
