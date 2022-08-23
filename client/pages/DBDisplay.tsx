@@ -182,26 +182,15 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   // }, []);
 
   //To export queries
-  // const exportQueries = () =>{
-  //   const ex = DataStore.exportData().join('')
-  //   console.log("this is join", ex)
-  //   const data =  new Blob(ex,
-  //   /* {type: 'text/plain;charset=utf-8', */
-  //   {type: 'text/plain;charset=utf-8', 
-  //   endings: 'native'});
-  //   //console.log(data);
-  //   FileSaver.saveAs(data, "ExportQueries.txt")
-  // };
-
   const exportQueries = () =>{
-    const ex = DataStore.exportData()
+    const ex = [DataStore.exportData().join('\n')]
     console.log(ex)
     // console.log("this is join", ex)
     const data =  new Blob(ex,
     {type: 'text/plain;charset=utf-8', 
     endings: 'native'});
     console.log(data);
-    FileSaver.saveAs(data[1], "ExportQueries.txt")
+    FileSaver.saveAs(data, "ExportQueries.txt")
   };
 
   const screenshot = useCallback(() => {
