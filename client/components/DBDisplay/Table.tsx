@@ -606,7 +606,6 @@ export default function Table({
   function updatedRowsToTable(rows: RowProps[], updatedRow: RowProps | null) {
     const dataAfterChange: any = {};
     const col: any = {};
-    console.log('THIS IS UPDATEDROWS BEFOREEACH', rows)
     rows.forEach((obj: RowProps) => {
       console.log('THIS IS EACH OBJECT', obj.id)
       const { id, column, constraint, fk, pk, type, reference } = obj;
@@ -704,6 +703,7 @@ export default function Table({
   const updateXarrow = useXarrow();
 
 function mouseOver () {
+  console.log('THIS IS ID', id)
   setId(id)
 }
 
@@ -725,6 +725,7 @@ function mouseOver () {
         // }}
       >
         <div className="table-DraggableSub1"
+        onMouseDown={mouseOver}
           // style={{
           //   display: 'flex',
           //   justifyContent: 'space-between',

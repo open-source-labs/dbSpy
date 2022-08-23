@@ -22,7 +22,7 @@ import {
 import { toPng } from "html-to-image";
 
 //import fileSaver for export queries
-import FileSaver from 'file-saver'
+// import FileSaver from 'file-saver'
 
 
 
@@ -190,7 +190,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     {type: 'text/plain;charset=utf-8', 
     endings: 'native'});
     console.log(data);
-    FileSaver.saveAs(data, "ExportQueries.txt")
+    // FileSaver.saveAs(data, "ExportQueries.txt")
   };
 
   const screenshot = useCallback(() => {
