@@ -29,11 +29,11 @@ export default function Sidebar({
 }: SideBarProps) {
   const form = useForm({
     initialValues: {
-      hostname: "castor.db.elephantsql.com",
-      username: "vjcmcaut",
-      password: "wcc8BHXNjyN4exqfuQVPzpdeOBJimLfg",
+      hostname: "salt.db.elephantsql.com",
+      username: "gipvrrdm",
+      password: "fc_XSr9BrbQeusyrEoBk8omZrb4qsT1v",
       port: "5432",
-      database_name: "vjcmcaut",
+      database_name: "gipvrrdm",
     },
   });
 

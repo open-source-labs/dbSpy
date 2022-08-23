@@ -70,6 +70,8 @@ interface TableProps {
       field_name: string;
     };
   };
+  tableId?: any;
+  setId?: any;
   onMouseOver?: any;
   onMouseDown?: any;
   id: string;
@@ -89,6 +91,8 @@ interface RowProps {
 
 export default function Table({
   tableInfo,
+  tableId,
+  setId,
   id,
   setFetchedData,
   fetchedData,
@@ -572,7 +576,9 @@ export default function Table({
   function updatedRowsToTable(rows: RowProps[], updatedRow: RowProps | null) {
     const dataAfterChange: any = {};
     const col: any = {};
+    console.log('THIS IS UPDATEDROWS BEFOREEACH', rows)
     rows.forEach((obj: RowProps) => {
+      console.log('THIS IS EACH OBJECT', obj.id)
       const { id, column, constraint, fk, pk, type, reference } = obj;
       col[column] = {
         IsForeignKey: fk,
@@ -589,10 +595,6 @@ export default function Table({
    
     let newPKTable = null;
     let  Tables:any
-    
-    
-   
-    
 
     DataStore.setData({
       ...DataStore.getData(DataStore.store.size - 1),
@@ -660,6 +662,10 @@ export default function Table({
   
   const updateXarrow = useXarrow();
 
+function mouseOver () {
+  setId(id)
+}
+
 
   return (
     <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
@@ -677,6 +683,8 @@ export default function Table({
         // }}
       >
         <div className="table-DraggableSub1"
+          // onMouseOver={mouseOver}
+          onMouseDown={mouseOver}
           // style={{
           //   display: 'flex',
           //   justifyContent: 'space-between',

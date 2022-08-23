@@ -15,6 +15,10 @@ Canvas.tsx styling below
     /* --inner-table: #808080; */
 }
 
+/* #root {
+    height: 100%;
+} */
+
 
 [data-theme='dark'] {
     --nav-bar: #2b3a42;
@@ -27,6 +31,21 @@ Canvas.tsx styling below
     --box-shadow: #ffff; 
     --border-color: #617980c4; 
     --inner-table: #acc2c2;
+}
+
+body {
+    /* height: 200vh; */
+    /* margin-top: clamp(40px, 10vh, 100px); */
+    margin: 0;
+    padding: 0;
+    background-color: whitesmoke;
+}
+
+html {
+    /* height: 200vh; */
+    /* height: .01vh; */
+    background-color: var(--bg-color);
+
 }
 
 header{
@@ -139,6 +158,7 @@ Table.tsx styling below
     border-radius: 5px;
     padding: 3px;
     font-family: Arial;
+    z-index: 1;
 }
 
 .table-DraggableSub1{
