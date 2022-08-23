@@ -333,7 +333,6 @@ export default function Canvas({
             <Xwrapper>
               {tables}
               {xa}
-             {xarrows}
             </Xwrapper>
           </div>
         </>
