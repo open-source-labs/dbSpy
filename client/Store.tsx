@@ -1,3 +1,8 @@
+import { query } from "express";
+
+// const fs = require ('fs');
+
+
 /* Global State: Store - class object*/
 class Store {
   store: Map<{}, {}>;
@@ -7,7 +12,8 @@ class Store {
   userDBInfo: object;
   queryInd: number;
   queries: Map<{}, {}[]>;
-  queryList: {}[];
+  queryList: any;
+  // {}[];
   counter: number;
 
   /* Description for each global state:
@@ -128,8 +134,19 @@ class Store {
   getCounter() {
     return this.counter;
   }
-}
 
+  disconnect1() {
+    this.connectedToDB = false;
+  }
+
+  exportData() {
+    const exportData = this.queryList.map((element: any) => element['query'])
+  //   // fs.writeFile("/path")
+     return (exportData)
+
+  }
+
+}
 //instance of Store object and assign it to "DataStore"
 const DataStore = new Store();
 export default DataStore;

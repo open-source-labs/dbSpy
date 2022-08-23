@@ -14,13 +14,19 @@ import { useMutation } from 'react-query';
 import Table from './Table';
 
 // UI & Visualization Libraries
-import axios from 'axios';
-import DataStore from '../../Store';
-import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
-import Draggable from 'react-draggable';
-import { DatabaseImport, DatabaseOff } from 'tabler-icons-react';
-import { Loader, Text, Button, Group } from '@mantine/core';
+import axios from "axios";
+import DataStore from "../../Store";
+import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
+import Draggable from "react-draggable";
+import { DatabaseImport, DatabaseOff } from "tabler-icons-react";
+import { Loader, Text, Button, Group } from "@mantine/core";
 
+
+
+type Props = {
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
+}
 interface CanvasProps {
   fetchedData: {
     [key: string]: {
@@ -45,6 +51,8 @@ interface CanvasProps {
   setFetchedData: (fetchedData: object) => void;
   setSideBarOpened: (param: boolean) => void;
   reference: any;
+  setSqlOpen: (sqlOpen: boolean) => void;
+  sqlOpen: boolean;
 }
 
 /** Canvas Component - a canvas section where Tables being generated */
@@ -54,6 +62,8 @@ export default function Canvas({
   fetchedData,
   setFetchedData,
   reference,
+  setSqlOpen,
+  sqlOpen,
 }: CanvasProps) {
   /** useMutation for handling 'POST' request to '/api/handleQueries' route for executing series of queries for DB migration; 
   onSuccess: Once queries get complete, it will clear out the sessionStorage and render the latestTableModel confirming the success of migration
@@ -145,6 +155,8 @@ export default function Canvas({
         setId={setId}
           key={`Table${ind}`}
           id={tablename}
+          setSqlOpen={setSqlOpen}
+          sqlOpen={sqlOpen}
           tableInfo={fetchedData[tablename]}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
@@ -201,38 +213,104 @@ export default function Canvas({
   
   });
 
- 
+  // const mouseOverTable = () => {
+  //   //see what the table array looks like
+  //   console.log('THIS IS TABLES', tables);
+  //   // loop over the tables array to access each table
+  //   for (let i = 0; i < tables.length; i += 1) {
+  //     //grab that tables id
+  //     const eachTableId = tables[i].props.id;
+  //     console.log('THIS IS THE TABLE ID FROM INSIDE LOOP', tables[0].props.id)
+  //     //grab the ids of the document
+  //     const documentId = document.getElementById(`${eachTableId}`);
+  //     //if the documentId matches the tableId
+  //     if (documentId === eachTableId) {
+  //       //render the xarrows
+  //       return {xarrows}
+  //     }
+  //   }
+  // }
+
+  // mouseOverTable();
+
+  //  function mouseOverTable1() {
+  //   console.log('THIS IS TABLES', tables)
+
+  // }
+
+  // mouseOverTable1();
 
   const xarrows: JSX.Element[] = refArray.map((reff: any, ind: number) => {
-
-    let blueTrue = false;
-    reff.ReferencesTableName === tableId ? blueTrue = true : blueTrue = false;
-
-    return ( 
+    return (
       <Xarrow 
       key={ind}
       path="smooth"
       headSize={4}
-      zIndex={0}
+      zIndex={-1}
       color={"blue"}
-      showXarrow={blueTrue}
       start={reff.ReferencesTableName}
       end={reff.PrimaryKeyTableName}
       dashness={true}
+      // dashness={{strokeLen: 10, nonStrokeLen: 15, animation: -2 }}
       curveness={1.0}
       animateDrawing={true}
       />
     );
   })
 
-// function alertMe() {
-//   // for (let i = 0; i < xarrows.length; i += 1) {
-//   //   if (tableId === xarrows[i].props.end) {
-//   //     xarrows[i].props.showXarrow = true;
-//   //   } 
-//   // }
-//   alert(tableId)
-// }
+  const mouseOverTable = () => {
+    //see what the table array looks like
+    console.log('THIS IS TABLES', tables);
+    // loop over the tables array to access each table
+    for (let i = 0; i < tables.length; i += 1) {
+      //grab that tables id
+      const eachTableId = tables[i].props.id;
+      console.log('THIS IS THE TABLE ID FROM INSIDE LOOP', tables[1].props)
+      //grab the ids of the document
+      const documentId = document.getElementById(`${eachTableId}`);
+      console.log('THIS IS DOCUMENTID', document.getElementById('public.films'))
+      //if the documentId matches the tableId
+
+      console.log('THIS IS ARROWS', xarrows)
+      console.log('THIS IS ARROWS KEYS', xarrows[0].props)
+
+      if (xa[i].key === xarrows[i].key) {
+        return xarrows[i].props;
+      }
+
+
+      if (documentId === eachTableId) {
+        //render the xarrows
+        return xarrows;
+      } else {
+        return xa;
+      }
+    }
+  }
+
+  mouseOverTable();
+
+  const renderArrowsEvent = () => {
+    for (let i = 0; i < tables.length; i += 1) {
+      const eachTableId = tables[i].props.id;
+      const documentId = document.getElementById(`${eachTableId}`);
+      console.log('THIS IS EACHTABLEID', eachTableId)
+      console.log('THIS IS DOCUMENTID', documentId)
+      // documentId.addEventListener('mouseover', mouseOverTable);
+
+      console.log('THIS IS INSIDE RENDERARROWS', tables[i].key, tables[i].props)
+    }
+  }
+
+  renderArrowsEvent();
+
+  // function mouseOverTable() {
+  //   console.log('THIS IS TABLES', tables)
+
+  // }
+
+  // mouseOverTable();
+
 
   /** Truthy when the user is connecting to the database to grab the intial table model */
   if (isLoadingProps) {
@@ -393,7 +471,7 @@ export default function Canvas({
             <Xwrapper>
               {tables}
               {xa}
-              {xarrows}
+             {xarrows}
             </Xwrapper>
           </div>
         </>

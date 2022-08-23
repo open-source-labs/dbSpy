@@ -62,6 +62,11 @@ export default function Sidebar({
           <form
             onSubmit={form.onSubmit((values) => {
               // grabbing userDBInfo from values to send to server to make db changes
+              if (DataStore.connectedToDB === true) {
+                //alert('currently logged in');
+                sessionStorage.clear();
+                DataStore.disconnect1();
+              }
               DataStore.userDBInfo = values;
               sessionStorage.userDBInfo = JSON.stringify(values);
               mutate(values);

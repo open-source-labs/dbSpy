@@ -42,7 +42,10 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 import DataStore from '../../Store';
-import permissiveColumnCheck, { permissiveColumnDropCheck } from '../../permissiveFn.js';
+import permissiveColumnCheck, {
+  permissiveColumnDropCheck,
+} from '../../permissiveFn.js';
+import mySqlPermissiveColumnCheck, { mySqlPermissiveColumnDropCheck } from '../../mySqlPermissiveFn.js';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -55,6 +58,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { getModeForFileReference } from 'typescript';
+
+type Props = {
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
+}
 
 interface TableProps {
   tableInfo: {
@@ -76,7 +84,10 @@ interface TableProps {
   onMouseDown?: any;
   id: string;
   setFetchedData: (fetchedData: any) => void;
+  setSqlOpen: (sqlOpen: boolean) => void;
   fetchedData: any;
+  sqlOpen: boolean;
+  
 }
 
 interface RowProps {
@@ -95,6 +106,8 @@ export default function Table({
   setId,
   id,
   setFetchedData,
+  setSqlOpen,
+  sqlOpen,
   fetchedData,
 }: TableProps) {
   const tablename = id;
@@ -162,7 +175,7 @@ export default function Table({
 
     for (let i = 0; i < oldRow.length; i++) {
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
-        return "existingColName";
+        return 'existingColName';
       if (
         oldRow[i].column === newRow.column &&
         oldRow[i].type === newRow.type &&
@@ -171,32 +184,20 @@ export default function Table({
         oldRow[i].fk === newRow.fk &&
         oldRow[i].id === newRow.id
       ) {
-        return "saveWithoutChange";
+        return 'saveWithoutChange';
       }
       if (oldRow[i].pk === true && newRow.pk === 'true') return 'pkIssue';
     }
 
-    if (newRow.fk === "true")
-    { 
-      
-      
-      if (fkReference.type == 'add')
-      {
-        //assign the fkreference to the new row 
+    if (newRow.fk === 'true') {
+      if (fkReference.type == 'add') {
+        //assign the fkreference to the new row
         newRow.references = fkReference;
-
-      } 
-      else
-          return "assignRef";
-    
-    
-    } else if (fkReference.type == 'remove' && newRow.isNew == false)
-       {
-        newRow.references = fkReference;
-       }
-      else
-    {
-      newRow.references = {type:''};
+      } else return 'assignRef';
+    } else if (fkReference.type == 'remove' && newRow.isNew == false) {
+      newRow.references = fkReference;
+    } else {
+      newRow.references = { type: '' };
     }
 
     return '';
@@ -247,8 +248,7 @@ export default function Table({
     const modes: any = Object.values(rowModesModel);
     if (modes.length > 0) {
       for (let i = 0; i < modes.length; i++) {
-        
-        if (modes[i].mode === "edit") {
+        if (modes[i].mode === 'edit') {
           setRowModesModel({
             ...rowModesModel,
             [id]: { mode: GridRowModes.View },
@@ -278,7 +278,7 @@ export default function Table({
     const dropQuery = permissiveColumnDropCheck(ColToDrop[0], tablename);
     let isDelete;
     if (dropQuery.length === 1) {
-      if (dropQuery[0].status === "failed") {
+      if (dropQuery[0].status === 'failed') {
         alert(dropQuery[0].errorMsg);
         return;
       }
@@ -294,7 +294,10 @@ export default function Table({
     if (isDelete) {
       DataStore.queryList.push(dropQuery[0]);
       DataStore.setQuery(DataStore.queryList.slice());
-      updatedRowsToTable(rows.filter((row) => row.id !== id), null);
+      updatedRowsToTable(
+        rows.filter((row) => row.id !== id),
+        null
+      );
       setRows(rows.filter((row) => row.id !== id));
     }
   };
@@ -316,26 +319,26 @@ export default function Table({
   /* "processRowUpdate" - a function that gets triggered to update the "rows" when row is being processed after hitting save button.
    */
   const processRowUpdate = (newRow: GridRowModel) => {
-    console.log("fkReference:");
+    console.log('fkReference:');
     console.log(fkReference);
 
     // check the logic first, if error, go back to Edit mode.
-    if (logicCheck(newRow, rows) === "empty") {
-      alert("Please make sure to fill out every cell!");
+    if (logicCheck(newRow, rows) === 'empty') {
+      alert('Please make sure to fill out every cell!');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === "existingColName") {
-      alert("you cannot have duplicate column names!");
+    } else if (logicCheck(newRow, rows) === 'existingColName') {
+      alert('you cannot have duplicate column names!');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === "saveWithoutChange") {
-      alert("Please make changes before you save.");
+    } else if (logicCheck(newRow, rows) === 'saveWithoutChange') {
+      alert('Please make changes before you save.');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
@@ -366,8 +369,16 @@ export default function Table({
       DataStore.getData(DataStore.store.size - 1)
     );
 
+      // mySqlpermissiveColumnCheck in mysql/permissiveFn.js file. Returns the query for the MySQL change.
+      const mySqlQueryResult = mySqlPermissiveColumnCheck(
+        ColBeforeChange,
+        newRow,
+        tablename,
+        DataStore.getData(DataStore.store.size - 1)
+      ); 
+
     // Another logic check with permissiveFn. Alerts specific error message provided from permissiveFn and revert back to Edit mode.
-    if (Object.keys(queryResult[0])[1] === "errorMsg") {
+    if (Object.keys(queryResult[0])[1] === 'errorMsg') {
       const msg: any = queryResult[0];
       alert(msg.errorMsg);
       setRowModesModel({
@@ -378,43 +389,64 @@ export default function Table({
       return;
     }
 
+    // Another logic check with mySQLpermissiveFn. Alerts specific error message provided from mySQLpermissiveFn and revert back to Edit mode.
+    if (Object.keys(mySqlQueryResult[0])[1] === "errorMsg") {
+      const msg: any = mySqlQueryResult[0];
+      alert(msg.errorMsg);
+      setRowModesModel({
+        ...rowModesModel,
+       [newRow.id]: { mode: GridRowModes.Edit },
+      });
+   
+      return;
+    }
+
     // Update DataStore with the queries just generated.
-    DataStore.queryList.push(...queryResult);
+    if (sqlOpen === true){
+      DataStore.queryList.push("postgres", ...queryResult);
+    }else {
+      DataStore.queryList.push("mySql", ...mySqlQueryResult)
+    }
+    console.log('this is SQLOpen', DataStore.queryList);
     DataStore.setQuery(DataStore.queryList.slice());
     //console.log("this is stored Queries", DataStore.queries);
     let copyRef = null;
-    if (newRow.references.type == 'add')
-    {
-      newRow.fk = true; 
-      copyRef = {PrimaryKeyTableName: newRow.references.PrimaryKeyTableName, 'PrimaryKeyName' :newRow.references.PrimaryKeyName, 'ReferencesPropertyName':newRow.column, 'ReferencesTableName':newRow.references.ReferencesTableName, 'IsDestination': newRow.references.IsDestination, 'constrainName': newRow.references.PrimaryKeyTableName + '_'+newRow.column + '_' + 'fkey'}
+    if (newRow.references.type == 'add') {
+      newRow.fk = true;
+      copyRef = {
+        PrimaryKeyTableName: newRow.references.PrimaryKeyTableName,
+        PrimaryKeyName: newRow.references.PrimaryKeyName,
+        ReferencesPropertyName: newRow.column,
+        ReferencesTableName: newRow.references.ReferencesTableName,
+        IsDestination: newRow.references.IsDestination,
+        constrainName:
+          newRow.references.PrimaryKeyTableName +  
+          '_' +
+          newRow.column +
+          '_' +
+          'fkey',
+      };
 
-     newRow.reference.push(copyRef);
- 
-     
-  
+      newRow.reference.push(copyRef);
     }
-    if (fkReference.type == 'remove')
-    {
-      
+    if (fkReference.type == 'remove') {
       let arrayCopy = [];
-      
-      for (let i = 0; i < newRow.reference.length; i++)
-      { // remove IsDestinations set to false....
-        if (newRow.reference[i].IsDestination == true)
-         {
-         
+
+      for (let i = 0; i < newRow.reference.length; i++) {
+        // remove IsDestinations set to false....
+        if (newRow.reference[i].IsDestination == true) {
           arrayCopy.push(newRow.reference[i]);
         }
       }
       newRow.fk = false;
-      newRow.reference = arrayCopy; 
-     
+      newRow.reference = arrayCopy;
     }
     delete newRow.references;
     const updatedRow = { ...newRow, isNew: false };
-   
+
     updatedRowsToTable(
-      rows.map((row) => (row.id === newRow.id ? updatedRow : row)), updatedRow
+      rows.map((row) => (row.id === newRow.id ? updatedRow : row)),
+      updatedRow
     );
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
@@ -427,16 +459,16 @@ export default function Table({
       headerName: 'Column',
       width: 75,
       editable: true,
-      
-      valueParser: (value: string, row:GridRowModel) => {
+
+      valueParser: (value: string, row: GridRowModel) => {
         //console.log('id:------->', id);
-        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 
-       
-        let copy = formDialogEditRow; 
-        copy.row.column = value; 
+        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ',
+
+        let copy = formDialogEditRow;
+        copy.row.column = value;
         setFormDialogEditRow(copy);
         return value;
-      }
+      },
     },
     {
       field: 'type',
@@ -460,18 +492,16 @@ export default function Table({
         'timestamp',
         'varchar(255)',
       ],
-      valueParser: (value: string, row:GridRowModel) => {
+      valueParser: (value: string, row: GridRowModel) => {
         //console.log('id:------->', id);
-        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 
-      
-        let copy = formDialogEditRow; 
-        copy.row.type = value; 
-         
+        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ',
+
+        let copy = formDialogEditRow;
+        copy.row.type = value;
 
         setFormDialogEditRow(copy);
-         return value; 
-      }
-
+        return value;
+      },
     },
     {
       field: 'constraint',
@@ -479,7 +509,7 @@ export default function Table({
       width: 100,
       editable: true,
       type: 'singleSelect',
-      valueOptions: [' ', 'NOT NULL', 'UNIQUE'],
+      valueOptions: ['NA', 'NOT NULL', 'UNIQUE'],
     },
     {
       field: 'pk',
@@ -494,33 +524,33 @@ export default function Table({
       headerName: 'FK',
       width: 50,
       editable: true,
-      type: "singleSelect",
-      valueOptions: ["true", "false"],
-      valueParser: (value: string, row:GridRowModel) => {
-        
+      type: 'singleSelect',
+      valueOptions: ['true', 'false'],
+      valueParser: (value: string, row: GridRowModel) => {
         let setCol = '';
-        if (formDialogEditCol !== '')
-        setCol = formDialogEditCol;
-        else
-        setCol = row.column 
- 
-       setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ', 'ReferencesPropertyName':setCol, 'ReferencesTableName':tablename, 'isDestination': false, 'constrainName': '', type: ''});
-       //setFormDialogEditRow(row);
-        if (value =="true")
-        {
-        
+        if (formDialogEditCol !== '') setCol = formDialogEditCol;
+        else setCol = row.column;
+
+        setfkReference({
+          PrimaryKeyTableName: ' ',
+          PrimaryKeyName: ' ',
+          ReferencesPropertyName: setCol,
+          ReferencesTableName: tablename,
+          isDestination: false,
+          constrainName: '',
+          type: '',
+        });
+        //setFormDialogEditRow(row);
+        if (value == 'true') {
           setOpens(true);
         } else {
-          
           let ref = [];
-           for (let i = 0; i < row.row.reference.length; i++)
-           {
-            if (row.row.reference[i].IsDestination == false)
-            {
-              ref =row.row.reference[i] 
+          for (let i = 0; i < row.row.reference.length; i++) {
+            if (row.row.reference[i].IsDestination == false) {
+              ref = row.row.reference[i];
             }
-           }
-           ref.type = 'remove';
+          }
+          ref.type = 'remove';
           setfkReference(ref);
         }
         return value;
@@ -591,74 +621,85 @@ export default function Table({
       };
       dataAfterChange[tablename] = col;
     });
-      
-   
+
     let newPKTable = null;
     let  Tables:any
+    
+    
+   
+    
 
     DataStore.setData({
       ...DataStore.getData(DataStore.store.size - 1),
       ...dataAfterChange,
     });
 
-
     // set table update logic here....
     // access last element in map using map function set (ky, idnex)
 
-
     setFetchedData(DataStore.getData(DataStore.store.size - 1));
-    
 
-   // Update References for PK Table 
+    // Update References for PK Table
 
-   if (fkReference.type == "add")
-   {
-    
-     Tables = DataStore.getData(DataStore.store.size-1);
-     
-     //find the updated fk
-      
-      Tables[fkReference.PrimaryKeyTableName][fkReference.PrimaryKeyName.split(' ')[0]].References.push({PrimaryKeyTableName: fkReference.PrimaryKeyTableName,
-       PrimaryKeyName: fkReference.PrimaryKeyName,
-       ReferencesPropertyName: updatedRow?.column + ' ' + updatedRow?.type,
-       ReferencesTableName:  fkReference.ReferencesTableName,
-       IsDestination: true,
-       constrainName: fkReference.ReferencesTableName+ '_' + updatedRow?.column + '_' + 'fkey'});
-       console.log('Tables before DataStore update for add fk')
-       console.log(Tables);
-       DataStore.setData({
+    if (fkReference.type == 'add') {
+      Tables = DataStore.getData(DataStore.store.size - 1);
+
+      //find the updated fk
+
+      Tables[fkReference.PrimaryKeyTableName][
+        fkReference.PrimaryKeyName.split(' ')[0]
+      ].References.push({
+        PrimaryKeyTableName: fkReference.PrimaryKeyTableName,
+        PrimaryKeyName: fkReference.PrimaryKeyName,
+        ReferencesPropertyName: updatedRow?.column + ' ' + updatedRow?.type,
+        ReferencesTableName: fkReference.ReferencesTableName,
+        IsDestination: true,
+        constrainName:
+          fkReference.ReferencesTableName +
+          '_' +
+          updatedRow?.column +
+          '_' +
+          'fkey',
+      });
+      console.log('Tables before DataStore update for add fk');
+      console.log(Tables);
+      DataStore.setData({
         ...DataStore.getData(DataStore.store.size - 1),
         ...Tables,
       });
-   }
-   if (fkReference.type == "remove" && updatedRow !== null) 
-   {
-     let tempRef = [];
-     Tables = DataStore.getData(DataStore.store.size-1);
-     
-     let ref =   Tables[fkReference.PrimaryKeyTableName][fkReference.PrimaryKeyName.split(' ')[0]].References; 
+    }
+    if (fkReference.type == 'remove' && updatedRow !== null) {
+      let tempRef = [];
+      Tables = DataStore.getData(DataStore.store.size - 1);
 
-     for (let i = 0; i < ref.length; i++) {
+      let ref =
+        Tables[fkReference.PrimaryKeyTableName][
+          fkReference.PrimaryKeyName.split(' ')[0]
+        ].References;
 
-       if (ref[i].ReferencesPropertyName.split(' ')[0] !== updatedRow?.column.split(' ')[0]) {
-         tempRef.push(ref[i]);
-       }
+      for (let i = 0; i < ref.length; i++) {
+        if (
+          ref[i].ReferencesPropertyName.split(' ')[0] !==
+          updatedRow?.column.split(' ')[0]
+        ) {
+          tempRef.push(ref[i]);
+        }
+      }
+      // assign the tempRef back to the pk table
+      Tables[fkReference.PrimaryKeyTableName][
+        fkReference.PrimaryKeyName.split(' ')[0]
+      ].References = tempRef;
 
-     }
-     // assign the tempRef back to the pk table
-     Tables[fkReference.PrimaryKeyTableName][fkReference.PrimaryKeyName.split(' ')[0]].References = tempRef; 
-
-     console.log('tables just before store update for Remove fk:')
-     console.log(Tables);
-     DataStore.setData({
-      ...DataStore.getData(DataStore.store.size - 1),
-      ...Tables,
-    });
-   }
-  // accessing datastore.store.get ?
-
-
+      console.log('tables just before store update for Remove fk:');
+      console.log(Tables);
+      DataStore.setData({
+        ...DataStore.getData(DataStore.store.size - 1),
+        ...Tables,
+      });
+    }
+    // accessing datastore.store.get ?
   }
+
   
   const updateXarrow = useXarrow();
 
@@ -669,7 +710,8 @@ function mouseOver () {
 
   return (
     <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
-      <div className="table-Draggable"
+      <div
+        className="table-Draggable"
         id={id}
         // style={{
         //   height: "auto",
@@ -683,15 +725,13 @@ function mouseOver () {
         // }}
       >
         <div className="table-DraggableSub1"
-          // onMouseOver={mouseOver}
-          onMouseDown={mouseOver}
           // style={{
           //   display: 'flex',
           //   justifyContent: 'space-between',
           //   alignItems: 'center',
           // }}
         >
-          <div className='table-DraggableSub2'
+          <div className='table-DraggableSub2' 
           // style={{ fontSize: "24px" }}
           >{id}</div>
         </div>
@@ -725,10 +765,11 @@ function mouseOver () {
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
-         
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => {console.log("logic failed");
-        console.log(error)}}
+          onProcessRowUpdateError={(error) => {
+            console.log('logic failed');
+            console.log(error);
+          }}
           components={{
             Toolbar: EditToolbar,
           }}
@@ -751,14 +792,28 @@ interface EditToolbarProps {
 }
 
 function EditToolbar(props: EditToolbarProps) {
+  // console.log("EEEditToolBar", props)
   const { setRows, setRowModesModel } = props;
 
+  
+
   const handleClick = () => {
+    console.log("this is PROPD", props);
     const id = randomId();
-    
+    console.log("handleclickID", id);
+
     setRows((oldRows) => [
       ...oldRows,
-      { id, column: "", type: "", constraint: "", pk: "", fk: "", reference: [], isNew: true },
+      {
+        id,
+        column: '',
+        type: '',
+        constraint: '',
+        pk: '',
+        fk: '',
+        reference: [],
+        isNew: true,
+      },
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -767,12 +822,13 @@ function EditToolbar(props: EditToolbarProps) {
   };
 
   return (
-    <GridToolbarContainer className='table-GridToolbarContainer' 
-    // style={{ height: '30px' }}
+    <GridToolbarContainer
+      className="table-GridToolbarContainer"
+      // style={{ height: '30px' }}
     >
       <Button
         color="primary"
-        className='table-GridToolbarContainer-Button'
+        className="table-GridToolbarContainer-Button"
         size="small"
         startIcon={<AddIcon />}
         onClick={handleClick}
@@ -834,49 +890,72 @@ interface FormDialogProps {
   setfkReference: React.Dispatch<React.SetStateAction<any>>;
 }
 
-function FormDialog({setRowModesModel, setRows, opens, setOpens, setFormDialogEditRow,setFormDialogEditCol,  formDialogEditCol, formDialogEditRow, rows, fetchedData, fkReference, tablename, setfkReference}: FormDialogProps) {
+function FormDialog({
+  setRowModesModel,
+  setRows,
+  opens,
+  setOpens,
+  setFormDialogEditRow,
+  setFormDialogEditCol,
+  formDialogEditCol,
+  formDialogEditRow,
+  rows,
+  fetchedData,
+  fkReference,
+  tablename,
+  setfkReference,
+}: FormDialogProps) {
+  let temp: (JSX.Element | undefined)[] = [];
+  let references = { column_name: '', references: { type: '' } };
+  const [columnList, setcolumnList] = useState<
+    (JSX.Element | null | undefined)[]
+  >([]);
+  const [pkList, setpkList] = useState('');
+  const [msg, setMsg] = useState('');
+  const [selectedCol, setselectedCol] = useState('');
+  const handleClose = () => {
+    setFormDialogEditCol('false');
 
-let temp:(JSX.Element | undefined)[] = []; 
-let references = {column_name:"", references:{type:''}};
-const [columnList, setcolumnList] = useState<(JSX.Element| null | undefined)[]>([]);
-const [pkList, setpkList] = useState('');
-const [msg, setMsg] = useState('');
-const [selectedCol, setselectedCol] = useState('');
-const handleClose = () => {
-setFormDialogEditCol("false")
+    setOpens(false);
+  };
 
-setOpens(false);
-};
+  const handleSubmit = () => {
+    // Add state to prevent button
+    setFormDialogEditCol('true');
+    let PrimaryKeyTableName = pkList;
+    let PrimaryKeyName =
+      selectedCol + ' ' + fetchedData[pkList][selectedCol].data_type;
+    let ReferencesPropertyName =
+      formDialogEditRow.row.column + ' ' + formDialogEditRow.row.type;
+    let ReferencesTableName: string | null = tablename;
+    let isDestination = false;
+    let constrainName =
+      ReferencesTableName + '_' + formDialogEditRow.row.column + '_' + 'fkey';
+    let obj = {};
+    if (PrimaryKeyTableName == null) alert('Must Select Primary Table Name');
+    else if (PrimaryKeyName == null) alert('Must Select Primary Key Column');
+    else if (ReferencesPropertyName == null)
+      alert('Error: Reference Property Name Not Set');
+    else if (ReferencesTableName == null)
+      alert('Error: References Table Not Set');
+    else {
+      setfkReference({
+        PrimaryKeyTableName: PrimaryKeyTableName,
+        PrimaryKeyName: PrimaryKeyName,
+        ReferencesPropertyName: ReferencesPropertyName,
+        ReferencesTableName: ReferencesTableName,
+        IsDestination: false,
+        constrainName: constrainName,
+        type: 'add',
+      });
 
-const handleSubmit = () => {
-// Add state to prevent button
-setFormDialogEditCol("true")
-let PrimaryKeyTableName = pkList; 
-let PrimaryKeyName= selectedCol + ' ' + fetchedData[pkList][selectedCol].data_type;
-let ReferencesPropertyName= formDialogEditRow.row.column+ ' ' + formDialogEditRow.row.type; 
-let ReferencesTableName:(string | null) = tablename; 
-let isDestination = false; 
-let constrainName = ReferencesTableName + '_' + formDialogEditRow.row.column + '_' + 'fkey';
-let obj = {};
-if (PrimaryKeyTableName == null )
-alert('Must Select Primary Table Name')
-else if (PrimaryKeyName == null )
-alert('Must Select Primary Key Column')
-else if (ReferencesPropertyName == null)
-alert('Error: Reference Property Name Not Set')
-else if (ReferencesTableName == null )
-alert('Error: References Table Not Set')
-else  
-{
-
-  setfkReference({PrimaryKeyTableName: PrimaryKeyTableName, 'PrimaryKeyName' :PrimaryKeyName, 'ReferencesPropertyName':ReferencesPropertyName, 'ReferencesTableName':ReferencesTableName, 'IsDestination': false, 'constrainName': constrainName, type: 'add'});
-
-setOpens(false);
-}}
+      setOpens(false);
+    }
+  };
 
   const handleChange = (event: SelectChangeEvent) => {
     setpkList(event.target.value);
-   
+
     let temp = Object.keys(fetchedData[event.target.value]).map(
       (key, index) => {
         if (fetchedData[event.target.value][key].IsPrimaryKey == true)
@@ -889,13 +968,10 @@ setOpens(false);
     );
 
     setcolumnList(temp);
-   
-  }
+  };
 
   const handleColChange = (event: SelectChangeEvent) => {
-    
     setselectedCol(event.target.value);
-   
   };
 
 
@@ -911,18 +987,20 @@ setOpens(false);
   //formDialogEditRow.row.column
   return (
     <div>
-      <Dialog 
-        className='table-Dialog'
+      <Dialog
+        className="table-Dialog"
         color="dark"
         open={opens}
         onClose={handleClose}
-        PaperProps={{
-          // style: {
-          //   //backgroundColor: 'grey', Add color styling here...
-          //   boxShadow: 'ffff',
-          //   color: 'black',
-          // },
-        }}
+        PaperProps={
+          {
+            // style: {
+            //   //backgroundColor: 'grey', Add color styling here...
+            //   boxShadow: 'ffff',
+            //   color: 'black',
+            // },
+          }
+        }
         sx={{
           display: 'inline',
           fontWeight: 'bold',
@@ -1007,8 +1085,8 @@ setOpens(false);
           </span>
         </DialogContent>
         <DialogActions>
-          <Button 
-            className='table-DialogActions-Button'
+          <Button
+            className="table-DialogActions-Button"
             // style={{
             //   color: 'black',
             // }}
@@ -1017,7 +1095,7 @@ setOpens(false);
             Cancel
           </Button>
           <Button
-            className='table-DialogActions-Button'
+            className="table-DialogActions-Button"
             // style={{
             //   color: 'black',
             // }}
