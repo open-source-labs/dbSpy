@@ -14,6 +14,10 @@ import darkMode from '../../darkMode.js'
 
 export default function HomeNavbar() {
 
+  const currentTheme = localStorage.getItem('theme');
+  const darkButtonState = currentTheme === 'light' || !currentTheme ? 'Dark Mode' : 'Light Mode'
+
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -21,7 +25,7 @@ export default function HomeNavbar() {
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <img src={logo} alt="Logo" />
-            <Button className="darkMode" color="inherit" onClick={darkMode}>Dark Mode</Button>
+            <Button className="darkMode" color="inherit" onClick={darkMode}>{darkButtonState}</Button>
           </Typography>
 
          

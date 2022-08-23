@@ -106,10 +106,6 @@ header{
     align-items: center;
 }
 
-.canvas-Line360:hover {
-    
-}
-
 .canvas-ConnectToDatabase {
     color: var(--font-color);
     background-color: var(--bg-color);
@@ -367,7 +363,6 @@ It is passing styling down through props, but switching to css for dark mode
     border-color: var(--border-color);
 }
 
-
 /* main canvas */
 .mantine-m0gl6u{
     color: var(--font-color);
@@ -375,7 +370,6 @@ It is passing styling down through props, but switching to css for dark mode
     border-color: var(--border-color);
      
 }
-
 
 /* left nav-bar border outside of Action and Edit div containers*/
 .mantine-Navbar-root{
@@ -385,11 +379,9 @@ It is passing styling down through props, but switching to css for dark mode
     
 }
 
-/* idk */
-.mantine-5r0jme{
-    /* color: var(--nav-bar-font-color); */
-    background-color: blue;
-    color: red;
+/* Hamburger menu in the upper left */
+.mantine-Burger-burger, .mantine-Burger-burger::before, .mantine-Burger-burger::after{
+    background-color: var(--nav-bar); 
 }
 
 /* 2 large divs containing Action and Edit content*/
@@ -400,14 +392,12 @@ It is passing styling down through props, but switching to css for dark mode
          /* background-color: red; */
 }
 
-
 /* small divs containing the text on left nav bar */
 .mantine-Text-root{
     background-color: var(--bg-color);
     border-color: var(--border-color);
     color: var(--font-color);
 }
-
 
 .mantine-Group-root{
     background-color: var(--bg-color);
@@ -426,8 +416,6 @@ May be able to fix this by changing the button:action behavior
     color: var(--font-color);
 }
 
-
-
 /* Table +Field area above data */
 .table-GridToolbarContainer{
     border-color: var(--nav-bar);
@@ -443,21 +431,17 @@ May be able to fix this by changing the button:action behavior
     color: black;
 }
 
-
-
 /* Table column and row area */
 .MuiDataGrid-main{
     /* border-color: red; */
     background-color: var(--inner-table);
 }
 
-
 /* inner table where data goes */
 .MuiDataGrid-virtualScroller{
     color: var(--nav-bar);
     padding: 0px;
     margin: 0px;
-
 }
 
 /* table drop down lists */
@@ -465,13 +449,6 @@ May be able to fix this by changing the button:action behavior
     color: var(--font-color);
     background-color: var(--inner-table);
 }
-
-
-/* .MuiDataGrid-virtualScroller{
-    color: red;
-    border-color: red;
-    background-color: red;
-} */
 
 /* SQL Query Generator outer border area */
 .mantine-jghxib{
@@ -482,8 +459,6 @@ May be able to fix this by changing the button:action behavior
     height: 80px;
     width: 500px;
     border-radius: 5px;
-   
-  
 }
 
 /* query box text display of the query generator. Also the History section on the left nav bar for some reason */
@@ -492,7 +467,6 @@ May be able to fix this by changing the button:action behavior
     border-color: var(--border-color);
     color: var(--font-color);
 }
-
 
 /* Add Table popup dialog */
 .mantine-Paper-root{
@@ -507,7 +481,6 @@ May be able to fix this by changing the button:action behavior
     background-color: var(--bg-color);
     border-color: var(--border-color); 
 }
-
 
 .DisplayHeaderBox{
     display: flex;
@@ -554,8 +527,6 @@ May be able to fix this by changing the button:action behavior
 
 /*
 ~D A R K M O D E~
-
-Im not sure why but the button in HomeNavBar.tsx isnt taking css styling 
 */
 
 .darkMode{
