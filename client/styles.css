@@ -12,6 +12,7 @@ Canvas.tsx styling below
     --mimi-bg-color: blueviolet;
     --box-shadow: #ffff;
     --border-color: #808080;
+    --DMButton: #3d5461
     /* --inner-table: #808080; */
 }
 
@@ -31,6 +32,7 @@ Canvas.tsx styling below
     --box-shadow: #ffff; 
     --border-color: #617980c4; 
     --inner-table: #acc2c2;
+    --DMButton: whitesmoke
 }
 
 body {
@@ -533,4 +535,9 @@ May be able to fix this by changing the button:action behavior
     background-color: var(--nav-bar);
     color: var(--nav-bar-font-color);
     border: 0px solid var(--border-color);
+}
+
+.darkMode:hover{
+    background-color: var(--DMButton);
+    color: var(--muted-font-color);
 }
