@@ -78,6 +78,8 @@ interface TableProps {
       field_name: string;
     };
   };
+  tableId?: any;
+  setId?: any;
   id: string;
   setFetchedData: (fetchedData: any) => void;
   setSqlOpen: (sqlOpen: boolean) => void;
@@ -98,6 +100,8 @@ interface RowProps {
 
 export default function Table({
   tableInfo,
+  tableId,
+  setId,
   id,
   setFetchedData,
   setSqlOpen,
@@ -601,6 +605,7 @@ export default function Table({
     const dataAfterChange: any = {};
     const col: any = {};
     rows.forEach((obj: RowProps) => {
+      console.log('THIS IS EACH OBJECT', obj.id)
       const { id, column, constraint, fk, pk, type, reference } = obj;
       col[column] = {
         IsForeignKey: fk,
@@ -615,7 +620,11 @@ export default function Table({
     });
 
     let newPKTable = null;
-    let Tables: any;
+    let  Tables:any
+    
+    
+   
+    
 
     DataStore.setData({
       ...DataStore.getData(DataStore.store.size - 1),
@@ -688,7 +697,13 @@ export default function Table({
     // accessing datastore.store.get ?
   }
 
+  
   const updateXarrow = useXarrow();
+
+function mouseOver () {
+  setId(id)
+}
+
 
   return (
     <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
@@ -706,20 +721,17 @@ export default function Table({
         //   fontFamily: "Arial",
         // }}
       >
-        <div
-          className="table-DraggableSub1"
+        <div className="table-DraggableSub1"
+        onMouseDown={mouseOver}
           // style={{
           //   display: 'flex',
           //   justifyContent: 'space-between',
           //   alignItems: 'center',
           // }}
         >
-          <div
-            className="table-DraggableSub2"
-            // style={{ fontSize: "24px" }}
-          >
-            {id}
-          </div>
+          <div className='table-DraggableSub2' 
+          // style={{ fontSize: "24px" }}
+          >{id}</div>
         </div>
         <FormDialog
           opens={opens}
@@ -959,6 +971,8 @@ function FormDialog({
   const handleColChange = (event: SelectChangeEvent) => {
     setselectedCol(event.target.value);
   };
+
+
 
   let listOfTables = Object.keys(fetchedData).map((key, index) => {
     if (key !== tablename)
