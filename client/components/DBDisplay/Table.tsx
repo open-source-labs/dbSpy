@@ -80,8 +80,6 @@ interface TableProps {
   };
   tableId?: any;
   setId?: any;
-  onMouseOver?: any;
-  onMouseDown?: any;
   id: string;
   setFetchedData: (fetchedData: any) => void;
   setSqlOpen: (sqlOpen: boolean) => void;
@@ -703,7 +701,6 @@ export default function Table({
   const updateXarrow = useXarrow();
 
 function mouseOver () {
-  console.log('THIS IS ID', id)
   setId(id)
 }
 
