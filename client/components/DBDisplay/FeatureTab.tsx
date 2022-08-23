@@ -34,6 +34,16 @@ import {
   FileUpload,
   Eraser,
 } from 'tabler-icons-react';
+import { 
+  GridRowsProp, 
+  GridRowModes,
+  GridRowModesModel,
+} from '@mui/x-data-grid';
+import {
+  randomId,
+} from '@mui/x-data-grid-generator';
+import { GridRowModesModelProps } from '@mui/x-data-grid/models/api/gridEditingApi';
+import { ConstructionOutlined } from '@mui/icons-material';
 
 interface FeatureTabProps {
   setTablename: (e: string) => void;
@@ -125,6 +135,39 @@ export default function FeatureTab({
       };
     };
   }
+
+  interface EditToolbarProps {
+    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+    setRowModesModel: (
+      newModel: (oldModel: GridRowModesModel) => GridRowModesModel
+    ) => void;
+  }
+
+  // function newTable(props: EditToolbarProps){
+  //   const { setRows, setRowModesModel } = props;
+    
+    const firstcolumn = (props: EditToolbarProps) => {
+      const { setRows, setRowModesModel } = props;
+      const id = randomId();
+      
+      setRows(() => [
+        {
+          id,
+          column: '',
+          type: '',
+          constraint: 'UNIQUE',
+          pk: 'true',
+          fk: '',
+          reference: [],
+          isNew: true,
+        },
+      ]);
+      console.log(setRows)
+    setRowModesModel((oldModel: GridRowModesModel) => ({
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'column' },
+    }));
+  }
+//}
 
   /* useEffect:
     Gets invoked when fetchedData is updated;

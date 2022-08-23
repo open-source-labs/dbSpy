@@ -21,6 +21,9 @@ import {
 } from "@mantine/core";
 import { toPng } from "html-to-image";
 
+//import fileSaver for export queries
+import FileSaver from 'file-saver'
+
 
 
 interface stateChangeProps {
@@ -178,6 +181,18 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   //   }
   // }, []);
 
+  //To export queries
+  const exportQueries = () =>{
+    const ex = [DataStore.exportData().join('\n')]
+    console.log(ex)
+    // console.log("this is join", ex)
+    const data =  new Blob(ex,
+    {type: 'text/plain;charset=utf-8', 
+    endings: 'native'});
+    console.log(data);
+    FileSaver.saveAs(data, "ExportQueries.txt")
+  };
+
   const screenshot = useCallback(() => {
     if (ref.current === null) {
       return;
@@ -252,6 +267,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
             flexDirection: "column",
           }}
         >
+
          <Button
             styles={(theme: any) => ({
               root: {
@@ -267,7 +283,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
                 },
               },
             })}
-            onClick={() => setSqlOpen((o) => !o)}
+            onClick={() => setSqlOpen((o) => !o)}    
             >
               {sqlOpen ? "PostgreSQL" : "MySQL"}
           </Button>
@@ -310,8 +326,32 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
               <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
             </ScrollArea>
           </Collapse>
+          <Button
+            styles={(theme: any) => ({
+              root: {
+                backgroundColor: "#3c4e58",
+                border: 0,
+                height: 42,
+                paddingLeft: 20,
+                paddingRight: 20,
+                marginTop: 20,
+
+                "&:hover": {
+                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                },
+              },
+            })}
+            onClick={() =>  {
+            console.log("run export");
+            exportQueries()
+            }
+          }
+            >
+              Export Queries
+            </Button>
         </Box>
       )}
+
 
       <Canvas
         sqlOpen={sqlOpen}

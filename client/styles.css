@@ -148,6 +148,7 @@ Table.tsx styling below
 }
 
 .table-DraggableSub2{ 
+    color: var(--nav-bar-font-color);
     font-size: 24px; 
 }
 

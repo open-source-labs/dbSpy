@@ -778,10 +778,15 @@ interface EditToolbarProps {
 }
 
 function EditToolbar(props: EditToolbarProps) {
+  // console.log("EEEditToolBar", props)
   const { setRows, setRowModesModel } = props;
 
+  
+
   const handleClick = () => {
+    console.log("this is PROPD", props);
     const id = randomId();
+    console.log("handleclickID", id);
 
     setRows((oldRows) => [
       ...oldRows,
