@@ -1,18 +1,4 @@
-import React from 'react';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import { BrandGithub, BrandLinkedin } from 'tabler-icons-react';
-
-import logo from "../../assets/logo5-blue-cropped_all_sides.png";
-import gif from "../../assets/SQL.gif";
-
-
-export default function Body() {
-  const date = new Date().getFullYear();
-
-  return (
+<!-- return (
     <>
       <head>
         <link
@@ -170,7 +156,156 @@ export default function Body() {
                 Meet the Team
               </h2>
               <div className='body-Team-Container'>
-            
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" alt="BrettGuidry" />
+
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    Brett Guidry
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer"
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/brett-guidry-6b6085107/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/Lurkbot9000" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
+                </div>
+
+
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" alt="EmilMebasser" />
+
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    Emil Mebasser
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer"
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/emil-mebasser-a1a2a815/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/ejmebasser" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
+                </div>
+
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" alt="MimiLe" />
+
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                   Mimi Le
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer" 
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/my-le-a94575226/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/kawaiiyummy14" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
+                </div>
+
+                <div className="Body-col-lg-3" 
+                // style={{ textAlign: 'center' }}
+                >
+                  <img className="Body-img-col"
+                  // style={{width:"140px", borderRadius:"50%"}} 
+                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" alt="Samson Lam" />
+
+                  <h3 className="Body-fw-normal" 
+                  // style={{ paddingTop: '10px' }}
+                  >
+                    Samson Lam
+                  </h3>
+                  <p className="Body-p-software"
+                  // style={{ margin: '10px' }}
+                  >
+                    Software Engineer
+                  </p>
+                  <div className="Body-footer" 
+                  // style={{marginBottom: "20px"}}
+                  >
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/samson-lam-455846219/" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandLinkedin className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/sflam2013" 
+                    // style={{margin: "10px"}}
+                    >
+                      <BrandGithub className="body-brand"
+                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
+                      />
+                    </a>
+                  </div>
+                </div>
+
+
                 <div className="Body-col-lg-3" 
                 // style={{ textAlign: 'center' }}
                 >
@@ -214,7 +349,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" alt="JohnPaulAdigwu" />
+                  src="https://avatars.githubusercontent.com/u/20432738?v=4" alt="JohnPaulAdigwu" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -320,166 +455,7 @@ export default function Body() {
                     </a>
                   </div>
                 </div>
-                {/* the end  */}
               </div>  
-              <div className='body-Team-Container 1'>
-
-              <div className="Body-col-lg-3" 
-                // style={{ textAlign: 'center' }}
-                >
-                  <img className="Body-img-col"
-                  // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" alt="BrettGuidry" />
-
-                  <h3 className="Body-fw-normal" 
-                  // style={{ paddingTop: '10px' }}
-                  >
-                    Brett Guidry
-                  </h3>
-                  <p className="Body-p-software"
-                  // style={{ margin: '10px' }}
-                  >
-                    Software Engineer
-                  </p>
-                  <div className="Body-footer"
-                  // style={{marginBottom: "20px"}}
-                  >
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/brett-guidry-6b6085107/" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandLinkedin className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/Lurkbot9000" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandGithub className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                  </div>
-                </div>
-
-
-                <div className="Body-col-lg-3" 
-                // style={{ textAlign: 'center' }}
-                >
-                  <span>
-                  <img className="Body-img-col"
-                  // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" alt="EmilMebasser" />
-
-                  </span>
-
-                  <h3 className="Body-fw-normal" 
-                  // style={{ paddingTop: '10px' }}
-                  >
-                    Emil Mebasser
-                  </h3>
-                  <p className="Body-p-software"
-                  // style={{ margin: '10px' }}
-                  >
-                    Software Engineer
-                  </p>
-                  <div className="Body-footer"
-                  // style={{marginBottom: "20px"}}
-                  >
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/emil-mebasser-a1a2a815/" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandLinkedin className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/ejmebasser" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandGithub className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="Body-col-lg-3" 
-                // style={{ textAlign: 'center' }}
-                >
-                  <img className="Body-img-col"
-                  // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" alt="MimiLe" />
-
-                  <h3 className="Body-fw-normal" 
-                  // style={{ paddingTop: '10px' }}
-                  >
-                   Mimi Le
-                  </h3>
-                  <p className="Body-p-software"
-                  // style={{ margin: '10px' }}
-                  >
-                    Software Engineer
-                  </p>
-                  <div className="Body-footer" 
-                  // style={{marginBottom: "20px"}}
-                  >
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/my-le-a94575226/" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandLinkedin className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/kawaiiyummy14" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandGithub className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="Body-col-lg-3" 
-                // style={{ textAlign: 'center' }}
-                >
-                  <img className="Body-img-col"
-                  // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" alt="Samson Lam" />
-
-                  <h3 className="Body-fw-normal" 
-                  // style={{ paddingTop: '10px' }}
-                  >
-                    Samson Lam
-                  </h3>
-                  <p className="Body-p-software"
-                  // style={{ margin: '10px' }}
-                  >
-                    Software Engineer
-                  </p>
-                  <div className="Body-footer" 
-                  // style={{marginBottom: "20px"}}
-                  >
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/samson-lam-455846219/" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandLinkedin className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                    <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/sflam2013" 
-                    // style={{margin: "10px"}}
-                    >
-                      <BrandGithub className="body-brand"
-                      // size={40} strokeWidth={1.5} color={'#FFFFFF'} 
-                      />
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-
-
-
             </div>
           </div>
           {/* <!-- /.container --> */}
@@ -504,4 +480,4 @@ export default function Body() {
     </>
     
   );
-}
+} -->

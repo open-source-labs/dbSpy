@@ -263,7 +263,12 @@ Body.tsx styling below
     padding: 50px 0 
 }
 
-.body-Team-Container{
+.body-Team-Container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.body-Team-Container1 {
     display: flex;
     justify-content: space-between;
 }
@@ -274,12 +279,29 @@ Body.tsx styling below
 }
 
 .Body-img-col{
-    width:140px;
+    /* max-width:140px;
+    max-height: 140px; */
+    /* position: relative; */
+    /* max-height: auto; */
+
+   /* max-height: 140px; */
+   height: 140px;
+   width: 140px;
     border-radius:50%;
+    object-fit: cover; 
+    overflow: hidden;
+    
 }
 
 .Body-col-lg-3{ 
     text-align: center;
+    /* height: 140px;
+    width: 140px; */
+    /* max-height: 140px; */
+    /* max-width:140px;
+    max-height: 140px; */
+    /* width: auto;
+    max-height: auto; */
 }
 
 .Body-fw-normal{
