@@ -12,8 +12,13 @@ Canvas.tsx styling below
     --mimi-bg-color: blueviolet;
     --box-shadow: #ffff;
     --border-color: #808080;
+    --DMButton: #3d5461
     /* --inner-table: #808080; */
 }
+
+/* #root {
+    height: 100%;
+} */
 
 
 [data-theme='dark'] {
@@ -27,6 +32,22 @@ Canvas.tsx styling below
     --box-shadow: #ffff; 
     --border-color: #617980c4; 
     --inner-table: #acc2c2;
+    --DMButton: whitesmoke
+}
+
+body {
+    /* height: 200vh; */
+    /* margin-top: clamp(40px, 10vh, 100px); */
+    margin: 0;
+    padding: 0;
+    background-color: whitesmoke;
+}
+
+html {
+    /* height: 200vh; */
+    /* height: .01vh; */
+    background-color: var(--bg-color);
+
 }
 
 header{
@@ -87,10 +108,6 @@ header{
     align-items: center;
 }
 
-.canvas-Line360:hover {
-    
-}
-
 .canvas-ConnectToDatabase {
     color: var(--font-color);
     background-color: var(--bg-color);
@@ -139,6 +156,7 @@ Table.tsx styling below
     border-radius: 5px;
     padding: 3px;
     font-family: Arial;
+    z-index: 1;
 }
 
 .table-DraggableSub1{
@@ -245,7 +263,12 @@ Body.tsx styling below
     padding: 50px 0 
 }
 
-.body-Team-Container{
+.body-Team-Container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.body-Team-Container1 {
     display: flex;
     justify-content: space-between;
 }
@@ -256,12 +279,29 @@ Body.tsx styling below
 }
 
 .Body-img-col{
-    width:140px;
+    /* max-width:140px;
+    max-height: 140px; */
+    /* position: relative; */
+    /* max-height: auto; */
+
+   /* max-height: 140px; */
+   height: 140px;
+   width: 140px;
     border-radius:50%;
+    object-fit: cover; 
+    overflow: hidden;
+    
 }
 
 .Body-col-lg-3{ 
     text-align: center;
+    /* height: 140px;
+    width: 140px; */
+    /* max-height: 140px; */
+    /* max-width:140px;
+    max-height: 140px; */
+    /* width: auto;
+    max-height: auto; */
 }
 
 .Body-fw-normal{
@@ -347,7 +387,6 @@ It is passing styling down through props, but switching to css for dark mode
     border-color: var(--border-color);
 }
 
-
 /* main canvas */
 .mantine-m0gl6u{
     color: var(--font-color);
@@ -355,7 +394,6 @@ It is passing styling down through props, but switching to css for dark mode
     border-color: var(--border-color);
      
 }
-
 
 /* left nav-bar border outside of Action and Edit div containers*/
 .mantine-Navbar-root{
@@ -365,11 +403,9 @@ It is passing styling down through props, but switching to css for dark mode
     
 }
 
-/* idk */
-.mantine-5r0jme{
-    /* color: var(--nav-bar-font-color); */
-    background-color: blue;
-    color: red;
+/* Hamburger menu in the upper left */
+.mantine-Burger-burger, .mantine-Burger-burger::before, .mantine-Burger-burger::after{
+    background-color: var(--nav-bar); 
 }
 
 /* 2 large divs containing Action and Edit content*/
@@ -380,14 +416,12 @@ It is passing styling down through props, but switching to css for dark mode
          /* background-color: red; */
 }
 
-
 /* small divs containing the text on left nav bar */
 .mantine-Text-root{
     background-color: var(--bg-color);
     border-color: var(--border-color);
     color: var(--font-color);
 }
-
 
 .mantine-Group-root{
     background-color: var(--bg-color);
@@ -406,8 +440,6 @@ May be able to fix this by changing the button:action behavior
     color: var(--font-color);
 }
 
-
-
 /* Table +Field area above data */
 .table-GridToolbarContainer{
     border-color: var(--nav-bar);
@@ -423,21 +455,17 @@ May be able to fix this by changing the button:action behavior
     color: black;
 }
 
-
-
 /* Table column and row area */
 .MuiDataGrid-main{
     /* border-color: red; */
     background-color: var(--inner-table);
 }
 
-
 /* inner table where data goes */
 .MuiDataGrid-virtualScroller{
     color: var(--nav-bar);
     padding: 0px;
     margin: 0px;
-
 }
 
 /* table drop down lists */
@@ -445,13 +473,6 @@ May be able to fix this by changing the button:action behavior
     color: var(--font-color);
     background-color: var(--inner-table);
 }
-
-
-/* .MuiDataGrid-virtualScroller{
-    color: red;
-    border-color: red;
-    background-color: red;
-} */
 
 /* SQL Query Generator outer border area */
 .mantine-jghxib{
@@ -462,8 +483,6 @@ May be able to fix this by changing the button:action behavior
     height: 80px;
     width: 500px;
     border-radius: 5px;
-   
-  
 }
 
 /* query box text display of the query generator. Also the History section on the left nav bar for some reason */
@@ -472,7 +491,6 @@ May be able to fix this by changing the button:action behavior
     border-color: var(--border-color);
     color: var(--font-color);
 }
-
 
 /* Add Table popup dialog */
 .mantine-Paper-root{
@@ -487,7 +505,6 @@ May be able to fix this by changing the button:action behavior
     background-color: var(--bg-color);
     border-color: var(--border-color); 
 }
-
 
 .DisplayHeaderBox{
     display: flex;
@@ -534,12 +551,15 @@ May be able to fix this by changing the button:action behavior
 
 /*
 ~D A R K M O D E~
-
-Im not sure why but the button in HomeNavBar.tsx isnt taking css styling 
 */
 
 .darkMode{
     background-color: var(--nav-bar);
     color: var(--nav-bar-font-color);
     border: 0px solid var(--border-color);
+}
+
+.darkMode:hover{
+    background-color: var(--DMButton);
+    color: var(--muted-font-color);
 }

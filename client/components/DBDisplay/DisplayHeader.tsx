@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo5-white-100-rectangle.png";
 
@@ -8,6 +8,8 @@ import MenuPopUp from "./MenuPopUp";
 
 // UI Libraries - Mantine
 import { Header, Text, MediaQuery, Button, Image, Box } from "@mantine/core";
+
+
 
 // D A R K M O D E 
 import darkMode from '../../darkMode.js'
@@ -28,7 +30,7 @@ export default function DisplayHeader({
   picture,
   setMenuPopUpOpened,
   setUser,
-}: DisplayHeaderProps) {
+  }: DisplayHeaderProps) {
   const navigate = useNavigate();
 
   if (picture === null) picture = undefined;
@@ -37,6 +39,11 @@ export default function DisplayHeader({
    * Receive a data with a format of {logout: true||false};
    * Redirect to main homepage upon both success and failure;
    */
+
+  // Dark mode button display. 
+  const currentTheme = localStorage.getItem('theme');
+  const darkButtonState = currentTheme === 'light' || !currentTheme ? 'Dark Mode' : 'Light Mode'
+
   const logout = () => {
     sessionStorage.clear();
     fetch("/logout")
@@ -87,7 +94,7 @@ export default function DisplayHeader({
             {/* <Text color="white">Logo</Text> */}
             <img src={logo} alt="Logo" />
           </Link>
-          <Button className="darkMode" color="inherit" onClick={darkMode}>Dark Mode</Button>
+          <Button className="darkMode" color="inherit" onClick={darkMode}>{darkButtonState}</Button>
         </div>
 
        
