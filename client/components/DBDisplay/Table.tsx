@@ -166,6 +166,8 @@ export default function Table({
   */
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes('')) return 'empty';
+    if (oldRow.length === 1 && newRow.constraint !== 'PRIMARY KEY' ) return 'pkFirstConstraint';
+    if (oldRow.length === 1 && newRow.pk === 'false') return 'pkFirst';
 
     for (let i = 0; i < oldRow.length; i++) {
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
@@ -181,6 +183,7 @@ export default function Table({
         return 'saveWithoutChange';
       }
       if (oldRow[i].pk === true && newRow.pk === 'true') return 'pkIssue';
+      if (oldRow[i].constraint === 'PRIMARY KEY' && newRow.constraint === 'PRIMARY KEY') return 'pkConstraintIssue'
     }
 
     if (newRow.fk === 'true') {
@@ -311,17 +314,18 @@ export default function Table({
   };
 
   /* "processRowUpdate" - a function that gets triggered to update the "rows" when row is being processed after hitting save button.
-   */
-  const processRowUpdate = (newRow: GridRowModel) => {
-    console.log('fkReference:');
-    console.log(fkReference);
-
-    // check the logic first, if error, go back to Edit mode.
-    if (logicCheck(newRow, rows) === 'empty') {
-      alert('Please make sure to fill out every cell!');
-      setRowModesModel({
-        ...rowModesModel,
-        [newRow.id]: { mode: GridRowModes.Edit },
+  */
+ const processRowUpdate = (newRow: GridRowModel) => {
+   console.log('fkReference:');
+   console.log(fkReference);
+   console.log("pkFirst", newRow.constraint !== "Primary Key", newRow.pk !== 'true', rows)
+   
+   // check the logic first, if error, go back to Edit mode.X
+   if (logicCheck(newRow, rows) === 'empty') {
+     alert('Please make sure to fill out every cell!');
+     setRowModesModel({
+       ...rowModesModel,
+       [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
     } else if (logicCheck(newRow, rows) === 'existingColName') {
@@ -338,14 +342,45 @@ export default function Table({
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
-    } else if (logicCheck(newRow, rows) === 'pkIssue') {
-      alert('you cannot have more than one PK!');
+    } 
+    // else if (logicCheck(newRow, rows) === 'pkIssue') {
+    //   alert('you cannot have more than one PK!');
+    //   setRowModesModel({
+    //     ...rowModesModel,
+    //     [newRow.id]: { mode: GridRowModes.Edit },
+    //   });
+    //   return;
+    // } 
+    else if (logicCheck(newRow, rows) === 'pkFirst') {
+      alert('Set your Primary Key first!');
       setRowModesModel({
         ...rowModesModel,
         [newRow.id]: { mode: GridRowModes.Edit },
       });
       return;
     }
+    else if (logicCheck(newRow, rows) === 'pkFirstConstraint') {
+      alert('you cannot have more than PRIMARY KEY in Constraints!');
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    }
+    else if (logicCheck(newRow, rows) === 'pkConstraintIssue') {
+      alert('Please select PRIMARY KEY in Constraints if pk is true!');
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    }
+
+
+    // if (oldRow[i].constraint === 'PRIMARY KEY' && newRow.constraint === 'PRIMARY KEY') return 'pkConstraintIssue'
+    // if (oldRow.length === 1 && newRow.constraint !== 'PRIMARY KEY' ) return 'pkFirstConstraint';
+    // if (oldRow.length === 1 && newRow.pk === 'false') return 'pkFirst';
+    // if (oldRow[0].pk === true && oldRow[0].constraint === 'PRIMARY KEY') return 'pkIssue';
 
     // Iterate through the beforeChange table to grab the column that is being edited before the change.
     let ColBeforeChange;
@@ -503,7 +538,7 @@ export default function Table({
       width: 100,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['NA', 'NOT NULL', 'UNIQUE'],
+      valueOptions: ['NA', 'NOT NULL', 'UNIQUE', 'PRIMARY KEY'],
     },
     {
       field: 'pk',
