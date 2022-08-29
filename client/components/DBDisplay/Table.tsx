@@ -170,8 +170,9 @@ export default function Table({
   */
   function logicCheck(newRow: GridRowModel, oldRow: GridRowModel[]): string {
     if (Object.values(newRow).includes('')) return 'empty';
-    if (oldRow.length === 1 && newRow.constraint !== 'PRIMARY KEY' ) return 'pkFirstConstraint';
     if (oldRow.length === 1 && newRow.pk === 'false') return 'pkFirst';
+    if (oldRow.length === 1 && newRow.constraint !== 'PRIMARY KEY' ) return 'pkFirstConstraint';
+  
 
     for (let i = 0; i < oldRow.length; i++) {
       if (oldRow[i].column === newRow.column && oldRow[i].id !== newRow.id)
@@ -364,14 +365,6 @@ export default function Table({
       return;
     }
     else if (logicCheck(newRow, rows) === 'pkFirstConstraint') {
-      alert('you cannot have more than PRIMARY KEY in Constraints!');
-      setRowModesModel({
-        ...rowModesModel,
-        [newRow.id]: { mode: GridRowModes.Edit },
-      });
-      return;
-    }
-    else if (logicCheck(newRow, rows) === 'pkConstraintIssue') {
       alert('Please select PRIMARY KEY in Constraints if pk is true!');
       setRowModesModel({
         ...rowModesModel,
@@ -379,6 +372,15 @@ export default function Table({
       });
       return;
     }
+    else if (logicCheck(newRow, rows) === 'pkConstraintIssue') {
+      alert('you cannot have more than PRIMARY KEY in Constraints!');
+      setRowModesModel({
+        ...rowModesModel,
+        [newRow.id]: { mode: GridRowModes.Edit },
+      });
+      return;
+    }
+  
 
 
     // if (oldRow[i].constraint === 'PRIMARY KEY' && newRow.constraint === 'PRIMARY KEY') return 'pkConstraintIssue'
@@ -436,9 +438,9 @@ export default function Table({
 
     // Update DataStore with the queries just generated.
     if (sqlOpen === true){
-      DataStore.queryList.push("postgres", ...queryResult);
+      DataStore.queryList.push(...queryResult);
     }else {
-      DataStore.queryList.push("mySql", ...mySqlQueryResult)
+      DataStore.queryList.push(...mySqlQueryResult)
     }
     console.log('this is SQLOpen', DataStore.queryList);
     DataStore.setQuery(DataStore.queryList.slice());

@@ -197,9 +197,12 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     if (ref.current === null) {
       return;
     }
+
+    console.log('THIS IS TOPNG', toPng)
     toPng(ref.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement("a");
+        console.log('THIS IS LINK', link)
         link.download = "dbScreenshot.png";
         link.href = dataUrl;
         link.click();

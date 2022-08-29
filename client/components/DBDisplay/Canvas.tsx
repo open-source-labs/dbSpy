@@ -66,6 +66,8 @@ export default function Canvas({
   /** useMutation for handling 'POST' request to '/api/handleQueries' route for executing series of queries for DB migration; 
   onSuccess: Once queries get complete, it will clear out the sessionStorage and render the latestTableModel confirming the success of migration
   */
+
+  //setting state for the setId
   const [tableId, setId] = useState("");
 
   const { isLoading, isError, mutate } = useMutation(
