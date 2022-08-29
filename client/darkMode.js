@@ -1,5 +1,6 @@
+//before button gets pressed, what maintains dark theme on refresh
 const currentTheme = localStorage.getItem('theme');
-const theme1 = document.querySelectorAll('div, nav, header, footer');
+const theme1 = document.querySelectorAll('html, head, body, div, nav, header, footer');
 
 document.addEventListener('DOMContentLoaded', () => {
   if (currentTheme === 'dark') {
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+//when button gets pressed
 export default function darkMode() {
   const currentTheme = localStorage.getItem('theme');
   const theme1 = document.querySelectorAll(
