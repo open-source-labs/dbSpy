@@ -12,6 +12,36 @@ import gif from "../../assets/SQL.gif";
 export default function Body() {
   const date = new Date().getFullYear();
 
+  let images = [...document.querySelectorAll('.Body-img-col')];
+  // console.log(images)
+  // console.log(images[0])
+  // console.log(typeof images[0])
+
+  const options = {
+    root: document.querySelector('Body-fw-normal-h2'),
+    // rootMargin: '0px 0px 100px 0px'
+    rootMargin: '0px',
+    threshold: 1.0
+  };
+
+  function onIntersection(imageEntites: any){
+    imageEntites.forEach((image: any) => {
+      observer.unobserve(image.target)
+      console.log("image unobserve", image.target)
+      if (image.isIntersecting) {
+        console.log("image", image)
+        console.log("image Target", image.target)
+        // console.log("image Target dataset", image.target.data-test)
+        console.log("image Target dataset", image.target.dataset.src)
+        image.target.src = image.target.dataset.src
+      }
+    })
+  }
+
+  let observer = new IntersectionObserver(onIntersection, options);
+    
+  images.forEach(image => observer.observe(image));
+  
   return (
     <>
       <head>
@@ -176,7 +206,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://avatars.githubusercontent.com/u/85323481?v=4" alt="AngelGiron" />
+                  src="https://avatars.githubusercontent.com/u/85323481?v=4" dataset-src="https://avatars.githubusercontent.com/u/85323481?v=4" loading="lazy" alt="AngelGiron" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -214,7 +244,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" alt="JohnPaulAdigwu" />
+                  src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" dataset-src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" loading="lazy"alt="JohnPaulAdigwu" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -252,7 +282,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col" 
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://avatars.githubusercontent.com/u/11093217?v=4" alt="KevinParkLee" />
+                  src="https://avatars.githubusercontent.com/u/11093217?v=4" dataset-src="https://avatars.githubusercontent.com/u/11093217?v=4" loading="lazy" alt="KevinParkLee" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -289,7 +319,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://avatars.githubusercontent.com/u/83368864?v=4" alt="TarikMokhtech" />
+                  src="https://avatars.githubusercontent.com/u/83368864?v=4" dataset-src="https://avatars.githubusercontent.com/u/83368864?v=4" loading="lazy"alt="TarikMokhtech" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -329,7 +359,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" alt="BrettGuidry" />
+                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" loading="lazy" alt="BrettGuidry" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -368,7 +398,7 @@ export default function Body() {
                   <span>
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" alt="EmilMebasser" />
+                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" loading="lazy" alt="EmilMebasser" />
 
                   </span>
 
@@ -407,7 +437,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" alt="MimiLe" />
+                  src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" dataset-src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" loading="lazy" alt="MimiLe" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
@@ -444,7 +474,7 @@ export default function Body() {
                 >
                   <img className="Body-img-col"
                   // style={{width:"140px", borderRadius:"50%"}} 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" alt="Samson Lam" />
+                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" loading="lazy"alt="Samson Lam" />
 
                   <h3 className="Body-fw-normal" 
                   // style={{ paddingTop: '10px' }}
