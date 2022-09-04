@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { ReactComponentElement, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 
 // Components Imported;
@@ -46,6 +46,9 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   const [tablename, setTablename] = useState("");
 
   const ref = useRef<HTMLDivElement>(null);
+  const [logData, setLogData] = useState([]);
+  const [logOpened, setLogOpened] = useState(false);
+  const [logDisplay, setLogDisplay] = useState([])
 
   /* UI State
   "sideBarOpened" - a state that opens and closes the side bar for database connection;
@@ -107,6 +110,95 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
       },
     }
   );
+    
+  /* The two hooks below load log setting info for Postgres DBs after a connection is made */
+  useEffect(() => {
+    if (sessionStorage.dbConnect === "true" || sessionStorage.loadedFile === "true"){
+      getLogInfo() 
+    } 
+  }, [fetchedData])
+
+  useEffect(() => {
+    logDataForm()
+  }, [logData])
+
+  const logDataForm = () => {if (sessionStorage.dbConnect === "true" || sessionStorage.loadedFile === "true"){
+    let logMap: any = logData.map((log: any, i: any) => // TS: type any is required when referencing state. no type was required when referencing res.data.Properties?
+      <form 
+        onSubmit={handleLogUpdate} 
+        id='logSettingsForm'>
+          <ul className="logUl">
+            <li className="logField" id={`logSetting${i}`} key={`logSetting${i}`}>
+              {log.Name} = <input className="logInput" id={log.Name} type='text' defaultValue={log.Setting} key={`logInput${i}`}/>
+            </li>
+          </ul>
+      </form> 
+    )
+    setLogDisplay(logMap);
+    }
+  };
+
+    // updates state when user changes log settings. Called in button created in getLogInfo()
+  const handleLogUpdate = (event: any): any => {
+    event.preventDefault()
+    const newLogData: any = new Array(logData).flat()
+    for (const each of newLogData){
+      each.Setting = (document.getElementById(`${each.Name}`) as HTMLInputElement).value
+    }
+    setLogData(newLogData)
+    const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    const outputSqlLog = newLogData.map((log: any, i: BigInteger) => `ALTER DATABASE ${obj.database_name} SET ${log.Name} = ${log.Setting}`).join('\n')
+    
+    // const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    const dbName = obj.database_name;
+    const saveToApi = {sqlLogs: outputSqlLog, dbName: dbName}
+    axios.post('/api/setLogs', saveToApi).then((res) => {});
+
+    FileSaver.saveAs(outputSqlLog, "SQL_LOG_EXPORT.sql")
+  }
+
+    //THis is the variable for showing the update button
+  let buttonVisability = logOpened === false ? 'none' : 'inline-block'
+
+  const openLogs = () => {
+    setLogOpened(logOpened === false ? true: false)
+  }
+
+  // Pulls log settings from the connected database.
+  const getLogInfo = () => {
+    
+    const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    // creating URI for server to connect to user's db
+    let db_uri =
+      'postgres://' +
+      obj.username +
+      ':' +
+      obj.password +
+      '@' +
+      obj.hostname +
+      ':' +
+      obj.port +
+      '/' +
+      obj.database_name;
+    // uri examples
+    // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
+    // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
+    const dbConnect = {
+      uri: db_uri,
+    }; 
+    
+    if (DataStore.connectedToDB === false){ 
+      const warn: any = ['Must connect to database before pulling log settings']  // TS: setLogData requires a type for this simple array but not for an HTML filled array created with .map? 
+      setLogData(warn)
+      return; 
+    }
+
+    // Makes the fetch call to the DB once connected and runs the select statement to retrieve data from pg_settings
+    return axios.post('/api/getLogs', dbConnect).then((res) => {
+      setLogData(res.data.Properties);
+    });   
+  };
+
 
   /* useEffect1:
   Updates global state "DataStore" upon landing of the page with sessionStorage data.
@@ -181,7 +273,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   //   }
   // }, []);
 
-  //To export queries
+  //To export queries 
   const exportQueries = () =>{
     const ex = [DataStore.exportData().join('\n')]
     console.log(ex)
@@ -255,12 +347,61 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         main: {},
       })}
     >
+      <Collapse in={logOpened}>
+            <ScrollArea
+              style={{
+                height: 500,
+                width: 500,
+                backgroundColor: "white",
+                borderRadius: "5px",
+                border: "2px solid #2b3a42",
+                padding: "5px"
+              }}
+              type="always"
+            >
+              <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
+                {" "}
+                {queryGen} Log Settings
+              </Text>
+              <hr style={{margin: "5px"}}/>
+              <Text sx={{ paddingLeft: "10px" }}>{logDisplay}</Text>
+            </ScrollArea>
+          </Collapse>
+      <span>
+        <Button className='logging'
+          styles={(theme: any) => ({
+            root: {
+              backgroundColor: "#3c4e58",
+              border: 0,
+              height: 42,
+              paddingLeft: 20,
+              paddingRight: 20,
+              marginBottom: 20,
+
+              "&:hover": {
+                backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+              },
+            },
+          })}
+          onClick={() => openLogs()}    
+        > 
+          Logs
+        </Button>
+        <input 
+          type='submit' 
+          form='logSettingsForm' 
+          value='Update' 
+          id='updateLog'
+          className='logging'
+          style={{ display: buttonVisability }}
+        />
+      </span>
       <Sidebar
         sideBarOpened={sideBarOpened}
         setSideBarOpened={setSideBarOpened}
         isLoadingProps={isLoading}
         isErrorProps={isError}
-        mutate={mutate}
+        mutate={mutate} 
       />
       {DataStore.loadedFile && (
         <Box
@@ -270,6 +411,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
             flexDirection: "column",
           }}
         >
+           
 
          <Button
             styles={(theme: any) => ({

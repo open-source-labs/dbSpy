@@ -780,6 +780,7 @@ function parseSql(text) {
         );
 
         // Add Property to table
+        //console.log('!!!Tracking table create.',name, currentTableModel.Name)
         currentTableModel.Properties.push(propertyModel);
       }
 
@@ -875,7 +876,7 @@ function parseSql(text) {
     }
   }
 
-  // console.log(tableList);
+  console.log('line 879 DataController. tableList: ',tableList);
   return tableList;
 }
 
@@ -1011,6 +1012,9 @@ dataController.handleQueries = async (req, res, next) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
   };
+  
+
+  console.log('Execute changes button line 1020')
 
   const transactionQuery = async (queryString) => {
     const client = await pool.connect();
@@ -1070,6 +1074,9 @@ dataController.handleQueries = async (req, res, next) => {
         message: { err: err },
       });
     });
+
+
+  
 };
 
 dataController.saveSchema = (req, res) => {};

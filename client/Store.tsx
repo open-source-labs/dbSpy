@@ -65,7 +65,6 @@ class Store {
     this.loadedFile = false;
     this.connectedToDB = false;
     this.userDBInfo = {};
-
     this.counter = 0;
   }
 

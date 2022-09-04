@@ -737,9 +737,9 @@ export default function Table({
   
   const updateXarrow = useXarrow();
 
-function mouseOver () {
-  setId(id)
-}
+  function mouseOver () {
+    setId(id)
+  }
 
 
   return (

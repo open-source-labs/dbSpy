@@ -12,7 +12,8 @@ Canvas.tsx styling below
     --mimi-bg-color: blueviolet;
     --box-shadow: #ffff;
     --border-color: #808080;
-    --DMButton: #3d5461
+    --DMButton: #3d5461;
+    --fadedButton: #3c4e58;
     /* --inner-table: #808080; */
 }
 
@@ -32,7 +33,8 @@ Canvas.tsx styling below
     --box-shadow: #ffff; 
     --border-color: #617980c4; 
     --inner-table: #acc2c2;
-    --DMButton: whitesmoke
+    --DMButton: whitesmoke;
+    --fadedButton: #3c4e58;
 }
 
 body {
@@ -142,10 +144,53 @@ HomeNavBar.tsx styling below
     color: var(--nav-bar-font-color);
 }
 
+
+/*
+Log Setting styling
+*/
+.logUl{
+    /* background-color: var(--inner-table); */
+    align-items: left;
+    margin: 0px;
+    padding: 5px;
+}
+
+.logField{
+    /* background-color: var(--inner-table); */
+    align-items: left;
+    list-style-type: none;
+    color: var(--font-color);
+    font-size: 15px;
+    font-family: Geneva;
+}
+
+.logInput{
+    appearance: none;
+    background-color: var(--inner-table);
+    border-radius: 3px;
+    border: 0px;
+    color: var(--nav-bar);
+    font-size: 15px;
+    font-family: Geneva;
+}
+
+#updateLog{
+    background-color: var(--fadedButton);
+    color: var(--nav-bar-font-color);
+    border: 0;
+    border-radius: 6%;
+    height: 42;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 0px;
+    margin-bottom: 2px;
+    margin-left:1px;
+}
+
+
 /*
 Table.tsx styling below
 */
-
 .table-Draggable {
     height: auto;
     background-color: var(--nav-bar);

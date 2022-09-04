@@ -4,6 +4,7 @@
 const express = require('express');
 //const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
+const LogController = require('../controllers/loggingController');
 
 const { dummydata } = require('../dummy.ts');
 
@@ -31,7 +32,6 @@ router.get('/getAllSchemas', controller.getAllSchemas, (req, res) => {
 router.get('/testDrop', controller.testDrop, (req, res) => {
   res.status(200).json(res.locals.testresponse);
 });
-
 
 router.post(
   '/getSchema',
@@ -88,4 +88,15 @@ router.post('/deleteSchema', controller.deleteSchema, (req, res) => {
   res.status(200).send('Delete successful!');
 });
 
+// New route for getting log info
+router.post('/getLogs', LogController.getLogInfo, (req, res) => {
+  res.status(200).json(res.locals.logTable);
+});
+
+router.post('/setLogs', LogController.setLogInfo, (req, res) => {
+  return res.status(200);
+});
+
+
 module.exports = router;
+
