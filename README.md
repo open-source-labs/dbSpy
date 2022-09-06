@@ -22,7 +22,7 @@
 
 ### Key Features
 
-1. **Database Connection:** Connect to a PostgreSQL database
+1. **Database Connection:** Connect to a SQL database
 
 2. **Database File Upload:** Upload a database's SQL file
 
@@ -38,6 +38,17 @@
 
 8. **Time Travel:** Provides a history of edits for easier backtracking
 
+9. **Exporting Queries:** Allows updated changes of queries to be saved as a SQL file for client imports to their database
+
+10. **Log Modeling:** Provides a tool for admins to take in account of security measures/security logs and adjustable settings when dealing with sensitive database information
+
+11. **Compatible SQL Database:** Current dbSpy is compatible with PostgreSQL and MySQL database
+
+12. **Dark Mode** Additional visual setting to provide a more comfortable viewing experience in low-light environements
+
+13. **Database Integrity Assurance** Database Logic Check is performed as the client edits the database to ensure the integrity of the database
+
+14. **Visualizing Individual Table Connections** Relationships of individual tables are now easily identified when clicking on a table. 
 ---
 
 ### Use Cases
@@ -50,6 +61,16 @@ Renders an ER diagram of the existing database and provides an interface for use
 <details><summary>Uploading your database's SQL file</summary>
 <ul>
 Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
+</ul>
+</details>
+<details><summary>Exporting executable SQL query with every modification to your schema</summary>
+<ul>
+After modifying/editing the database schemas, users are now able to generate executable queries isolated from their database which decreases security concerns. Users are able to append all the query changes at the end of the new file and save this in their local machines.
+</ul>
+</details>
+<details><summary>Seamlessly visualize relational database</summary>
+<ul>
+After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
 </ul>
 </details>
 <details><summary>Starting an ER diagram from scratch</summary>
@@ -98,8 +119,12 @@ Starting an ER diagram from scratch
 Below is a list of features and improvements to which you can contribute. If you have any additional ideas, please raise the issue or implement them as well!
 
 - Screenshot feature - The screenshot feature does presently does not capture the tables with the arrows. It would be best if the features captures everything as it is rendered on the canvas.
-- SQL File Export feature (for new databases) - After a user creates a database from scratch on dbSpy, this feature would create a SQL file with a list of executable queries for them to create that new database on their own.
-- SQL File Export feature (for existing databases) - After a user makes changes to their database's schema, this feature would create a SQL file with a list of executable queries for them to execute those changes on their existing database.
+- Front-End Optimization - Sprite sheet does not render in browser. 
+- Connecting to elephant SQL database - When connecting to elephant SQL to grab the data from the database, it takes a really long time to load (approximately 2 minutes), optimize the backend so pulling and parsing data doesn't take as long.
+- Refactoring typescript - Right now, there are an abundance of any's in the types. 
+- MySQL database connection - the connection feature currently is not compatible with MySQL database. During development phase, a MySQL database stored at the Google Cloud is used for testing. An authorization issue with Google is met when performing data dump. Suggests to try other MySQL server for development testing.  
+- Expand compatibility with other SQL database such as Oracle SQL, Microsoft SQL, IBM Db2, etc
+-Scrollable Canvas - Able to edit tables and scroll on the right side of the canvas, scrolling does not work on the left side of the canvas. If tables are populated or pushed outside of the canvas on the left side, that table disappears, need to enable scrolling on left side. 
 - Refactoring - We need help refactoring the codebase according to the Airbnb style guide.
 
 ---
@@ -148,6 +173,10 @@ $ npm run dev
 - John Paul Adigwu • [LinkedIn](https://www.linkedin.com/in/johnpaul-adigwu/) • [Github](https://github.com/engineerous)
 - Kevin Park-Lee • [LinkedIn](https://www.linkedin.com/in/kevin38424/) • [Github](https://github.com/kevin38424)
 - Tarik Mokhtech • [LinkedIn](http://linkedin.com/in/tarik-mokhtech) • [Github](https://github.com/MockTech)
+- Brett Guidry • [LinkedIn](https://www.linkedin.com/in/brett-guidry-6b6085107/) • [Github](https://github.com/Lurkbot9000)
+- Emil Mebasser• [LinkedIn](https://www.linkedin.com/in/emil-mebasser-a1a2a815/) • [Github](https://github.com/ejmebasser)
+- Mimi Le • [LinkedIn](https://www.linkedin.com/in/my-le-a94575226/) • [Github](https://github.com/kawaiiyummy14)
+- Samson Lam • [LinkedIn](https://www.linkedin.com/in/samson-lam-455846219/) • [Github](https://github.com/sflam2013)
 
 ---
 
