@@ -1,3 +1,5 @@
+//imports below
+
 import React, {
   Dispatch,
   DragEvent,
@@ -205,29 +207,6 @@ export default function Table({
     return '';
   }
 
-  // function updatedRowsToTable(rows: RowProps[]) {
-  //   const dataAfterChange: any = {};
-  //   const col: any = {};
-  //   rows.forEach((obj: RowProps) => {
-  //     const { id, column, constraint, fk, pk, type, reference } = obj;
-  //     col[column] = {
-  //       IsForeignKey: fk,
-  //       IsPrimaryKey: pk,
-  //       References: reference,
-  //       TableName: tablename,
-  //       additional_constraints: constraint,
-  //       data_type: type,
-  //       field_name: column,
-  //     };
-  //     dataAfterChange[tablename] = col;
-  //   });
-
-  //   DataStore.setData({
-  //     ...DataStore.getData(DataStore.store.size - 1),
-  //     ...dataAfterChange,
-  //   });
-  //   setFetchedData(DataStore.getData(DataStore.store.size - 1));
-  // }
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -321,10 +300,7 @@ export default function Table({
   /* "processRowUpdate" - a function that gets triggered to update the "rows" when row is being processed after hitting save button.
   */
  const processRowUpdate = (newRow: GridRowModel) => {
-   console.log('fkReference:');
-   console.log(fkReference);
-   console.log("pkFirst", newRow.constraint !== "Primary Key", newRow.pk !== 'true', rows)
-   
+
    // check the logic first, if error, go back to Edit mode.X
    if (logicCheck(newRow, rows) === 'empty') {
      alert('Please make sure to fill out every cell!');
@@ -348,14 +324,6 @@ export default function Table({
       });
       return;
     } 
-    // else if (logicCheck(newRow, rows) === 'pkIssue') {
-    //   alert('you cannot have more than one PK!');
-    //   setRowModesModel({
-    //     ...rowModesModel,
-    //     [newRow.id]: { mode: GridRowModes.Edit },
-    //   });
-    //   return;
-    // } 
     else if (logicCheck(newRow, rows) === 'pkFirst') {
       alert('Set your Primary Key first!');
       setRowModesModel({
@@ -380,13 +348,6 @@ export default function Table({
       });
       return;
     }
-  
-
-
-    // if (oldRow[i].constraint === 'PRIMARY KEY' && newRow.constraint === 'PRIMARY KEY') return 'pkConstraintIssue'
-    // if (oldRow.length === 1 && newRow.constraint !== 'PRIMARY KEY' ) return 'pkFirstConstraint';
-    // if (oldRow.length === 1 && newRow.pk === 'false') return 'pkFirst';
-    // if (oldRow[0].pk === true && oldRow[0].constraint === 'PRIMARY KEY') return 'pkIssue';
 
     // Iterate through the beforeChange table to grab the column that is being edited before the change.
     let ColBeforeChange;
@@ -404,13 +365,13 @@ export default function Table({
       DataStore.getData(DataStore.store.size - 1)
     );
 
-      // mySqlpermissiveColumnCheck in mysql/permissiveFn.js file. Returns the query for the MySQL change.
-      const mySqlQueryResult = mySqlPermissiveColumnCheck(
-        ColBeforeChange,
-        newRow,
-        tablename,
-        DataStore.getData(DataStore.store.size - 1)
-      ); 
+    // mySqlpermissiveColumnCheck in mysql/permissiveFn.js file. Returns the query for the MySQL change.
+    const mySqlQueryResult = mySqlPermissiveColumnCheck(
+      ColBeforeChange,
+      newRow,
+      tablename,
+      DataStore.getData(DataStore.store.size - 1)
+    ); 
 
     // Another logic check with permissiveFn. Alerts specific error message provided from permissiveFn and revert back to Edit mode.
     if (Object.keys(queryResult[0])[1] === 'errorMsg') {
@@ -432,7 +393,6 @@ export default function Table({
         ...rowModesModel,
        [newRow.id]: { mode: GridRowModes.Edit },
       });
-   
       return;
     }
 
@@ -442,9 +402,9 @@ export default function Table({
     }else {
       DataStore.queryList.push(...mySqlQueryResult)
     }
-    console.log('this is SQLOpen', DataStore.queryList);
+
     DataStore.setQuery(DataStore.queryList.slice());
-    //console.log("this is stored Queries", DataStore.queries);
+
     let copyRef = null;
     if (newRow.references.type == 'add') {
       newRow.fk = true;
@@ -496,9 +456,6 @@ export default function Table({
       editable: true,
 
       valueParser: (value: string, row: GridRowModel) => {
-        //console.log('id:------->', id);
-        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ',
-
         let copy = formDialogEditRow;
         copy.row.column = value;
         setFormDialogEditRow(copy);
@@ -528,9 +485,6 @@ export default function Table({
         'varchar(255)',
       ],
       valueParser: (value: string, row: GridRowModel) => {
-        //console.log('id:------->', id);
-        //setfkReference({PrimaryKeyTableName: ' ', 'PrimaryKeyName' :' ',
-
         let copy = formDialogEditRow;
         copy.row.type = value;
 
@@ -575,7 +529,6 @@ export default function Table({
           constrainName: '',
           type: '',
         });
-        //setFormDialogEditRow(row);
         if (value == 'true') {
           setOpens(true);
         } else {
@@ -612,7 +565,6 @@ export default function Table({
               label="Cancel"
               className="textPrimary"
               onClick={handleCancelClick(id)}
-              // color="inherit"
             />,
           ];
         }
@@ -623,26 +575,21 @@ export default function Table({
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id)}
-            // color="inherit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
-            // color="inherit"
           />,
         ];
       },
     },
-
-    // { field: "col6", headerName: "Ref", width: 50, editable: true },
   ];
 
   function updatedRowsToTable(rows: RowProps[], updatedRow: RowProps | null) {
     const dataAfterChange: any = {};
     const col: any = {};
     rows.forEach((obj: RowProps) => {
-      console.log('THIS IS EACH OBJECT', obj.id)
       const { id, column, constraint, fk, pk, type, reference } = obj;
       col[column] = {
         IsForeignKey: fk,
@@ -658,10 +605,6 @@ export default function Table({
 
     let newPKTable = null;
     let  Tables:any
-    
-    
-   
-    
 
     DataStore.setData({
       ...DataStore.getData(DataStore.store.size - 1),
@@ -695,8 +638,6 @@ export default function Table({
           '_' +
           'fkey',
       });
-      console.log('Tables before DataStore update for add fk');
-      console.log(Tables);
       DataStore.setData({
         ...DataStore.getData(DataStore.store.size - 1),
         ...Tables,
@@ -724,8 +665,6 @@ export default function Table({
         fkReference.PrimaryKeyName.split(' ')[0]
       ].References = tempRef;
 
-      console.log('tables just before store update for Remove fk:');
-      console.log(Tables);
       DataStore.setData({
         ...DataStore.getData(DataStore.store.size - 1),
         ...Tables,
@@ -734,9 +673,9 @@ export default function Table({
     // accessing datastore.store.get ?
   }
 
-  
   const updateXarrow = useXarrow();
 
+  //This updates state on the clicked table
   function mouseOver () {
     setId(id)
   }
@@ -747,24 +686,9 @@ export default function Table({
       <div
         className="table-Draggable"
         id={id}
-        // style={{
-        //   height: "auto",
-        //   color: "white",
-        //   width: "450px",
-        //   margin: "20px",
-        //   background: "#2b3a42",
-        //   borderRadius: "5px",
-        //   padding: "3px",
-        //   fontFamily: "Arial",
-        // }}
       >
         <div className="table-DraggableSub1"
         onMouseDown={mouseOver}
-          // style={{
-          //   display: 'flex',
-          //   justifyContent: 'space-between',
-          //   alignItems: 'center',
-          // }}
         >
           <div className='table-DraggableSub2' 
           // style={{ fontSize: "24px" }}
@@ -827,15 +751,10 @@ interface EditToolbarProps {
 }
 
 function EditToolbar(props: EditToolbarProps) {
-  // console.log("EEEditToolBar", props)
   const { setRows, setRowModesModel } = props;
 
-  
-
   const handleClick = () => {
-    console.log("this is PROPD", props);
     const id = randomId();
-    console.log("handleclickID", id);
 
     setRows((oldRows) => [
       ...oldRows,
@@ -858,9 +777,7 @@ function EditToolbar(props: EditToolbarProps) {
 
   return (
     <GridToolbarContainer
-      className="table-GridToolbarContainer"
-      // style={{ height: '30px' }}
-    >
+      className="table-GridToolbarContainer">
       <Button
         color="primary"
         className="table-GridToolbarContainer-Button"
@@ -1009,8 +926,6 @@ function FormDialog({
     setselectedCol(event.target.value);
   };
 
-
-
   let listOfTables = Object.keys(fetchedData).map((key, index) => {
     if (key !== tablename)
       return (
@@ -1019,7 +934,6 @@ function FormDialog({
         </MenuItem>
       );
   });
-  //formDialogEditRow.row.column
   return (
     <div>
       <Dialog
@@ -1028,13 +942,7 @@ function FormDialog({
         open={opens}
         onClose={handleClose}
         PaperProps={
-          {
-            // style: {
-            //   //backgroundColor: 'grey', Add color styling here...
-            //   boxShadow: 'ffff',
-            //   color: 'black',
-            // },
-          }
+          {}
         }
         sx={{
           display: 'inline',
@@ -1122,18 +1030,12 @@ function FormDialog({
         <DialogActions>
           <Button
             className="table-DialogActions-Button"
-            // style={{
-            //   color: 'black',
-            // }}
             onClick={handleClose}
           >
             Cancel
           </Button>
           <Button
             className="table-DialogActions-Button"
-            // style={{
-            //   color: 'black',
-            // }}
             onClick={handleSubmit}
           >
             Submit

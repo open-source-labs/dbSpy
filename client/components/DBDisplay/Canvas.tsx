@@ -1,32 +1,23 @@
 // React & React Router & React Query Modules;
 import React, { useState } from 'react';
 
-// import React, {
-//   Dispatch,
-//   DragEvent,
-//   SetStateAction,
-//   useEffect,
-//   useState,
-// } from 'react';
 import { useMutation } from 'react-query';
 
 //Components imported;
 import Table from './Table';
 
 // UI & Visualization Libraries
-import axios from "axios";
-import DataStore from "../../Store";
-import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
-import Draggable from "react-draggable";
-import { DatabaseImport, DatabaseOff } from "tabler-icons-react";
-import { Loader, Text, Button, Group } from "@mantine/core";
-
-
+import axios from 'axios';
+import DataStore from '../../Store';
+import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
+import Draggable from 'react-draggable';
+import { DatabaseImport, DatabaseOff } from 'tabler-icons-react';
+import { Loader, Text, Button, Group } from '@mantine/core';
 
 type Props = {
   isActive: boolean;
   setIsActive: (active: boolean) => void;
-}
+};
 interface CanvasProps {
   fetchedData: {
     [key: string]: {
@@ -68,7 +59,7 @@ export default function Canvas({
   */
 
   //setting state for the setId
-  const [tableId, setId] = useState("");
+  const [tableId, setId] = useState('');
 
   const { isLoading, isError, mutate } = useMutation(
     (dbQuery: object) => {
@@ -106,10 +97,6 @@ export default function Canvas({
   /** "executeChanges" - a function that gets invoked when Execute button is clicked and trigger useMutation for POST request;
    *  Grabs the URI data and queries from global state "DataStore" and pass it into mutate method;
    */
-
-
-
-
   const executeChanges = () => {
     const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
 
@@ -141,8 +128,8 @@ export default function Canvas({
     (tablename: any, ind: number) => {
       return (
         <Table
-        z-index={1}
-        setId={setId}
+          z-index={1}
+          setId={setId}
           key={`Table${ind}`}
           id={tablename}
           setSqlOpen={setSqlOpen}
@@ -150,8 +137,6 @@ export default function Canvas({
           tableInfo={fetchedData[tablename]}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
-          // onMouseOver={mouseOverHandler}
-          // onMouseDown={mouseOutHandler}
         />
       );
     }
@@ -162,93 +147,70 @@ export default function Canvas({
   for (let table in fetchedData) {
     for (let column in fetchedData[table]) {
       for (let ref in fetchedData[table][column].References) {
-        // console.log('ref in fetchedData...table Colum.References');
-        // console.log(fetchedData[table][column].References)
         if (fetchedData[table][column].References[ref].IsDestination == false)
           refArray.push(fetchedData[table][column].References[ref]);
       }
     }
   }
 
-  const xa: JSX.Element[] | any = refArray.map((reff: any, ind:number) => {
-    // console.log('in Xarrows PrimaryKeyTableName---------->')
-    // console.log(reff.PrimaryKeyTableName)
-    // console.log('in Xarrows FK Table Name')
-    // console.log(reff.ReferencesTableName)
-    // console.log('<------------------')
-      let greyTrue = true;
-      if (reff.ReferencesTableName === tableId) {
-        greyTrue = false;
-      }
-
-      return (
-        <Xarrow
-          key={ind}
-          headSize={5}
-          zIndex={0}
-          color={"grey"}
-          showXarrow={greyTrue}
-          start={reff.ReferencesTableName}
-          end={reff.PrimaryKeyTableName}
-          endAnchor={[
-            { position: "right", offset: { x: +10, y: +10 } },
-            { position: "left", offset: { x: -10, y: -10 } },
-            { position: "bottom", offset: { x: +10, y: +10 } },
-            { position: "top", offset: { x: -10 } },
-          ]}
-          curveness={1.0}
-          animateDrawing={2}
-        />
-      ); 
-  
+  /** xa are grey arrows that show the connections between the tables */
+  const xa: JSX.Element[] | any = refArray.map((reff: any, ind: number) => {
+    let greyTrue = true;
+    if (reff.ReferencesTableName === tableId) {
+      greyTrue = false;
+    }
+    return (
+      <Xarrow
+        key={ind}
+        headSize={5}
+        zIndex={0}
+        color={'grey'}
+        showXarrow={greyTrue}
+        start={reff.ReferencesTableName}
+        end={reff.PrimaryKeyTableName}
+        endAnchor={[
+          { position: 'right', offset: { x: +10, y: +10 } },
+          { position: 'left', offset: { x: -10, y: -10 } },
+          { position: 'bottom', offset: { x: +10, y: +10 } },
+          { position: 'top', offset: { x: -10 } },
+        ]}
+        curveness={1.0}
+        animateDrawing={2}
+      />
+    );
   });
 
-
+  /** xarrows are the blue arrows that show the table connections when clicked on */
   const xarrows: JSX.Element[] = refArray.map((reff: any, ind: number) => {
     let blueTrue = false;
     if (reff.ReferencesTableName === tableId) {
       blueTrue = true;
-    } 
+    }
     return (
-      <Xarrow 
-      key={ind}
-      path="smooth"
-      headSize={4}
-      zIndex={0}
-      color={"blue"}
-      showXarrow={blueTrue}
-      start={reff.ReferencesTableName}
-      end={reff.PrimaryKeyTableName}
-      dashness={true}
-      // dashness={{strokeLen: 10, nonStrokeLen: 15, animation: -2 }}
-      curveness={1.0}
-      animateDrawing={true}
+      <Xarrow
+        key={ind}
+        path="smooth"
+        headSize={4}
+        zIndex={0}
+        color={'blue'}
+        showXarrow={blueTrue}
+        start={reff.ReferencesTableName}
+        end={reff.PrimaryKeyTableName}
+        dashness={true}
+        curveness={1.0}
+        animateDrawing={true}
       />
     );
-  })
+  });
 
-  // function alertMe() {
-  //   alert(tableId)
-  // }
   /** Truthy when the user is connecting to the database to grab the intial table model */
   if (isLoadingProps) {
     return (
-      <div
-        className="canvas-LoadingProps"
-        // style={{
-        //   textAlign: "center",
-        //   fontSize: "18px",
-        //   fontFamily: "Geneva",
-        //   marginTop: "40px",
-        //   marginRight: "225px",
-        // }}
-      >
-        {/* <Text> */}
+      <div className="canvas-LoadingProps">
         Please wait while we process your request.
         <br />
         <br />
         <Loader size="xl" variant="dots" />
-        {/* </Text> */}
       </div>
     );
   }
@@ -256,16 +218,7 @@ export default function Canvas({
   /** Truthy when the user has an issue grabbing the inital table model */
   if (isErrorProps) {
     return (
-      <div
-        className="canvas-ErrorProps"
-        // style={{
-        //   textAlign: "center",
-        //   fontSize: "18px",
-        //   fontFamily: "Geneva",
-        //   marginTop: "40px",
-        //   marginRight: "225px",
-        // }}
-      >
+      <div className="canvas-ErrorProps">
         An error occurred while we processed your request. Please check your
         connection.
       </div>
@@ -275,21 +228,10 @@ export default function Canvas({
   /** Truthy when the user is executing the queries for database migration */
   if (isLoading) {
     return (
-      <div
-        className="canvas-Loading"
-        // style={{
-        //   textAlign: "center",
-        //   fontSize: "18px",
-        //   fontFamily: "Geneva",
-        //   marginTop: "40px",
-        //   marginRight: "225px",
-        // }}
-      >
-        {/* <Text> */}
+      <div className="canvas-Loading">
         Please wait while we process your request.
         <br />
         <Loader size="xl" variant="dots" />
-        {/* </Text> */}
       </div>
     );
   }
@@ -297,16 +239,7 @@ export default function Canvas({
   /** Truthy when the user fails to execute the queries for database migration */
   if (isError) {
     return (
-      <div
-        className="canvas-IsError"
-        // style={{
-        //   textAlign: "center",
-        //   fontSize: "18px",
-        //   fontFamily: "Geneva",
-        //   marginTop: "40px",
-        //   marginRight: "225px",
-        // }}
-      >
+      <div className="canvas-IsError">
         An error occurred while we processed your request. Please check your
         connection.
       </div>
@@ -314,7 +247,7 @@ export default function Canvas({
   }
 
   const dbButtons = (
-    <div>
+    <div className="dbButtons">
       <Group position="right">
         <Button
           styles={(theme) => ({
@@ -322,6 +255,7 @@ export default function Canvas({
               height: 42,
               paddingLeft: 20,
               paddingRight: 20,
+              marginRight: 40,
               '&:hover': {
                 backgroundColor: theme.fn.darken('#3c4e58', 0.1),
                 color: 'white',
@@ -352,7 +286,7 @@ export default function Canvas({
               height: 42,
               paddingLeft: 20,
               paddingRight: 20,
-              marginTop: 10,
+              marginTop: 1,
 
               '&:hover': {
                 backgroundColor: theme.fn.darken('#2b3a42', 0.1),
@@ -372,99 +306,34 @@ export default function Canvas({
   );
 
   return (
-    // style={{ height: "100%"}}
     <div ref={reference}>
-      {/* <button onClick={alertMe}>state</button> */}
       {Object.keys(fetchedData).length > 0 && DataStore.connectedToDB ? (
         <>
           {dbButtons}
-          <div
-            className="canvas-Line311"
-            // style={{
-            //   display: "flex",
-            //   flexFlow: "row wrap",
-            //   justifyContent: "space-around",
-            //   alignItems: "center",
-            // }}
-          >
+          <div className="canvas-Line311">
             <Xwrapper>
               {tables}
               {xa}
-             {xarrows}
+              {xarrows}
             </Xwrapper>
           </div>
         </>
       ) : Object.keys(fetchedData).length > 0 && DataStore.loadedFile ? (
         <>
-          {/* <Group position="right">
-            <Button
-              color="white"
-              leftIcon={<DatabaseImport />}
-              onClick={() => setSideBarOpened(true)}
-            >
-              Connect to DB
-            </Button>
-          </Group> */}
-          {/* <Group position="right">
-            <Button id="disconnectButton"
-              color="white"
-              leftIcon={<DatabaseImport />}
-              onClick={() => DataStore.disconnect()}
-            >
-              Disconnect from DB
-            </Button>
-          </Group>
-          <Group position="right">
-            <Button id="executeButton"
-              styles={() => ({
-                root: {
-                  marginTop: 20,
-                },
-              })}
-              color="red"
-              leftIcon={<DatabaseImport />}
-              onClick={() => executeChanges()}
-            >
-              Execute changes
-            </Button>
-          </Group> */}
-
-          <div
-            className="canvas-Line360"
-            // style={{
-            //   display: "flex",
-            //   flexFlow: "row wrap",
-            //   justifyContent: "space-around",
-            //   alignItems: "center",
-            // }}
-          >
+          <div className="canvas-Line360">
             <Xwrapper>
               {tables}
               {xa}
-              {/* {xarrows} */}
             </Xwrapper>
           </div>
         </>
       ) : (
         <>
-          {/* "Please Connect to Your Database" */}
-          <div
-            className="canvas-ConnectToDatabase"
-            // style={{textAlign: "center", fontSize: "18px", fontFamily: "Geneva", marginTop: "40px", marginRight: "225px"}}
-          >
+          <div className="canvas-ConnectToDatabase">
             <h3>Welcome to dbSpy!</h3>
             Please connect your database, upload a SQL file, or build your
             database from scratch!
           </div>
-          {/* <Group position="right">
-            <Button
-              color="white"
-              leftIcon={<DatabaseImport />}
-              onClick={() => setSideBarOpened(true)}
-            >
-              Connect to DB
-            </Button>
-          </Group> */}
         </>
       )}
     </div>

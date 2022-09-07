@@ -1,8 +1,5 @@
 import { query } from "express";
 
-// const fs = require ('fs');
-
-
 /* Global State: Store - class object*/
 class Store {
   store: Map<{}, {}>;
@@ -13,7 +10,6 @@ class Store {
   queryInd: number;
   queries: Map<{}, {}[]>;
   queryList: any;
-  // {}[];
   counter: number;
 
   /* Description for each global state:
@@ -140,9 +136,7 @@ class Store {
 
   exportData() {
     const exportData = this.queryList.map((element: any) => element['query'])
-  //   // fs.writeFile("/path")
      return (exportData)
-
   }
 
 }

@@ -63,7 +63,6 @@ export default function Sidebar({
             onSubmit={form.onSubmit((values) => {
               // grabbing userDBInfo from values to send to server to make db changes
               if (DataStore.connectedToDB === true) {
-                //alert('currently logged in');
                 sessionStorage.clear();
                 DataStore.disconnect1();
               }
@@ -84,36 +83,26 @@ export default function Sidebar({
               required
               data-autofocus
               label="Host"
-              //   autoComplete="arjuna.db.elephantsql.com"
-              //   placeholder="Host"
               {...form.getInputProps("hostname")}
             />
             <TextInput
               required
               label="Port"
-              //   placeholder="Port"
-              //   autoComplete="5432"
               {...form.getInputProps("port")}
             />
             <TextInput
               required
               label="Database Username"
-              //   placeholder="Username"
-              //   autoComplete="twvoyfda"
               {...form.getInputProps("username")}
             />
             <PasswordInput
               required
               label="Database Password"
-              //   placeholder="Password"
-              //   autoComplete="qsEqj2YTd-En5XI0Bv5kwvrp_S7TD7cR"
               {...form.getInputProps("password")}
             />
             <TextInput
               required
               label="Database Name"
-              //   placeholder="Database name"
-              //   autoComplete="twvoyfda"
               {...form.getInputProps("database_name")}
             />
 
@@ -140,21 +129,6 @@ export default function Sidebar({
           </form>
         </Box>
       </Drawer>
-
-      {/* <Group position="right"> */}
-      {/* <Button
-          //  variant="white" color="white"
-          leftIcon={<DatabaseImport />}
-          // styles={() => ({
-          //   root: {
-          //     marginRight: 30,
-          //   },
-          // })}
-          onClick={() => setSideBarOpened(true)}
-        >
-          {buttonText}
-        </Button> */}
-      {/* </Group> */}
     </>
   );
 }

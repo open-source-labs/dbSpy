@@ -40,7 +40,7 @@
 
 9. **Exporting Queries:** Allows updated changes of queries to be saved as a SQL file for client imports to their database
 
-10. **Log Modeling:** Provides a tool for admins to take in account of security measures/security logs and adjustable settings when dealing with sensitive database information
+10. **Log Modeling:** Provides a tool for admins to pull, view, modify, and export log settings from an existing database
 
 11. **Compatible SQL Database:** Current dbSpy is compatible with PostgreSQL and MySQL database
 
@@ -66,6 +66,11 @@ Renders an ER diagram for the provided SQL file (db dump) and provides an interf
 <details><summary>Exporting executable SQL query with every modification to your schema</summary>
 <ul>
 After modifying/editing the database schemas, users are now able to generate executable queries isolated from their database which decreases security concerns. Users are able to append all the query changes at the end of the new file and save this in their local machines.
+</ul>
+</details>
+<details><summary>Logging modeling</summary>
+<ul>
+After connnection to the database is made the user can view, modify and save the current log settings. This will assist database administrators in keeping efficient log setup in mind during the early stages of DB modeling
 </ul>
 </details>
 <details><summary>Seamlessly visualize relational database</summary>
@@ -118,14 +123,19 @@ Starting an ER diagram from scratch
 
 Below is a list of features and improvements to which you can contribute. If you have any additional ideas, please raise the issue or implement them as well!
 
-- Screenshot feature - The screenshot feature does presently does not capture the tables with the arrows. It would be best if the features captures everything as it is rendered on the canvas.
+- Screenshot feature - The screenshot feature does presently capture the tables but the arrows do not align correctly in the screenshot. It would be best if the features captures everything as it is rendered on the canvas.
 - Front-End Optimization - Sprite sheet does not render in browser. 
 - Connecting to elephant SQL database - When connecting to elephant SQL to grab the data from the database, it takes a really long time to load (approximately 2 minutes), optimize the backend so pulling and parsing data doesn't take as long.
-- Refactoring typescript - Right now, there are an abundance of any's in the types. 
+- Logging needs a default settings list and direct reimport into live database. The SQL code to import has been placed into the DB_Schemas folder along with SQL Schema dumps. Also, log setting functionality is currently limited to Postgres databases and the code needs to be expanded to query and display log setting info from MySQL databases
+- Security setting models need to be put in place for database tables as well as log files.
+- Db-schemas - the schemas are saved under db_schemas and is saved in the server. Have a way to delete the schemas on the server from the front end. It would also be convenient to add these schemas to a list of existing schemas and be able to pull these schemas to display for the user to avoid having to make a new connection to the same database multiple times.
 - MySQL database connection - the connection feature currently is not compatible with MySQL database. During development phase, a MySQL database stored at the Google Cloud is used for testing. An authorization issue with Google is met when performing data dump. Suggests to try other MySQL server for development testing.  
 - Expand compatibility with other SQL database such as Oracle SQL, Microsoft SQL, IBM Db2, etc
 -Scrollable Canvas - Able to edit tables and scroll on the right side of the canvas, scrolling does not work on the left side of the canvas. If tables are populated or pushed outside of the canvas on the left side, that table disappears, need to enable scrolling on left side. 
+- Testing - The current result of the supertest could vary based on which mode it is tested on, development or production. When tested in development mode (commented out line 83-84 in server.js), the supertest result would pass with the expected content-type "text, html" returned from the server. However, when the supertest is tested in the production mode, it would fail with 404 Error. 
+    - The current unit test will fail due to ES module error. Have tried to reconfigure webpack by declaring "module: type", rebuild jest configure file...
 - Refactoring - We need help refactoring the codebase according to the Airbnb style guide.
+- Refactoring typescript - Right now, there are an abundance of any's in the types. 
 
 ---
 

@@ -1,16 +1,22 @@
 // React & React Router & React Query Modules;
-import React, { ReactComponentElement, useCallback, useEffect, useRef, useState } from "react";
-import { useMutation } from "react-query";
+import React, {
+  ReactComponentElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useMutation } from 'react-query';
 
 // Components Imported;
-import Canvas from "../components/DBDisplay/Canvas";
-import DisplayHeader from "../components/DBDisplay/DisplayHeader";
-import FeatureTab from "../components/DBDisplay/FeatureTab";
-import Sidebar from "../components/DBDisplay/Sidebar";
+import Canvas from '../components/DBDisplay/Canvas';
+import DisplayHeader from '../components/DBDisplay/DisplayHeader';
+import FeatureTab from '../components/DBDisplay/FeatureTab';
+import Sidebar from '../components/DBDisplay/Sidebar';
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
-import axios from "axios";
-import DataStore from "../Store";
+import axios from 'axios';
+import DataStore from '../Store';
 import {
   AppShell,
   Box,
@@ -18,13 +24,11 @@ import {
   Collapse,
   ScrollArea,
   Text,
-} from "@mantine/core";
-import { toPng } from "html-to-image";
+} from '@mantine/core';
+import { toPng } from 'html-to-image';
 
 //import fileSaver for export queries
-import FileSaver from 'file-saver'
-
-
+import FileSaver from 'file-saver';
 
 interface stateChangeProps {
   user: {
@@ -43,12 +47,12 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   "tablename" - a state that stores input data (table name for a new table) from "ADD TABLE" feature;
   */
   const [fetchedData, setFetchedData] = useState({});
-  const [tablename, setTablename] = useState("");
+  const [tablename, setTablename] = useState('');
 
   const ref = useRef<HTMLDivElement>(null);
   const [logData, setLogData] = useState([]);
   const [logOpened, setLogOpened] = useState(false);
-  const [logDisplay, setLogDisplay] = useState([])
+  const [logDisplay, setLogDisplay] = useState([]);
 
   /* UI State
   "sideBarOpened" - a state that opens and closes the side bar for database connection;
@@ -57,7 +61,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [menuPopUpOpened, setMenuPopUpOpened] = useState(false);
   const [queryOpened, setQueryOpen] = useState(true);
-  //state to keep track of which SQL syntax Query Generator is generating, Postgres or MySQL. 
+  //state to keep track of which SQL syntax Query Generator is generating, Postgres or MySQL.
   const [sqlOpen, setSqlOpen] = useState(true);
 
   /* useMutation for handling 'POST' request to '/api/getSchema' route for DB schema dump; 
@@ -66,16 +70,16 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   */
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
-      return axios.post("/api/getSchema", dataToSend).then((res) => {
+      return axios.post('/api/getSchema', dataToSend).then((res) => {
         // Once connected to Database, we need to clear DataStore and Query, Data, loadedFile from sessionStorage in case the user interacted with SQL load or New Canvas feature.
         DataStore.clearStore();
-        sessionStorage.removeItem("Query");
-        sessionStorage.removeItem("Data");
-        sessionStorage.removeItem("loadedFile");
+        sessionStorage.removeItem('Query');
+        sessionStorage.removeItem('Data');
+        sessionStorage.removeItem('loadedFile');
 
         // Then, update DataStore table data with response data and set query to empty.
         DataStore.setData(res.data);
-        DataStore.setQuery([{ type: "", query: "" }]);
+        DataStore.setQuery([{ type: '', query: '' }]);
 
         // Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
@@ -87,10 +91,6 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
         // Update the rendering of the tables with latest table model.
         setFetchedData(res.data);
-
-        // Console Log for Testing - "Retrieved data" from server and "DataStore" after initiating Map objects
-        console.log("this is retrieved data from server,: ", res.data);
-        console.log("this is dataStore: ", DataStore);
       });
     },
     {
@@ -99,74 +99,104 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         DataStore.connect();
 
         // Update sessionStorage.dbConnect to "true" also.
-        sessionStorage.dbConnect = "true";
+        sessionStorage.dbConnect = 'true';
 
         // Then close the side bar that was opened.
         setSideBarOpened(false);
       },
       onError: () => {
         // Upon error, we alert the user that there's an issue with DB connection.
-        alert("Database connection has failed.");
+        alert('Database connection has failed.');
       },
     }
   );
-    
+
   /* The two hooks below load log setting info for Postgres DBs after a connection is made */
   useEffect(() => {
-    if (sessionStorage.dbConnect === "true" || sessionStorage.loadedFile === "true"){
-      getLogInfo() 
-    } 
-  }, [fetchedData])
+    if (
+      sessionStorage.dbConnect === 'true' ||
+      sessionStorage.loadedFile === 'true'
+    ) {
+      getLogInfo();
+    }
+  }, [fetchedData]);
 
   useEffect(() => {
-    logDataForm()
-  }, [logData])
+    logDataForm();
+  }, [logData]);
 
-  const logDataForm = () => {if (sessionStorage.dbConnect === "true" || sessionStorage.loadedFile === "true"){
-    let logMap: any = logData.map((log: any, i: any) => // TS: type any is required when referencing state. no type was required when referencing res.data.Properties?
-      <form 
-        onSubmit={handleLogUpdate} 
-        id='logSettingsForm'>
-          <ul className="logUl">
-            <li className="logField" id={`logSetting${i}`} key={`logSetting${i}`}>
-              {log.Name} = <input className="logInput" id={log.Name} type='text' defaultValue={log.Setting} key={`logInput${i}`}/>
-            </li>
-          </ul>
-      </form> 
-    )
-    setLogDisplay(logMap);
+  const logDataForm = () => {
+    if (
+      sessionStorage.dbConnect === 'true' ||
+      sessionStorage.loadedFile === 'true'
+    ) {
+      let logMap: any = logData.map(
+        (
+          log: any,
+          i: any // TS fix request: type any is required when referencing state. No type was required when referencing res.data.Properties?
+        ) => (
+          <form onSubmit={handleLogUpdate} id="logSettingsForm">
+            <ul className="logUl">
+              <li
+                className="logField"
+                id={`logSetting${i}`}
+                key={`logSetting${i}`}
+              >
+                {log.Name} ={' '}
+                <input
+                  className="logInput"
+                  id={log.Name}
+                  type="text"
+                  defaultValue={log.Setting}
+                  key={`logInput${i}`}
+                />
+              </li>
+            </ul>
+          </form>
+        )
+      );
+      setLogDisplay(logMap);
     }
   };
 
-    // updates state when user changes log settings. Called in button created in getLogInfo()
+  // updates state when user changes log settings. Called in button created in getLogInfo()
   const handleLogUpdate = (event: any): any => {
-    event.preventDefault()
-    const newLogData: any = new Array(logData).flat()
-    for (const each of newLogData){
-      each.Setting = (document.getElementById(`${each.Name}`) as HTMLInputElement).value
+    event.preventDefault();
+    const newLogData: any = new Array(logData).flat();
+    for (const each of newLogData) {
+      each.Setting = (
+        document.getElementById(`${each.Name}`) as HTMLInputElement
+      ).value;
     }
-    setLogData(newLogData)
+    setLogData(newLogData);
     const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
-    const outputSqlLog = newLogData.map((log: any, i: BigInteger) => `ALTER DATABASE ${obj.database_name} SET ${log.Name} = ${log.Setting}`).join('\n')
-    
-    // const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    // TS fix required for log variable in map method
+    const outputSqlLog = newLogData
+      .map(
+        (log: any, i: BigInteger) =>
+          `ALTER DATABASE ${obj.database_name} SET ${log.Name} = ${log.Setting}`
+      )
+      .join('\n');
+
     const dbName = obj.database_name;
-    const saveToApi = {sqlLogs: outputSqlLog, dbName: dbName}
+    const saveToApi = { sqlLogs: outputSqlLog, dbName: dbName };
     axios.post('/api/setLogs', saveToApi).then((res) => {});
+    const data = new Blob([outputSqlLog], {
+      type: 'text/plain;charset=utf-8',
+      endings: 'native',
+    });
+    FileSaver.saveAs(data, 'SQL_LOG_EXPORT.sql');
+  };
 
-    FileSaver.saveAs(outputSqlLog, "SQL_LOG_EXPORT.sql")
-  }
-
-    //THis is the variable for showing the update button
-  let buttonVisability = logOpened === false ? 'none' : 'inline-block'
+  //This is the variable for showing the update button
+  let buttonVisability = logOpened === false ? 'none' : 'inline-block';
 
   const openLogs = () => {
-    setLogOpened(logOpened === false ? true: false)
-  }
+    setLogOpened(logOpened === false ? true : false);
+  };
 
   // Pulls log settings from the connected database.
   const getLogInfo = () => {
-    
     const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
     // creating URI for server to connect to user's db
     let db_uri =
@@ -185,20 +215,21 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
     const dbConnect = {
       uri: db_uri,
-    }; 
-    
-    if (DataStore.connectedToDB === false){ 
-      const warn: any = ['Must connect to database before pulling log settings']  // TS: setLogData requires a type for this simple array but not for an HTML filled array created with .map? 
-      setLogData(warn)
-      return; 
+    };
+
+    if (DataStore.connectedToDB === false) {
+      const warn: any = [
+        'Must connect to database before pulling log settings',
+      ]; // TS fix request: setLogData requires a type for this simple array but not for an HTML filled array created with .map?
+      setLogData(warn);
+      return;
     }
 
     // Makes the fetch call to the DB once connected and runs the select statement to retrieve data from pg_settings
     return axios.post('/api/getLogs', dbConnect).then((res) => {
       setLogData(res.data.Properties);
-    });   
+    });
   };
-
 
   /* useEffect1:
   Updates global state "DataStore" upon landing of the page with sessionStorage data.
@@ -208,8 +239,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   useEffect(() => {
     // if the user is connected to either database or loaded a sql file, AND there's a Data store in sessionStorage, we will go through this useEffect
     if (
-      (sessionStorage.dbConnect === "true" ||
-        sessionStorage.loadedFile === "true") &&
+      (sessionStorage.dbConnect === 'true' ||
+        sessionStorage.loadedFile === 'true') &&
       sessionStorage.Data
     ) {
       // if the user is connected to Database, update DataStore with dbConnect and userDBInfo
@@ -251,38 +282,16 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         Array.from(DataStore.store.entries())
       );
     }
-    console.log("store size after reload", DataStore.store.size);
   }, [fetchedData]);
 
-  /** UseEffect to PREVENT RELOAD OF THE PAGE */
-  // useEffect(() => {
-  //   window.onbeforeunload = (e) => {
-  //     e.preventDefault();
-  //     e.returnValue = "";
-  //   };
-  // }, []);
-
-  /** UseEffect of OLD VERSION TO MANAGE CACHING */
-  // useEffect(() => {
-  //   if (loggedIn && DataStore.ind > 0) {
-  //     const savedData = DataStore.getData(DataStore.store.size - 1);
-  //     if (savedData) {
-  //       setFetchedData(savedData);
-  //       console.log("this is saved: ", savedData);
-  //     }
-  //   }
-  // }, []);
-
-  //To export queries 
-  const exportQueries = () =>{
-    const ex = [DataStore.exportData().join('\n')]
-    console.log(ex)
-    // console.log("this is join", ex)
-    const data =  new Blob(ex,
-    {type: 'text/plain;charset=utf-8', 
-    endings: 'native'});
-    console.log(data);
-    FileSaver.saveAs(data, "ExportQueries.txt")
+  //To export queries
+  const exportQueries = () => {
+    const ex = [DataStore.exportData().join('\n')];
+    const data = new Blob(ex, {
+      type: 'text/plain;charset=utf-8',
+      endings: 'native',
+    });
+    FileSaver.saveAs(data, 'ExportQueries.sql');
   };
 
   const screenshot = useCallback(() => {
@@ -290,12 +299,10 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
       return;
     }
 
-    console.log('THIS IS TOPNG', toPng)
     toPng(ref.current, { cacheBust: true })
       .then((dataUrl) => {
-        const link = document.createElement("a");
-        console.log('THIS IS LINK', link)
-        link.download = "dbScreenshot.png";
+        const link = document.createElement('a');
+        link.download = 'dbScreenshot.png';
         link.href = dataUrl;
         link.click();
       })
@@ -315,9 +322,11 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   }
 
   let queryGen: string;
-  if (sqlOpen === true){
-    queryGen = "PostgreSQL";
-  }else {queryGen = "MySQL";}
+  if (sqlOpen === true) {
+    queryGen = 'PostgreSQL';
+  } else {
+    queryGen = 'MySQL';
+  }
 
   return (
     <AppShell
@@ -331,7 +340,6 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
           setUser={setUser}
         />
       }
-      // navbarOffsetBreakpoint="sm"
       navbar={
         <FeatureTab
           setSideBarOpened={setSideBarOpened}
@@ -342,57 +350,58 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         ></FeatureTab>
       }
       styles={(theme) => ({
-        root: { height: "100%" },
-        body: { height: "100%" },
+        root: { height: '100%' },
+        body: { height: '100%' },
         main: {},
       })}
     >
       <Collapse in={logOpened}>
-            <ScrollArea
-              style={{
-                height: 500,
-                width: 500,
-                backgroundColor: "white",
-                borderRadius: "5px",
-                border: "2px solid #2b3a42",
-                padding: "5px"
-              }}
-              type="always"
-            >
-              <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
-                {" "}
-                {queryGen} Log Settings
-              </Text>
-              <hr style={{margin: "5px"}}/>
-              <Text sx={{ paddingLeft: "10px" }}>{logDisplay}</Text>
-            </ScrollArea>
-          </Collapse>
+        <ScrollArea
+          style={{
+            height: 500,
+            width: 500,
+            backgroundColor: 'white',
+            borderRadius: '5px',
+            border: '2px solid #2b3a42',
+            padding: '5px',
+          }}
+          type="always"
+        >
+          <Text sx={{ fontSize: '20px', paddingLeft: '10px' }}>
+            {' '}
+            {queryGen} Log Settings
+          </Text>
+          <hr style={{ margin: '5px' }} />
+          <Text sx={{ paddingLeft: '10px' }}>{logDisplay}</Text>
+        </ScrollArea>
+      </Collapse>
       <span>
-        <Button className='logging'
+        <Button
+          className="logging"
           styles={(theme: any) => ({
             root: {
-              backgroundColor: "#3c4e58",
+              backgroundColor: '#3c4e58',
               border: 0,
               height: 42,
               paddingLeft: 20,
               paddingRight: 20,
               marginBottom: 20,
 
-              "&:hover": {
-                backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+              '&:hover': {
+                backgroundColor: theme.fn.darken('#2b3a42', 0.1),
               },
             },
           })}
-          onClick={() => openLogs()}    
-        > 
+          onClick={() => openLogs()}
+        >
           Logs
         </Button>
-        <input 
-          type='submit' 
-          form='logSettingsForm' 
-          value='Update' 
-          id='updateLog'
-          className='logging'
+        <input
+          type="submit"
+          form="logSettingsForm"
+          value="Update"
+          id="updateLog"
+          className="logging"
           style={{ display: buttonVisability }}
         />
       </span>
@@ -401,54 +410,52 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         setSideBarOpened={setSideBarOpened}
         isLoadingProps={isLoading}
         isErrorProps={isError}
-        mutate={mutate} 
+        mutate={mutate}
       />
       {DataStore.loadedFile && (
         <Box
           sx={{
-            display: "flex",
-            alignItems: "end",
-            flexDirection: "column",
+            display: 'flex',
+            alignItems: 'end',
+            flexDirection: 'column',
           }}
         >
-           
-
-         <Button
+          <Button
             styles={(theme: any) => ({
               root: {
-                backgroundColor: "#3c4e58",
+                backgroundColor: '#3c4e58',
                 border: 0,
                 height: 42,
                 paddingLeft: 20,
                 paddingRight: 20,
                 marginBottom: 20,
 
-                "&:hover": {
-                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                '&:hover': {
+                  backgroundColor: theme.fn.darken('#2b3a42', 0.1),
                 },
               },
             })}
-            onClick={() => setSqlOpen((o) => !o)}    
-            >
-              {sqlOpen ? "PostgreSQL" : "MySQL"}
+            onClick={() => setSqlOpen((o) => !o)}
+          >
+            {sqlOpen ? 'PostgreSQL' : 'MySQL'}
           </Button>
           <Button
             styles={(theme) => ({
               root: {
-                backgroundColor: "#3c4e58",
+                backgroundColor: '#3c4e58',
                 border: 0,
                 height: 42,
                 paddingLeft: 20,
                 paddingRight: 20,
 
-                "&:hover": {
-                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                '&:hover': {
+                  backgroundColor: theme.fn.darken('#2b3a42', 0.1),
                 },
               },
             })}
             onClick={() => setQueryOpen((o) => !o)}
           >
-            {queryOpened ? "Hide Queries" : "Show Queries"}
+            {queryOpened ? 'Hide Queries' : 'Show Queries'}
           </Button>
 
           <Collapse in={queryOpened}>
@@ -456,47 +463,46 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
               style={{
                 height: 250,
                 width: 500,
-                backgroundColor: "white",
-                borderRadius: "5px",
-                border: "2px solid #2b3a42",
-                padding: "5px"
+                backgroundColor: 'white',
+                borderRadius: '5px',
+                border: '2px solid #2b3a42',
+                padding: '5px',
               }}
               type="always"
             >
-              <Text sx={{ fontSize: "20px", paddingLeft: "10px" }}>
-                {" "}
+              <Text sx={{ fontSize: '20px', paddingLeft: '10px' }}>
+                {' '}
                 {queryGen} Query Generator
               </Text>
-              <hr style={{margin: "5px"}}/>
-              <Text sx={{ paddingLeft: "10px" }}>{queries}</Text>
+              <hr style={{ margin: '5px' }} />
+              <Text sx={{ paddingLeft: '10px' }}>{queries}</Text>
             </ScrollArea>
           </Collapse>
           <Button
             styles={(theme: any) => ({
               root: {
-                backgroundColor: "#3c4e58",
+                backgroundColor: '#3c4e58',
                 border: 0,
                 height: 42,
                 paddingLeft: 20,
                 paddingRight: 20,
                 marginTop: 20,
 
-                "&:hover": {
-                  backgroundColor: theme.fn.darken("#2b3a42", 0.1),
+                '&:hover': {
+                  backgroundColor: theme.fn.darken('#2b3a42', 0.1),
                 },
               },
             })}
-            onClick={() =>  {
-            console.log("run export");
-            exportQueries()
-            }
-          }
-            >
-              Export Queries
-            </Button>
+            onClick={() => {
+              console.log('run export');
+              exportQueries();
+            }}
+          >
+            Export Queries
+          </Button>
+          <br/>
         </Box>
       )}
-
 
       <Canvas
         sqlOpen={sqlOpen}

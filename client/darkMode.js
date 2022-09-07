@@ -5,7 +5,6 @@ const theme1 = document.querySelectorAll('html, head, body, div, nav, header, fo
 document.addEventListener('DOMContentLoaded', () => {
   if (currentTheme === 'dark') {
     for (const each of theme1) {
-      // console.log(each)
       each.setAttribute('data-theme', 'dark');
       localStorage.setItem('theme', 'dark');
     }
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!currentTheme || currentTheme === 'light') {
     for (const each of theme1) {
-      // console.log(each)
       each.setAttribute('data-theme', 'light');
       localStorage.setItem('theme', 'light');
     }
@@ -26,10 +24,8 @@ export default function darkMode() {
   const theme1 = document.querySelectorAll(
     'html, head, body, div, nav, header, footer'
   );
-  // console.log('INSIDE BUTTON BEFORE LOOP: THEME1 ',theme1);
   if (!currentTheme || currentTheme === 'light') {
     for (const each of theme1) {
-      // console.log("INSIDE For Loop In Button",each)
       each.setAttribute('data-theme', 'dark');
       localStorage.setItem('theme', 'dark');
     }
@@ -42,8 +38,7 @@ export default function darkMode() {
 
   // Two Dark Mode swtching buttons: one in HomeNavbar.tsx and one DisplayHeader.tsx
   const buttonModeSwitch = document.querySelectorAll('.darkMode');
-  // console.log('DARKBUTTONSWITCH0', buttonModeSwitch[0]);
+
   currentTheme === 'dark' ? buttonModeSwitch[0].innerHTML = 'Dark Mode' : buttonModeSwitch[0].innerHTML = 'Light Mode';
-  // console.log('DARKBUTTONSWITCH1', buttonModeSwitch[1]);
   currentTheme === 'dark' ? buttonModeSwitch[1].innerHTML = 'Dark Mode' : buttonModeSwitch[1].innerHTML = 'Light Mode';
 }

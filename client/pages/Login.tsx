@@ -63,23 +63,6 @@ export default function Login() {
     window.open('http://localhost:8080/auth/google', '_self', strWindowFeatures);
   };
 
-  /*
-  "handleSubmit" - a function that gets invoked when LOGIN button is clicked with user credentials.
-  Event is currently prevented with event.preventDefault() method
-  */
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   if (data.get("email") === "") alert("Email is missing");
-  //   else if (data.get("password") === "") alert("Password is missing");
-  //   else {
-  //     console.log({
-  //       email: data.get("email"),
-  //       password: data.get("password"),
-  //       rememberMe: data.get("checked"),
-  //     });
-  //   }
-  // };
 
   return (
     <ThemeProvider theme={theme}>
@@ -114,76 +97,7 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Welcome Back!
           </Typography>
-
-          {/* Submit Form for login credentials */}
-
-          {/* <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 5, width: "50%" }}
-          >
-            <Grid container spacing={0}>
-              <Grid item xs={16} marginBottom={2}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  color="primary"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={16} marginBottom={2}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  color="primary"
-                />
-              </Grid>
-
-              <Grid
-                container
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Grid item>
-                  <FormControlLabel
-                    control={
-                      <Checkbox name="checked" value="true" color="primary" />
-                    }
-                    label="Remember me?"
-                  />
-                </Grid>
-                <Grid item>
-                  <Link to="#">Forgot Password?</Link>
-                </Grid>
-              </Grid>
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                LOGIN
-              </Button>
-            </Grid>
-          </Box>
-
-          <Typography sx={{ mb: 2, mt: 5, textAlign: "center" }}>
-            or sign in with:
-          </Typography> */}
+ 
 
           {/* Google & GitHub OAuth buttons */}
           <br />
@@ -205,21 +119,7 @@ export default function Login() {
             >
               LOGIN WITH GOOGLE
             </Button>
-
-            {/* <Button
-              sx={{
-                borderRadius: 50,
-                padding: "25px 25px",
-                margin: "0px 5px",
-                fontSize: "14px",
-              }}
-              variant="contained"
-              color="secondary"
-            >
-              <GitHubIcon fontSize="large" />
-            </Button> */}
           </Box>
-
           <br />
           <Link to="/signup">Don't have an account?</Link>
         </Box>
