@@ -64,7 +64,7 @@ const loggingController = {
       // roll through the output and create new table rows
       for (const each of pgSettings.rows) {
         const { name, setting, source, sourcefile, context, enumvals } = each;
-        const logProperties = createLogProperty(
+        let logProperties = createLogProperty(
           name,
           setting,
           source,
@@ -96,9 +96,6 @@ const loggingController = {
     );
     await fs.writeFile(filePath, req.body.sqlLogs, (err) => {
       if (err) console.log(err);
-      else {
-        console.log('File written successfully\n');
-      }
     });
     return next();
   },

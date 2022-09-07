@@ -392,7 +392,7 @@ const objSchema = (testdata) => {
   // Takes in SQL creation file as text, then parses
   export default function parseSql(text) {
     const lines = text.split('\n');
-    const tableCell = null;
+    let tableCell = null;
     const cells = [];
     exportedTables = 0;
     tableList = [];
@@ -403,7 +403,7 @@ const objSchema = (testdata) => {
   
     //Parse SQL to objects
     for (let i = 0; i < lines.length; i++) {
-      const rowCell = null;
+      let rowCell = null;
   
       const tmp = lines[i].trim();
   
@@ -425,7 +425,7 @@ const objSchema = (testdata) => {
       }
       // tmp === 'ALTER TABLE'
       else if (propertyRow == 'alter table') {
-        const alterQuerySplit = tmp.toLowerCase().trim();
+        let alterQuerySplit = tmp.toLowerCase().trim();
         let tname = null;
   
         for (let i = 0; i < tableList.length; i++) {
@@ -480,7 +480,7 @@ const objSchema = (testdata) => {
           }
         }
         // Verify if this is a property that doesn't have a relationship (One minute of silence for the property)
-        const normalProperty =
+        let normalProperty =
           propertyType !== 'primary key' &&
           propertyType !== 'foreign key' &&
           propertyType !== 'SQLServer primary key' &&
@@ -512,8 +512,8 @@ const objSchema = (testdata) => {
           name = name.replace(/\"/g, '');
   
           // Create Property
-          const propertyModel = createProperty(
-            name,
+          let propertyModel = createProperty(
+            name, 
             currentTableModel.Name,
             null,
             false,
@@ -592,13 +592,13 @@ const objSchema = (testdata) => {
     for (const i in tableList) {
       for (const k in tableList[i].Properties) {
         if (tableList[i].Properties[k] !== undefined) {
-          const composite =
+          let composite =
             tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
   
-          const value = composite[1].search(/NOT/i);
+          let value = composite[1].search(/NOT/i);
           if (value > 0) {
-            const type = composite[1].substring(0, value - 1);
-            const additional_constraints = composite[1].substring(value);
+          let type = composite[1].substring(0, value - 1);
+          let additional_constraints = composite[1].substring(value);
   
             tableList[i].Properties[k].field_name = composite[0];
             tableList[i].Properties[k].data_type = type;
