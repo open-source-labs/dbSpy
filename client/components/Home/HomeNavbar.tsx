@@ -10,14 +10,10 @@ import logo from "../../assets/logo5-white-100-rectangle.png";
 import darkMode from '../../darkMode.js'
 
 
-
-
 export default function HomeNavbar() {
 
   const currentTheme = localStorage.getItem('theme');
   const darkButtonState = currentTheme === 'light' || !currentTheme ? 'Dark Mode' : 'Light Mode'
-
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -27,34 +23,22 @@ export default function HomeNavbar() {
             <img src={logo} alt="Logo" />
             <Button className="darkMode" color="inherit" onClick={darkMode}>{darkButtonState}</Button>
           </Typography>
-
-         
-        
           <Link className="homeNavBar-linkSignUp"
-            // style={{ textDecoration: "none", color: "white" }}
             to={"/signup"}>
             <Button color="inherit">Free Demo</Button>
           </Link>
-
           <Button 
             color="inherit">
             <a className="homeNavBar-aDocs"
-            // style={{ textDecoration: "none", color: "white" }}
             href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>
-            
           </Button>
-          
-          {/* <Button color="inherit">Team</Button> */}
-
           <Link className="homeNavBar-LinkSignUp"
-            // style={{ textDecoration: "none", color: "white" }}
             to={"/signup"}
           >
             <Button color="inherit">Sign Up</Button>
           </Link>
 
           <Link className="homeNavBar-LinkLogin"
-            // style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
             <Button color="inherit">Log In</Button>
@@ -63,5 +47,4 @@ export default function HomeNavbar() {
       </AppBar>
     </Box>
   );
-  
 }

@@ -2,122 +2,116 @@
 Canvas.tsx styling below
 */
 
-:root{
-    --nav-bar: #2b3a42;
-    --nav-bar-font-color:whitesmoke;
-    --bg-color: whitesmoke;
-    --font-color: #2b3a42;
-    --muted-font-color: #808080;
-    --mimi-color: pink;
-    --mimi-bg-color: blueviolet;
-    --box-shadow: #ffff;
-    --border-color: #808080;
-    --DMButton: #3d5461;
-    --fadedButton: #3c4e58;
-    /* --inner-table: #808080; */
+:root {
+  --nav-bar: #2b3a42;
+  --nav-bar-font-color: whitesmoke;
+  --bg-color: whitesmoke;
+  --font-color: #2b3a42;
+  --muted-font-color: #808080;
+  --mimi-color: pink;
+  --mimi-bg-color: blueviolet;
+  --box-shadow: #ffff;
+  --border-color: #808080;
+  --DMButton: #3d5461;
+  --fadedButton: #3c4e58;
 }
 
-/* #root {
-    height: 100%;
-} */
-
-
 [data-theme='dark'] {
-    --nav-bar: #2b3a42;
-    --nav-bar-font-color:whitesmoke;
-    --bg-color: #3d5461;
-    --font-color: whitesmoke;
-    --muted-font-color: #979797; 
-    --mimi-color: pink;
-    --mimi-bg-color: #caf0fac4;
-    --box-shadow: #ffff; 
-    --border-color: #617980c4; 
-    --inner-table: #acc2c2;
-    --DMButton: whitesmoke;
-    --fadedButton: #3c4e58;
+  --nav-bar: #2b3a42;
+  --nav-bar-font-color: whitesmoke;
+  --bg-color: #3d5461;
+  --font-color: whitesmoke;
+  --muted-font-color: #979797;
+  --mimi-color: pink;
+  --mimi-bg-color: #caf0fac4;
+  --box-shadow: #ffff;
+  --border-color: #617980c4;
+  --inner-table: #acc2c2;
+  --DMButton: whitesmoke;
+  --fadedButton: #3c4e58;
 }
 
 body {
-    /* height: 200vh; */
-    /* margin-top: clamp(40px, 10vh, 100px); */
-    margin: 0;
-    padding: 0;
-    background-color: whitesmoke;
+  margin: 0;
+  padding: 0;
+  background-color: whitesmoke;
 }
 
 html {
-    /* height: 200vh; */
-    /* height: .01vh; */
-    background-color: var(--bg-color);
-
+  background-color: var(--bg-color);
 }
 
-header{
-    color: var(--nav-bar-font-color);
-    background-color: var(--nav-bar);
+header {
+  color: var(--nav-bar-font-color);
+  background-color: var(--nav-bar);
 }
 
-.MuiToolbar-root{
-    color: var(--nav-bar-font-color);
-    background-color: var(--nav-bar);
+.MuiToolbar-root {
+  color: var(--nav-bar-font-color);
+  background-color: var(--nav-bar);
+}
+
+.dbButtons {
+  display: flex;
+  position: absolute;
+  top: 4.5em;
+  right: 4em;
 }
 
 .canvas-LoadingProps {
-    text-align: center;
-    font-size: 18px;
-    font-family: Geneva;
-    margin-top: 40px;
-    margin-right: 225px;
+  text-align: center;
+  font-size: 18px;
+  font-family: Geneva;
+  margin-top: 40px;
+  margin-right: 225px;
 }
 
 .canvas-ErrorProps {
-    text-align: center;
-    font-size: 18px;
-    font-family: Geneva;
-    margin-top: 40px; 
-    margin-right: 225px;
-
+  text-align: center;
+  font-size: 18px;
+  font-family: Geneva;
+  margin-top: 40px;
+  margin-right: 225px;
 }
 
 .canvas-Loading {
-    text-align: center;
-    font-size: 18px;
-    font-family: Geneva;
-    margin-top: 40px; 
-    margin-right: 225px;
-
+  text-align: center;
+  font-size: 18px;
+  font-family: Geneva;
+  margin-top: 40px;
+  margin-right: 225px;
 }
 
 .canvas-IsError {
-    text-align: center;
-    font-size: 18px;
-    font-family: Geneva;
-    margin-top: 40px; 
-    margin-right: 225px;
+  text-align: center;
+  font-size: 18px;
+  font-family: Geneva;
+  margin-top: 40px;
+  margin-right: 225px;
 }
 
 .canvas-Line311 {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .canvas-Line360 {
-    display: flex; 
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .canvas-ConnectToDatabase {
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    text-align: center;
-    font-size: 18px;
-    font-family: Geneva;
-    margin-top: 40px;
-    margin-right: 225px;
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  text-align: center;
+  font-size: 18px;
+  font-family: Geneva;
+  margin-top: 40px;
+  margin-right: 225px;
 }
 
 /*
@@ -125,486 +119,448 @@ HomeNavBar.tsx styling below
 */
 
 .homeNavBar-LinkSignUp {
-    text-decoration: none;
-    color: var(--nav-bar-font-color);
+  text-decoration: none;
+  color: var(--nav-bar-font-color);
 }
 
 .homeNavBar-aDocs {
-    text-decoration: none;
-    color: var(--nav-bar-font-color);  
+  text-decoration: none;
+  color: var(--nav-bar-font-color);
 }
 
 .homeNavBar-LinkSignUp {
-    text-decoration: none;
-    color: var(--nav-bar-font-color);
+  text-decoration: none;
+  color: var(--nav-bar-font-color);
 }
 
 .homeNavBar-LinkLogIn {
-    text-decoration: none;
-    color: var(--nav-bar-font-color);
+  text-decoration: none;
+  color: var(--nav-bar-font-color);
 }
-
 
 /*
-Log Setting styling
+Logging Setting styling
 */
-.logUl{
-    /* background-color: var(--inner-table); */
-    align-items: left;
-    margin: 0px;
-    padding: 5px;
+.logUl {
+  align-items: left;
+  margin: 0px;
+  padding: 5px;
 }
 
-.logField{
-    /* background-color: var(--inner-table); */
-    align-items: left;
-    list-style-type: none;
-    color: var(--font-color);
-    font-size: 15px;
-    font-family: Geneva;
+.logField {
+  align-items: left;
+  list-style-type: none;
+  color: var(--font-color);
+  font-size: 15px;
+  font-family: Geneva;
 }
 
-.logInput{
-    appearance: none;
-    background-color: var(--inner-table);
-    border-radius: 3px;
-    border: 0px;
-    color: var(--nav-bar);
-    font-size: 15px;
-    font-family: Geneva;
+.logInput {
+  appearance: none;
+  background-color: var(--inner-table);
+  border-radius: 3px;
+  border: 1px solid var(--nav-bar);
+  color: var(--nav-bar);
+  font-size: 15px;
+  font-family: Geneva;
 }
 
-#updateLog{
-    background-color: var(--fadedButton);
-    color: var(--nav-bar-font-color);
-    border: 0;
-    border-radius: 6%;
-    height: 42;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 0px;
-    margin-bottom: 2px;
-    margin-left:1px;
+#updateLog {
+  background-color: var(--fadedButton);
+  color: var(--nav-bar-font-color);
+  border: 0;
+  border-radius: 6%;
+  height: 42;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 0px;
+  margin-bottom: 2px;
+  margin-left: 1px;
 }
-
 
 /*
 Table.tsx styling below
 */
 .table-Draggable {
-    height: auto;
-    background-color: var(--nav-bar);
-    color: var(--font-color);
-    width: 450px; 
-    margin: 20px;
-    border: 0px solid var(--bg-color);
-    border-radius: 5px;
-    padding: 3px;
-    font-family: Arial;
-    z-index: 1;
+  height: auto;
+  background-color: var(--nav-bar);
+  color: var(--font-color);
+  width: 450px;
+  margin: 20px;
+  border: 0px solid var(--bg-color);
+  border-radius: 5px;
+  padding: 3px;
+  font-family: Arial;
+  z-index: 1;
 }
 
-.table-DraggableSub1{
+.table-DraggableSub1 {
   display: 'flex';
   justify-content: 'space-between';
   align-items: 'center';
 }
 
-.table-DraggableSub2{ 
-    color: var(--nav-bar-font-color);
-    font-size: 24px; 
+.table-DraggableSub2 {
+  color: var(--nav-bar-font-color);
+  font-size: 24px;
 }
 
-.table-GridToolbarContainer{
-    height: 30px;
+.table-GridToolbarContainer {
+  height: 30px;
 }
 
-.table-GridToolbarContainer-Button{
-    position: absolute;
-    right: 3px;
-    margin: 0;
-    color: var(--nav-bar);
+.table-GridToolbarContainer-Button {
+  position: absolute;
+  right: 3px;
+  margin: 0;
+  color: var(--nav-bar);
 }
 
-.table-Dialog{
-    box-shadow: var(--box-shadow);
-    color: var(--nav-bar);
+.table-Dialog {
+  box-shadow: var(--box-shadow);
+  color: var(--nav-bar);
 }
 
-.table-DialogActions-Button{
-    color: var(--nav-bar);
+.table-DialogActions-Button {
+  color: var(--nav-bar);
 }
-
 
 /*
 Body.tsx styling below
 */
 
-.body-Body{
-    background-color: var(--bg-color);
+.body-Body {
+  background-color: var(--bg-color);
 }
 
-.body-Main-Div{
-    display: flex;
-    padding: 50px;
-    justify-content: space-between;
-
+.body-Main-Div {
+  display: flex;
+  padding: 50px;
+  justify-content: space-between;
 }
-.body-Main-Div-Div{
-    color: var(--muted-font-color);
-    width: 70%;
-    text-align: left;
-    margin: auto;
+.body-Main-Div-Div {
+  color: var(--muted-font-color);
+  width: 70%;
+  text-align: left;
+  margin: auto;
 }
 
 .body-Main-Div-Logo {
-    margin: auto;
+  margin: auto;
 }
 
-.body-Main-H2{
-    color: var(--nav-bar);
-    line-height: 2em;
+.body-Main-H2 {
+  color: var(--nav-bar);
+  line-height: 2em;
 }
 
 .body-Text-Muted-1 {
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--muted-font-color);
-    padding-right: 80px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--muted-font-color);
+  padding-right: 80px;
 }
 .body-Text-Muted-2 {
-    font-weight: 400;
-    line-height: 2em;
-    font-size: 1.25em;
-    color: var(--muted-font-color);
-    width: 130%;
+  font-weight: 400;
+  line-height: 2em;
+  font-size: 1.25em;
+  color: var(--muted-font-color);
+  width: 130%;
 }
 
 .body-Main-Div-Div-Img {
-    width: 100%;
-    vertical-align: middle; 
-    padding-left: 20px;
+  width: 100%;
+  vertical-align: middle;
+  padding-left: 20px;
 }
 
-.body-Main-Div-col-md-7{
-    display: flex;
-    padding-right: 200px;
-    text-align: left; 
-    margin: auto;
+.body-Main-Div-col-md-7 {
+  display: flex;
+  padding-right: 200px;
+  text-align: left;
+  margin: auto;
 }
 
-.body-Main-Div-Div-Div-Img{
-    border: 1px solid var(--nav-bar);
-    border-radius:"5px";
-    width: 100%;
+.body-Main-Div-Div-Div-Img {
+  border: 1px solid var(--nav-bar);
+  border-radius: '5px';
+  width: 100%;
 }
 
-.body-Main-Div-col-md-5{
-    margin: auto;
-    text-align: right;
+.body-Main-Div-col-md-5 {
+  margin: auto;
+  text-align: right;
 }
 
-.Body-row{
-    padding: 50px 0 
+.Body-row {
+  padding: 50px 0;
 }
 
 .body-Team-Container {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .body-Team-Container1 {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
-.Body-fw-normal-h2{
-    text-align: center;
-    margin-bottom: 70px; 
+.Body-fw-normal-h2 {
+  text-align: center;
+  margin-bottom: 70px;
 }
 
-.Body-img-col{
-    /* max-width:140px;
-    max-height: 140px; */
-    /* position: relative; */
-    /* max-height: auto; */
-
-   /* max-height: 140px; */
-   height: 140px;
-   width: 140px;
-    border-radius:50%;
-    object-fit: cover; 
-    overflow: hidden;
-    
+.Body-img-col {
+  height: 140px;
+  width: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
 }
 
-.Body-col-lg-3{ 
-    text-align: center;
-    /* height: 140px;
-    width: 140px; */
-    /* max-height: 140px; */
-    /* max-width:140px;
-    max-height: 140px; */
-    /* width: auto;
-    max-height: auto; */
+.Body-col-lg-3 {
+  text-align: center;
 }
 
-.Body-fw-normal{
-    padding-top: 10px;
+.Body-fw-normal {
+  padding-top: 10px;
 }
 
-.Body-p-software{
-    margin: 10px;
+.Body-p-software {
+  margin: 10px;
 }
 
-.Body-footer{
-    margin-bottom: 20px;
+.Body-footer {
+  margin-bottom: 20px;
 }
 
-.Body-btn-btn-dark-btn-sm{
-    margin: 10px;
+.Body-btn-btn-dark-btn-sm {
+  margin: 10px;
 }
 
-.body-brand{
-    size:40;
-    stroke-width:1.5;
-    color: var(--muted-font-color);
+.body-brand {
+  size: 40;
+  stroke-width: 1.5;
+  color: var(--muted-font-color);
 }
 
 .featurette-heading-fw-normal-lh-1 {
-    width: 130%;
-    padding-left: 20px;
-    font-weight: 500;
-
+  width: 130%;
+  padding-left: 20px;
+  font-weight: 500;
 }
-
 
 /* .row featurette */
 
-
-
 .FeatureTab-Navbar {
-    font-Size: 24px;
-    margin: 10px,10px,10px,10px; 
+  font-size: 24px;
+  margin: 10px, 10px, 10px, 10px;
 }
 
 .FeatureTab-ThemeIcon {
-    border: 2px solid var(--nav-bar-font-color); 
+  border: 2px solid var(--nav-bar-font-color);
 }
-
-
 
 /*displayHeader*/
-.DisplayHeaderHeader{
-    color: var(--nav-bar-font-color);
-    background-color: var(--nav-bar);
-    display: flex;
-    align-items: center; 
-    height: 100%;
-    width: 100%;
-    justify-content: space-between;
+.DisplayHeaderHeader {
+  color: var(--nav-bar-font-color);
+  background-color: var(--nav-bar);
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
 }
 
-.DisplayHeaderHeaderSub{
-    display: flex;
-    align-items: center;
-    height: 100%;
-    width: 33.33%;
+.DisplayHeaderHeaderSub {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 33.33%;
 }
 
-.DisplayHeaderHeaderSub1{
-    color: var(--nav-bar-font-color);
-    border-color: var(--border-color);
-    text-align: center;
-    width: 33.33%;
+.DisplayHeaderHeaderSub1 {
+  color: var(--nav-bar-font-color);
+  border-color: var(--border-color);
+  text-align: center;
+  width: 33.33%;
 }
 
 /* 
 This style is being controlled by mantine in-line styling which is why the class names are weird. 
 It is passing styling down through props, but switching to css for dark mode
-.DisplayHeaderMediaQuery {
-    display: block;
-} */
-
 
 /* border edge around top nav bar */
-.mantine-Header-root{
-    border-color: var(--border-color);
+.mantine-Header-root {
+  border-color: var(--border-color);
 }
 
 /* main canvas */
-.mantine-m0gl6u{
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-     
+.mantine-m0gl6u {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
 }
 
 /* left nav-bar border outside of Action and Edit div containers*/
-.mantine-Navbar-root{
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-    
+.mantine-Navbar-root {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
 }
 
 /* Hamburger menu in the upper left */
-.mantine-Burger-burger, .mantine-Burger-burger::before, .mantine-Burger-burger::after{
-    background-color: var(--nav-bar); 
+.mantine-Burger-burger,
+.mantine-Burger-burger::before,
+.mantine-Burger-burger::after {
+  background-color: var(--nav-bar);
 }
 
 /* 2 large divs containing Action and Edit content*/
-.mantine-khtkeg{
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    border-color: var(--border-color); 
-         /* background-color: red; */
+.mantine-khtkeg {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
 }
 
 /* small divs containing the text on left nav bar */
-.mantine-Text-root{
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-    color: var(--font-color);
+.mantine-Text-root {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--font-color);
 }
 
-.mantine-Group-root{
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-    color: var(--font-color);
+.mantine-Group-root {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--font-color);
 }
 
 /* left navbar between buttons the existing padding is fine until you click the button. 
 Then the padding turns white while you type in the name of the new table
 May be able to fix this by changing the button:action behavior
  */
-.mantine-UnstyledButton-root{
-    /* padding: 0px; */
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-    color: var(--font-color);
+.mantine-UnstyledButton-root {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--font-color);
 }
 
 /* Table +Field area above data */
-.table-GridToolbarContainer{
-    border-color: var(--nav-bar);
-    background-color: var(--inner-table);
-    padding: 0px;
+.table-GridToolbarContainer {
+  border-color: var(--nav-bar);
+  background-color: var(--inner-table);
+  padding: 0px;
 }
 
 /* + FIELD button (styling here doesnt work) */
-.table-GridToolbarContainer-Button{
-    position: absolute;
-    right: 3px;
-    margin: 0px;
-    color: black;
+.table-GridToolbarContainer-Button {
+  position: absolute;
+  right: 3px;
+  margin: 0px;
+  color: black;
 }
 
 /* Table column and row area */
-.MuiDataGrid-main{
-    /* border-color: red; */
-    background-color: var(--inner-table);
+.MuiDataGrid-main {
+  background-color: var(--inner-table);
 }
 
 /* inner table where data goes */
-.MuiDataGrid-virtualScroller{
-    color: var(--nav-bar);
-    padding: 0px;
-    margin: 0px;
+.MuiDataGrid-virtualScroller {
+  color: var(--nav-bar);
+  padding: 0px;
+  margin: 0px;
 }
 
 /* table drop down lists */
-.MuiList-root{
-    color: var(--font-color);
-    background-color: var(--inner-table);
+.MuiList-root {
+  color: var(--font-color);
+  background-color: var(--inner-table);
 }
 
 /* SQL Query Generator outer border area */
-.mantine-jghxib{
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    border: 2px solid var(--border-color);
-    padding: 0px;
-    height: 80px;
-    width: 500px;
-    border-radius: 5px;
+.mantine-jghxib {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border: 2px solid var(--border-color);
+  padding: 0px;
+  height: 80px;
+  width: 500px;
+  border-radius: 5px;
 }
 
 /* query box text display of the query generator. Also the History section on the left nav bar for some reason */
-.mantine-xlwgkm{
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-    color: var(--font-color);
+.mantine-xlwgkm {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--font-color);
 }
 
 /* Add Table popup dialog */
-.mantine-Paper-root{
-    background-color: var(--bg-color);
-    border-color: var(--border-color);
-    color: var(--font-color);
+.mantine-Paper-root {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--font-color);
 }
 
 /* small icons on left nav bar */
-.mantine-ThemeIcon-root{
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    border-color: var(--border-color); 
+.mantine-ThemeIcon-root {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
 }
 
-.DisplayHeaderBox{
-    display: flex;
-    align-items: center;
-    margin-right: 6px;
-    justify-content: flex-end;
-    width: 33.33%;
+.DisplayHeaderBox {
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+  justify-content: flex-end;
+  width: 33.33%;
 }
 
-.DisplayHeaderText{
-    font-size: 16px;
-    background-color: var(--navbar);
-    color: var(--nav-bar-font-color);
+.DisplayHeaderText {
+  font-size: 16px;
+  background-color: var(--navbar);
+  color: var(--nav-bar-font-color);
 }
 
-.DisplayHeaderImage{
-    width: 30px;
-    margin: 0px 10px;
+.DisplayHeaderImage {
+  width: 30px;
+  margin: 0px 10px;
 }
 
-.DisplayHeaderButton{
-    color: var(--nav-bar-font-color);
-    border: 1px solid var(--border-color);
+.DisplayHeaderButton {
+  color: var(--nav-bar-font-color);
+  border: 1px solid var(--border-color);
 }
 
 /*HomeFooter*/
 /*No style, only sx*/
 
-
-
 /*HomeLoggedInNavbar*/
-.HomeLoggedInNavbarLink{ 
-    text-decoration: none;
-    color: var(--nav-bar-font-color); 
+.HomeLoggedInNavbarLink {
+  text-decoration: none;
+  color: var(--nav-bar-font-color);
 }
 
-.HomeLoggedInNavbarA{
-    text-decoration: none; 
-    color: var(--nav-bar-font-color);
+.HomeLoggedInNavbarA {
+  text-decoration: none;
+  color: var(--nav-bar-font-color);
 }
-
-
-
 
 /*
 ~D A R K M O D E~
 */
 
-.darkMode{
-    background-color: var(--nav-bar);
-    color: var(--nav-bar-font-color);
-    border: 0px solid var(--border-color);
+.darkMode {
+  background-color: var(--nav-bar);
+  color: var(--nav-bar-font-color);
+  border: 0px solid var(--border-color);
 }
 
-.darkMode:hover{
-    background-color: var(--DMButton);
-    color: var(--muted-font-color);
+.darkMode:hover {
+  background-color: var(--DMButton);
+  color: var(--muted-font-color);
 }

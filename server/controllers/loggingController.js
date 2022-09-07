@@ -5,11 +5,6 @@ const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
 const { getParsedCommandLineOfConfigFile } = require('typescript');
 
-
-// const pool = new Pool({
-//   connectionString: PG_URI,
-// });
-
 function LogModel(name) {
   this.Name = name;
   this.Properties = [];
@@ -44,13 +39,14 @@ function createLogProperty(
 }
 
 const loggingController = {
-  getLogInfo: async (req,res,next) => {
+  getLogInfo: async (req, res, next) => {
     const { uri } = req.body;
     const PG_URI = uri;
     const pool = new Pool({
-        connectionString: PG_URI,
-      });
-    const getLogInfo = `select name, setting, source, sourcefile, context, enumvals from pg_settings where name like 'log%';`;
+      connectionString: PG_URI,
+    });
+    const getLogInfo =
+      "select name, setting, source, sourcefile, context, enumvals from pg_settings where name like 'log%';";
     const client = await pool.connect();
     try {
       /*
@@ -61,14 +57,14 @@ const loggingController = {
       sourcefile: null,
       context: 'sighup',
       enumvals: null
-      */ 
+      */
       const logTable = new LogModel('Log_Settings');
       // query to pull loggin information from the server
       const pgSettings = await client.query(getLogInfo);
       // roll through the output and create new table rows
       for (const each of pgSettings.rows) {
         const { name, setting, source, sourcefile, context, enumvals } = each;
-        let logProperties = createLogProperty(
+        const logProperties = createLogProperty(
           name,
           setting,
           source,
@@ -85,24 +81,26 @@ const loggingController = {
       console.log(
         '--You arent yet connected to a database\n--Transaction declined'
       );
-      
+
       throw err;
     } finally {
       client.release();
     }
   },
 
-  // writes the updated SQL log file to the db_schemas dir and names it after the database. 
-  setLogInfo: async (req,res,next) => {
-    const filePath = path.resolve(__dirname, `../db_schemas/${req.body.dbName}_LogFile.sql`);
-    await fs.writeFile(filePath, req.body.sqlLogs ,(err) => {
-      if (err)
-        console.log(err);
+  // writes the updated SQL log file to the db_schemas dir and names it after the database.
+  setLogInfo: async (req, res, next) => {
+    const filePath = path.resolve(
+      __dirname,
+      `../db_schemas/${req.body.dbName}_LogFile.sql`
+    );
+    await fs.writeFile(filePath, req.body.sqlLogs, (err) => {
+      if (err) console.log(err);
       else {
-        console.log("File written successfully\n");
+        console.log('File written successfully\n');
       }
     });
-    return next(); 
+    return next();
   },
 };
 

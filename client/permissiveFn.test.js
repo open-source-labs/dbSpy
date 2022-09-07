@@ -1,2 +1,0 @@
-const sum = require('./permissiveFn');
-

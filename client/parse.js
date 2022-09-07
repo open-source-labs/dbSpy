@@ -2,7 +2,7 @@
 //usable format for front-end
 const objSchema = (testdata) => {
    
-    let results = {};
+    const results = {};
     //iterate through the testdata Array
     //Grab name property for each element of array - Table Name
     //Assign properties to name property of the table within new obj
@@ -11,18 +11,15 @@ const objSchema = (testdata) => {
   
     for (let i = 0; i < testdata.length; i++) {
       // this outer loop will iterate through tables within testdata
-      let properties = {};
+      const properties = {};
       for (let k = 0; k < testdata[i].Properties.length; k++) {
-        let key = testdata[i].Properties[k].field_name;
+        const key = testdata[i].Properties[k].field_name;
         properties[key] = testdata[i].Properties[k];
       }
   
       results[testdata[i].Name] = properties;
     }
-  
-    console.log('route for testObj works');
-    //console.log(results);
-  
+
    return results;
     
   };
@@ -114,7 +111,6 @@ const objSchema = (testdata) => {
   
   // Parses foreign key with SQL Server syntax
   function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
-    console.log('parseSQLSERVERFK called', propertyType);
     // Regex expression to find referenced foreign table
     const referencesIndex = name.match(
       /(?<=REFERENCES\s)([a-zA-Z_]+)(\([a-zA-Z_]*\))/
@@ -184,16 +180,10 @@ const objSchema = (testdata) => {
     const referencedTableName = name.match(
       /(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_]+)+/
     )[0];
-    //let constraintname = name.match(/(?<=CONSTRAINT\s)([A-Za-z0-9_]+)/)[0];
     let referencedPropertyName = name
       .match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_()]+)+/)[0]
       .match(/\(([^()]+)\)/g)[0]
       .replace(/\(|\)/g, '');
-  
-    console.log('foreign key Table', currentTableModel.Name);
-    console.log('ref property name', referencedPropertyName);
-    console.log('ref tablename', referencedTableName);
-    console.log('foreign key name', foreignKeyName);
   
     // Look through current table and reassign isForeignKey prop to true, reassign foreignKeyName to include type
     currentTableModel.Properties.forEach((property) => {
@@ -204,24 +194,21 @@ const objSchema = (testdata) => {
     });
   
     let primaryTableModel = null;
-    //console.log("Primary Table Model", PrimaryTableModel);
   
-    for (let i in tableList) {
+    for (const i in tableList) {
       if (tableList[i].Name == referencedTableName) {
-        //console.log('primary table name', tableList[i].Name)
-        //console.log('primary table found', tableList[i]);
+
         primaryTableModel = tableList[i];
         break;
       }
     }
   
-    for (let k in primaryTableModel) {
-      for (let l in primaryTableModel[k])
+    for (const k in primaryTableModel) {
+      for (const l in primaryTableModel[k])
         if (primaryTableModel[k][l].Name !== undefined) {
           if (
             primaryTableModel[k][l].Name.indexOf(referencedPropertyName) !== -1
           ) {
-            console.log('name---->', primaryTableModel[k][l].Name);
             referencedPropertyName = primaryTableModel[k][l].Name;
             break;
           }
@@ -229,7 +216,7 @@ const objSchema = (testdata) => {
     }
   
     // Create ForeignKey
-    let foreignKeyOriginModel = createForeignKey(
+    const foreignKeyOriginModel = createForeignKey(
       foreignKeyName,
       currentTableModel.Name,
       referencedPropertyName,
@@ -246,7 +233,7 @@ const objSchema = (testdata) => {
     //foreignKeyList.push(primaryKeyOriginModel);
   
     // Create ForeignKey
-    let foreignKeyDestinationModel = createForeignKey(
+    const foreignKeyDestinationModel = createForeignKey(
       referencedPropertyName,
       referencedTableName,
       foreignKeyName,
@@ -257,8 +244,6 @@ const objSchema = (testdata) => {
     foreignKeyDestinationModel.constrainName = constrainName;
     // Add ForeignKey Destination
     foreignKeyList.push(foreignKeyDestinationModel);
-  
-    console.log('fk List--------->', foreignKeyList);
   }
   
   // Iterates through primaryKeyList and checks every property in every table
@@ -280,17 +265,12 @@ const objSchema = (testdata) => {
   // Iterates through foreignKeyList and checks every property in every table
   // If propertyModel's name equals what the foreignKeyModel is referencing, set propertyModel.IsForeignKey to true and add foreignKeyModel to propertyModel.References array
   function processForeignKey() {
-    //console.log("processForeign Key Called")
     foreignKeyList.forEach(function (foreignKeyModel) {
-      //console.log('fk list' ,foreignKeyModel);
       tableList.forEach(function (tableModel) {
         if (tableModel.Name === foreignKeyModel.ReferencesTableName) {
           tableModel.Properties.forEach(function (propertyModel) {
-            // console.log("PropertyModel.name---->", propertyModel.name);
-            // console.log("ForeignKeyModel Ref Name--->", foreignKeyModel.ReferencesPropertyName);
-            // console.log('prop model name', propertyModel.Name);
             if (propertyModel.Name === foreignKeyModel.ReferencesPropertyName) {
-              //console.log("References Pair Found");
+
               propertyModel.IsForeignKey = true;
               propertyModel.References.push(foreignKeyModel);
             }
@@ -337,45 +317,36 @@ const objSchema = (testdata) => {
   
   function parseAlterTable(tableName, constraint) {
     // const tableName = tmp.match(/(?<=ALTER\sTABLE\s)([a-zA-Z_]+)(?=\sADD\sCONSTRAINT)/)[0];
-  
-    // console.log('tableName in parseAlterTable------>', tableName);
-  
     const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
     const constrainName = constraint.match(regexConstraint);
   
-    if (constrainName !== null) console.log('constraintName', constrainName[0]);
+    // if (constrainName !== null) console.log('constraintName', constrainName[0]);
   
     tableName = tableName.trim();
     let currentTableModel;
     tableList.forEach((tableModel) => {
       if (tableModel.Name === tableName) {
         currentTableModel = tableModel;
-        //console.log('currentTableModel ', currentTableModel);
       }
     });
   
     if (constraint.indexOf('FOREIGN KEY') !== -1) {
-      //console.log('fk found---------->');
       const name = constraint.substring(
         constraint.indexOf('FOREIGN KEY'),
         constraint.length - 1
       );
-      //  console.log('foreign key', name)
-      // console.log(currentTableModel);
+
       parseMySQLForeignKey(
         name,
         currentTableModel,
         constrainName !== null ? constrainName[0] : null
       );
     } else if (constraint.indexOf('PRIMARY KEY') !== -1) {
-      //console.log('pk found ------>');
       const name = constraint.substring(
         constraint.indexOf('PRIMARY KEY'),
         constraint.length - 1
       );
       parseMYSQLPrimaryKey(name, currentTableModel);
-      //console.log('primary key', name);
-      //console.log(currentTableModel);
     }
   }
   
@@ -410,7 +381,6 @@ const objSchema = (testdata) => {
   
   function parseMYSQLPrimaryKey(name, currentTableModel) {
     const primaryKeyName = name.slice(13).replace(')', '').replace(/\"/g, '');
-  
     currentTableModel.Properties.forEach((property) => {
       if (property.Name.split(' ')[0] === primaryKeyName) {
         property.IsPrimaryKey = true;
@@ -422,8 +392,8 @@ const objSchema = (testdata) => {
   // Takes in SQL creation file as text, then parses
   export default function parseSql(text) {
     const lines = text.split('\n');
-    let tableCell = null;
-    let cells = [];
+    const tableCell = null;
+    const cells = [];
     exportedTables = 0;
     tableList = [];
     foreignKeyList = [];
@@ -433,7 +403,7 @@ const objSchema = (testdata) => {
   
     //Parse SQL to objects
     for (let i = 0; i < lines.length; i++) {
-      let rowCell = null;
+      const rowCell = null;
   
       const tmp = lines[i].trim();
   
@@ -448,16 +418,14 @@ const objSchema = (testdata) => {
       if (propertyRow === 'create table') {
         //Parse row
         let name = tmp.substring(12).trim();
-  
         //Parse Table Name
         name = parseTableName(name);
-  
         //Create Table
         currentTableModel = createTable(name);
       }
       // tmp === 'ALTER TABLE'
       else if (propertyRow == 'alter table') {
-        let alterQuerySplit = tmp.toLowerCase().trim();
+        const alterQuerySplit = tmp.toLowerCase().trim();
         let tname = null;
   
         for (let i = 0; i < tableList.length; i++) {
@@ -481,12 +449,10 @@ const objSchema = (testdata) => {
           0,
           tmp.charAt(tmp.length - 1) === ',' ? tmp.length - 1 : tmp.length
         );
-        //console.log('name after format', name);
         // Check if first 10 characters are 'constraint'
         const constraint = name.substring(0, 10).toLowerCase();
         if (constraint === 'constraint') {
           //double checking for constraints here
-          //console.log("constraint detected");
           if (name.indexOf('PRIMARY KEY') !== -1) {
             name = name
               .substring(name.indexOf('PRIMARY KEY'), name.length)
@@ -514,14 +480,13 @@ const objSchema = (testdata) => {
           }
         }
         // Verify if this is a property that doesn't have a relationship (One minute of silence for the property)
-        let normalProperty =
+        const normalProperty =
           propertyType !== 'primary key' &&
           propertyType !== 'foreign key' &&
           propertyType !== 'SQLServer primary key' &&
           propertyType !== 'SQLServer foreign key' &&
           propertyType !== 'SQLServer both';
   
-        //console.log('property row', propertyRow)
         // Parse properties that don't have relationships
         if (normalProperty) {
           // For now, skip lines with these commands
@@ -547,7 +512,7 @@ const objSchema = (testdata) => {
           name = name.replace(/\"/g, '');
   
           // Create Property
-          let propertyModel = createProperty(
+          const propertyModel = createProperty(
             name,
             currentTableModel.Name,
             null,
@@ -624,24 +589,24 @@ const objSchema = (testdata) => {
     // Process Foreign Keys
     processForeignKey();
   
-    for (let i in tableList) {
-      for (let k in tableList[i].Properties) {
+    for (const i in tableList) {
+      for (const k in tableList[i].Properties) {
         if (tableList[i].Properties[k] !== undefined) {
-          let composite =
+          const composite =
             tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
   
-          let value = composite[1].search(/NOT/i);
+          const value = composite[1].search(/NOT/i);
           if (value > 0) {
-            let type = composite[1].substring(0, value - 1);
-            let additional_constraints = composite[1].substring(value);
+            const type = composite[1].substring(0, value - 1);
+            const additional_constraints = composite[1].substring(value);
   
             tableList[i].Properties[k].field_name = composite[0];
             tableList[i].Properties[k].data_type = type;
             tableList[i].Properties[k].additional_constraints =
               additional_constraints;
           } else {
-            let type = composite[1].substring(value);
-            let additional_constraints = null;
+            const type = composite[1].substring(value);
+            const additional_constraints = null;
             tableList[i].Properties[k].field_name = composite[0];
             tableList[i].Properties[k].data_type = type;
             tableList[i].Properties[k].additional_constraints =
@@ -651,7 +616,6 @@ const objSchema = (testdata) => {
       }
     }
   
-    //console.log(tableList);
     return objSchema(tableList);
   }
   
@@ -659,15 +623,9 @@ const objSchema = (testdata) => {
         Section   */
   
   function createTableUI() {
-    //console.log('TableList', tableList);
     tableList.forEach(function (tableModel) {
       // Push in string code to d3tables array to render table name as a row
-      //console.log('TableModel Name:', tableModel);
-  
-      // console.log('table name:', tableModel.Name);
-  
-      //console.log('object:', tableModel.Properties[ref]);
-      for (let ref in tableModel.Properties);
+      for (const ref in tableModel.Properties);
     });
   
     return tableList;

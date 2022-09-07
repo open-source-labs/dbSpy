@@ -51,7 +51,6 @@ export default function HomeLoggedInNavbar({
           </Typography>
           <Link
             className="HomeLoggedInNavbarLink"
-            // style={{ textDecoration: "none", color: "white" }}
             to={`/display/access/${user.id}`}
           >
             <Button color="inherit">My Canvas</Button>
@@ -59,16 +58,10 @@ export default function HomeLoggedInNavbar({
           <Button 
             color="inherit">
             <a className="HomeLoggedInNavbarA" 
-            // style={{ textDecoration: "none", color: "white" }}
-            href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>
-            
+            href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>   
           </Button>
-
-          {/* <Button color="inherit">Team</Button> */}
-
           <Link 
           className="HomeLoggedInNavbarLink"
-          // style={{ textDecoration: "none", color: "white" }} 
           to={"/"}>
             <Button color="inherit" onClick={logout}>
               Logout

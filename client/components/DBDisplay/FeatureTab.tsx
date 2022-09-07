@@ -6,9 +6,6 @@ import DataStore from '../../Store';
 import parseSql from '../../parse';
 import { permissiveTableCheck } from '../../permissiveFn';
 
-//CSS IMPORT
-// import  "./styles.css"
-
 // UI Libraries - Mantine, tabler-icons
 import { useForm } from '@mantine/form';
 import {
@@ -143,9 +140,6 @@ export default function FeatureTab({
     ) => void;
   }
 
-  // function newTable(props: EditToolbarProps){
-  //   const { setRows, setRowModesModel } = props;
-    
     const firstcolumn = (props: EditToolbarProps) => {
       const { setRows, setRowModesModel } = props;
       const id = randomId();
@@ -162,7 +156,6 @@ export default function FeatureTab({
           isNew: true,
         },
       ]);
-      console.log(setRows)
     setRowModesModel((oldModel: GridRowModesModel) => ({
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'column' },
     }));
@@ -223,7 +216,6 @@ export default function FeatureTab({
       height={'100%'}
       p="xs"
     >
-      {/* <Navbar.Section>LOGO</Navbar.Section> */}
       <Modal
         className="modal-FeatureTab"
         opened={modalOpened}
@@ -295,7 +287,7 @@ export default function FeatureTab({
 
       <Navbar.Section>
         <div
-          className="FeatureTab-Navbar" /*style={{ fontSize: "24px", margin: "10px" }}*/
+          className="FeatureTab-Navbar"
         >
           Action
         </div>
@@ -319,7 +311,6 @@ export default function FeatureTab({
           })}
           onClick={() => {
             if (DataStore.connectedToDB) {
-              //alert("Please disconnect your database first.");
               sessionStorage.clear();
               DataStore.disconnect1();
               setSideBarOpened(true);
@@ -331,7 +322,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <DatabaseImport />
             </ThemeIcon>
@@ -365,7 +355,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <FileUpload />
             </ThemeIcon>
@@ -407,7 +396,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <File />
             </ThemeIcon>
@@ -446,7 +434,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <Eraser />
             </ThemeIcon>
@@ -476,7 +463,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <DeviceFloppy />
             </ThemeIcon>
@@ -488,7 +474,7 @@ export default function FeatureTab({
       <br />
       <Navbar.Section>
         <div
-          className="FeatureTab-NavBar" /*style={{ fontSize: "24px", margin: "10px" }}*/
+          className="FeatureTab-NavBar" 
         >
           Edit
         </div>{' '}
@@ -521,7 +507,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <Plus />
             </ThemeIcon>
@@ -551,7 +536,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <ArrowBackUp />
             </ThemeIcon>
@@ -581,7 +565,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <ArrowForwardUp />
             </ThemeIcon>
@@ -611,7 +594,6 @@ export default function FeatureTab({
               className="FeatureTab-ThemeIcon"
               variant="outline"
               color="dark"
-              /*style={{ border: "2px solid white" }}*/
             >
               <Camera />
             </ThemeIcon>
@@ -628,10 +610,9 @@ export default function FeatureTab({
         mx="-xs"
         px="xs"
       >
-        <div /*style={{ fontSize: "24px", margin: "10px" }}*/>History</div>
+        <div>History</div>
         <hr />
         {history}
-        {/* {historyComponent} */}
       </Navbar.Section>
     </Navbar>
   );
