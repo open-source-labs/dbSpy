@@ -128,13 +128,14 @@ Below is a list of features and improvements to which you can contribute. If you
 - Connecting to elephant SQL database - When connecting to elephant SQL to grab the data from the database, it takes a really long time to load (approximately 2 minutes), optimize the backend so pulling and parsing data doesn't take as long.
 - Logging needs a default settings list and direct reimport into live database. The SQL code to import has been placed into the DB_Schemas folder along with SQL Schema dumps. Also, log setting functionality is currently limited to Postgres databases and the code needs to be expanded to query and display log setting info from MySQL databases
 - Security setting models need to be put in place for database tables as well as log files.
+- Db-schemas - the schemas are saved under db_schemas and is saved in the server. Have a way to delete the schemas on the server from the front end. It would also be convenient to add these schemas to a list of existing schemas and be able to pull these schemas to display for the user to avoid having to make a new connection to the same database multiple times.
 - MySQL database connection - the connection feature currently is not compatible with MySQL database. During development phase, a MySQL database stored at the Google Cloud is used for testing. An authorization issue with Google is met when performing data dump. Suggests to try other MySQL server for development testing.  
 - Expand compatibility with other SQL database such as Oracle SQL, Microsoft SQL, IBM Db2, etc
 -Scrollable Canvas - Able to edit tables and scroll on the right side of the canvas, scrolling does not work on the left side of the canvas. If tables are populated or pushed outside of the canvas on the left side, that table disappears, need to enable scrolling on left side. 
+- Testing - The current result of the supertest could vary based on which mode it is tested on, development or production. When tested in development mode (commented out line 83-84 in server.js), the supertest result would pass with the expected content-type "text, html" returned from the server. However, when the supertest is tested in the production mode, it would fail with 404 Error. 
+    - The current unit test will fail due to ES module error. Have tried to reconfigure webpack by declaring "module: type", rebuild jest configure file...
 - Refactoring - We need help refactoring the codebase according to the Airbnb style guide.
 - Refactoring typescript - Right now, there are an abundance of any's in the types. 
-- Testing - The current result of the supertest could vary based on which mode it is tested on, development or production. When tested in development mode (commented out line 83-84 in server.js), the supertest result would pass with the expected content-type "text, html" returned from the server. However, when the supertest is tested in the production mode, it would fail with 404 Error. 
--Testing - The current unit test will fail due to ES module error. Have tried to reconfigure webpack by declaring "module: type", rebuild jest configure file..... 
 
 ---
 
