@@ -2,8 +2,8 @@
 // router.get('/getSchema/:id');
 
 const express = require('express');
-//const { module } = require('../../webpack.config');
 const controller = require('../controllers/dataController');
+const LogController = require('../controllers/loggingController');
 
 const { dummydata } = require('../dummy.ts');
 
@@ -32,13 +32,11 @@ router.get('/testDrop', controller.testDrop, (req, res) => {
   res.status(200).json(res.locals.testresponse);
 });
 
-
 router.post(
   '/getSchema',
    controller.getSchema,
    controller.objSchema,
   (req, res) => {
-    console.log('called');
     res.status(200).json(res.locals.result);
   }
 );
@@ -48,7 +46,6 @@ router.get('/openSchema', controller.openSchema, (req, res) => {
 });
 
 router.post('/postSchema', controller.postSchema, (req, res) => {
-  console.log('About to send Post!');
   res.status(200).json([
     {
       columnName: 'People',
@@ -75,8 +72,6 @@ router.post('/postSchema', controller.postSchema, (req, res) => {
 router.post('/handleQueries',
   controller.handleQueries,
   (req, res) => {
-    // console.log('Hi from post request updating schema');
-    console.log(res.locals.success);
     res.status(200).json({ success: res.locals.success });
   });
 
@@ -88,4 +83,15 @@ router.post('/deleteSchema', controller.deleteSchema, (req, res) => {
   res.status(200).send('Delete successful!');
 });
 
+// New route for getting log info
+router.post('/getLogs', LogController.getLogInfo, (req, res) => {
+  res.status(200).json(res.locals.logTable);
+});
+
+router.post('/setLogs', LogController.setLogInfo, (req, res) => {
+  return res.status(200);
+});
+
+
 module.exports = router;
+

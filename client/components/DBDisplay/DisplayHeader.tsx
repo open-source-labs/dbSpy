@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo5-white-100-rectangle.png";
 
@@ -8,6 +8,12 @@ import MenuPopUp from "./MenuPopUp";
 
 // UI Libraries - Mantine
 import { Header, Text, MediaQuery, Button, Image, Box } from "@mantine/core";
+
+
+
+// D A R K M O D E 
+import darkMode from '../../darkMode.js'
+
 
 interface DisplayHeaderProps {
   menuPopUpOpened: boolean;
@@ -24,7 +30,7 @@ export default function DisplayHeader({
   picture,
   setMenuPopUpOpened,
   setUser,
-}: DisplayHeaderProps) {
+  }: DisplayHeaderProps) {
   const navigate = useNavigate();
 
   if (picture === null) picture = undefined;
@@ -33,6 +39,11 @@ export default function DisplayHeader({
    * Receive a data with a format of {logout: true||false};
    * Redirect to main homepage upon both success and failure;
    */
+
+  // Dark mode button display. 
+  const currentTheme = localStorage.getItem('theme');
+  const darkButtonState = currentTheme === 'light' || !currentTheme ? 'Dark Mode' : 'Light Mode'
+
   const logout = () => {
     sessionStorage.clear();
     fetch("/logout")
@@ -50,71 +61,53 @@ export default function DisplayHeader({
 
   return (
     <Header height={60} p="xs" sx={{ backgroundColor: "#2b3a42" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          height: "100%",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
+      <div className="DisplayHeaderHeader"
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-            width: "33.33%",
-          }}
+  
+        <div className="DisplayHeaderHeaderSub"
         >
-          <MediaQuery largerThan="sm" styles={{ display: "block" }}>
+          <MediaQuery 
+          className="DisplayHeaderMediaQuery"
+          largerThan="sm" 
+          styles={{ display: "block" }}
+          >
             <MenuPopUp
               opened={menuPopUpOpened}
               setOpened={setMenuPopUpOpened}
             />
           </MediaQuery>
-
+          
           <Link to="/">
-            {/* <Text color="white">Logo</Text> */}
             <img src={logo} alt="Logo" />
           </Link>
+          <Button className="darkMode" color="inherit" onClick={darkMode}>{darkButtonState}</Button>
         </div>
 
-        <div
-          style={{
-            color: "white",
-            borderColor: "white",
-            textAlign: "center",
-            width: "33.33%",
-          }}
+       
+
+        <div className="DisplayHeaderHeaderSub1"
+
         >
-          {/* LATEST UPDATE: Version 1.0.0 Launched in July 23rd 2022 */}
         </div>
 
         <Box
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginRight: "6px",
-            justifyContent: "flex-end",
-            width: "33.33%",
-          }}
+          className="DisplayHeaderBox"
         >
-          <Text color="white" style={{ fontSize: "16px" }}>
+          <Text 
+          className="DisplayHeaderText">
             {" "}
             Welcome, {name == null ? " " : name.concat(" ")}{" "}
           </Text>
           <Image
+            className="DisplayHeaderImage"
             radius="lg"
             src="https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236__340.png"
             alt="profile pic"
-            style={{ width: "30px", margin: "0px 10px" }}
           />
           <Button
+            className="DisplayHeaderButton"
             variant="outline"
-            style={{ color: "white", border: "1px solid whitesmoke" }}
-            onClick={logout}
-          >
+            onClick={logout}>
             Sign Out
           </Button>
         </Box>

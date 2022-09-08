@@ -17,10 +17,6 @@ export default function HomeFooter() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <img src={logo} alt="Logo" />
           </Typography>
-          {/* <Link style={{textDecoration: 'none', color: "white" }} to={"#"}> */}
-            
-            {/* <Button color="inherit">About Us</Button> */}
-          {/* </Link> */}
         </Toolbar>
       </AppBar>
     </Box>
