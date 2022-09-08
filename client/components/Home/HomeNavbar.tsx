@@ -30,7 +30,7 @@ export default function HomeNavbar() {
           <Button 
             color="inherit">
             <a className="homeNavBar-aDocs"
-            href="https://www.github.com/oslabs-beta/dbSpy/blob/dev/README.md">Docs</a>
+            href="https://github.com/open-source-labs/dbSpy">Docs</a>
           </Button>
           <Link className="homeNavBar-LinkSignUp"
             to={"/signup"}

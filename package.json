@@ -56,6 +56,7 @@
     "react-router-dom": "^6.3.0",
     "react-xarrows": "^2.0.2",
     "styled-components": "^5.3.5",
+    "supertest": "^6.2.4",
     "tabler-icons-react": "^1.52.0",
     "ts-jest": "^28.0.5"
   },

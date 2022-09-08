@@ -12,27 +12,52 @@ import gif from "../../assets/SQL.gif";
 export default function Body() {
   const date = new Date().getFullYear();
 
-  let images = [...document.querySelectorAll('.Body-img-col')];
-
-
+  //lazy loading
+  const images = [...document.querySelectorAll('.Body-img-col')];
+  
   const options = {
-    root: document.querySelector('Body-fw-normal-h2'),
-    rootMargin: '0px',
-    threshold: 1.0
-  };
+    root: null, //it is the viewport
+    threshold: 0,
+    rootMargin: "50px",
+ };
+
+  // lazyLoad()
+
+  // const options = {
+  //   root: document.querySelector('body-Text-Muted-1'),
+  //   rootMargin: '100px',
+  //   threshold: 1.0
+  // };
+
+  const observer = new IntersectionObserver(onIntersection, options);
 
   function onIntersection(imageEntites: any){
     imageEntites.forEach((image: any) => {
-      observer.unobserve(image.target)
-      if (image.isIntersecting) {
-        image.target.src = image.target.dataset.src
-      }
-    })
-  }
-
-  let observer = new IntersectionObserver(onIntersection, options);
-    
+      // console.log('this is entry target cur src', image.target.attributes);
+      if (!image.isIntersecting) {
+        return;
+      } else {
+          const text = image.target.attributes['dataset-src']
+          // console.log(text, typeof(text))
+          //  console.log('this is entry', text.slice(12));
+          //  console.log('this is entrytar', image.target.attributes['dataset-src'].value)
+          image.target.src = image.target.attributes['dataset-src'].value;
+          observer.unobserve(image.target);
+         }
+      // if (image.isIntersecting) {
+        // observer.unobserve(image.target);
+        // console.log('THIS IS TARGET IMAGE', image.target.dataset.src)
+        // image.target.src = image.target.dataset.src;
+      } 
+      // else if (image.isNotIntersecting) {
+      //   observer.unobserve(image.target);
+      // }
+    )}
+    // )
+  // }
   images.forEach(image => observer.observe(image));
+
+  // observer.observe(images);
   
   return (
     <>
@@ -110,7 +135,7 @@ export default function Body() {
             
                 <div className="Body-col-lg-3">
                   <img className="Body-img-col" 
-                  src="https://avatars.githubusercontent.com/u/85323481?v=4" dataset-src="https://avatars.githubusercontent.com/u/85323481?v=4" loading="lazy" alt="AngelGiron" />
+                   dataset-src="https://avatars.githubusercontent.com/u/85323481?v=4" loading="lazy" alt="AngelGiron" />
 
                   <h3 className="Body-fw-normal">
                    Angel Giron
@@ -129,7 +154,7 @@ export default function Body() {
                 </div>
                 <div className="Body-col-lg-3">
                   <img className="Body-img-col"
-                  src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" dataset-src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" loading="lazy"alt="JohnPaulAdigwu" />
+                   dataset-src="https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg" loading="lazy"alt="JohnPaulAdigwu" />
 
                   <h3 className="Body-fw-normal">
                     John Paul Adigwu
@@ -148,7 +173,7 @@ export default function Body() {
                 </div>
                 <div className="Body-col-lg-3">
                   <img className="Body-img-col" 
-                  src="https://avatars.githubusercontent.com/u/11093217?v=4" dataset-src="https://avatars.githubusercontent.com/u/11093217?v=4" loading="lazy" alt="KevinParkLee" />
+                   dataset-src="https://avatars.githubusercontent.com/u/11093217?v=4" loading="lazy" alt="KevinParkLee" />
 
                   <h3 className="Body-fw-normal">
                     Kevin Park-Lee
@@ -168,7 +193,7 @@ export default function Body() {
 
                 <div className="Body-col-lg-3">
                   <img className="Body-img-col" 
-                  src="https://avatars.githubusercontent.com/u/83368864?v=4" dataset-src="https://avatars.githubusercontent.com/u/83368864?v=4" loading="lazy"alt="TarikMokhtech" />
+                   dataset-src="https://avatars.githubusercontent.com/u/83368864?v=4" loading="lazy"alt="TarikMokhtech" />
 
                   <h3 className="Body-fw-normal">
                     Tarik Mokhtech
@@ -191,7 +216,6 @@ export default function Body() {
 
               <div className="Body-col-lg-3">
                   <img className="Body-img-col"
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" 
                   dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg" 
                   loading="lazy" 
                   alt="BrettGuidry" />
@@ -214,7 +238,7 @@ export default function Body() {
                 <div className="Body-col-lg-3">
                   <span>
                   <img className="Body-img-col" 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" loading="lazy" alt="EmilMebasser" />
+                  dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011743468017680404/IMG_0151.JPG" loading="lazy" alt="EmilMebasser" />
 
                   </span>
 
@@ -236,7 +260,7 @@ export default function Body() {
 
                 <div className="Body-col-lg-3">
                   <img className="Body-img-col" 
-                  src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" dataset-src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" loading="lazy" alt="MimiLe" />
+                  dataset-src="https://cdn.discordapp.com/attachments/992305633787392096/1011759408931405976/IMG_3804.jpg" loading="lazy" alt="MimiLe" />
 
                   <h3 className="Body-fw-normal">
                    Mimi Le
@@ -256,7 +280,7 @@ export default function Body() {
 
                 <div className="Body-col-lg-3">
                   <img className="Body-img-col" 
-                  src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" loading="lazy"alt="Samson Lam" />
+                  dataset-src="https://cdn.discordapp.com/attachments/1006201036714819756/1011742184329969664/WhatsApp_Image_2022-05-21_at_1.33.01_PM.jpeg" loading="lazy"alt="Samson Lam" />
 
                   <h3 className="Body-fw-normal">
                     Samson Lam
