@@ -33,31 +33,18 @@ export default function Body() {
 
   function onIntersection(imageEntites: any){
     imageEntites.forEach((image: any) => {
-      // console.log('this is entry target cur src', image.target.attributes);
       if (!image.isIntersecting) {
         return;
       } else {
           const text = image.target.attributes['dataset-src']
-          // console.log(text, typeof(text))
-          //  console.log('this is entry', text.slice(12));
-          //  console.log('this is entrytar', image.target.attributes['dataset-src'].value)
           image.target.src = image.target.attributes['dataset-src'].value;
           observer.unobserve(image.target);
          }
-      // if (image.isIntersecting) {
-        // observer.unobserve(image.target);
-        // console.log('THIS IS TARGET IMAGE', image.target.dataset.src)
-        // image.target.src = image.target.dataset.src;
       } 
-      // else if (image.isNotIntersecting) {
-      //   observer.unobserve(image.target);
-      // }
     )}
-    // )
-  // }
+ 
   images.forEach(image => observer.observe(image));
 
-  // observer.observe(images);
   
   return (
     <>
