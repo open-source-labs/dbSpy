@@ -13,7 +13,7 @@ const objSchema = (testdata) => {
       // this outer loop will iterate through tables within testdata
       const properties = {};
       for (let k = 0; k < testdata[i].Properties.length; k++) {
-        const key = testdata[i].Properties[k].field_name;
+        let key = testdata[i].Properties[k].field_name;
         properties[key] = testdata[i].Properties[k];
       }
   
@@ -216,7 +216,7 @@ const objSchema = (testdata) => {
     }
   
     // Create ForeignKey
-    const foreignKeyOriginModel = createForeignKey(
+    let foreignKeyOriginModel = createForeignKey(
       foreignKeyName,
       currentTableModel.Name,
       referencedPropertyName,
@@ -233,7 +233,7 @@ const objSchema = (testdata) => {
     //foreignKeyList.push(primaryKeyOriginModel);
   
     // Create ForeignKey
-    const foreignKeyDestinationModel = createForeignKey(
+    let foreignKeyDestinationModel = createForeignKey(
       referencedPropertyName,
       referencedTableName,
       foreignKeyName,
@@ -605,8 +605,8 @@ const objSchema = (testdata) => {
             tableList[i].Properties[k].additional_constraints =
               additional_constraints;
           } else {
-            const type = composite[1].substring(value);
-            const additional_constraints = null;
+            let type = composite[1].substring(value);
+            let additional_constraints = null;
             tableList[i].Properties[k].field_name = composite[0];
             tableList[i].Properties[k].data_type = type;
             tableList[i].Properties[k].additional_constraints =

@@ -19,6 +19,10 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "npm": "6.x",
+    "node": "16.x"
+  },
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
