@@ -564,3 +564,36 @@ May be able to fix this by changing the button:action behavior
   background-color: var(--DMButton);
   color: var(--muted-font-color);
 }
+
+/*
+~SpriteSheet~
+*/
+
+.sprite-github {
+    width: 30px;
+    height: 30px;
+    /* background-position: -5px -5px; */
+    /* background-color: pink; */
+    background-image: url(https://ibb.co/Xpgs1yp);
+    /* background: url('./assets/spritesheet.png'); */
+    /* display: block; */
+ }
+  
+ .sprite-linkedin {
+    width: 30px;
+    height: 30px;
+    /* background-color: red; */
+    /* background-position: -45px -5px; */
+    background-image: url('./assets/spritesheet.png');
+    /* https://ibb.co/Xpgs1yp */
+    /* background: url('./assets/spritesheet.png'); */
+ }
+  
+ .sprite-logo5-white-100-rectangle {
+    width: 100px;
+    height: 40px;
+    /* background-position: -5px -45px; */
+    /* background-image: url('./assets/spritesheet.png'); */
+    /* background: url('./assets/spritesheet.png'); */
+ }
+ 
