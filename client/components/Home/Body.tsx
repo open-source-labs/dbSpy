@@ -133,9 +133,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/acgiron/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/g94angel">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -152,9 +154,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/johnpaul-adigwu/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/engineerous">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -171,9 +175,11 @@ export default function Body() {
                 <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/kevin38424/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/kevin38424">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -191,9 +197,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/tarik-mokhtech/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/MockTech" >
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -216,9 +224,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/brett-guidry-6b6085107/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/Lurkbot9000">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -238,9 +248,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/emil-mebasser-a1a2a815/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/ejmebasser">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -258,9 +270,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/my-le-a94575226/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/kawaiiyummy14">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
@@ -278,9 +292,11 @@ export default function Body() {
                   <div className="Body-footer">
                     <a className="Body-btn-btn-dark-btn-sm" href="https://www.linkedin.com/in/samson-lam-455846219/">
                       <BrandLinkedin className="body-brand"/>
+                      <i className="sprite-linkedin"></i>
                     </a>
                     <a className="Body-btn-btn-dark-btn-sm" href="https://github.com/sflam2013">
                       <BrandGithub className="body-brand"/>
+                      <i className="sprite sprite-github"></i>
                     </a>
                   </div>
                 </div>
