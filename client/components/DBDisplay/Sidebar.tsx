@@ -29,11 +29,12 @@ export default function Sidebar({
 }: SideBarProps) {
   const form = useForm({
     initialValues: {
-      hostname: "salt.db.elephantsql.com",
-      username: "gipvrrdm",
-      password: "fc_XSr9BrbQeusyrEoBk8omZrb4qsT1v",
+      hostname: "stampy.db.elephantsql.com",
+      username: "zqygstdw",
+      password: "VwEyJbq2-KoGt6mJJF73T-gS5WsgmDw-",
       port: "5432",
-      database_name: "gipvrrdm",
+      database_name: "zqygstdw",
+      database_link: "postgres://zqygstdw:VwEyJbq2-KoGt6mJJF73T-gS5WsgmDw-@stampy.db.elephantsql.com/zqygstdw"
     },
   });
 
@@ -75,35 +76,36 @@ export default function Sidebar({
                 password: "",
                 port: "",
                 database_name: "",
+                database_link: ""
               });
               setSideBarOpened(false);
             })}
           >
             <TextInput
-              required
               data-autofocus
               label="Host"
               {...form.getInputProps("hostname")}
             />
             <TextInput
-              required
               label="Port"
               {...form.getInputProps("port")}
             />
             <TextInput
-              required
               label="Database Username"
               {...form.getInputProps("username")}
             />
             <PasswordInput
-              required
               label="Database Password"
               {...form.getInputProps("password")}
             />
             <TextInput
-              required
               label="Database Name"
               {...form.getInputProps("database_name")}
+            />
+            <br></br>
+            <TextInput
+              label="OR Full Database Link"
+              {...form.getInputProps("database_link")}
             />
 
             <Group position="center" mt="md">
