@@ -17,7 +17,7 @@ const apiRouter = require('./routes/api');
 const app = express();
 app.use(
   session({
-    secret: process.env.TEAM_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {},
@@ -96,7 +96,7 @@ if (process.env.NODE_ENV === 'production') {
     return res.status(200).sendFile(path.join(__dirname, '../index.html'));
   });
 
-  app.get('/display/access', (req, res) => {
+  app.get('/display/access', isLoggedIn, (req, res) => {
     return res.status(200).sendFile(path.join(__dirname, '../index.html'));
   });
 
