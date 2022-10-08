@@ -60,11 +60,7 @@ export default function Signup() {
   const google = () => {
     const strWindowFeatures =
       'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open(
-      'https://dbspy.net/auth/google',
-      '_self',
-      strWindowFeatures
-    );
+    window.open('http://localhost:8080/auth/google', '_self', strWindowFeatures);
   };
 
   /*
@@ -140,6 +136,7 @@ export default function Signup() {
               }}
             >
               <Button
+                onClick={google}
                 sx={{
                   borderRadius: 50,
                   padding: '25px 36px',
@@ -149,7 +146,6 @@ export default function Signup() {
                 variant="contained"
                 color="secondary"
                 startIcon={<GoogleIcon />}
-                onClick={google}
               >
                 Sign up with Google
               </Button>
