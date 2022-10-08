@@ -38,7 +38,8 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   command.push(filename);
   return command;
 }
-
+//unused way to parse full postgres link from front-end into usable form for writeSchema
+/* 
 function newPostgresDumpQuery(databaseLink) {
   const command = [];
   const currentDateTime = new Date();
@@ -57,7 +58,7 @@ function newPostgresDumpQuery(databaseLink) {
   command.push(filename);
   return command;
 }
-
+ */
 /**
  * writeSchema
  * Executes pg_dump and writes to destination file
@@ -99,15 +100,16 @@ dataController.getSchema = (req, res, next) => {
   const port = req.body.port;
   const username = req.body.username;
   const database_name = req.body.database_name;
-  const database_link = req.body.database_link;
-  let command;
-  //const command = postgresDumpQuery(hostname, password, port, username, database_name);
-  if (database_link.length !== 0){
+  const command = postgresDumpQuery(hostname, password, port, username, database_name);
+  //below is the code for an alternate path if database link is included in req.body before front-end changes were made
+  //to ensure compatibility with other front-end components and sessions
+    //let command;
+/*   if (database_link.length !== 0){
     command = newPostgresDumpQuery(database_link);
   }
   else {
     command = postgresDumpQuery(hostname, password, port, username, database_name);
-  }
+  } */
 
 
 

@@ -62,6 +62,17 @@ export default function Sidebar({
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
+              if (values.database_link.length > 0){
+                const fullLink = values.database_link;
+                const splitURI = fullLink.split('/');
+                const name = splitURI[3];
+                const internalLinkArray = splitURI[2].split(':')[1].split('@');
+                values.hostname = internalLinkArray[1];
+                values.username = name;
+                values.password = internalLinkArray[0];
+                values.port = '5432';
+                values.database_name = name;
+              }
               // grabbing userDBInfo from values to send to server to make db changes
               if (DataStore.connectedToDB === true) {
                 sessionStorage.clear();
