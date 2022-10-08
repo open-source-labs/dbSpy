@@ -94,12 +94,13 @@ dataController.testDrop = (req, res, next) => {
 dataController.getSchema = (req, res, next) => {
   // // Option 1 - Production
   let result = null;
-  console.log(req.body);
-  const hostname = req.body.hostname;
+  //using destructuring for concise code, commented out lines 99-103
+  const {hostname, password, port, username, database_name} = req.body;
+/*   const hostname = req.body.hostname;
   const password = req.body.password;
   const port = req.body.port;
   const username = req.body.username;
-  const database_name = req.body.database_name;
+  const database_name = req.body.database_name; */
   const command = postgresDumpQuery(hostname, password, port, username, database_name);
   //below is the code for an alternate path if database link is included in req.body before front-end changes were made
   //to ensure compatibility with other front-end components and sessions
