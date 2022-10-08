@@ -38,7 +38,27 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   command.push(filename);
   return command;
 }
-
+//unused way to parse full postgres link from front-end into usable form for writeSchema
+/* 
+function newPostgresDumpQuery(databaseLink) {
+  const command = [];
+  const currentDateTime = new Date();
+  const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
+  const name = databaseLink.split('/');
+  name[2] += ':5432';
+  const dbURI = name.join('/');
+  const dbName = name[name.length - 1];
+  const filename = path.join(
+    __dirname,
+    `../db_schemas/${dbName}${dbName}${resultInSeconds.toString()}.sql`
+  );
+  command.push(
+    `pg_dump -s ${dbURI} > ${filename}`
+  );
+  command.push(filename);
+  return command;
+}
+ */
 /**
  * writeSchema
  * Executes pg_dump and writes to destination file
@@ -74,12 +94,26 @@ dataController.testDrop = (req, res, next) => {
 dataController.getSchema = (req, res, next) => {
   // // Option 1 - Production
   let result = null;
-  const hostname = req.body.hostname;
+  //using destructuring for concise code, commented out lines 99-103
+  const {hostname, password, port, username, database_name} = req.body;
+/*   const hostname = req.body.hostname;
   const password = req.body.password;
   const port = req.body.port;
   const username = req.body.username;
-  const database_name = req.body.database_name;
-  const command = postgresDumpQuery(hostname,password,port, username, database_name);
+  const database_name = req.body.database_name; */
+  const command = postgresDumpQuery(hostname, password, port, username, database_name);
+  //below is the code for an alternate path if database link is included in req.body before front-end changes were made
+  //to ensure compatibility with other front-end components and sessions
+    //let command;
+/*   if (database_link.length !== 0){
+    command = newPostgresDumpQuery(database_link);
+  }
+  else {
+    command = postgresDumpQuery(hostname, password, port, username, database_name);
+  } */
+
+
+
   writeSchema(command).then(resq => {
     fs.readFile(command[1], 'utf8', (error, data) => {
       if (error)

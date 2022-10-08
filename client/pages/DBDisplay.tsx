@@ -199,7 +199,15 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   const getLogInfo = () => {
     const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
     // creating URI for server to connect to user's db
-    let db_uri =
+    let db_uri;
+    
+    if (obj.database_link){
+      const name = obj.database_link.split('/');
+      name[2] += ':5432';
+      const dbURI = name.join('/');
+      db_uri = dbURI;
+    } else {
+      db_uri =
       'postgres://' +
       obj.username +
       ':' +
@@ -210,6 +218,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
       obj.port +
       '/' +
       obj.database_name;
+    }
     // uri examples
     // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
     // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
