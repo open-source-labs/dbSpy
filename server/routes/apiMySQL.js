@@ -40,9 +40,14 @@ router.post(
   mySQLdataController.getSchema,
   mySQLdataController.objSchema,
 */
-router.post('/getSchema', mySQLdataController.getSchema, (req, res) => {
-  res.status(200).json(res.locals.result);
-});
+router.post(
+  '/getSchema',
+  mySQLdataController.getSchema,
+  mySQLdataController.objSchema,
+  (req, res) => {
+    res.status(200).json(res.locals.data);
+  }
+);
 
 // router.get('/openSchema', mySQLdataController.openSchema, (req, res) => {
 //   res.status(200).json({ ok: 'ok' });

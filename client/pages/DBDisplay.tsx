@@ -76,7 +76,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         sessionStorage.removeItem('Query');
         sessionStorage.removeItem('Data');
         sessionStorage.removeItem('loadedFile');
-
+        console.log(res.data);
         // Then, update DataStore table data with response data and set query to empty.
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: '', query: '' }]);

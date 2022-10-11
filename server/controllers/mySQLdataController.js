@@ -5,6 +5,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const mySQL = require('mysql2');
 const mysqldump = require('mysqldump');
+const { TableRestaurant } = require('@mui/icons-material');
 
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
@@ -43,21 +44,6 @@ const mySQLdataController = {};
 // }
 
 /**
- * writeSchema
- * Executes pg_dump and writes to destination file
- * @param {string[]} command - Array containing pg_dump query and destination filename
- */
-// const writeSchema = async (command) => {
-//   try {
-//     const { stdout, stderr } = await exec(command);
-//     return stdout;
-//   } catch (error) {
-//     console.error(`error in WS: ${error.message}`);
-//     return error;
-//   }
-// };
-
-/**
  * testDrop
  * Usage unclear - Consider removing -- NOTE
  * @param {*} req
@@ -74,7 +60,6 @@ const mySQLdataController = {};
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 mySQLdataController.getSchema = async (req, res, next) => {
-  console.log('GETSCHEMA IS BEING INVOKED');
   // // Option 1 - Production
   // let result = null;
   //use mysqldump to download mysql db schema
@@ -87,71 +72,101 @@ mySQLdataController.getSchema = async (req, res, next) => {
         password: req.body.password,
         database: req.body.database_name,
       },
-      dump: { schema: false, data: false },
     });
-    res.locals.result = result;
+    res.locals.data = result;
+    const { tables } = result;
+    // console.log(tables);
     next();
   } catch (error) {
     next({ message: 'Error with getSchema middleware' });
   }
-
-  // const command = mySQLdumpQuery(
-  //   hostname,
-  //   password,
-  //   port,
-  //   username,
-  //   database_name
-  // );
-  // writeSchema(command)
-  //   .then((response) => {
-  //     fs.readFile(command[1], 'utf8', (error, data) => {
-  //       if (error) {
-  //         console.error(`error- in FS: ${error.message}`);
-  //         return next({
-  //           message: 'Error reading database schema file',
-  //         });
-  //       }
-  //       result = parseSql(data);
-  //       res.locals.data = result;
-  //       next();
-  //     });
-  //   })
-  //   .catch((err) =>
-  //     next({
-  //       message: 'Error in writeSchema',
-  //     })
-  //   );
 };
-
-//   // Option 2 - Dev
-//   fs.readFile(
-//     path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-//     'utf8',
-//     (error, data) => {
-//       if (error) {
-//         console.error(`error- in FS: ${error.message}`);
-//         return next({
-//           msg: 'Error reading database schema file',
-//           err: error,
-//         });
-//       }
-//       const result = parseSql(data);
-//       //console.log(result);
-//       //console.log('instance of table', result[records]);
-//       for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
-//       next();
-//     }
-//   );
-// };
 
 /**
  * objSchema
  * Iterates through testdata array of tables and grabs table name.
  * Iterates through properties array and assigns field name as key for properties.
  */
-// dataController.objSchema = (req, res, next) => {
-//   const { data } = res.locals;
-//   const results = {};
+mySQLdataController.objSchema = (req, res, next) => {
+  const db = res.locals.data;
+  const { tables } = db;
+  const results = {};
+
+  //create Table class
+  function TableModel(name) {
+    this.key = name;
+  }
+
+  //create Properties class
+  function PropertyModel(name) {
+    this.Name = name;
+    this.Value = null;
+    this.data_type = 'varchar';
+    this.TableName = null;
+    this.References = [];
+    this.IsPrimaryKey = false;
+    this.IsForeignKey = false;
+    this.additional_constraints = 'NA';
+    this.field_name = name;
+  }
+
+  // Handles all columns the primary key
+  function PrimaryKeyModel() {
+    this.PrimaryKeyName = null;
+    this.PrimaryKeyTableName = null;
+  }
+
+  //append tables and table properties to results
+  tables.forEach((table) => {
+    //check if table or view
+    if (!table.isView) {
+      //get primary keys
+      let pKeys = table.schema.slice(table.schema.indexOf('PRIMARY KEY') + 13);
+      pKeys = pKeys.slice(0, pKeys.indexOf(')'));
+      if (pKeys.includes(',')) pKeys = pKeys.split(', ');
+      else pKeys = [pKeys];
+      const primaryKeys = pKeys.map((key) => key.slice(1, -1));
+
+      //get foreign keys
+      let fKeys = table.schema.slice(table.schema.indexOf('FOREIGN KEY') + 13);
+      fKeys = fKeys.slice(0, fKeys.indexOf(')'));
+      if (fKeys.includes(',')) fKeys = fKeys.split(', ');
+      else fKeys = [fKeys];
+      const foreignKeys = fKeys.map((key) => key.slice(1, -1));
+
+      //create new table
+      results[table.name] = new TableModel(table.name);
+
+      //create new table properties
+      table.columnsOrdered.forEach((propName) => {
+        const newProp = new PropertyModel(propName);
+        newProp.TableName = table.name;
+        //check if primary key
+        if (primaryKeys.includes(newProp.Name)) newProp.IsPrimaryKey = true;
+        //check if foreign key
+        if (foreignKeys.includes(newProp.Name)) newProp.IsForeignKey = true;
+        newProp.field_name = newProp.Name;
+        newProp.data_type = table.columns[newProp.Name].type;
+        //STILL NEED: additional_constraints
+        //STILL NEED: References
+        //push new property into properties array
+        results[table.name][newProp.Name] = newProp;
+      });
+    }
+  });
+
+  // Handles all columns of the foreign key
+  function ForeignKeyModel() {
+    this.PrimaryKeyName = null;
+    this.ReferencesPropertyName = null;
+    this.PrimaryKeyTableName = null;
+    this.ReferencesTableName = null;
+    this.IsDestination = false;
+  }
+
+  res.locals.data = results;
+  return next();
+};
 
 //   for (let i = 0; i < data.length; i++) {
 //     // this outer loop will iterate through tables within data
