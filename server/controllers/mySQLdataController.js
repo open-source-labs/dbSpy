@@ -17,6 +17,7 @@ const mySQLdataController = {};
  **/
 
 mySQLdataController.getSchema = async (req, res, next) => {
+  console.log('THIS IS HIT', req.body);
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
   try {
@@ -49,9 +50,7 @@ mySQLdataController.objSchema = (req, res, next) => {
   const results = {};
 
   //create Table class
-  function TableModel(name) {
-    this.key = name;
-  }
+  function TableModel(name) {}
 
   //create Properties class
   function PropertyModel(name) {

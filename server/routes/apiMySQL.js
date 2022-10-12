@@ -1,10 +1,11 @@
 // Note: Perhaps use of params for this section would be useful, for instance
 // router.get('/getSchema/:id');
 
+
 const express = require('express');
 const mySQLdataController = require('../controllers/mySQLdataController');
 //Note: LogController is not yet built
-//const LogController = require('../controllers/loggingController');
+const mySqlLogController = require('../controllers/mySqlLogController');
 
 const { dummydata } = require('../dummy.ts');
 
@@ -45,6 +46,7 @@ router.post(
   mySQLdataController.getSchema,
   mySQLdataController.objSchema,
   (req, res) => {
+    console.log('RES.LOCALS.DATA', res.locals.data);
     res.status(200).json(res.locals.data);
   }
 );
@@ -90,9 +92,9 @@ router.post(
 // });
 
 // New route for getting log info
-// router.post('/getLogs', LogController.getLogInfo, (req, res) => {
-//   res.status(200).json(res.locals.logTable);
-// });
+router.post('/getLogs', mySqlLogController.getLogInfo, (req, res) => {
+  res.status(200).json(res.locals.logTable);
+});
 
 // router.post('/setLogs', LogController.setLogInfo, (req, res) => {
 //   return res.status(200);
