@@ -19,10 +19,6 @@
   },
   "author": "",
   "license": "ISC",
-  "engines": {
-    "npm": "6.x",
-    "node": "16.x"
-  },
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
@@ -41,6 +37,7 @@
     "axios": "^0.27.2",
     "childprocess": "^2.0.2",
     "cookie-session": "^2.0.0",
+    "deepmerge": "^4.2.2",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
@@ -48,6 +45,8 @@
     "fs": "^0.0.1-security",
     "html-to-image": "^1.9.0",
     "jest": "^28.1.1",
+    "mysql-client": "^0.3.0",
+    "mysqldump": "^3.2.0",
     "node-fetch": "^3.2.6",
     "pg": "^8.7.3",
     "pg-dump": "^0.10.0",
@@ -59,6 +58,8 @@
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "react-xarrows": "^2.0.2",
+    "sql-formatter": "^11.0.2",
+    "sqlstring": "^2.3.3",
     "styled-components": "^5.3.5",
     "supertest": "^6.2.4",
     "tabler-icons-react": "^1.52.0",
