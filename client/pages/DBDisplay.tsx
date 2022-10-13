@@ -360,6 +360,10 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     );
   }
 
+  // CREATE LOGIC FOR SQL QUERY GENERATOR WHEN CONNECTED TO DB
+  // const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+  // const db_type: string = obj.db_type;
+  
   let queryGen: string;
   if (sqlOpen === true) {
     queryGen = 'PostgreSQL';
