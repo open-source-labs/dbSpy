@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import DBDisplay from "./pages/DBDisplay";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import  "./styles.css"
+import  "./styles/index.css"
 import Shared from "./pages/Shared";
 
 

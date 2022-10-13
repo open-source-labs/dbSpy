@@ -39,8 +39,9 @@ export default function Home({ user, setUser }: stateChangeProps) {
   //   </div>
   // );
   <>
+   <div className="container mx-auto bg-gray-200 rounded-xl shadow border p-8 m-10">
   <h2>Home</h2>
-  <Description/>
+  {/* <Description></Description> */}
   {/* {user.id !== null ? (
     <HomeLoggedInNavbar user={user} setUser={setUser} />
   ) : (
@@ -49,6 +50,7 @@ export default function Home({ user, setUser }: stateChangeProps) {
   <Body />
   
   <HomeFooter /> */}
+  </div>
 </>
 );
 }
