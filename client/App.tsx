@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import DBDisplay from "./pages/DBDisplay";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import  "./styles.css"
+import Shared from "./pages/Shared";
 
 
 
@@ -56,32 +57,40 @@ export default function App() {
     4. "/display" | "/display/:id" - database visualization application page; only accessible when user is authorized;
   */
   return (
+    <BrowserRouter>
     <Routes>
-      <Route path={"/"} element={<Home user={user} setUser={setUser} />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-
-      <Route
-        path="/display/access"
-        element={
-          user.id !== null ? (
-            <DBDisplay user={user} setUser={setUser} />
-          ) : (
-            "Redirecting"
-          )
-        }
-      />
-
-      <Route
-        path="/display/access/:id"
-        element={
-          user.id !== null ? (
-            <DBDisplay user={user} setUser={setUser} />
-          ) : (
-            "Redirecting"
-          )
-        }
-      />
+      <Route path='/' element={<Shared/>}>
+      {/* index renders root directory */}
+      <Route index element={<Home user={user} setUser={setUser} />}></Route>
+      </Route>
     </Routes>
+    </BrowserRouter>
+    // <Routes>
+    //   <Route path={"/"} element={<Home user={user} setUser={setUser} />} />
+    //   <Route path="/signup" element={<Signup />} />
+    //   <Route path="/login" element={<Login />} />
+
+    //   <Route
+    //     path="/display/access"
+    //     element={
+    //       user.id !== null ? (
+    //         <DBDisplay user={user} setUser={setUser} />
+    //       ) : (
+    //         "Redirecting"
+    //       )
+    //     }
+    //   />
+
+    //   <Route
+    //     path="/display/access/:id"
+    //     element={
+    //       user.id !== null ? (
+    //         <DBDisplay user={user} setUser={setUser} />
+    //       ) : (
+    //         "Redirecting"
+    //       )
+    //     }
+    //   />
+    // </Routes>
   );
 }

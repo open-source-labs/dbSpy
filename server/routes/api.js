@@ -23,7 +23,6 @@ const router = express.Router();
  * Display
  * Logout
  */
-
 router.get('/getAllSchemas', controller.getAllSchemas, (req, res) => {
   res.status(200).json({ ok: 'ok' });
 });
@@ -34,8 +33,8 @@ router.get('/testDrop', controller.testDrop, (req, res) => {
 
 router.post(
   '/getSchema',
-   controller.getSchema,
-   controller.objSchema,
+  controller.getSchema,
+  controller.objSchema,
   (req, res) => {
     res.status(200).json(res.locals.result);
   }
@@ -69,11 +68,9 @@ router.post('/postSchema', controller.postSchema, (req, res) => {
 });
 
 // Recieving an array of strings (queries)
-router.post('/handleQueries',
-  controller.handleQueries,
-  (req, res) => {
-    res.status(200).json({ success: res.locals.success });
-  });
+router.post('/handleQueries', controller.handleQueries, (req, res) => {
+  res.status(200).json({ success: res.locals.success });
+});
 
 router.post('/saveSchema', controller.saveSchema, (req, res) => {
   res.status(200).send('Save successful!');
@@ -92,6 +89,4 @@ router.post('/setLogs', LogController.setLogInfo, (req, res) => {
   return res.status(200);
 });
 
-
 module.exports = router;
-

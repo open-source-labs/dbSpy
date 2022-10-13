@@ -7,13 +7,14 @@
     "es2021": true
   },
   // "plugins": ["react", "prettier"],
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommend", "plugin:tailwindcss/recommend"],
   // "extends": ["airbnb", "prettier", "eslint:recommended", "plugin:react/recommended"],
   "parserOptions": {
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-    }
+    },
+    "plugins": ["tailwindcss"]
   },
   "rules": {
     "prettier/prettier": "error",

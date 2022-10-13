@@ -2,6 +2,10 @@
 Canvas.tsx styling below
 */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --nav-bar: #2b3a42;
   --nav-bar-font-color: whitesmoke;

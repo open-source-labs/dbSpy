@@ -6,6 +6,7 @@ import Body from "../components/Home/Body";
 import HomeFooter from "../components/Home/HomeFooter";
 import HomeLoggedInNavbar from "../components/Home/HomeLoggedInNavbar";
 import HomeNavbar from "../components/Home/HomeNavbar";
+import Description from '../components/Home/Description';
 
 interface stateChangeProps {
   user: {
@@ -26,15 +27,28 @@ export default function Home({ user, setUser }: stateChangeProps) {
   3. HomeFooter
   */
   return (
-    <div>
-      {user.id !== null ? (
-        <HomeLoggedInNavbar user={user} setUser={setUser} />
-      ) : (
-        <HomeNavbar />
-      )}
-      <Body />
+  //   <div>
+  //     {user.id !== null ? (
+  //       <HomeLoggedInNavbar user={user} setUser={setUser} />
+  //     ) : (
+  //       <HomeNavbar />
+  //     )}
+  //     <Body />
       
-      <HomeFooter />
-    </div>
-  );
+  //     <HomeFooter />
+  //   </div>
+  // );
+  <>
+  <h2>Home</h2>
+  <Description/>
+  {/* {user.id !== null ? (
+    <HomeLoggedInNavbar user={user} setUser={setUser} />
+  ) : (
+    <HomeNavbar />
+  )}
+  <Body />
+  
+  <HomeFooter /> */}
+</>
+);
 }

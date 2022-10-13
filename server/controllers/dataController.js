@@ -4,7 +4,7 @@ const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
-
+console.log('in datacontroller');
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
@@ -25,6 +25,7 @@ const dataController = {};
  * @return {string[]} command - Array containing pg_dump query and destination filename
  */
 function postgresDumpQuery(hostname, password, port, username, databaseName) {
+  console.log('dumpQ');
   const command = [];
   const currentDateTime = new Date();
   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
@@ -81,8 +82,7 @@ const writeSchema = async (command) => {
  * @param {*} res
  * @param {*} next
  */
-dataController.testDrop = (req, res, next) => {
-};
+dataController.testDrop = (req, res, next) => {};
 
 /**
  * getSchema
@@ -95,40 +95,44 @@ dataController.getSchema = (req, res, next) => {
   // // Option 1 - Production
   let result = null;
   //using destructuring for concise code, commented out lines 99-103
-  const {hostname, password, port, username, database_name} = req.body;
-/*   const hostname = req.body.hostname;
+  const { hostname, password, port, username, database_name } = req.body;
+  /*   const hostname = req.body.hostname;
   const password = req.body.password;
   const port = req.body.port;
   const username = req.body.username;
   const database_name = req.body.database_name; */
-  const command = postgresDumpQuery(hostname, password, port, username, database_name);
+  const command = postgresDumpQuery(
+    hostname,
+    password,
+    port,
+    username,
+    database_name
+  );
   //below is the code for an alternate path if database link is included in req.body before front-end changes were made
   //to ensure compatibility with other front-end components and sessions
-    //let command;
-/*   if (database_link.length !== 0){
+  //let command;
+  /*   if (database_link.length !== 0){
     command = newPostgresDumpQuery(database_link);
   }
   else {
     command = postgresDumpQuery(hostname, password, port, username, database_name);
   } */
 
-
-
-  writeSchema(command).then(resq => {
+  writeSchema(command).then((resq) => {
     fs.readFile(command[1], 'utf8', (error, data) => {
-      if (error)
-        {
-          console.error(`error- in FS: ${error.message}`);
-          return next({
+      if (error) {
+        console.error(`error- in FS: ${error.message}`);
+        return next({
           msg: 'Error reading database schema file',
-          err: error});
-        }
+          err: error,
+        });
+      }
       result = parseSql(data);
       res.locals.data = result;
       next();
     });
   });
-  };
+};
 
 //   // Option 2 - Dev
 //   fs.readFile(
@@ -384,7 +388,6 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   foreignKeyDestinationModel.constrainName = constrainName;
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
-
 }
 
 // Iterates through primaryKeyList and checks every property in every table
@@ -470,7 +473,6 @@ function parseTableName(name) {
 }
 
 function parseAlterTable(tableName, constraint) {
-
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
   const constrainName = constraint.match(regexConstraint);
 
@@ -588,8 +590,8 @@ function parseSql(text) {
         }
       }
       //check for TableName and following line with constraint bound on database
-    if (tname !== null && lines[i+1] !== null)
-      parseAlterTable(tname, lines[i + 1]);
+      if (tname !== null && lines[i + 1] !== null)
+        parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }
 
@@ -799,7 +801,9 @@ function checkSpecialKey(propertyModel) {
   }
 }
 
-dataController.getAllSchemas = (req, res) => {};
+dataController.getAllSchemas = (req, res) => {
+  console.log('yo');
+};
 
 dataController.openSchema = (req, res, next) => {
   fs.readFile(
@@ -879,7 +883,6 @@ dataController.handleQueries = async (req, res, next) => {
       queryStr = queryStr.concat(newQuery);
     } else queryStr = queryStr.concat(queries[i].query);
   }
-
 
   /**
    * Transaction implementation

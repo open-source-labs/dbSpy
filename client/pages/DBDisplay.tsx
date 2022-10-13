@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { useMutation } from 'react-query';
 
+
 // Components Imported;
 import Canvas from '../components/DBDisplay/Canvas';
 import DisplayHeader from '../components/DBDisplay/DisplayHeader';
@@ -71,6 +72,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   const { isLoading, isError, mutate } = useMutation(
     (dataToSend: object) => {
       return axios.post('/api/getSchema', dataToSend).then((res) => {
+        console.log(res)
         // Once connected to Database, we need to clear DataStore and Query, Data, loadedFile from sessionStorage in case the user interacted with SQL load or New Canvas feature.
         DataStore.clearStore();
         sessionStorage.removeItem('Query');
@@ -91,6 +93,10 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
         // Update the rendering of the tables with latest table model.
         setFetchedData(res.data);
+
+          console.log(DataStore);
+          
+
       });
     },
     {
@@ -274,6 +280,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
       //Update fetchedData to render the latest table model.
       setFetchedData(latestData);
+      console.log('inside useEffect');
+      
     }
   }, []);
 
@@ -512,7 +520,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
           <br/>
         </Box>
       )}
-
+    
       <Canvas
         sqlOpen={sqlOpen}
         setSqlOpen={setSqlOpen}
