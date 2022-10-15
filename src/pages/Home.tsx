@@ -39,7 +39,7 @@ export default function Home({ user, setUser }: stateChangeProps) {
   //   </div>
   // );
   <>
-   <div className="container mx-auto bg-gray-200 rounded-xl shadow border p-8 m-10">
+   <div className="flex items-center justify-between flex-wrap bg-blue-500 p-6">
   <h2>Home</h2>
   {/* <Description></Description> */}
   {/* {user.id !== null ? (

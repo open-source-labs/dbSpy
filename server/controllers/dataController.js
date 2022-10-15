@@ -4,7 +4,6 @@ const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
-console.log('in datacontroller');
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
@@ -25,7 +24,6 @@ const dataController = {};
  * @return {string[]} command - Array containing pg_dump query and destination filename
  */
 function postgresDumpQuery(hostname, password, port, username, databaseName) {
-  console.log('dumpQ');
   const command = [];
   const currentDateTime = new Date();
   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
