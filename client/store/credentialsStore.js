@@ -1,3 +1,7 @@
+//
+// State Management for User and dbCredentials
+//
+
 import create from 'zustand';
 
 const useCredentialsStore = create((set) => ({
