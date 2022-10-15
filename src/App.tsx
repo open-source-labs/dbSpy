@@ -61,7 +61,9 @@ export default function App() {
     <Routes>
       <Route path='/' element={<Shared/>}>
       {/* index renders root directory */}
-      <Route index element={<Home user={user} setUser={setUser} />}></Route>
+      <Route index element={<Home user={user} setUser={setUser} />}/>
+      <Route path='login' element={<Login/>}/>
+      <Route path='signup' element={<Signup/>}/>
       </Route>
     </Routes>
     </BrowserRouter>
