@@ -8,6 +8,8 @@ import HomeLoggedInNavbar from "../components/Home/HomeLoggedInNavbar";
 import HomeNavbar from "../components/Home/HomeNavbar";
 import Description from '../components/Home/Description';
 
+import Contributors from '../components/Home/Contributors'
+
 interface stateChangeProps {
   user: {
     email: string | null;
@@ -40,7 +42,7 @@ export default function Home({ user, setUser }: stateChangeProps) {
   // );
   <>
    <div className="flex items-center justify-between flex-wrap bg-blue-500 p-6">
-  <h2>Home</h2>
+  <h2>Home Test</h2>
   {/* <Description></Description> */}
   {/* {user.id !== null ? (
     <HomeLoggedInNavbar user={user} setUser={setUser} />
@@ -51,6 +53,7 @@ export default function Home({ user, setUser }: stateChangeProps) {
   
   <HomeFooter /> */}
   </div>
+  <Contributors />
 </>
 );
 }
