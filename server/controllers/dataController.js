@@ -175,25 +175,10 @@ dataController.objSchema = (req, res, next) => {
   }
 
   //
-  // {
-  //   table: {
-  //     column: {
-  //       Name: "Name",
-  //       ref: [
-  //         prop: "values"
-  //       ]
-  //     }
-  //   }
-  // }
-  //
-
-  //
   // PATCH TO RENAME SOME DATA FIELDS
   //
   Object.keys(results).forEach((table) => {
-    console.log('Table', table);
     Object.keys(results[table]).forEach((prop) => {
-      console.log('Prop', prop)
       let propObj = results[table][prop];
       propObj.Name = prop;
       const ref = propObj.References;
