@@ -32,3 +32,15 @@ export default useCredentialsStore;
 //  host: null,
 //  port: null
 // }
+
+
+//Example usage in component:
+// 1. Import the file: 
+//      useCredentialsStore from './store/credentialsStore';
+// 2. To access the 'user' state, declare inside the function:
+//      const user = useCredentialsStore(state => state.user);
+// 3. To access the 'setUser' hook:
+//      const setUser = useCredentialsStore(state => state.setUser);
+// 4. You can invoke the 'setUser' hook directly or make it part of a function. 
+//      For example: const submit = (e) => setUser(e.target.event);
+//
