@@ -3,13 +3,19 @@
 //
 
 import create from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
-const useDisplayStore = create((set) => ({
+const displayStore = (set) => ({
+  //displayStore state
   displayStore: null,
   //schema is an object
   setDisplayStore: (schema) =>
     set((state) => ({ ...state, displayStore: schema })),
-}));
+});
+
+displayStore = devtools(displayStore);
+displayStore = persist(displayStore);
+const useDisplayStore = create(displayStore);
 
 export default useDisplayStore;
 
