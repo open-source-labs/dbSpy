@@ -37,7 +37,7 @@ export default useCredentialsStore;
 //Example usage in component:
 // 1. Import the file: 
 //      useCredentialsStore from './store/credentialsStore';
-// 2. To access the 'user' state, declare inside the function:
+// 2. To access the 'user' state, declare inside the component function:
 //      const user = useCredentialsStore(state => state.user);
 // 3. To access the 'setUser' hook:
 //      const setUser = useCredentialsStore(state => state.setUser);
