@@ -13,7 +13,7 @@ const ProtectedRoute: React.FC<PropsWithChildren> = ({user:any, children}) => {
   const setUser = useCredentialsStore(state => state.setUser);
   //END: STATE DECLARATION
 
-  return user? children : <Navigate to='/login' replace />
+  return user ? children : <Navigate to='/login' replace />
 }
 
 export default ProtectedRoute

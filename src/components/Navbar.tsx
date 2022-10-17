@@ -1,11 +1,18 @@
 import React from 'react'
 import {NavLink} from 'react-router-dom';
 import logo from "../assets/logo5-white-100-rectangle.png"
+import useCredentialsStore from '../store/credentialsStore';
 
 const linkbtn = "block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
 
 function Navbar() {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
+  
   return (
     <nav className="flex items-center justify-between flex-wrap bg-sky-800 p-6">
       <div className='text-base lg:flex-grow'>
