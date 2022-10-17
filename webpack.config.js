@@ -15,6 +15,10 @@ module.exports = {
     port: 8080,
     hot: true,
     proxy: {
+      '/apimysql/**': {
+        target: 'http://localhost:3000',
+        secure: false,
+      },
       '/api/**': {
         target: 'http://localhost:3000',
         secure: false,

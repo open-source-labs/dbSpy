@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Select,
   TextInput,
   Button,
   Group,
@@ -11,6 +12,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
+import { session } from "passport";
 
 interface SideBarProps {
   isLoadingProps: boolean;
@@ -29,6 +31,7 @@ export default function Sidebar({
 }: SideBarProps) {
   const form = useForm({
     initialValues: {
+      db_type: "PostgreSQL",
       hostname: "stampy.db.elephantsql.com",
       username: "zqygstdw",
       password: "VwEyJbq2-KoGt6mJJF73T-gS5WsgmDw-",
@@ -82,6 +85,7 @@ export default function Sidebar({
               sessionStorage.userDBInfo = JSON.stringify(values);
               mutate(values);
               form.setValues({
+                db_type: "",
                 hostname: "",
                 username: "",
                 password: "",
@@ -92,6 +96,12 @@ export default function Sidebar({
               setSideBarOpened(false);
             })}
           >
+            <Select 
+              label="Select your database"
+              placeholder="Pick one"
+              data={['PostgreSQL', 'mySQL']}
+              {...form.getInputProps("db_type")}
+            />
             <TextInput
               data-autofocus
               label="Host"

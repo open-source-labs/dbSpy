@@ -12,7 +12,8 @@ function isLoggedIn(req, res, next) {
   req.user ? next() : res.sendStatus(200).json(null);
 }
 
-const apiRouter = require('./routes/api');
+const apiPgRouter = require('./routes/api');
+const apiMySQLRouter = require('./routes/apiMySQL');
 
 const app = express();
 app.use(
@@ -77,7 +78,9 @@ app.get('/logout', (req, res) => {
 });
 
 // Implementation is flexibile, can change if needed
-app.use('/api', apiRouter);
+// Note: currently working on the mySQL routes
+app.use('/apimysql', apiMySQLRouter);
+app.use('/api', apiPgRouter);
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === 'production') {
@@ -115,7 +118,7 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,
-    message: { err: 'An error occurred' },
+    message: 'An error occurred. This is the global error handler.',
   };
   const errorObj = Object.assign({}, defaultErr, err);
   return res.status(errorObj.status).json(errorObj.message);

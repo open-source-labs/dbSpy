@@ -90,6 +90,7 @@ dataController.testDrop = (req, res, next) => {};
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 dataController.getSchema = (req, res, next) => {
+  console.log('THIS IS HIT', req.body);
   // // Option 1 - Production
   let result = null;
   //using destructuring for concise code, commented out lines 99-103
@@ -161,7 +162,7 @@ dataController.getSchema = (req, res, next) => {
 dataController.objSchema = (req, res, next) => {
   const { data } = res.locals;
   const results = {};
-
+  console.log(data);
   for (let i = 0; i < data.length; i++) {
     // this outer loop will iterate through tables within data
     const properties = {};
@@ -171,6 +172,33 @@ dataController.objSchema = (req, res, next) => {
     }
     results[data[i].Name] = properties;
   }
+
+  //
+  // PATCH TO RENAME SOME DATA FIELDS
+  //
+  Object.keys(results).forEach((table) => {
+    Object.keys(results[table]).forEach((prop) => {
+      let propObj = results[table][prop];
+      propObj.Name = prop;
+      const ref = propObj.References;
+      if (ref.length > 0)
+        ref.forEach((refObj) => {
+          refObj.PrimaryKeyName = prop;
+          refObj.ReferencesPropertyName = refObj.ReferencesPropertyName.slice(
+            0,
+            refObj.ReferencesPropertyName.indexOf(' ')
+          );
+        });
+      if (propObj.data_type.includes('character varying'))
+        propObj.data_type = 'varchar';
+
+      if (propObj.data_type.includes('boolean'))
+        propObj.data_type = 'boolean';
+    });
+  });
+  //
+  // END - PATCH
+  //
 
   res.locals.result = results;
   next();
