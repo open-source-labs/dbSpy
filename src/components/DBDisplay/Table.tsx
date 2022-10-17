@@ -72,15 +72,15 @@ interface TableProps {
       IsForeignKey: boolean;
       IsPrimaryKey: boolean;
       Name: string;
-      References: Array<any>;
+      References: Array<object>;
       TableName: string;
-      Value: any;
+      Value: string | number;
       additional_constraints: string | null;
       data_type: string;
       field_name: string;
     };
   };
-  tableId?: any;
+  tableId?: string | undefined;
   setId?: any;
   id: string;
   setFetchedData: (fetchedData: any) => void;
