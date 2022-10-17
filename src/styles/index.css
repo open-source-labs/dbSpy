@@ -2,13 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 
+body {
+  background-color: rgb(61,84,97);
+} 
+*/
+
 .testing {
   margin-top: -75px;
 }
 
+.heroCard {
+  margin-top: 5%;
+  background-color: hsla(0, 0%, 100%, 0.8);
+  backdrop-filter: saturate(200%) blur(25px);
+}
+
+
 .profileImg {
-  height: 240px;
-  width: 240px;
+  height: 200px;
+  width: 200px;
+  min-width: 200px;
   border-radius: 50%;
   object-fit: cover;
   overflow: hidden;
@@ -18,4 +32,8 @@
   padding-bottom: 150px;
   padding-right: 10px;
   padding-left: 10px;
+}
+
+.profileDetails {
+  background-color: white;
 }

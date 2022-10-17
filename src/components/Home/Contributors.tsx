@@ -36,10 +36,10 @@ export default function Contributors(){
   }
 
   return (
-    <div className="container my-24 px-6 mx-auto">
+    <div className="container my-24 px-6 mx-auto contributors">
 
 <section className="mb-32 text-gray-800 text-center">
-  <h2 className="text-3xl font-bold mb-32">Meet the dbSpy Team</h2>
+  <h2 className="text-3xl font-bold mb-32 team-header dark:text-white">Meet the dbSpy Team</h2>
 
   <div className="flex flex-row flex-wrap justify-around">
     {profiles}
