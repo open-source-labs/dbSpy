@@ -10,18 +10,18 @@ import Description from '../components/Home/Description';
 
 import Contributors from '../components/Home/Contributors'
 
-interface stateChangeProps {
-  user: {
-    email: string | null;
-    id: string | null;
-    name: string | null;
-    picture: string | null;
-  };
-  setUser: (user: any) => void;
-}
+// interface stateChangeProps {
+  // user: {
+  //   email: string | null;
+  //   id: string | null;
+  //   name: string | null;
+  //   picture: string | null;
+  // };
+  // setUser: (user: any) => void;
+// }
 
 /* "Home" Component - main launch page */
-export default function Home({ user, setUser }: stateChangeProps) {
+export default function Home() {
   /*
   Three main components under Home:
   1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)

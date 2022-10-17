@@ -63,7 +63,8 @@
     "styled-components": "^5.3.5",
     "supertest": "^6.2.4",
     "tabler-icons-react": "^1.52.0",
-    "ts-jest": "^28.0.5"
+    "ts-jest": "^28.0.5",
+    "zustand": "^4.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
