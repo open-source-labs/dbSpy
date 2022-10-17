@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.testing {
+  margin-top: -75px;
+}
+
+.profileImg {
+  height: 240px;
+  width: 240px;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.profileCard {
+  padding-bottom: 150px;
+  padding-right: 10px;
+  padding-left: 10px;
+}

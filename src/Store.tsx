@@ -95,6 +95,8 @@ class Store {
   */
   getQuery(ind: number) {
     return this.queries.get(ind);
+    console.log(this);
+    
   }
 
   /* 
@@ -139,7 +141,7 @@ class Store {
     const exportData = this.queryList.map((element: any) => element['query'])
      return (exportData)
   }
-
+  
 }
 //instance of Store object and assign it to "DataStore"
 const DataStore = new Store();

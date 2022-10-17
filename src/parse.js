@@ -1,207 +1,25 @@
-const fs = require('fs');
-
-const path = require('path');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const { Pool } = require('pg');
-// Creating global empty arrays to hold foreign keys, primary keys, and tableList
-let foreignKeyList = [];
-let primaryKeyList = [];
-let primaryKeyListArray = [];
-let tableList = [];
-let exportedTables = 0;
-
-const dataController = {};
-
-/**
- * Postgres Dump Query
- * Formulates an array with a pg_dump query at position 0, and a filename for dump location at position 1.
- * @param {string} hostname - A required string with database hostname
- * @param {string} password - A required string with database password
- * @param {string} port - A required string with database port
- * @param {string} username - A required string with database username
- * @param {string} databaseName - A required string with the database name
- * @return {string[]} command - Array containing pg_dump query and destination filename
- */
-function postgresDumpQuery(hostname, password, port, username, databaseName) {
-  const command = [];
-  const currentDateTime = new Date();
-  const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  const filename = path.join(
-    __dirname,
-    `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`
-  );
-  command.push(
-    `pg_dump -s postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${filename}`
-  );
-  command.push(filename);
-  return command;
-}
-//unused way to parse full postgres link from front-end into usable form for writeSchema
-/* 
-function newPostgresDumpQuery(databaseLink) {
-  const command = [];
-  const currentDateTime = new Date();
-  const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  const name = databaseLink.split('/');
-  name[2] += ':5432';
-  const dbURI = name.join('/');
-  const dbName = name[name.length - 1];
-  const filename = path.join(
-    __dirname,
-    `../db_schemas/${dbName}${dbName}${resultInSeconds.toString()}.sql`
-  );
-  command.push(
-    `pg_dump -s ${dbURI} > ${filename}`
-  );
-  command.push(filename);
-  return command;
-}
- */
-/**
- * writeSchema
- * Executes pg_dump and writes to destination file
- * @param {string[]} command - Array containing pg_dump query and destination filename
- */
-const writeSchema = async (command) => {
-  try {
-    const { stdout, stderr } = await exec(command[0]);
-    return stdout;
-  } catch (error) {
-    console.error(`error in WS: ${error.message}`);
-    return error;
-  }
-};
-
-/**
- * testDrop
- * Usage unclear - Consider removing -- NOTE
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
-dataController.testDrop = (req, res, next) => {};
-
-/**
- * getSchema
- * Option 1 - Production:
- * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
- *
- * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
- */
-dataController.getSchema = (req, res, next) => {
-  console.log('THIS IS HIT', req.body);
-  // // Option 1 - Production
-  let result = null;
-  //using destructuring for concise code, commented out lines 99-103
-  const { hostname, password, port, username, database_name } = req.body;
-  /*   const hostname = req.body.hostname;
-  const password = req.body.password;
-  const port = req.body.port;
-  const username = req.body.username;
-  const database_name = req.body.database_name; */
-  const command = postgresDumpQuery(
-    hostname,
-    password,
-    port,
-    username,
-    database_name
-  );
-  //below is the code for an alternate path if database link is included in req.body before front-end changes were made
-  //to ensure compatibility with other front-end components and sessions
-  //let command;
-  /*   if (database_link.length !== 0){
-    command = newPostgresDumpQuery(database_link);
-  }
-  else {
-    command = postgresDumpQuery(hostname, password, port, username, database_name);
-  } */
-
-  writeSchema(command).then((resq) => {
-    fs.readFile(command[1], 'utf8', (error, data) => {
-      if (error) {
-        console.error(`error- in FS: ${error.message}`);
-        return next({
-          msg: 'Error reading database schema file',
-          err: error,
-        });
-      }
-      result = parseSql(data);
-      res.locals.data = result;
-      next();
-    });
-  });
-};
-
-//   // Option 2 - Dev
-//   fs.readFile(
-//     path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-//     'utf8',
-//     (error, data) => {
-//       if (error) {
-//         console.error(`error- in FS: ${error.message}`);
-//         return next({
-//           msg: 'Error reading database schema file',
-//           err: error,
-//         });
-//       }
-//       const result = parseSql(data);
-//       //console.log(result);
-//       //console.log('instance of table', result[records]);
-//       for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
-//       next();
-//     }
-//   );
-// };
-
-/**
- * objSchema
- * Iterates through testdata array of tables and grabs table name.
- * Iterates through properties array and assigns field name as key for properties.
- */
-dataController.objSchema = (req, res, next) => {
-  const { data } = res.locals;
+//objSchema controller allows the user to obj data to more
+//usable format for front-end
+const objSchema = (testdata) => {
   const results = {};
-  console.log(data);
-  for (let i = 0; i < data.length; i++) {
-    // this outer loop will iterate through tables within data
+  //iterate through the testdata Array
+  //Grab name property for each element of array - Table Name
+  //Assign properties to name property of the table within new obj
+  // iterate through the Properties Array
+  // Assign field name as key for properties....
+
+  for (let i = 0; i < testdata.length; i++) {
+    // this outer loop will iterate through tables within testdata
     const properties = {};
-    for (let k = 0; k < data[i].Properties.length; k++) {
-      const key = data[i].Properties[k].field_name;
-      properties[key] = data[i].Properties[k];
+    for (let k = 0; k < testdata[i].Properties.length; k++) {
+      let key = testdata[i].Properties[k].field_name;
+      properties[key] = testdata[i].Properties[k];
     }
-    results[data[i].Name] = properties;
+
+    results[testdata[i].Name] = properties;
   }
 
-  //
-  // PATCH TO RENAME SOME DATA FIELDS
-  //
-  Object.keys(results).forEach((table) => {
-    Object.keys(results[table]).forEach((prop) => {
-      let propObj = results[table][prop];
-      propObj.Name = prop;
-      const ref = propObj.References;
-      if (ref.length > 0)
-        ref.forEach((refObj) => {
-          refObj.PrimaryKeyName = prop;
-          refObj.ReferencesPropertyName = refObj.ReferencesPropertyName.slice(
-            0,
-            refObj.ReferencesPropertyName.indexOf(' ')
-          );
-        });
-      if (propObj.data_type.includes('character varying'))
-        propObj.data_type = 'varchar';
-
-      if (propObj.data_type.includes('boolean'))
-        propObj.data_type = 'boolean';
-    });
-  });
-  //
-  // END - PATCH
-  //
-
-  res.locals.result = results;
-  next();
+  return results;
 };
 
 function TableModel() {
@@ -233,11 +51,13 @@ function PrimaryKeyModel() {
 }
 
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
-foreignKeyList = [];
-primaryKeyList = [];
-tableList = [];
+let foreignKeyList = [];
+let primaryKeyList = [];
+let tableList = [];
+let exportedTables = 0;
 
-/*  Function Section   */
+/*  Function 
+        Section   */
 
 // Creates propertyModel and assigns properties to arguments passed in
 function createProperty(name, tableName, foreignKey, isPrimaryKey) {
@@ -273,9 +93,7 @@ function createForeignKey(
   foreignKey.ReferencesPropertyName = referencesPropertyName;
   foreignKey.ReferencesTableName = referencesTableName;
   foreignKey.IsDestination =
-    isDestination !== undefined && isDestination !== null
-      ? isDestination
-      : false;
+    isDestination !== undefined && isDestination !== null ? isDestination : false;
   return foreignKey;
 }
 
@@ -290,9 +108,7 @@ function createPrimaryKey(primaryKeyName, primaryKeyTableName) {
 // Parses foreign key with SQL Server syntax
 function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
   // Regex expression to find referenced foreign table
-  const referencesIndex = name.match(
-    /(?<=REFERENCES\s)([a-zA-Z_]+)(\([a-zA-Z_]*\))/
-  );
+  const referencesIndex = name.match(/(?<=REFERENCES\s)([a-zA-Z_]+)(\([a-zA-Z_]*\))/);
 
   // Match element at index 1 references table names
   const referencedTableName = referencesIndex[1];
@@ -333,12 +149,7 @@ function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
   foreignKeyList.push(foreignKeyDestinationModel);
 
   // Create Property
-  const propertyModel = createProperty(
-    foreignKey,
-    currentTableModel.Name,
-    null,
-    false
-  );
+  const propertyModel = createProperty(foreignKey, currentTableModel.Name, null, false);
 
   // If property is both primary key and foreign key, set IsPrimaryKey property to true
   if (propertyType === 'SQLServer both') {
@@ -358,7 +169,6 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   const referencedTableName = name.match(
     /(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_]+)+/
   )[0];
-  // let constraintname = name.match(/(?<=CONSTRAINT\s)([A-Za-z0-9_]+)/)[0];
   let referencedPropertyName = name
     .match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_()]+)+/)[0]
     .match(/\(([^()]+)\)/g)[0]
@@ -374,33 +184,39 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
 
   let primaryTableModel = null;
 
-  const tlKeys = Object.keys(tableList);
-  for (let i = 0; i < tlKeys.length; i++) {
-    if (tableList[tlKeys[i]].Name === referencedTableName) {
-      primaryTableModel = tableList[tlKeys[i]];
+  for (const i in tableList) {
+    if (tableList[i].Name == referencedTableName) {
+      primaryTableModel = tableList[i];
       break;
     }
   }
 
-  const ptmKeys = Object.keys(primaryTableModel);
-  for (let i = 0; i < ptmKeys.length; i++) {
-    const ptmSubKeys = Object.keys(primaryTableModel[ptmKeys[i]]);
-    for (let j = 0; j < ptmSubKeys.length; j++) {
-      if (
-        primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name !== undefined &&
-        primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name.indexOf(
-          referencedPropertyName
-        ) !== -1
-      ) {
-        referencedPropertyName =
-          primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name;
-        break;
+  for (const k in primaryTableModel) {
+    for (const l in primaryTableModel[k])
+      if (primaryTableModel[k][l].Name !== undefined) {
+        if (primaryTableModel[k][l].Name.indexOf(referencedPropertyName) !== -1) {
+          referencedPropertyName = primaryTableModel[k][l].Name;
+          break;
+        }
       }
-    }
   }
 
-  // Add PrimaryKey Origin
-  // foreignKeyList.push(primaryKeyOriginModel);
+  // Create ForeignKey
+  let foreignKeyOriginModel = createForeignKey(
+    foreignKeyName,
+    currentTableModel.Name,
+    referencedPropertyName,
+    referencedTableName,
+    true
+  );
+
+  foreignKeyOriginModel.constrainName = constrainName;
+
+  // Add ForeignKey Origin
+  foreignKeyList.push(foreignKeyOriginModel);
+
+  //Add PrimaryKey Origin
+  //foreignKeyList.push(primaryKeyOriginModel);
 
   // Create ForeignKey
   let foreignKeyDestinationModel = createForeignKey(
@@ -445,20 +261,6 @@ function processForeignKey() {
           }
         });
       }
-      if (tableModel.Name == foreignKeyModel.PrimaryKeyTableName) {
-        tableModel.Properties.forEach(function (propertyModel) {
-          if (propertyModel.Name === foreignKeyModel.PrimaryKeyName) {
-            propertyModel.References.push({
-              PrimaryKeyName: foreignKeyModel.PrimaryKeyName,
-              ReferencesPropertyName: foreignKeyModel.ReferencesPropertyName,
-              PrimaryKeyTableName: foreignKeyModel.PrimaryKeyTableName,
-              ReferencesTableName: foreignKeyModel.ReferencesTableName,
-              IsDestination: true,
-              constrainName: foreignKeyModel.constrainName,
-            });
-          }
-        });
-      }
     });
   });
 }
@@ -499,8 +301,11 @@ function parseTableName(name) {
 }
 
 function parseAlterTable(tableName, constraint) {
+  // const tableName = tmp.match(/(?<=ALTER\sTABLE\s)([a-zA-Z_]+)(?=\sADD\sCONSTRAINT)/)[0];
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
   const constrainName = constraint.match(regexConstraint);
+
+  // if (constrainName !== null) console.log('constraintName', constrainName[0]);
 
   tableName = tableName.trim();
   let currentTableModel;
@@ -515,6 +320,7 @@ function parseAlterTable(tableName, constraint) {
       constraint.indexOf('FOREIGN KEY'),
       constraint.length - 1
     );
+
     parseMySQLForeignKey(
       name,
       currentTableModel,
@@ -544,12 +350,7 @@ function parseSQLServerPrimaryKey(name, currentTableModel, propertyType) {
   primaryKeyList.push(primaryKeyModel);
 
   // Create Property
-  const propertyModel = createProperty(
-    primaryKey,
-    currentTableModel.Name,
-    null,
-    true
-  );
+  const propertyModel = createProperty(primaryKey, currentTableModel.Name, null, true);
 
   // Add Property to table if not both primary key and foreign key
   // If both, property is added when parsing foreign key
@@ -560,7 +361,6 @@ function parseSQLServerPrimaryKey(name, currentTableModel, propertyType) {
 
 function parseMYSQLPrimaryKey(name, currentTableModel) {
   const primaryKeyName = name.slice(13).replace(')', '').replace(/\"/g, '');
-
   currentTableModel.Properties.forEach((property) => {
     if (property.Name.split(' ')[0] === primaryKeyName) {
       property.IsPrimaryKey = true;
@@ -570,10 +370,10 @@ function parseMYSQLPrimaryKey(name, currentTableModel) {
 }
 
 // Takes in SQL creation file as text, then parses
-function parseSql(text) {
+export default function parseSql(text) {
   const lines = text.split('\n');
   let tableCell = null;
-  let cells = [];
+  const cells = [];
   exportedTables = 0;
   tableList = [];
   foreignKeyList = [];
@@ -581,7 +381,7 @@ function parseSql(text) {
 
   let currentTableModel = null;
 
-  // Parse SQL to objects
+  //Parse SQL to objects
   for (let i = 0; i < lines.length; i++) {
     let rowCell = null;
 
@@ -594,15 +394,13 @@ function parseSql(text) {
       currentTableModel = null;
     }
 
-    // Parse Table
+    //Parse Table
     if (propertyRow === 'create table') {
-      // Parse row
+      //Parse row
       let name = tmp.substring(12).trim();
-
-      // Parse Table Name
+      //Parse Table Name
       name = parseTableName(name);
-
-      // Create Table
+      //Create Table
       currentTableModel = createTable(name);
     }
     // tmp === 'ALTER TABLE'
@@ -615,9 +413,8 @@ function parseSql(text) {
           tname = tableList[i].Name;
         }
       }
-      //check for TableName and following line with constraint bound on database
-      if (tname !== null && lines[i + 1] !== null)
-        parseAlterTable(tname, lines[i + 1]);
+
+      parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }
 
@@ -627,7 +424,7 @@ function parseSql(text) {
       currentTableModel !== null &&
       propertyRow !== 'alter table '
     ) {
-      // Parse the row
+      //Parse the row
       let name = tmp.substring(
         0,
         tmp.charAt(tmp.length - 1) === ',' ? tmp.length - 1 : tmp.length
@@ -635,7 +432,7 @@ function parseSql(text) {
       // Check if first 10 characters are 'constraint'
       const constraint = name.substring(0, 10).toLowerCase();
       if (constraint === 'constraint') {
-        // double checking for constraints here
+        //double checking for constraints here
         if (name.indexOf('PRIMARY KEY') !== -1) {
           name = name
             .substring(name.indexOf('PRIMARY KEY'), name.length)
@@ -647,14 +444,11 @@ function parseSql(text) {
         }
       }
 
-      // Attempt to get the Key Type
+      //Attempt to get the Key Type
       let propertyType = name.substring(0, 11).toLowerCase();
-      // Add special constraints
+      //Add special constraints
       if (propertyType !== 'primary key' && propertyType !== 'foreign key') {
-        if (
-          tmp.indexOf('PRIMARY KEY') !== -1 &&
-          tmp.indexOf('FOREIGN KEY') !== -1
-        ) {
+        if (tmp.indexOf('PRIMARY KEY') !== -1 && tmp.indexOf('FOREIGN KEY') !== -1) {
           propertyType = 'SQLServer both';
         } else if (tmp.indexOf('PRIMARY KEY') !== -1) {
           propertyType = 'SQLServer primary key';
@@ -669,6 +463,7 @@ function parseSql(text) {
         propertyType !== 'SQLServer primary key' &&
         propertyType !== 'SQLServer foreign key' &&
         propertyType !== 'SQLServer both';
+
       // Parse properties that don't have relationships
       if (normalProperty) {
         // For now, skip lines with these commands
@@ -717,10 +512,7 @@ function parseSql(text) {
           propertyType === 'SQLServer primary key' ||
           propertyType === 'SQLServer both'
         ) {
-          if (
-            name.indexOf('PRIMARY KEY') !== -1 &&
-            name.indexOf('CLUSTERED') === -1
-          ) {
+          if (name.indexOf('PRIMARY KEY') !== -1 && name.indexOf('CLUSTERED') === -1) {
             parseSQLServerPrimaryKey(name, currentTableModel, propertyType);
           }
 
@@ -753,11 +545,7 @@ function parseSql(text) {
               ' ' +
               referencesRow;
           }
-          parseSQLServerForeignKey(
-            completeRow,
-            currentTableModel,
-            propertyType
-          );
+          parseSQLServerForeignKey(completeRow, currentTableModel, propertyType);
         } else {
           parseMySQLForeignKey(name, currentTableModel);
         }
@@ -771,11 +559,10 @@ function parseSql(text) {
   // Process Foreign Keys
   processForeignKey();
 
-  for (let i in tableList) {
-    for (let k in tableList[i].Properties) {
+  for (const i in tableList) {
+    for (const k in tableList[i].Properties) {
       if (tableList[i].Properties[k] !== undefined) {
-        let composite =
-          tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
+        let composite = tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
 
         let value = composite[1].search(/NOT/i);
         if (value > 0) {
@@ -784,30 +571,28 @@ function parseSql(text) {
 
           tableList[i].Properties[k].field_name = composite[0];
           tableList[i].Properties[k].data_type = type;
-          tableList[i].Properties[k].additional_constraints =
-            additional_constraints;
+          tableList[i].Properties[k].additional_constraints = additional_constraints;
         } else {
           let type = composite[1].substring(value);
           let additional_constraints = null;
           tableList[i].Properties[k].field_name = composite[0];
           tableList[i].Properties[k].data_type = type;
-          tableList[i].Properties[k].additional_constraints =
-            additional_constraints;
+          tableList[i].Properties[k].additional_constraints = additional_constraints;
         }
       }
     }
   }
 
-  return tableList;
+  return objSchema(tableList);
 }
 
 /*  Function 
-      Section   */
+        Section   */
 
 function createTableUI() {
   tableList.forEach(function (tableModel) {
     // Push in string code to d3tables array to render table name as a row
-    for (let ref in tableModel.Properties);
+    for (const ref in tableModel.Properties);
   });
 
   return tableList;
@@ -826,114 +611,3 @@ function checkSpecialKey(propertyModel) {
     return '';
   }
 }
-
-dataController.getAllSchemas = (req, res) => {
-  console.log('yo');
-};
-
-dataController.openSchema = (req, res, next) => {
-  fs.readFile(
-    '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/vjcmcautvjcmcaut1657127402.sql',
-    'utf8',
-    (error, data) => {
-      if (error) {
-        console.error(`error- in FS: ${error.message}`);
-        return next({
-          msg: 'Error reading database schema file',
-          err: error,
-        });
-      }
-      let result = parseSql(data);
-      next();
-    }
-  );
-};
-
-dataController.postSchema = (req, res) => {};
-
-dataController.handleQueries = async (req, res, next) => {
-  /* Assumption, being passed an array of queries in req.body
-  grab PG_URI from user when they connect to DB
-
-  Loop through array of queries and add them to a query string, if return query, add their outputs to the query string instead
-
-  Execute the resulting query string as a transaction */
-
-  /**
-   * Handshake block
-   */
-  // Production values
-  const { uri, queries } = req.body;
-  const PG_URI = uri;
-
-  /**
-   * Function definition and initialization block
-   */
-  const pool = new Pool({
-    connectionString: PG_URI,
-  });
-
-  const execQueries = (text, params, callback) => {
-    return pool.query(text, params, callback);
-  };
-
-  const transactionQuery = async (queryString) => {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      for (let i = 0; i < arrQS.length - 1; i++) {
-        await client.query(arrQS[i]);
-      }
-      await client.query('COMMIT');
-    } catch (err) {
-      console.log({ err }, '<err\n\n');
-      console.log(
-        '--Invalid query detected in handleQueries\n--Transaction declined'
-      );
-      await client.query('ROLLBACK');
-      throw err;
-    } finally {
-      client.release();
-    }
-  };
-
-  /**
-   * Build out query string
-   * Iterates through queries and conditionally adds either the query or the output of the query to queryStr
-   */
-  let queryStr = '';
-  for (let i = 0; i < queries.length; i++) {
-    if (queries[i].type === 'returnQuery') {
-      // execute & whatever returns, we concat to queryStr
-      const newQuery = await execQueries(queries[i].query);
-      queryStr = queryStr.concat(newQuery);
-    } else queryStr = queryStr.concat(queries[i].query);
-  }
-
-  /**
-   * Transaction implementation
-   * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do. CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
-   */
-  res.locals.success = false;
-
-  const arrQS = queryStr.split(';');
-  for (let i = 0; i < arrQS.length; i++) {
-    arrQS[i] += ';';
-  }
-  transactionQuery(arrQS)
-    .then(() => {
-      res.locals.success = true;
-      return next();
-    })
-    .catch((err) => {
-      next({
-        log: 'Error in handleQueries middleware',
-        message: { err: err },
-      });
-    });
-};
-
-dataController.saveSchema = (req, res) => {};
-dataController.deleteSchema = (req, res) => {};
-
-module.exports = dataController;

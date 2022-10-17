@@ -45,7 +45,6 @@ export default function Body() {
  
   images.forEach(image => observer.observe(image));
 
-  
   return (
     <>
       <head>
