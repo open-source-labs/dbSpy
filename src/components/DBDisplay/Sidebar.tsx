@@ -13,6 +13,7 @@ import {
 import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
 import { session } from "passport";
+import useCredentialsStore from '../../store/credentialsStore';
 
 interface SideBarProps {
   isLoadingProps: boolean;
@@ -29,6 +30,13 @@ export default function Sidebar({
   sideBarOpened,
   setSideBarOpened,
 }: SideBarProps) {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  const dbCredentials = useCredentialsStore(state => state.dbCredentials);
+  const setDbCredentials = useCredentialsStore(state => state.setDbCredentials);
+  //END: STATE DECLARATION
+
   const form = useForm({
     initialValues: {
       db_type: "PostgreSQL",

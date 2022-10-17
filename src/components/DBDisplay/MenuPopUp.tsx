@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import useCredentialsStore from "../../store/credentialsStore";
 import { Burger, useMantineTheme, Menu, Divider } from "@mantine/core";
 import {
   MessageCircle,
@@ -15,6 +16,11 @@ interface MenuPopUpProps {
 }
 
 export default function MenuPopUp({ opened, setOpened }: MenuPopUpProps) {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
   const theme = useMantineTheme();
   const [openedMenu, setOpenedMenu] = useState(false);
 

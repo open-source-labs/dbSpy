@@ -2,6 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+//state management component
+import useCredentialsStore from '../store/credentialsStore';
+
 // UI components from MUI
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -57,6 +60,12 @@ const theme = createTheme({
 
 /* "Login" Component - login page for user login */
 export default function Login() {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
+
   /*
   "google" - a function that gets invoked when Google login button is clicked;
   Opens up "http://localhost:8080/auth/google", the page that asks for authorization for server to receive access token from Google;
