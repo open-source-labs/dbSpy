@@ -41,10 +41,7 @@ app.use(express.json());
 // Parse incoming requests with url encoded payloads
 app.use(express.urlencoded({ extended: true }));
 
-app.get(
-  '/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] })
-);
+app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 
 app.get(
   '/google/callback',

@@ -21,7 +21,7 @@ interface stateChangeProps {
 }
 
 /* "Home" Component - main launch page */
-export default function Home({ user, setUser }: stateChangeProps) {
+export default function Home() {
   /*
   Three main components under Home:
   1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)
