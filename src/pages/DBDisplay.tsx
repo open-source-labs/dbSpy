@@ -42,7 +42,8 @@ interface stateChangeProps {
 }
 
 /* "DBDisplay" Component - database visualization application page; only accessible when user is authorized; */
-export default function DBDisplay({ user, setUser }: stateChangeProps) {
+// export default function DBDisplay({ user, setUser }: stateChangeProps) {
+  export default function DBDisplay() {
   /* Server Cache State or Form Input State
   "fetchedData" - a state that stores database table model and is used to render database schema tables;
   "tablename" - a state that stores input data (table name for a new table) from "ADD TABLE" feature;
@@ -365,15 +366,15 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   return (
     <AppShell
       padding="md"
-      header={
-        <DisplayHeader
-          name={user.name}
-          picture={user.picture}
-          menuPopUpOpened={menuPopUpOpened}
-          setMenuPopUpOpened={setMenuPopUpOpened}
-          setUser={setUser}
-        />
-      }
+      // header={
+        // <DisplayHeader
+        //   name={user.name}
+        //   picture={user.picture}
+        //   menuPopUpOpened={menuPopUpOpened}
+        //   setMenuPopUpOpened={setMenuPopUpOpened}
+        //   setUser={setUser}
+        // />
+      // }
       navbar={
         <FeatureTab
           setSideBarOpened={setSideBarOpened}

@@ -59,6 +59,7 @@ export default function App() {
   */
 
   const user = null;
+  
 
   return (
     <BrowserRouter>
@@ -73,6 +74,7 @@ export default function App() {
           <Dashboard/>
         </ProtectedRoute>
       }/>
+      <Route path='display/access' element={<DBDisplay/>}/>
       </Route>
     </Routes>
     </BrowserRouter>
