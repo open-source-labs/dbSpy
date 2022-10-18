@@ -570,30 +570,125 @@ May be able to fix this by changing the button:action behavior
 */
 
 .sprite-github {
-    width: 30px;
-    height: 30px;
-    /* background-position: -5px -5px; */
-    /* background-color: pink; */
-    background-image: url(https://ibb.co/Xpgs1yp);
-    /* background: url('./assets/spritesheet.png'); */
-    /* display: block; */
- }
-  
- .sprite-linkedin {
-    width: 30px;
-    height: 30px;
-    /* background-color: red; */
-    /* background-position: -45px -5px; */
-    background-image: url('./assets/spritesheet.png');
-    /* https://ibb.co/Xpgs1yp */
-    /* background: url('./assets/spritesheet.png'); */
- }
-  
- .sprite-logo5-white-100-rectangle {
-    width: 100px;
-    height: 40px;
-    /* background-position: -5px -45px; */
-    /* background-image: url('./assets/spritesheet.png'); */
-    /* background: url('./assets/spritesheet.png'); */
- }
- 
+  width: 30px;
+  height: 30px;
+  /* background-position: -5px -5px; */
+  /* background-color: pink; */
+  background-image: url(https://ibb.co/Xpgs1yp);
+  /* background: url('./assets/spritesheet.png'); */
+  /* display: block; */
+}
+
+.sprite-linkedin {
+  width: 30px;
+  height: 30px;
+  /* background-color: red; */
+  /* background-position: -45px -5px; */
+  background-image: url('./assets/spritesheet.png');
+  /* https://ibb.co/Xpgs1yp */
+  /* background: url('./assets/spritesheet.png'); */
+}
+
+.sprite-logo5-white-100-rectangle {
+  width: 100px;
+  height: 40px;
+  /* background-position: -5px -45px; */
+  /* background-image: url('./assets/spritesheet.png'); */
+  /* background: url('./assets/spritesheet.png'); */
+}
+
+/*react flow styling*/
+
+.flow {
+  border: 1px solid #273943;
+  background: #fbf3de;
+  border-width: 5px;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.table-node {
+  height: auto;
+  width: auto;
+  border: 3px solid #273943;
+  /* padding: 5px; */
+  border-radius: 4px;
+  background: #fbf3de;
+}
+
+.table-node label {
+  display: block;
+  text-align: left;
+  background-color: #273943;
+  color: #fbf3de;
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: -1px;
+  margin-left: -1px;
+  margin-right: -1px;
+  padding: 5px;
+}
+
+.add-field {
+  display: block;
+  float: right;
+  font-size: 12px;
+  color: #273943;
+  border: none;
+  background: none;
+  padding-top: 10px;
+}
+
+.add-field:hover {
+  color: #618fa7;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  font-weight: normal;
+  font-size: 12px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 10px;
+  text-align: left;
+  color: #273943;
+}
+
+th {
+  font-weight: normal;
+  font-size: 12px;
+  padding-left: 6px;
+  padding-right: 3px;
+  color: #1c2930;
+  text-align: left;
+  border-right: 1px solid #273943;
+}
+
+.empty-row {
+  height: 20px;
+}
+
+tr {
+  border-bottom: 1px solid #273943;
+}
+
+.head-row {
+  border-bottom: none;
+  /* padding-left: 10px; */
+  /* text-align: left; */
+}
+
+.icon {
+  border: none;
+  background: none;
+  font-size: small;
+}
+.icon-class {
+  color: rgb(105, 105, 105);
+}
+.icon:hover {
+  color: #618fa7;
+}
