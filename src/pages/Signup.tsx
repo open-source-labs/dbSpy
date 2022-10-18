@@ -1,6 +1,7 @@
 // React & React Router Modules
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useCredentialsStore from '../store/credentialsStore';
 
 // UI components from MUI
 import Avatar from '@mui/material/Avatar';
@@ -53,6 +54,12 @@ const theme = createTheme({
 
 /* "Signup" Component - signup page for user creation */
 export default function Signup() {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+  
+
   /*
   "google" - a function that gets invoked when SIGN UP WITH GOOGLE button is clicked;
   Opens up "http://localhost:8080/auth/google", the page that asks for authorization for server to receive access token from Google;

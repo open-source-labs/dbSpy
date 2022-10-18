@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import DataStore from '../../Store';
 import parseSql from '../../parse';
 import { permissiveTableCheck } from '../../permissiveFn';
+import useCredentialsStore from '../../store/credentialsStore';
 
 // UI Libraries - Mantine, tabler-icons
 import { useForm } from '@mantine/form';
@@ -58,6 +59,12 @@ export default function FeatureTab({
   fetchedData,
   screenshot,
 }: FeatureTabProps) {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
+  
   /* Form Input State
   "form" - a state that initializes the value of the form for Mantine;
   */

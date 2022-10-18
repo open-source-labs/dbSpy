@@ -5,6 +5,7 @@ import logo from "../../assets/logo5-white-100-rectangle.png";
 
 // Components imported;
 import MenuPopUp from "./MenuPopUp";
+import useCredentialsStore from "../../store/credentialsStore";
 
 // UI Libraries - Mantine
 import { Header, Text, MediaQuery, Button, Image, Box } from "@mantine/core";
@@ -31,6 +32,12 @@ export default function DisplayHeader({
   setMenuPopUpOpened,
   setUser,
   }: DisplayHeaderProps) {
+  //STATE DECLARATION (dbSpy3.0)
+  // const user = useCredentialsStore(state => state.user);
+  // const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
+
   const navigate = useNavigate();
 
   if (picture === null) picture = undefined;
