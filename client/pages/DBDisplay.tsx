@@ -68,19 +68,34 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
   initiate "fetchedData" and Map objects in "DataStore" 
   onSuccess: update connectedToDB global state to "true" and close the side bar
   */
+
   const { isLoading, isError, mutate } = useMutation(
-    (dataToSend: object) => {
-      return axios.post('/api/getSchema', dataToSend).then((res) => {
+    
+    async (dataToSend: object) => {
+      const obj = JSON.parse(JSON.stringify(dataToSend));
+      let endpoint: string = '/api/getSchema';
+      //check if postgres or mySQL
+      switch(obj.db_type) {
+        case 'PostgreSQL': 
+          endpoint = '/api/getSchema';
+          break;
+        case 'mySQL': 
+          endpoint = '/apimysql/getSchema';
+          break;
+      }
+      //fetch call to back-end
+      console.log('DATATOSEND', dataToSend);
+      console.log('ENDPOINT', endpoint);
+      return axios.post(endpoint, dataToSend)
+      .then((res) => {
         // Once connected to Database, we need to clear DataStore and Query, Data, loadedFile from sessionStorage in case the user interacted with SQL load or New Canvas feature.
         DataStore.clearStore();
         sessionStorage.removeItem('Query');
         sessionStorage.removeItem('Data');
         sessionStorage.removeItem('loadedFile');
-
         // Then, update DataStore table data with response data and set query to empty.
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: '', query: '' }]);
-
         // Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
           Array.from(DataStore.store.entries())
@@ -88,9 +103,9 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         sessionStorage.Query = JSON.stringify(
           Array.from(DataStore.queries.entries())
         );
-
         // Update the rendering of the tables with latest table model.
         setFetchedData(res.data);
+        console.log(res.data);
       });
     },
     {
@@ -170,22 +185,24 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     }
     setLogData(newLogData);
     const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
-    // TS fix required for log variable in map method
-    const outputSqlLog = newLogData
-      .map(
-        (log: any, i: BigInteger) =>
-          `ALTER DATABASE ${obj.database_name} SET ${log.Name} = ${log.Setting}`
-      )
-      .join('\n');
+    if (obj.db_type === 'PostgreSQL'){
+      // TS fix required for log variable in map method
+      const outputSqlLog = newLogData
+        .map(
+          (log: any, i: BigInteger) =>
+            `ALTER DATABASE ${obj.database_name} SET ${log.Name} = ${log.Setting}`
+        )
+        .join('\n');
 
-    const dbName = obj.database_name;
-    const saveToApi = { sqlLogs: outputSqlLog, dbName: dbName };
-    axios.post('/api/setLogs', saveToApi).then((res) => {});
-    const data = new Blob([outputSqlLog], {
-      type: 'text/plain;charset=utf-8',
-      endings: 'native',
-    });
-    FileSaver.saveAs(data, 'SQL_LOG_EXPORT.sql');
+      const dbName = obj.database_name;
+      const saveToApi = { sqlLogs: outputSqlLog, dbName: dbName };
+      axios.post('/api/setLogs', saveToApi).then((res) => {});
+      const data = new Blob([outputSqlLog], {
+        type: 'text/plain;charset=utf-8',
+        endings: 'native',
+      });
+      FileSaver.saveAs(data, 'SQL_LOG_EXPORT.sql');
+    }
   };
 
   //This is the variable for showing the update button
@@ -197,35 +214,46 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
 
   // Pulls log settings from the connected database.
   const getLogInfo = () => {
-    const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
-    // creating URI for server to connect to user's db
-    let db_uri;
-    
-    if (obj.database_link){
-      const name = obj.database_link.split('/');
-      name[2] += ':5432';
-      const dbURI = name.join('/');
-      db_uri = dbURI;
-    } else {
-      db_uri =
-      'postgres://' +
-      obj.username +
-      ':' +
-      obj.password +
-      '@' +
-      obj.hostname +
-      ':' +
-      obj.port +
-      '/' +
-      obj.database_name;
-    }
-    // uri examples
-    // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
-    // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
-    const dbConnect = {
-      uri: db_uri,
-    };
+    const obj: any = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+    let endpoint: string = '/api/getLogs';
+    let dbConnect:any = obj;
 
+    //check if postgres or mySQL
+    switch(obj.db_type) {
+      case 'PostgreSQL': 
+        endpoint = '/api/getLogs';
+        // creating URI for server to connect to user's db
+        let db_uri: string;
+        if (obj.database_link){
+          const name = obj.database_link.split('/');
+          name[2] += ':5432';
+          const dbURI = name.join('/');
+          db_uri = dbURI;
+        } else {
+          db_uri =
+          'postgres://' +
+          obj.username +
+          ':' +
+          obj.password +
+          '@' +
+          obj.hostname +
+          ':' +
+          obj.port +
+          '/' +
+          obj.database_name;
+        }
+        // uri examples
+        // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
+        // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
+        dbConnect = {uri: db_uri};
+        break;
+
+      case 'mySQL': 
+        endpoint = '/apimysql/getLogs';
+        dbConnect = obj;
+        break;
+    }
+    
     if (DataStore.connectedToDB === false) {
       const warn: any = [
         'Must connect to database before pulling log settings',
@@ -233,12 +261,14 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
       setLogData(warn);
       return;
     }
-
-    // Makes the fetch call to the DB once connected and runs the select statement to retrieve data from pg_settings
-    return axios.post('/api/getLogs', dbConnect).then((res) => {
+      
+      // Makes the fetch call to the DB once connected and runs the select statement to retrieve data from pg_settings
+    return axios.post(endpoint, dbConnect).then((res) => {
+      console.log('LOGGING OBJECT', res.data.Properties);
       setLogData(res.data.Properties);
     });
   };
+
 
   /* useEffect1:
   Updates global state "DataStore" upon landing of the page with sessionStorage data.
@@ -330,6 +360,10 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
     );
   }
 
+  // CREATE LOGIC FOR SQL QUERY GENERATOR WHEN CONNECTED TO DB
+  // const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
+  // const db_type: string = obj.db_type;
+  
   let queryGen: string;
   if (sqlOpen === true) {
     queryGen = 'PostgreSQL';

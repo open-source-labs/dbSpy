@@ -70,6 +70,7 @@ class Store {
   setData(data: {}) {
     this.store.set(this.ind, data);
     this.ind++;
+    console.log('SETDATA - THIS.STORE AFTER INITIAL FETCH CALL', this.store);
     return this.store;
   }
 

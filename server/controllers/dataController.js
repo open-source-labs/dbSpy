@@ -81,8 +81,7 @@ const writeSchema = async (command) => {
  * @param {*} res
  * @param {*} next
  */
-dataController.testDrop = (req, res, next) => {
-};
+dataController.testDrop = (req, res, next) => {};
 
 /**
  * getSchema
@@ -92,43 +91,48 @@ dataController.testDrop = (req, res, next) => {
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 dataController.getSchema = (req, res, next) => {
+  console.log('THIS IS HIT', req.body);
   // // Option 1 - Production
   let result = null;
   //using destructuring for concise code, commented out lines 99-103
-  const {hostname, password, port, username, database_name} = req.body;
-/*   const hostname = req.body.hostname;
+  const { hostname, password, port, username, database_name } = req.body;
+  /*   const hostname = req.body.hostname;
   const password = req.body.password;
   const port = req.body.port;
   const username = req.body.username;
   const database_name = req.body.database_name; */
-  const command = postgresDumpQuery(hostname, password, port, username, database_name);
+  const command = postgresDumpQuery(
+    hostname,
+    password,
+    port,
+    username,
+    database_name
+  );
   //below is the code for an alternate path if database link is included in req.body before front-end changes were made
   //to ensure compatibility with other front-end components and sessions
-    //let command;
-/*   if (database_link.length !== 0){
+  //let command;
+  /*   if (database_link.length !== 0){
     command = newPostgresDumpQuery(database_link);
   }
   else {
     command = postgresDumpQuery(hostname, password, port, username, database_name);
   } */
 
-
-
-  writeSchema(command).then(resq => {
+  writeSchema(command).then((resq) => {
     fs.readFile(command[1], 'utf8', (error, data) => {
-      if (error)
-        {
-          console.error(`error- in FS: ${error.message}`);
-          return next({
+      if (error) {
+        console.error(`error- in FS: ${error.message}`);
+        return next({
           msg: 'Error reading database schema file',
-          err: error});
-        }
+          err: error,
+        });
+      }
       result = parseSql(data);
       res.locals.data = result;
       next();
     });
   });
-  };
+};
 
 //   // Option 2 - Dev
 //   fs.readFile(
@@ -159,7 +163,7 @@ dataController.getSchema = (req, res, next) => {
 dataController.objSchema = (req, res, next) => {
   const { data } = res.locals;
   const results = {};
-
+  console.log(data);
   for (let i = 0; i < data.length; i++) {
     // this outer loop will iterate through tables within data
     const properties = {};
@@ -169,6 +173,33 @@ dataController.objSchema = (req, res, next) => {
     }
     results[data[i].Name] = properties;
   }
+
+  //
+  // PATCH TO RENAME SOME DATA FIELDS
+  //
+  Object.keys(results).forEach((table) => {
+    Object.keys(results[table]).forEach((prop) => {
+      let propObj = results[table][prop];
+      propObj.Name = prop;
+      const ref = propObj.References;
+      if (ref.length > 0)
+        ref.forEach((refObj) => {
+          refObj.PrimaryKeyName = prop;
+          refObj.ReferencesPropertyName = refObj.ReferencesPropertyName.slice(
+            0,
+            refObj.ReferencesPropertyName.indexOf(' ')
+          );
+        });
+      if (propObj.data_type.includes('character varying'))
+        propObj.data_type = 'varchar';
+
+      if (propObj.data_type.includes('boolean'))
+        propObj.data_type = 'boolean';
+    });
+  });
+  //
+  // END - PATCH
+  //
 
   res.locals.result = results;
   next();
@@ -384,7 +415,6 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
   foreignKeyDestinationModel.constrainName = constrainName;
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
-
 }
 
 // Iterates through primaryKeyList and checks every property in every table
@@ -470,7 +500,6 @@ function parseTableName(name) {
 }
 
 function parseAlterTable(tableName, constraint) {
-
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
   const constrainName = constraint.match(regexConstraint);
 
@@ -588,8 +617,8 @@ function parseSql(text) {
         }
       }
       //check for TableName and following line with constraint bound on database
-    if (tname !== null && lines[i+1] !== null)
-      parseAlterTable(tname, lines[i + 1]);
+      if (tname !== null && lines[i + 1] !== null)
+        parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }
 
@@ -879,7 +908,6 @@ dataController.handleQueries = async (req, res, next) => {
       queryStr = queryStr.concat(newQuery);
     } else queryStr = queryStr.concat(queries[i].query);
   }
-
 
   /**
    * Transaction implementation
