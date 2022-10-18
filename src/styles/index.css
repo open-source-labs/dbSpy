@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 /* 
-body {
+#root {
   background-color: rgb(61,84,97);
 } 
-*/
+ */
 
 .testing {
   margin-top: -75px;
@@ -36,4 +36,8 @@ body {
 
 .profileDetails {
   background-color: white;
+}
+
+.menuBar {
+  height: calc(100% - 64px);
 }

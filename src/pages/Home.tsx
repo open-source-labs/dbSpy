@@ -3,12 +3,6 @@ import React from "react";
 import {NavLink} from 'react-router-dom';
 
 //Components imported
-import Body from "../components/Home/Body";
-import HomeFooter from "../components/Home/HomeFooter";
-import HomeLoggedInNavbar from "../components/Home/HomeLoggedInNavbar";
-import HomeNavbar from "../components/Home/HomeNavbar";
-import Description from '../components/Home/Description';
-
 import Contributors from '../components/Home/Contributors'
 
 interface stateChangeProps {
