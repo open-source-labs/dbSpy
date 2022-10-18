@@ -613,14 +613,15 @@ May be able to fix this by changing the button:action behavior
   border: 3px solid #273943;
   /* padding: 5px; */
   border-radius: 4px;
-  background: #fbf3de;
+  color: #f8f4eb;
+  background-color: f8f4eb;
 }
 
 .table-node label {
   display: block;
   text-align: left;
-  background-color: #273943;
-  color: #fbf3de;
+  background-color: #2b3a42;
+  color: #f8f4eb;
   font-size: 15px;
   font-weight: bold;
   margin-top: -1px;
