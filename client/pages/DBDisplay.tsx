@@ -9,10 +9,12 @@ import React, {
 import { useMutation } from 'react-query';
 
 // Components Imported;
-import Canvas from '../components/DBDisplay/Canvas';
+// import Canvas from '../components/DBDisplay/Canvas';
 import DisplayHeader from '../components/DBDisplay/DisplayHeader';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import Sidebar from '../components/DBDisplay/Sidebar';
+import Flow from '../components/ReactFlow/Flow';
+
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from 'axios';
@@ -546,8 +548,8 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
           <br/>
         </Box>
       )}
-
-      <Canvas
+        <Flow />
+      {/* <Canvas
         sqlOpen={sqlOpen}
         setSqlOpen={setSqlOpen}
         isLoadingProps={isLoading}
@@ -556,7 +558,7 @@ export default function DBDisplay({ user, setUser }: stateChangeProps) {
         setFetchedData={setFetchedData}
         setSideBarOpened={setSideBarOpened}
         reference={ref}
-      />
+      /> */}
     </AppShell>
   );
 }
