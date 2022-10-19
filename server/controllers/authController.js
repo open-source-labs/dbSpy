@@ -1,3 +1,4 @@
+const { urlencoded } = require('express');
 const { google } = require('googleapis');
 const { reduceEachLeadingCommentRange } = require('typescript');
 
@@ -22,8 +23,8 @@ console.log(authorizeUrl);
 // Initiate Connection
 oauth.initiateAuth = (req, res, next) => {
   console.log('in here');
-  res.redirect(301, );
-  return next();
+  res.redirect(301, authorizeUrl);
+  // return next();
 };
 
 oauth.getToken = async (req, res, next) => {
@@ -31,13 +32,32 @@ oauth.getToken = async (req, res, next) => {
   console.log(code);
   const { tokens } = await oauth2Client.getToken(code);
   console.log(tokens);
+  console.log('yooooo');
+  oauth2Client.setCredentials();
   oauth2Client.on('tokens', (tokens) => {
     if (tokens.refresh_token) {
       console.log(tokens.refresh_token);
     }
     console.log(tokens.access_token);
   });
-  return next();
+  res.locals.token = tokens;
+  // console.log(res.locals.token, 'BITCHASSHOE');
+  const ticket = await oauth2Client.verifyIdToken({
+    idToken: tokens.id_token,
+    audience: process.env.CLIENT_ID,
+    maxExpiry: tokens.expiry_date,
+  });
+
+  const payload = await ticket.getPayload();
+  console.log(payload);
+  console.log(ticket);
+};
+
+oauth.handleUser = (req, res, next) => {
+  // if there is a refresh_token in the returned token object, it's the first time a user is
+  // authenticating --> Create a user
+  if (tokens.refresh_token) {
+  }
 };
 
 module.exports = oauth;

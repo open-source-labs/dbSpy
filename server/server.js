@@ -8,9 +8,9 @@ const path = require('path');
 require('dotenv').config();
 // require('./auth');
 
-function isLoggedIn(req, res, next) {
-  req.user ? next() : res.sendStatus(200).json(null);
-}
+// function isLoggedIn(req, res, next) {
+//   req.user ? next() : res.sendStatus(200).json(null);
+// }
 
 const apiPgRouter = require('./routes/api');
 const apiMySQLRouter = require('./routes/apiMySQL');
@@ -55,11 +55,12 @@ app.use(express.urlencoded({ extended: true }));
 //   res.send('something went wrong');
 // });
 
-app.get('/oauth', authController.initiateAuth, (req, res) => {
+app.get('/oauth', authController.initiateAuth, authController.getToken, (req, res) => {
   res.sendStatus(200);
 });
 
 app.get('/google/callback', authController.getToken, (req, res) => {
+  console.log({ res });
   res.sendStatus(200);
 });
 
