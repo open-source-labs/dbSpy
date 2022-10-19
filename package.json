@@ -8,6 +8,7 @@
     "node": "16.x"
   },
   "scripts": {
+    "seed": "node ./server/seed/seed.ts",
     "test2": "tldr curl",
     "test": "jest",
     "test:watch": "jest --watch",
