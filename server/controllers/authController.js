@@ -53,7 +53,7 @@ oauth.getToken = async (req, res, next) => {
   console.log(ticket);
 };
 
-oauth.handleUser = (req, res, next) => {
+oauth.handleUser = () => {
   // if there is a refresh_token in the returned token object, it's the first time a user is
   // authenticating --> Create a user
   if (tokens.refresh_token) {
