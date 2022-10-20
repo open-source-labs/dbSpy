@@ -19,13 +19,6 @@ import {
   Button,
 } from '@mantine/core';
 
-import { 
-  GridRowsProp, 
-  GridRowModes,
-  GridRowModesModel,
-} from '@mui/x-data-grid';
-import { randomId } from '@mui/x-data-grid-generator';
-
 interface FeatureTabProps {
   setTablename: (e: string) => void;
   fetchedData: {};
@@ -122,7 +115,7 @@ export default function FeatureTab({
       };
     };
   }
-
+/* this interface and function weren't being used anywhere, commented out
   interface EditToolbarProps {
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
     setRowModesModel: (
@@ -149,7 +142,7 @@ export default function FeatureTab({
     setRowModesModel((oldModel: GridRowModesModel) => ({
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'column' },
     }));
-  }
+  } */
 //}
 
   /* useEffect:
@@ -201,7 +194,8 @@ export default function FeatureTab({
 
   return (
     <>
-    {/* <Navbar
+    {/* the following is the old implementation of the left menu bar on the main page, removed in favor of tailwind
+    <Navbar
       className="navbar-FeatureTab"
       width={{ base: 225 }}
       height={'100%'}
