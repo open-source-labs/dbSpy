@@ -12,8 +12,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import DataStore from "../../Store";
-import { session } from "passport";
+import axios from "axios";
 import useCredentialsStore from '../../store/credentialsStore';
+import useSchemaStore from '../../store/schemaStore';
 
 interface SideBarProps {
   isLoadingProps: boolean;
@@ -31,12 +32,11 @@ export default function Sidebar({
   setSideBarOpened,
 }: SideBarProps) {
   //STATE DECLARATION (dbSpy3.0)
-  const user = useCredentialsStore(state => state.user);
-  const setUser = useCredentialsStore(state => state.setUser);
+  const setSchemaStore = useSchemaStore(state => state.setSchemaStore);
   const dbCredentials = useCredentialsStore(state => state.dbCredentials);
   const setDbCredentials = useCredentialsStore(state => state.setDbCredentials);
   //END: STATE DECLARATION
-
+  
   const form = useForm({
     initialValues: {
       db_type: "PostgreSQL",
@@ -50,6 +50,25 @@ export default function Sidebar({
   });
 
   const theme = useMantineTheme();
+
+  //getSchema API function
+  const getSchema = async (dbInfo: any) => {
+      let endpoint: string = '/api/getSchema';
+      //check if postgres or mySQL
+      switch (dbInfo.db_type) {
+        case 'PostgreSQL':
+          endpoint = '/api/getSchema';
+          break;
+        case 'mySQL':
+          endpoint = '/apimysql/getSchema';
+          break;
+      }
+      //fetch call to back-end
+      return axios.post(endpoint, dbInfo).then((res) => {
+        setSchemaStore(res.data);
+      });
+    };
+
 
   return (
     <>
@@ -73,6 +92,7 @@ export default function Sidebar({
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit((values) => {
+              event?.preventDefault()
               if (values.database_link.length > 0){
                 const fullLink = values.database_link;
                 const splitURI = fullLink.split('/');
@@ -84,6 +104,8 @@ export default function Sidebar({
                 values.port = '5432';
                 values.database_name = name;
               }
+              setDbCredentials(values);
+              getSchema(values);
               // grabbing userDBInfo from values to send to server to make db changes
               if (DataStore.connectedToDB === true) {
                 sessionStorage.clear();
