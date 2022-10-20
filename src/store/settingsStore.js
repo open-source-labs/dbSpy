@@ -9,7 +9,7 @@ let settingsStore = (set) => ({
   //darkMode state defaults to true
   darkMode: true,
   //toggles darkMode
-  setSchemaStore: () => set((state) => ({ darkMode: !state.darkMode })),
+  setsettingsStore: () => set((state) => ({ darkMode: !state.darkMode })),
 });
 
 settingsStore = devtools(settingsStore);

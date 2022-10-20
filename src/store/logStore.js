@@ -13,7 +13,7 @@ let logStore = (set) => ({
 });
 
 logStore = devtools(logStore);
-logStore = persist(logStore);
+// logStore = persist(logStore);
 const useLogStore = create(logStore);
 
 export default useLogStore;

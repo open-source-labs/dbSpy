@@ -8,26 +8,20 @@ import React, {
 } from 'react';
 import { useMutation } from 'react-query';
 
-
 // Components Imported;
 // import Canvas from '../components/DBDisplay/Canvas';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import Sidebar from '../components/DBDisplay/Sidebar';
 import Flow from '../components/ReactFlow/Flow';
-
+import useSchemaStore from '../store/schemaStore';
+import createInitialEdges from '../components/ReactFlow/Edges';
+import createInitialNodes from '../components/ReactFlow/Nodes';
 import useCredentialsStore from '../store/credentialsStore';
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from 'axios';
 import DataStore from '../Store';
-import {
-  AppShell,
-  Box,
-  Button,
-  Collapse,
-  ScrollArea,
-  Text,
-} from '@mantine/core';
+import { AppShell, Box, Button, Collapse, ScrollArea, Text } from '@mantine/core';
 import { toPng } from 'html-to-image';
 
 //import fileSaver for export queries
@@ -45,11 +39,12 @@ interface stateChangeProps {
 
 /* "DBDisplay" Component - database visualization application page; only accessible when user is authorized; */
 // export default function DBDisplay({ user, setUser }: stateChangeProps) {
-  export default function DBDisplay() {
-    //STATE DECLARATION (dbSpy3.0)
-    const user = useCredentialsStore(state => state.user);
-    const setUser = useCredentialsStore(state => state.setUser);
-    //END: STATE DECLARATION
+export default function DBDisplay() {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore((state) => state.user);
+  const setUser = useCredentialsStore((state) => state.setUser);
+  const schemaStore = useSchemaStore((state) => state.schemaStore);
+  //END: STATE DECLARATION
 
   /* Server Cache State or Form Input State
   "fetchedData" - a state that stores database table model and is used to render database schema tables;
@@ -79,24 +74,22 @@ interface stateChangeProps {
   */
 
   const { isLoading, isError, mutate } = useMutation(
-    
     async (dataToSend: object) => {
       const obj = JSON.parse(JSON.stringify(dataToSend));
       let endpoint: string = '/api/getSchema';
       //check if postgres or mySQL
-      switch(obj.db_type) {
-        case 'PostgreSQL': 
+      switch (obj.db_type) {
+        case 'PostgreSQL':
           endpoint = '/api/getSchema';
           break;
-        case 'mySQL': 
+        case 'mySQL':
           endpoint = '/apimysql/getSchema';
           break;
       }
       //fetch call to back-end
       console.log('DATATOSEND', dataToSend);
       console.log('ENDPOINT', endpoint);
-      return axios.post(endpoint, dataToSend)
-      .then((res) => {
+      return axios.post(endpoint, dataToSend).then((res) => {
         // Once connected to Database, we need to clear DataStore and Query, Data, loadedFile from sessionStorage in case the user interacted with SQL load or New Canvas feature.
         DataStore.clearStore();
         sessionStorage.removeItem('Query');
@@ -106,12 +99,8 @@ interface stateChangeProps {
         DataStore.setData(res.data);
         DataStore.setQuery([{ type: '', query: '' }]);
         // Update sessionStorage Data and Query with recently updated DataStore.
-        sessionStorage.Data = JSON.stringify(
-          Array.from(DataStore.store.entries())
-        );
-        sessionStorage.Query = JSON.stringify(
-          Array.from(DataStore.queries.entries())
-        );
+        sessionStorage.Data = JSON.stringify(Array.from(DataStore.store.entries()));
+        sessionStorage.Query = JSON.stringify(Array.from(DataStore.queries.entries()));
         // Update the rendering of the tables with latest table model.
         setFetchedData(res.data);
         console.log(res.data);
@@ -137,10 +126,7 @@ interface stateChangeProps {
 
   /* The two hooks below load log setting info for Postgres DBs after a connection is made */
   useEffect(() => {
-    if (
-      sessionStorage.dbConnect === 'true' ||
-      sessionStorage.loadedFile === 'true'
-    ) {
+    if (sessionStorage.dbConnect === 'true' || sessionStorage.loadedFile === 'true') {
       getLogInfo();
     }
   }, [fetchedData]);
@@ -150,10 +136,7 @@ interface stateChangeProps {
   }, [logData]);
 
   const logDataForm = () => {
-    if (
-      sessionStorage.dbConnect === 'true' ||
-      sessionStorage.loadedFile === 'true'
-    ) {
+    if (sessionStorage.dbConnect === 'true' || sessionStorage.loadedFile === 'true') {
       let logMap: any = logData.map(
         (
           log: any,
@@ -161,11 +144,7 @@ interface stateChangeProps {
         ) => (
           <form onSubmit={handleLogUpdate} id="logSettingsForm">
             <ul className="logUl">
-              <li
-                className="logField"
-                id={`logSetting${i}`}
-                key={`logSetting${i}`}
-              >
+              <li className="logField" id={`logSetting${i}`} key={`logSetting${i}`}>
                 {log.Name} ={' '}
                 <input
                   className="logInput"
@@ -188,13 +167,11 @@ interface stateChangeProps {
     event.preventDefault();
     const newLogData: any = new Array(logData).flat();
     for (const each of newLogData) {
-      each.Setting = (
-        document.getElementById(`${each.Name}`) as HTMLInputElement
-      ).value;
+      each.Setting = (document.getElementById(`${each.Name}`) as HTMLInputElement).value;
     }
     setLogData(newLogData);
     const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
-    if (obj.db_type === 'PostgreSQL'){
+    if (obj.db_type === 'PostgreSQL') {
       // TS fix required for log variable in map method
       const outputSqlLog = newLogData
         .map(
@@ -225,59 +202,56 @@ interface stateChangeProps {
   const getLogInfo = () => {
     const obj: any = JSON.parse(JSON.stringify(DataStore.userDBInfo));
     let endpoint: string = '/api/getLogs';
-    let dbConnect:any = obj;
+    let dbConnect: any = obj;
 
     //check if postgres or mySQL
-    switch(obj.db_type) {
-      case 'PostgreSQL': 
+    switch (obj.db_type) {
+      case 'PostgreSQL':
         endpoint = '/api/getLogs';
         // creating URI for server to connect to user's db
         let db_uri: string;
-        if (obj.database_link){
+        if (obj.database_link) {
           const name = obj.database_link.split('/');
           name[2] += ':5432';
           const dbURI = name.join('/');
           db_uri = dbURI;
         } else {
           db_uri =
-          'postgres://' +
-          obj.username +
-          ':' +
-          obj.password +
-          '@' +
-          obj.hostname +
-          ':' +
-          obj.port +
-          '/' +
-          obj.database_name;
+            'postgres://' +
+            obj.username +
+            ':' +
+            obj.password +
+            '@' +
+            obj.hostname +
+            ':' +
+            obj.port +
+            '/' +
+            obj.database_name;
         }
         // uri examples
         // DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
         // "postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName";
-        dbConnect = {uri: db_uri};
+        dbConnect = { uri: db_uri };
         break;
 
-      case 'mySQL': 
+      case 'mySQL':
         endpoint = '/apimysql/getLogs';
         dbConnect = obj;
         break;
     }
-    
+
     if (DataStore.connectedToDB === false) {
-      const warn: any = [
-        'Must connect to database before pulling log settings',
-      ]; // TS fix request: setLogData requires a type for this simple array but not for an HTML filled array created with .map?
+      const warn: any = ['Must connect to database before pulling log settings']; // TS fix request: setLogData requires a type for this simple array but not for an HTML filled array created with .map?
       setLogData(warn);
       return;
     }
-      
-      // Makes the fetch call to the DB once connected and runs the select statement to retrieve data from pg_settings
+
+    // Makes the fetch call to the DB once connected and runs the select statement to retrieve data from pg_settings
     return axios.post(endpoint, dbConnect).then((res) => {
       console.log('LOGGING OBJECT', res.data.Properties);
       setLogData(res.data.Properties);
     });
   };
-
 
   /* useEffect1:
   Updates global state "DataStore" upon landing of the page with sessionStorage data.
@@ -287,8 +261,7 @@ interface stateChangeProps {
   useEffect(() => {
     // if the user is connected to either database or loaded a sql file, AND there's a Data store in sessionStorage, we will go through this useEffect
     if (
-      (sessionStorage.dbConnect === 'true' ||
-        sessionStorage.loadedFile === 'true') &&
+      (sessionStorage.dbConnect === 'true' || sessionStorage.loadedFile === 'true') &&
       sessionStorage.Data
     ) {
       // if the user is connected to Database, update DataStore with dbConnect and userDBInfo
@@ -314,7 +287,6 @@ interface stateChangeProps {
       //Update fetchedData to render the latest table model.
       setFetchedData(latestData);
       console.log('inside useEffect');
-      
     }
   }, []);
 
@@ -325,12 +297,8 @@ interface stateChangeProps {
   useEffect(() => {
     // This logic ensures sessionStorage Query and Data gets updated upon either db connection or sql upload (when data's existing already)
     if (DataStore.store.size > 0 && DataStore.queries.size > 0) {
-      sessionStorage.Query = JSON.stringify(
-        Array.from(DataStore.queries.entries())
-      );
-      sessionStorage.Data = JSON.stringify(
-        Array.from(DataStore.store.entries())
-      );
+      sessionStorage.Query = JSON.stringify(Array.from(DataStore.queries.entries()));
+      sessionStorage.Data = JSON.stringify(Array.from(DataStore.store.entries()));
     }
   }, [fetchedData]);
 
@@ -364,35 +332,38 @@ interface stateChangeProps {
   let queries: any;
   if (DataStore.queries.size > 0) {
     queries = DataStore.queries.get(DataStore.queries.size - 1);
-    queries = queries.map(
-      (query: { type: string; query: string }, ind: number) => {
-        return <Text key={ind}>{`${query.query}`}</Text>;
-      }
-    );
+    queries = queries.map((query: { type: string; query: string }, ind: number) => {
+      return <Text key={ind}>{`${query.query}`}</Text>;
+    });
   }
 
   // CREATE LOGIC FOR SQL QUERY GENERATOR WHEN CONNECTED TO DB
   // const obj = JSON.parse(JSON.stringify(DataStore.userDBInfo));
   // const db_type: string = obj.db_type;
-  
+
   let queryGen: string;
   if (sqlOpen === true) {
     queryGen = 'PostgreSQL';
   } else {
     queryGen = 'MySQL';
   }
+  //check schemaObject => if not null, generate nodes/edges
+  if (schemaStore) {
+    createInitialEdges();
+    createInitialNodes();
+  }
 
   return (
     <AppShell
       padding="md"
       // header={
-        // <DisplayHeader
-        //   name={user.name}
-        //   picture={user.picture}
-        //   menuPopUpOpened={menuPopUpOpened}
-        //   setMenuPopUpOpened={setMenuPopUpOpened}
-        //   setUser={setUser}
-        // />
+      // <DisplayHeader
+      //   name={user.name}
+      //   picture={user.picture}
+      //   menuPopUpOpened={menuPopUpOpened}
+      //   setMenuPopUpOpened={setMenuPopUpOpened}
+      //   setUser={setUser}
+      // />
       // }
       navbar={
         <FeatureTab
@@ -554,20 +525,10 @@ interface stateChangeProps {
           >
             Export Queries
           </Button>
-          <br/>
+          <br />
         </Box>
       )}
-        <Flow />
-      {/* <Canvas
-        sqlOpen={sqlOpen}
-        setSqlOpen={setSqlOpen}
-        isLoadingProps={isLoading}
-        isErrorProps={isError}
-        fetchedData={fetchedData}
-        setFetchedData={setFetchedData}
-        setSideBarOpened={setSideBarOpened}
-        reference={ref}
-      /> */}
+      {schemaStore ? <Flow /> : <></>}
     </AppShell>
   );
 }
