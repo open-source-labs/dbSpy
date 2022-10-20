@@ -1,7 +1,6 @@
 //access to schemaObject and initialEdges
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
-import { Node } from 'reactflow';
 
 // generates table nodes based on Schema Object
 // i would like to figure out a way to visually differentiate join tables
@@ -15,7 +14,7 @@ const createInitialNodes = () => {
       id: table[0],
       type: 'table',
       position: { x: 100 * index + 50, y: 100 }, // got to figure out how to lay out the positions better
-      data: { table, initialEdges },
+      data: { table, edges },
     };
   });
   setNodes(nodes);

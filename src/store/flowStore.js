@@ -21,7 +21,7 @@ import {
 
 
 
-const flowStore = (set, get) => ({
+let flowStore = (set, get) => ({
   edges: null,
   setEdges: (eds) => set((state) => ({ ...state, edges: eds })),
   nodes: null,

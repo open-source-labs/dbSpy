@@ -1,7 +1,6 @@
 //access the schemaStore
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
-import { Edge } from 'reactflow';
 
 const createInitialEdges = () => {
   const schemaObject = useSchemaStore((state) => state.schemaStore);
