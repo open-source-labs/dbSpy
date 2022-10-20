@@ -1,9 +1,9 @@
 const createSQL = require('./sql.ts')
-const mysql = require('mysql2');
-require('dotenv').config();
+import mysql from 'mysql2';
+import { env } from 'node:process';
 
 // create the connection to db
-const connection =  mysql.createConnection(process.env.DATABASE_URL);
+const connection =  mysql.createConnection(env.DATABASE_URL?? '');
 
 // create tables
 const loadData = async () => {
