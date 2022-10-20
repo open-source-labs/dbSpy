@@ -644,7 +644,7 @@ function Flow() {
   );
 
   return (
-    <div className="flow" style={{ height: '100%', width: '150%' }}>
+    <div className="flow" style={{ height: '85%', width: '95%' }}>
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}
