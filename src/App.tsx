@@ -9,8 +9,14 @@ import Shared from "./pages/Shared";
 // import { Dashboard } from "tabler-icons-react";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
+import useCredentialsStore from "./store/credentialsStore";
 
 export default function App() {
+  //STATE DECLARATION (dbSpy3.0)
+    const user = useCredentialsStore(state => state.user);
+    const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
   /*
   States Declaration:
   "user" - object that describes the user data coming back from OAuth2.0;
@@ -58,7 +64,7 @@ export default function App() {
     4. "/display" | "/display/:id" - database visualization application page; only accessible when user is authorized;
   */
 
-  const user = null;
+  // const user = null;
   
 
   return (
@@ -66,7 +72,7 @@ export default function App() {
     <Routes>
       <Route path='/' element={<Shared/>}>
       {/* index renders root directory */}
-      <Route index element={<Home />} />
+      <Route index element={<Home />}/>
       <Route path='login' element={<Login/>}/>
       <Route path='signup' element={<Signup/>}/>
       <Route path='display' element={

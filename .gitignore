@@ -1,6 +1,6 @@
 # General
 .DS_Store
-
+.vscode/
 # dependencies
 node_modules/
 server/db_schemas

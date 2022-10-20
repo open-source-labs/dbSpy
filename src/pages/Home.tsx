@@ -3,20 +3,27 @@ import React from "react";
 import {NavLink} from 'react-router-dom';
 
 //Components imported
-import Contributors from '../components/Home/Contributors'
+import Contributors from '../components/Home/Contributors';
+import useCredentialsStore from "../store/credentialsStore";
 
-interface stateChangeProps {
-  user: {
-    email: string | null;
-    id: string | null;
-    name: string | null;
-    picture: string | null;
-  };
-  setUser: (user: any) => void;
-}
+// interface stateChangeProps {
+  // user: {
+  //   email: string | null;
+  //   id: string | null;
+  //   name: string | null;
+  //   picture: string | null;
+  // };
+  // setUser: (user: any) => void;
+// }
 
 /* "Home" Component - main launch page */
 export default function Home() {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
+  
   /*
   Three main components under Home:
   1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)

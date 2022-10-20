@@ -5,6 +5,7 @@ import { useMutation } from 'react-query';
 
 //Components imported;
 import Table from './Table';
+import useCredentialsStore from '../../store/credentialsStore';
 
 // UI & Visualization Libraries
 import axios from 'axios';
@@ -114,6 +115,12 @@ export default function Canvas({
   setSqlOpen,
   sqlOpen,
 }: CanvasProps) {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
+
   /** useMutation for handling 'POST' request to '/api/handleQueries' route for executing series of queries for DB migration; 
   onSuccess: Once queries get complete, it will clear out the sessionStorage and render the latestTableModel confirming the success of migration
   */

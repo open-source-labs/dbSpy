@@ -43,11 +43,6 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
-import DataStore from '../../Store';
-import permissiveColumnCheck, {
-  permissiveColumnDropCheck,
-} from '../../permissiveFn.js';
-import mySqlPermissiveColumnCheck, { mySqlPermissiveColumnDropCheck } from '../../mySqlPermissiveFn.js';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -60,6 +55,12 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { getModeForFileReference } from 'typescript';
+import DataStore from '../../Store';
+import permissiveColumnCheck, {
+  permissiveColumnDropCheck,
+} from '../../permissiveFn.js';
+import mySqlPermissiveColumnCheck, { mySqlPermissiveColumnDropCheck } from '../../mySqlPermissiveFn.js';
+import useCredentialsStore from '../../store/credentialsStore';
 
 type Props = {
   isActive: boolean;
@@ -110,6 +111,11 @@ export default function Table({
   sqlOpen,
   fetchedData,
 }: TableProps) {
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+
   const tablename = id;
 
   /** useEffect is to update tables with the latest data after changes in tables upon browser reload */

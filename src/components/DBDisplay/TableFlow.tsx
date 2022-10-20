@@ -2,6 +2,7 @@
 // import {Handle} from 'reactflow';
 import {useCallback} from 'react';
 import {Handle, Position, Node} from 'reactflow';
+import useCredentialsStore from '../../store/credentialsStore';
 
 const handleStyle: {
     left: number;
@@ -14,8 +15,13 @@ import React from 'react'
 import { Target } from 'tabler-icons-react';
 
 function TableFlow({data}:any) {
-    const onChange = useCallback((evt: any) => {
-        console.log(evt.target.value);
+  //STATE DECLARATION (dbSpy3.0)
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
+  //END: STATE DECLARATION
+  
+  const onChange = useCallback((evt: any) => {
+    console.log(evt.target.value);
     }, []);
   return (
    <div>

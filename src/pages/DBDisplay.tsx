@@ -11,11 +11,11 @@ import { useMutation } from 'react-query';
 
 // Components Imported;
 // import Canvas from '../components/DBDisplay/Canvas';
-import DisplayHeader from '../components/DBDisplay/DisplayHeader';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import Sidebar from '../components/DBDisplay/Sidebar';
 import Flow from '../components/ReactFlow/Flow';
 
+import useCredentialsStore from '../store/credentialsStore';
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from 'axios';
@@ -46,6 +46,11 @@ interface stateChangeProps {
 /* "DBDisplay" Component - database visualization application page; only accessible when user is authorized; */
 // export default function DBDisplay({ user, setUser }: stateChangeProps) {
   export default function DBDisplay() {
+    //STATE DECLARATION (dbSpy3.0)
+    const user = useCredentialsStore(state => state.user);
+    const setUser = useCredentialsStore(state => state.setUser);
+    //END: STATE DECLARATION
+
   /* Server Cache State or Form Input State
   "fetchedData" - a state that stores database table model and is used to render database schema tables;
   "tablename" - a state that stores input data (table name for a new table) from "ADD TABLE" feature;
