@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const path = require('path');
+const cors = require('cors');
 
 require('dotenv').config();
 // require('./auth');
@@ -38,8 +39,11 @@ const PORT = 3000;
 
 // Parse incoming requests with a json body
 app.use(express.json());
+
 // Parse incoming requests with url encoded payloads
 app.use(express.urlencoded({ extended: true }));
+
+// app.use(cors());
 
 // app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 
@@ -55,9 +59,14 @@ app.use(express.urlencoded({ extended: true }));
 //   res.send('something went wrong');
 // });
 
-app.get('/oauth', authController.initiateAuth, authController.getToken, (req, res) => {
-  res.sendStatus(200);
-});
+app.get(
+  '/api/oauth',
+  authController.initiateAuth,
+  authController.getToken,
+  (req, res) => {
+    res.sendStatus(200);
+  }
+);
 
 app.get('/google/callback', authController.getToken, (req, res) => {
   console.log({ res });

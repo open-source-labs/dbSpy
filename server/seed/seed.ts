@@ -16,4 +16,9 @@ const loadData = async () => {
 }
 
 async () => await loadData();
+
+connection.end();
+
 process.exit(0);
+
+export {}

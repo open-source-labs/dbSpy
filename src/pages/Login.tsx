@@ -69,76 +69,40 @@ export default function Login() {
   /*
   "google" - a function that gets invoked when Google login button is clicked;
   Opens up "http://localhost:8080/auth/google", the page that asks for authorization for server to receive access token from Google;
+      // const strWindowFeatures =
+    //   'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+    // window.open('http://localhost:8080/oauth', '_self', strWindowFeatures);
   */
-  const google = () => {
-    const strWindowFeatures =
-      'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open('http://localhost:8080/oauth', '_self', strWindowFeatures);
-
-  };
+  const handleLogin = () => {
+    const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+    window.open('http://localhost:3000/api/oauth', '_self', strWindowFeatures);
+    // fetch('/api/oauth')
+    // // .then((res) => res.json())
+    // .then(res => res.text())
+    // .then((data) => console.log(data))
+    // .catch((err) => console.log(err));
+    // fetch('/api/oauth', {
+    //   method: 'POST',
+    //   mode: 'cors',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   // body: JSON.stringify('null'),
+    // })
+    // .then((res) => {
+    //   if (res.ok) return res.json();
+    //   else throw new Error('Authentication Failed');
+    // })
+    // .catch((e) => console.log(e));
+    }
 
 
   return (
-    <ThemeProvider theme={theme}>
-      {/* Closing Button X on right top */}
-      <Link to="/">
-        <IconButton
-          aria-label="delete"
-          color="primary"
-          sx={{
-            position: 'absolute',
-            right: '50px',
-            top: '50px',
-          }}
-        >
-          <CloseIcon sx={{ fontSize: '50px' }} />
-        </IconButton>
-      </Link>
-
-      <Container component="main" maxWidth="md">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 15,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Welcome Back!
-          </Typography>
- 
-
-          {/* Google & GitHub OAuth buttons */}
-          <br />
-          <br />
-
-          <Box>
-            <Button
-              onClick={google}
-              sx={{
-                borderRadius: 50,
-                padding: '25px 36px',
-                margin: '0px 5px',
-                fontSize: '14px',
-                width: '270px',
-              }}
-              variant="contained"
-              color="secondary"
-              startIcon={<GoogleIcon fontSize="large" />}
-            >
-              LOGIN WITH GOOGLE
-            </Button>
-          </Box>
-          <br />
-          <Link to="/signup">Don't have an account?</Link>
-        </Box>
-        <Copyright sx={{ mt: 5 }} />
-      </Container>
-    </ThemeProvider>
+    <div className='grid h-80 place-items-center'>
+   <button className='bg-red-600 hover:bg-red-700 text-stone-100 font-bold py-2 px-4 rounded inline-flex items-center' onClick={handleLogin}>
+    <svg className="h-6 w-6 mr-2 text-white"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M17.788 5.108A9 9 0 1021 12h-8" /></svg>
+    <span>Login with Google</span>
+   </button>
+   </div>
   );
 }

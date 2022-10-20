@@ -7,11 +7,16 @@ dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
   server: {
     port: 8080,
-    strictPort: true,
-    open: true,
+    proxy: {
+      '/api': 'http://localhost:3000/',
+      // '/google/callback/': 'http://localhost:3000/',
+    },
   },
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      input: './src/index.tsx',
+    },
   },
   plugins: [
     react({
