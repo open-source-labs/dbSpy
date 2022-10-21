@@ -6,11 +6,17 @@ export default function TableNodeRow({ row, tableData }) {
   // had to convert booleans to strings or they wont show up on table
   console.log('im in tablenoderow and these are the rows: ', tableData);
   const [editButton, setEditButton] = useState(false);
+  const [deleteButton, setDeleteButton] = useState(false);
   const [addButton, setAddButton] = useState(tableData);
 
   const clickEdit = () => {
     console.log('you clicked the edit button');
     setEditButton((toggle) => !toggle);
+  };
+
+  const clickDelete = () => {
+    console.log('you clicked the delete button');
+    setDeleteButton((toggle) => !toggle);
   };
 
   const clickAdd = () => {
@@ -142,12 +148,42 @@ export default function TableNodeRow({ row, tableData }) {
           )}
         </td>
         <td>
-          <button className={`edit-${row.field_name}`} onClick={clickEdit}>
-            EDIT
-          </button>
+          {editButton && !deleteButton ? (
+            <button className={`save-${row.field_name}`} onClick={clickEdit}>
+              SAVE
+            </button>
+          ) : !editButton && !deleteButton ? (
+            <button className={`edit-${row.field_name}`} onClick={clickEdit}>
+              EDIT
+            </button>
+          ) : !editButton && deleteButton ? (
+            <button className={`confirm-${row.field_name}`} onClick={clickEdit}>
+              CONFIRM
+            </button>
+          ) : (
+            <button className={`edit-${row.field_name}`} onClick={clickEdit}>
+              EDIT
+            </button>
+          )}
         </td>
         <td>
-          <button className={`delete-${row.field_name}`}>DELETE</button>
+          {editButton && !deleteButton ? (
+            <button className={`cancel-${row.field_name}`} onClick={clickDelete}>
+              CANCEL
+            </button>
+          ) : !editButton && !deleteButton ? (
+            <button className={`delete-${row.field_name}`} onClick={clickDelete}>
+              DELETE
+            </button>
+          ) : !editButton && deleteButton ? (
+            <button className={`cancel-${row.field_name}`} onClick={clickDelete}>
+              CANCEL
+            </button>
+          ) : (
+            <button className={`delete-${row.field_name}`} onClick={clickDelete}>
+              DELETE
+            </button>
+          )}
         </td>
       </tr>
     </>
