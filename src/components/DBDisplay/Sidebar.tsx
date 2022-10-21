@@ -136,7 +136,8 @@ export default function Sidebar({
               label="OR Full Database Link"
               {...form.getInputProps("database_link")}
             />
-
+            <br></br>
+            <button type="submit">Connect</button>
             <Group position="center" mt="md">
               <Button 
                 styles={(theme) => ({

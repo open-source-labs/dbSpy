@@ -1,7 +1,7 @@
 import React from "react";
 
-export default function Profile(props: any){
-  console.log(props);
+export default function Profile(properties: any){
+  const props = properties.props;
 
   return (
     <div className="basis-1/4 profileCard">

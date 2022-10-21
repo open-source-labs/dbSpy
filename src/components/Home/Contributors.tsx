@@ -31,8 +31,10 @@ const profileList: profileInfo[] = [
 export default function Contributors(){
 
   const profiles = [];
+  let i = 0;
   for (const prof of profileList){
-    profiles.push(Profile(prof))
+    profiles.push(<Profile props={prof} key={`contributor${i}`} />)
+    i += 1;
   }
 
   return (
