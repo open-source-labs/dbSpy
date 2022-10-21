@@ -32,6 +32,47 @@ export default function FeatureTab(props: any) {
   const mySideBarId:any = useRef();
   const mainId:any = useRef();
 
+  function uploadSQL() {
+    // creating an input element for user to upload sql file
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.click();
+    input.onchange = (e: any): void => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = (event: any) => {
+        //this is where the logic to pass sql file into parser and setting it in expected place in zustand stores should go
+/*         //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
+        DataStore.clearStore();
+        sessionStorage.removeItem('Query');
+        sessionStorage.removeItem('Data');
+
+        //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
+        DataStore.loadedFile = true;
+        sessionStorage.loadedFile = 'true';
+
+        //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
+        //const parsedData = parseSql(event.target.result);
+
+        //Update DataStore data with parsedData and reset to an empty query
+        DataStore.setData(parsedData);
+        DataStore.setQuery([{ type: '', query: '' }]);
+
+        //Update sessionStorage Data and Query with recently updated DataStore.
+        sessionStorage.Data = JSON.stringify(
+          Array.from(DataStore.store.entries())
+        );
+        sessionStorage.Query = JSON.stringify(
+          Array.from(DataStore.queries.entries())
+        );
+
+        //Update the rendering of the tables with latest table model.
+        //setFetchedData(parsedData); */
+      };
+    };
+  }
+
   
   /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 
@@ -269,11 +310,11 @@ export default function FeatureTab(props: any) {
           </li>
           <li>
             <a
-/*               onClick={() => {
+               onClick={() => {
                 if (DataStore.connectedToDB) {
                   alert('Please disconnect your database first.');
                 } else uploadSQL();
-              }} */
+              }}
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
