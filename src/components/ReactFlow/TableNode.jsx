@@ -25,7 +25,6 @@ function TableNode({ data }) {
     if (data.edges[i].source === data.table[0]) {
       tableHandles.push(
         <Handle
-          key={'source'+i}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
@@ -36,7 +35,6 @@ function TableNode({ data }) {
     if (data.edges[i].target === data.table[0]) {
       tableHandles.push(
         <Handle
-          key = {'target'+i}
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
@@ -46,7 +44,7 @@ function TableNode({ data }) {
     }
   }
 
-  // if (row.IsPrimaryKey) {
+  // if (row.IsPrimaryKey) { 
   //   row.primaryHandle = (
   // <Handle
   //   type="source"

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import {
   Select,
   TextInput,
@@ -15,6 +16,8 @@ import DataStore from "../../Store";
 import axios from "axios";
 import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
+import createInitialEdges from '../ReactFlow/Edges';
+import createInitialNodes from '../ReactFlow/Nodes';
 
 interface SideBarProps {
   isLoadingProps: boolean;
@@ -31,6 +34,7 @@ export default function Sidebar({
   sideBarOpened,
   setSideBarOpened,
 }: SideBarProps) {
+  const navigate = useNavigate();
   //STATE DECLARATION (dbSpy3.0)
   const setSchemaStore = useSchemaStore(state => state.setSchemaStore);
   const dbCredentials = useCredentialsStore(state => state.dbCredentials);
@@ -48,6 +52,39 @@ export default function Sidebar({
       database_link: "postgres://zqygstdw:VwEyJbq2-KoGt6mJJF73T-gS5WsgmDw-@stampy.db.elephantsql.com/zqygstdw"
     },
   });
+  form.onSubmit((values) => {
+              if (values.database_link.length > 0){
+                const fullLink = values.database_link;
+                const splitURI = fullLink.split('/');
+                const name = splitURI[3];
+                const internalLinkArray = splitURI[2].split(':')[1].split('@');
+                values.hostname = internalLinkArray[1];
+                values.username = name;
+                values.password = internalLinkArray[0];
+                values.port = '5432';
+                values.database_name = name;
+              }
+              
+              // grabbing userDBInfo from values to send to server to make db changes
+              if (DataStore.connectedToDB === true) {
+                sessionStorage.clear();
+                DataStore.disconnect1();
+              }
+              DataStore.userDBInfo = values;
+              sessionStorage.userDBInfo = JSON.stringify(values);
+              mutate(values);
+              form.setValues({
+                db_type: "",
+                hostname: "",
+                username: "",
+                password: "",
+                port: "",
+                database_name: "",
+                database_link: ""
+              });
+              setSideBarOpened(false);
+            })
+
 
   const theme = useMantineTheme();
 
@@ -64,9 +101,10 @@ export default function Sidebar({
           break;
       }
       //fetch call to back-end
-      return axios.post(endpoint, dbInfo).then((res) => {
-        setSchemaStore(res.data);
-      });
+      const dbSchema = await axios.post(endpoint, dbInfo).then((res) => res.data);
+      setSchemaStore(dbSchema);
+      createInitialEdges();
+      createInitialNodes();
     };
 
 
@@ -91,40 +129,10 @@ export default function Sidebar({
 
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
-            onSubmit={form.onSubmit((values) => {
-              event?.preventDefault()
-              if (values.database_link.length > 0){
-                const fullLink = values.database_link;
-                const splitURI = fullLink.split('/');
-                const name = splitURI[3];
-                const internalLinkArray = splitURI[2].split(':')[1].split('@');
-                values.hostname = internalLinkArray[1];
-                values.username = name;
-                values.password = internalLinkArray[0];
-                values.port = '5432';
-                values.database_name = name;
-              }
+            onSubmit={(values)=>{
               setDbCredentials(values);
               getSchema(values);
-              // grabbing userDBInfo from values to send to server to make db changes
-              if (DataStore.connectedToDB === true) {
-                sessionStorage.clear();
-                DataStore.disconnect1();
-              }
-              DataStore.userDBInfo = values;
-              sessionStorage.userDBInfo = JSON.stringify(values);
-              mutate(values);
-              form.setValues({
-                db_type: "",
-                hostname: "",
-                username: "",
-                password: "",
-                port: "",
-                database_name: "",
-                database_link: ""
-              });
-              setSideBarOpened(false);
-            })}
+            }}
           >
             <Select 
               label="Select your database"
@@ -163,7 +171,7 @@ export default function Sidebar({
               <Button 
                 styles={(theme) => ({
                   root: {
-                    backgroundColor: "#3c4e58",
+                    backgroundColor: "gray",
                     color: "white",
                     border: 0,
                     height: 42,
