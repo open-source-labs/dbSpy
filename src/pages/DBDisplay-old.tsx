@@ -15,8 +15,6 @@ import Sidebar from '../components/DBDisplay/Sidebar';
 import Flow from '../components/ReactFlow/Flow';
 import useSchemaStore from '../store/schemaStore';
 import useCredentialsStore from '../store/credentialsStore';
-import createInitialEdges from '../components/ReactFlow/Edges'
-import createInitialNodes from '../components/ReactFlow/Nodes';
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from 'axios';
@@ -348,11 +346,6 @@ export default function DBDisplay() {
     queryGen = 'MySQL';
   }
  
-  if(schemaStore) {
-    createInitialEdges();
-    createInitialNodes();
-  }
-
   return (
     <AppShell
       padding="md"

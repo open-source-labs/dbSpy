@@ -44,7 +44,7 @@ function TableNode({ data }) {
     }
   }
 
-  // if (row.IsPrimaryKey) {
+  // if (row.IsPrimaryKey) { 
   //   row.primaryHandle = (
   // <Handle
   //   type="source"

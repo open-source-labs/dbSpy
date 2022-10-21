@@ -9,6 +9,7 @@ import ReactFlow, {
   addEdge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+
 import TableNode from './TableNode';
 // import CustomTableNode from './CustomTableNode';
 // import CharacterTableNode from './CharacterTableNode';
