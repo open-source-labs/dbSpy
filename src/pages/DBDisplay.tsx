@@ -1,118 +1,54 @@
 // React & React Router & React Query Modules;
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React, {useRef} from 'react';
 
 // Components Imported;
+import Sidebar from '../components/DBDisplay/Sidebar';
 import Flow from '../components/ReactFlow/Flow';
 import useSchemaStore from '../store/schemaStore';
 import useFlowStore from '../store/flowStore';
-import createInitialEdges from '../components/ReactFlow/Edges';
-import createInitialNodes from '../components/ReactFlow/Nodes';
-import useCredentialsStore from '../store/credentialsStore';
 
 
 const DBDisplay = () => {
-  //STATE DECLARATION (dbSpy3.0)
-  // const user = useCredentialsStore((state) => state.user);
-   const dbCredentials = useCredentialsStore((state) => state.dbCredentials);
-  const setDbCredentials = useCredentialsStore((state)=> state.setDbCredentials);
   const schemaStore = useSchemaStore((state) => state.schemaStore);
-  const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const edges = useFlowStore((state) => state.edges);
-  const setEdges = useFlowStore((state) => state.setEdges);
   const nodes = useFlowStore((state) => state.nodes);
-  const setNodes = useFlowStore((state) => state.setNodes);
-  let initialEdges, initialNodes;
   //END: STATE DECLARATION
 
-  //HELPER FUNCTIONS
-  const handleSubmit = async (e:any) => {
-    e.preventDefault();
-    const values:any = formValues;
-    console.log('values', values);
-    if (values.database_link){
-                const fullLink = values.database_link;
-                const splitURI = fullLink.split('/');
-                const name = splitURI[3];
-                const internalLinkArray = splitURI[2].split(':')[1].split('@');
-                values.hostname = internalLinkArray[1];
-                values.username = name;
-                values.password = internalLinkArray[0];
-                values.port = '5432';
-                values.database_name = name;
-              }
-    //update dbCredentials
-    setDbCredentials(values);
-
-    //check db_type
-    let endpoint: string = '/api/getSchema';
-      //check if postgres or mySQL
-      switch (values.db_type) {
-        case 'PostgreSQL':
-          endpoint = '/api/getSchema';
-          break;
-        case 'MySQL':
-          endpoint = '/apimysql/getSchema';
-          break;
-      }
-    console.log('endpoint', endpoint, '&values', values);
-    //api call
-    const dbSchema = await axios.post(endpoint, values)
-      .then((res) => res.data)
-      .catch((err)=>console.log('getSchema error', err));
-    //update schemaStore
-    setSchemaStore(dbSchema);
-    initialEdges = createInitialEdges(dbSchema);
-    setEdges(initialEdges);
-    initialNodes = createInitialNodes(dbSchema, initialEdges);
-    setNodes(initialNodes);
-  };
-
-  //END: HELPER FUNCTIONS
-
-  //form state hooks
-  const [formValues, setFormValues] = useState({});
   
+  
+  //create references for HTML elemends
+  const mySideBarId:any = useRef();
+  const mainId:any = useRef();
+  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+  function openNav() {
+    mySideBarId.current.style.width = "400px";
+    mainId.current.style.marginLeft = "400px";
+    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+  }
+
+/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+  function closeNav() {
+    mySideBarId.current.style.width = "0";
+    mainId.current.style.marginLeft = "0";
+    document.body.style.backgroundColor = "white";
+  }
+
   return (
-    <>
-      <div id='dbconnect'>
-        <span className='form-item'>
-        <label htmlFor="db_type">Database Type</label>
-        <select className='form-box' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
-          <option value='PostgreSQL'>PostgreSQL</option>
-          <option value='MySQL'>MySQL</option>
-        </select>
-        </span>
-        <span className='form-item'>
-        <label htmlFor="database_link">Full Database Link</label>
-        <input className='form-box' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
-        </span>
-        <span className='form-item'>
-        <label htmlFor="hostname">Host</label>
-        <input className='form-box' type='text' id='hostname' name='hostname'  onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
-        </span>
-        <span className='form-item'>
-        <label htmlFor="port">Port</label>
-        <input className='form-box' type='text' id='port' name='port'  onChange={(e)=>setFormValues({...formValues, port: e.target.value})} />
-        </span>
-        <span className='form-item'>
-        <label htmlFor="username">Database Username</label>
-        <input className='form-box' type='text' id='username' name='username'  onChange={(e)=>setFormValues({...formValues, username: e.target.value})} />
-        </span>
-        <span className='form-item'>
-        <label htmlFor="password">Database Password</label>
-        <input className='form-box' type='text' id='password' name='password'  onChange={(e)=>setFormValues({...formValues, password: e.target.value})} />
-        </span>
-        <span className='form-item'>
-        <label htmlFor="database_name">Database Name</label>
-        <input className='form-box' type='text' id='database_name 'name='database_name'  onChange={(e)=>setFormValues({...formValues, database_name: e.target.value})} />
-        </span>
-        <button className='form-button' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
+    <div>
+      <div ref={mySideBarId} id="mySidenav" className="sidenav">
+        <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
+        <Sidebar closeNav={closeNav} />
       </div>
 
-      {schemaStore ? <Flow nds={nodes} eds={edges} /> : <></>}
-    </>
+      {/* <!-- Use any element to open the sidenav --> */}
+      <button onClick={openNav}>Connect to Database</button>
+
+      {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
+      <div ref={mainId} id="main">
+        {schemaStore ? <Flow nds={nodes} eds={edges} /> : <></>}
+      </div>
+    </div> 
   )
-}
+};
 
 export default DBDisplay;
