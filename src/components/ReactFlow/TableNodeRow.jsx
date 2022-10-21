@@ -12,11 +12,13 @@ export default function TableNodeRow({ row, tableData }) {
   const clickEdit = () => {
     console.log('you clicked the edit button');
     setEditButton((toggle) => !toggle);
+    // setDeleteButton(false);
   };
 
   const clickDelete = () => {
     console.log('you clicked the delete button');
     setDeleteButton((toggle) => !toggle);
+    // setEditButton(false);
   };
 
   const clickAdd = () => {
@@ -25,7 +27,7 @@ export default function TableNodeRow({ row, tableData }) {
       <tr key={row.field_name}>
         <td>{editButton ? <input></input> : row.field_name}</td>
         <td>
-          {editButton ? (
+          {editButton && !deleteButton ? (
             <select>
               <option value="binary">binary</option>
               <option value="blob">blob</option>
@@ -46,7 +48,7 @@ export default function TableNodeRow({ row, tableData }) {
           )}
         </td>
         <td>
-          {editButton ? (
+          {editButton && !deleteButton ? (
             <select>
               <option value="NA">NA</option>
               <option value="NOT NULL">NOT NULL</option>
@@ -58,7 +60,7 @@ export default function TableNodeRow({ row, tableData }) {
           )}
         </td>
         <td>
-          {editButton ? (
+          {editButton && !deleteButton ? (
             <select>
               <option value="primary-true">true</option>
               <option value="primary-false">false</option>
@@ -68,7 +70,7 @@ export default function TableNodeRow({ row, tableData }) {
           )}
         </td>
         <td>
-          {editButton ? (
+          {editButton && !deleteButton ? (
             <select>
               <option value="foreign-true">true</option>
               <option value="foreign-false">false</option>
