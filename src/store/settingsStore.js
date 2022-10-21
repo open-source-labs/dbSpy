@@ -8,8 +8,9 @@ import { devtools, persist } from 'zustand/middleware';
 let settingsStore = (set) => ({
   //darkMode state defaults to true
   darkMode: true,
+  sidebarDisplayState: false,
   //toggles darkMode
-  setSchemaStore: () => set((state) => ({ darkMode: !state.darkMode })),
+  setsettingsStore: () => set((state) => ({ darkMode: !state.darkMode })),
 });
 
 settingsStore = devtools(settingsStore);

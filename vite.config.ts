@@ -17,6 +17,9 @@ export default defineConfig({
     rollupOptions: {
       input: './src/index.tsx',
     },
+    commonjsOptions: {
+      esmExternals: true,
+    },
   },
   plugins: [
     react({
