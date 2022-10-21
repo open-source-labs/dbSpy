@@ -9,7 +9,7 @@ import ReactFlow, {
   addEdge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
+import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
 // import CustomTableNode from './CustomTableNode';
 // import CharacterTableNode from './CharacterTableNode';
@@ -653,7 +653,10 @@ function Flow() {
   const onConnect = useFlowStore((state) => state.onConnect);
 
   return (
-    <div className="flow" style={{ height: '85%', width: '95%' }}>
+    <div className="flow" style={{ height: '80%', width: '95%' }}>
+      <div id="download-image">
+        <DownloadButton />
+      </div>
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}
@@ -661,7 +664,7 @@ function Flow() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        // fitView
+        fitView
       >
         <Background />
         <Controls />
