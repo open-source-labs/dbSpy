@@ -10,11 +10,6 @@ import TableNodeRow from './TableNodeRow';
 // const handleStyleDown = { bottom: 10 };
 
 function TableNode({ data }) {
-  // console.log('table data: ', data.table);
-  // console.log('table name: ', data.table[0]);
-  // console.log('yup: ', Object.values(data.table[1]));
-  // console.log('initialEdges: ', data.initialEdges);
-  // console.log('test: ', data.initialEdges[0].sourceHandle);
   const rowData = Object.values(data.table[1]);
 
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches

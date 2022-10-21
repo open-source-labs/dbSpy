@@ -166,6 +166,7 @@ mySQLdataController.objSchema = (req, res, next) => {
   });
 
   res.locals.data = results;
+  console.log('END OF MYSQL DATA CONTROLLER');
   return next();
 };
 

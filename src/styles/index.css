@@ -422,3 +422,41 @@ tr {
 .icon:hover {
   color: #618fa7;
 }
+
+/* DBdisplay dbconnect form  */
+#dbconnect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: 100px auto;
+  padding: 20px;
+  width: 500px;
+  height: 600px;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #e0e2ec;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c8cad4;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+.form-box{
+  border-style: solid;
+  border-width: 1px;
+}
+
+.form-button {
+  background-color: #d4dcfe;
+  width: 150px;
+  height: 30px;
+  border-style: solid;
+  border-color: #8891af;
+  border-width: 1px;
+}
