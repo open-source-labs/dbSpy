@@ -50,6 +50,10 @@
   margin: auto;
 }
 
+.orText {
+  text-align: left;
+}
+
 /* default react flow styles - required */
 .react-flow__container {
   position: absolute;
@@ -443,7 +447,6 @@ tr {
   /* Stay on top */
   top: 0;
   right: 0;
-  background-color: #fff;
   /* Black*/
   overflow-x: hidden;
   /* Disable horizontal scroll */
@@ -513,16 +516,11 @@ tr {
   width: 250px;
 }
 
-.form-box{
+.form-box {
   border-style: solid;
   border-width: 2px;
 }
 
-.form-button {
-  background-color: #d4dcfe;
-  width: 150px;
-  height: 30px;
-  border-style: solid;
-  border-color: #8891af;
-  border-width: 1px;
+textarea:focus, input:focus, select:focus {
+  outline: none;
 }
