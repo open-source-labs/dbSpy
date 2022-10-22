@@ -1,21 +1,22 @@
 // Allows for the use of stored sensitive information in a .env file
-console.log('hello');
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const path = require('path');
-const cors = require('cors');
+// console.log('hello');
+import express, { json, urlencoded } from 'express';
+// import session from 'express-session';
 
-require('dotenv').config();
+// import { join } from 'path';
+// import cors from 'cors';
+
 // require('./auth');
 
 // function isLoggedIn(req, res, next) {
 //   req.user ? next() : res.sendStatus(200).json(null);
 // }
 
-const apiPgRouter = require('./routes/api');
-const apiMySQLRouter = require('./routes/apiMySQL');
-const authController = require('./controllers/authController');
+// import * from './routes/api';
+// import apiMySQLRouter from './routes/apiMySQL';
+// import {}
+import { default as oauth } from './controllers/authController.js';
+import { user } from './controllers/userController';
 const app = express();
 // app.use(
 //   session({
@@ -38,10 +39,10 @@ const PORT = 3000;
  */
 
 // Parse incoming requests with a json body
-app.use(express.json());
+app.use(json());
 
 // Parse incoming requests with url encoded payloads
-app.use(express.urlencoded({ extended: true }));
+app.use(urlencoded({ extended: true }));
 
 // app.use(cors());
 
@@ -59,19 +60,22 @@ app.use(express.urlencoded({ extended: true }));
 //   res.send('something went wrong');
 // });
 
+app.get('/api/me/oauth', oauth.initiateAuth, (req, res) => {
+  res.sendStatus(200);
+});
+
 app.get(
-  '/api/oauth',
-  authController.initiateAuth,
-  authController.getToken,
+  '/google/callback',
+  oauth.getToken,
+  user.findUser,
+  user.createUser,
+  user.findUser,
   (req, res) => {
-    res.sendStatus(200);
+    res.json(res.locals.foundUser);
   }
 );
 
-app.get('/google/callback', authController.getToken, (req, res) => {
-  console.log({ res });
-  res.sendStatus(200);
-});
+// app.get('/api/me/login', oauth.initiateAuth, );
 
 // app.get('/protected', (req, res) => {
 //   if (req.user) res.status(200).json(req.user);
@@ -98,30 +102,30 @@ app.get('/google/callback', authController.getToken, (req, res) => {
 // app.use('/api', apiPgRouter);
 
 // statically serve everything in the build folder on the route '/build'
-if (process.env.NODE_ENV === 'production') {
-  app.use('/dist', express.static(path.join(__dirname, '../dist')));
-  // serve index.html on the route '/'
+// if (process.env.NODE_ENV === 'production') {
+//   app.use('/dist', static(join(__dirname, '../dist')));
+//   // serve index.html on the route '/'
 
-  app.get('/', (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  });
+//   app.get('/', (req, res) => {
+//     return res.status(200).sendFile(join(__dirname, '../index.html'));
+//   });
 
-  app.get('/login', (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  });
+//   app.get('/login', (req, res) => {
+//     return res.status(200).sendFile(join(__dirname, '../index.html'));
+//   });
 
-  app.get('/signup', (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  });
+//   app.get('/signup', (req, res) => {
+//     return res.status(200).sendFile(join(__dirname, '../index.html'));
+//   });
 
-  app.get('/display/access', isLoggedIn, (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  });
+//   app.get('/display/access', isLoggedIn, (req, res) => {
+//     return res.status(200).sendFile(join(__dirname, '../index.html'));
+//   });
 
-  app.get('/display/access/:id', (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  });
-}
+//   app.get('/display/access/:id', (req, res) => {
+//     return res.status(200).sendFile(join(__dirname, '../index.html'));
+//   });
+// }
 
 // Catch-all error handler
 app.use('*', (req, res) => {

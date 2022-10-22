@@ -27,7 +27,7 @@ export default function Login() {
   */
   const handleLogin = () => {
     const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open('http://localhost:3000/api/oauth', '_self', strWindowFeatures);
+    window.open('http://localhost:3000/api/me/oauth', '_self', strWindowFeatures);
     // fetch('/api/oauth')
     // // .then((res) => res.json())
     // .then(res => res.text())

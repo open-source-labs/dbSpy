@@ -7,14 +7,15 @@
     "npm": "6.x",
     "node": "16.x"
   },
+
   "scripts": {
     "seed": "node ./server/seed/seed.ts",
     "test2": "tldr curl",
     "test": "jest",
     "test:watch": "jest --watch",
-    "start": "node server/server.js",
+    "start": "ts-node server/server.js",
     "build": "vite build",
-    "dev": "concurrently \"vite serve\" \"nodemon server/server.js\"",
+    "dev": "concurrently \"vite serve\" \"ts-node server/server.js\"",
     "preview": "vite preview",
     "docker-prod": "NODE_ENV=production webpack & NODE_ENV=production node server/server.js",
     "heroku-postbuild": "npm install && npm run build"
