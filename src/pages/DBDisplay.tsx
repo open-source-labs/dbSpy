@@ -43,8 +43,8 @@ const DBDisplay = () => {
   }
 
   return (
-    <div id='DBDisplay'>
-      <div ref={mySideBarId} id="mySidenav" className="sidenav">
+    <div id='DBDisplay' className='bg-[#fbf3de] dark:bg-slate-700 transition-colors duration-500'>
+      <div ref={mySideBarId} id="mySidenav" className="sidenav bg-[#fbf3de] dark:bg-slate-700 shadow-2xl">
         <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
       </div>

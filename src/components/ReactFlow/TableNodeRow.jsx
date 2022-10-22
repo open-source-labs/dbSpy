@@ -35,7 +35,7 @@ export default function TableNodeRow({ row, tableData }) {
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr key={row.field_name} className='dark:text-[#f8f4eb]'>
+      <tr key={row.field_name} className='dark:text-[#f8f4eb] '>
         <td className='dark:text-[#f8f4eb]'>{editMode ? <input></input> : row.field_name}</td>
         <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
