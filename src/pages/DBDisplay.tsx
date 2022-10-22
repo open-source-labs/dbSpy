@@ -26,7 +26,6 @@ const DBDisplay = () => {
   /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
   function openNav() {
     mySideBarId.current.style.width = "400px";
-    mainId.current.style.marginLeft = "400px";
   }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
@@ -54,7 +53,7 @@ const DBDisplay = () => {
       <FeatureTab handleSidebar={handleSidebar} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
-      <div ref={mainId} id="main" className='main dark:bg-slate-700 transition-colors duration-500'>
+      <div ref={mainId} id="main" className='main dark:bg-slate-700 transition-colors duration-500 w-[100vw]'>
         {schemaStore ? <Flow nds={nodes} eds={edges} /> : <></>}
       </div>
     </div> 
