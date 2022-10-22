@@ -1,11 +1,4 @@
-//access the schemaStore
-import useSchemaStore from '../../store/schemaStore';
-import useFlowStore from '../../store/flowStore';
-
-const createInitialEdges = () => {
-  const schemaObject = useSchemaStore((state) => state.schemaStore);
-  const setEdges = useFlowStore((state) => state.setEdges);
-
+const createInitialEdges = (schemaObject) => {
   const edges = [];
   const allRows = [];
   const schemaVals = Object.values(schemaObject);
@@ -39,13 +32,7 @@ const createInitialEdges = () => {
       });
     }
   });
-  // return edges;
-  setEdges(edges);
+  return edges; 
 };
-
-//save edges to store
-// const initialEdges = createInitialEdges(departmentSchema);
-// setInitialEdges(initialEdges);
-// console.log(initialEdges);
 
 export default createInitialEdges;
