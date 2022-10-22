@@ -11,6 +11,10 @@ function Navbar() {
   const user = useCredentialsStore(state => state.user);
   const setUser = useCredentialsStore(state => state.setUser);
   //END: STATE DECLARATION
+  const toggleClass = () => {
+    const page = document.getElementById("body");
+    page.classList.toggle('dark')
+  }
 
   
   return (
@@ -21,6 +25,7 @@ function Navbar() {
         <NavLink to='/signup' className={linkbtn}>Sign Up</NavLink>
         <NavLink to='/login' className={linkbtn}>Login</NavLink>
         <NavLink to='/display'className={linkbtn}>Display</NavLink>
+        <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={toggleClass}>Dark Mode</button>
       </div>
     </nav>
   )

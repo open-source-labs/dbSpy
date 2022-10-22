@@ -34,7 +34,7 @@ function Flow() {
         fitView
       >
         <div id="download-image"></div>
-        <Background />
+        <Background className=" dark:bg-slate-800 transition-colors duration-500"/>
         <Controls>
           <ControlButton>
             <DownloadButton />

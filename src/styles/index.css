@@ -2,14 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-#root {
-  background-color: rgb(61,84,97);
-} 
- */
+
+.dark {
+  background-color: #334155;
+}
 
 .testing {
   margin-top: -75px;
+}
+
+#dbConnect {
+  border: none;
 }
 
 .heroCard {
@@ -39,6 +42,16 @@
 
 .menuBar {
   height: calc(100% - 64px);
+}
+
+.main {
+  position: relative;
+  left: 310px;
+  margin: auto;
+}
+
+.orText {
+  text-align: left;
 }
 
 /* default react flow styles - required */
@@ -349,7 +362,6 @@
 .table-node label {
   display: block;
   text-align: left;
-  background-color: #075985;
   color: 7 89 133;
   font-size: 15px;
   font-weight: bold;
@@ -432,11 +444,10 @@ tr {
   /* 0 width - change this with JavaScript */
   position: fixed;
   /* Stay in place */
-  z-index: 1;
+  z-index: 99;
   /* Stay on top */
   top: 0;
   right: 0;
-  background-color: rgb(177, 207, 228);
   /* Black*/
   overflow-x: hidden;
   /* Disable horizontal scroll */
@@ -548,10 +559,8 @@ tr {
   margin: 100px auto;
   padding: 20px;
   height: 600px;
-  border-style: solid;
-  border-width: 1px;
-  border-style: solid;
-  border-width: 1px;
+  border: none;
+  transition: 0.5s;
 }
 
 .form-item {
@@ -560,16 +569,11 @@ tr {
   width: 250px;
 }
 
-.form-box{
+.form-box {
   border-style: solid;
-  border-width: 1px;
+  border-width: 2px;
 }
 
-.form-button {
-  background-color: #d4dcfe;
-  width: 150px;
-  height: 30px;
-  border-style: solid;
-  border-color: #8891af;
-  border-width: 1px;
+textarea:focus, input:focus, select:focus {
+  outline: none;
 }

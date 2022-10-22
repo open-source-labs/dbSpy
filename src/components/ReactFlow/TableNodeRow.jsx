@@ -35,9 +35,9 @@ export default function TableNodeRow({ row, tableData }) {
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr key={row.field_name}>
-        <td>{editMode ? <input></input> : row.field_name}</td>
-        <td>
+      <tr key={row.field_name} className='dark:text-[#f8f4eb]'>
+        <td className='dark:text-[#f8f4eb]'>{editMode ? <input></input> : row.field_name}</td>
+        <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
             <select>
               <option value="binary">binary</option>
@@ -58,7 +58,7 @@ export default function TableNodeRow({ row, tableData }) {
             row.data_type
           )}
         </td>
-        <td>
+        <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
             <select>
               <option value="NA">NA</option>
@@ -70,7 +70,7 @@ export default function TableNodeRow({ row, tableData }) {
             row.additional_constraints
           )}
         </td>
-        <td>
+        <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
             <select>
               <option value="primary-true">true</option>
@@ -80,7 +80,7 @@ export default function TableNodeRow({ row, tableData }) {
             row.IsPrimaryKey.toString()
           )}
         </td>
-        <td>
+        <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
             <select>
               <option value="foreign-true">true</option>
@@ -90,7 +90,7 @@ export default function TableNodeRow({ row, tableData }) {
             row.IsForeignKey.toString()
           )}
         </td>
-        <td>
+        <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
             <button className={`save-${row.field_name}`} onClick={inDefaultMode}>
               SAVE
@@ -105,7 +105,7 @@ export default function TableNodeRow({ row, tableData }) {
             </button>
           )}
         </td>
-        <td>
+        <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
             <button className={`cancel-${row.field_name}`} onClick={inDefaultMode}>
               CANCEL

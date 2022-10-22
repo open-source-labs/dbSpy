@@ -1,8 +1,6 @@
 // import { useCallback } from 'react';
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import TableNodeRow from './TableNodeRow';
 
 // const handleStyleUp = { top: 10 };
@@ -47,23 +45,23 @@ function TableNode({ data }) {
   const addRow = () => console.log('youAddedRow')
 
   return (
-    <div className="table-node">
+    <div className="table-node transition-colors duration-500">
       {tableHandles}
       <div>
-        <label htmlFor="text">{data.table[0]}</label>
+        <label htmlFor="text" className='bg-[#075985] dark:opacity-75'>{data.table[0]}</label>
       </div>
       <div>
-        <button className="add-field" onClick={addRow}>+ FIELD</button>
+        <button className="add-field dark:text-[#fbf3de] transition-colors duration-500" onClick={addRow}>+ FIELD</button>
       </div>
-      <div>
-        <table>
+      <div className='table-bg dark:bg-slate-700 transition-colors duration-500'>
+        <table className='dark:text-[#fbf3de] transition-colors duration-500'>
           <thead>
             <tr className="head-row">
-              <th scope="col">Column</th>
-              <th scope="col">Type</th>
-              <th scope="col">Constraints</th>
-              <th scope="col">PK</th>
-              <th scope="col">FK</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Column</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Type</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Constraints</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>PK</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>FK</th>
             </tr>
           </thead>
           <tbody>

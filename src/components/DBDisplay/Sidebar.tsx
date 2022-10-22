@@ -67,40 +67,44 @@ const Sidebar = (props:any) => {
   const [formValues, setFormValues] = useState({});
 
   return (        
-      <div id='dbconnect'>
-        <label><h3>Connect to Database</h3></label>
+      <div id='dbconnect' className='bg-[#fbf3de] dark:bg-slate-700'>
+        <label className='dark:text-white'><h3>Connect to Database</h3></label>
         <span className='form-item'>
-        <label htmlFor="db_type">Database Type</label>
-        <select className='form-box' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
+        <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
+        <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
           <option value='PostgreSQL'>PostgreSQL</option>
           <option value='MySQL'>MySQL</option>
         </select>
         </span>
-        <span className='form-item'>
+        <br></br>
+        <span className='form-item dark:text-[#f8f4eb]'>
         <label htmlFor="database_link">Full Database Link</label>
-        <input className='form-box' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
+        <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
         </span>
-        <span className='form-item'>
+        <div className='form-item dark:text-[#f8f4eb]'>
+          <p className="">OR</p>
+        </div>
+        <span className='form-item dark:text-[#f8f4eb]'>
         <label htmlFor="hostname">Host</label>
-        <input className='form-box' type='text' id='hostname' name='hostname'  onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
+        <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm' type='text' id='hostname' name='hostname'  onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
         </span>
-        <span className='form-item'>
+        <span className='form-item dark:text-[#f8f4eb]'>
         <label htmlFor="port">Port</label>
-        <input className='form-box' type='text' id='port' name='port'  onChange={(e)=>setFormValues({...formValues, port: e.target.value})} />
+        <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm' type='text' id='port' name='port'  onChange={(e)=>setFormValues({...formValues, port: e.target.value})} />
         </span>
-        <span className='form-item'>
+        <span className='form-item dark:text-[#f8f4eb]'>
         <label htmlFor="username">Database Username</label>
-        <input className='form-box' type='text' id='username' name='username'  onChange={(e)=>setFormValues({...formValues, username: e.target.value})} />
+        <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm' type='text' id='username' name='username'  onChange={(e)=>setFormValues({...formValues, username: e.target.value})} />
         </span>
-        <span className='form-item'>
+        <span className='form-item dark:text-[#f8f4eb]'>
         <label htmlFor="password">Database Password</label>
-        <input className='form-box' type='text' id='password' name='password'  onChange={(e)=>setFormValues({...formValues, password: e.target.value})} />
+        <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm' type='text' id='password' name='password'  onChange={(e)=>setFormValues({...formValues, password: e.target.value})} />
         </span>
-        <span className='form-item'>
+        <span className='form-item dark:text-[#f8f4eb]'>
         <label htmlFor="database_name">Database Name</label>
-        <input className='form-box' type='text' id='database_name 'name='database_name'  onChange={(e)=>setFormValues({...formValues, database_name: e.target.value})} />
+        <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm' type='text' id='database_name 'name='database_name'  onChange={(e)=>setFormValues({...formValues, database_name: e.target.value})} />
         </span>
-        <button className='form-button' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
+        <button className='form-button rounded border py-2 px-4 bg-[#f8f4eb] hover:shadow-sm' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
       </div>
   )
 

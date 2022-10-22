@@ -26,16 +26,14 @@ const DBDisplay = () => {
   function openNav() {
     mySideBarId.current.style.width = "400px";
     mainId.current.style.marginRight = "400px";
-    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
   }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
   function closeNav() {
     mySideBarId.current.style.width = "0";
     mainId.current.style.marginRight = "50px";
-    document.body.style.backgroundColor = "white";
   }
-
+/* Sidebar handler*/
   function handleSidebar(){
     if (sidebarDisplayState){
       closeNav();
@@ -56,7 +54,7 @@ const DBDisplay = () => {
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main">
-        {welcome ? <div className="canvas-ConnectToDatabase">
+        {welcome ? <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500">
           <h3>Welcome to dbSpy!</h3>
           Please connect your database, upload a SQL file, or build your
           database from scratch!
