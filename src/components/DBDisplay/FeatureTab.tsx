@@ -2,105 +2,94 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 // Components imported;
+import parseSql from '../../parse';
 import DataStore from '../../Store';
-import useCredentialsStore from '../../store/credentialsStore';
-
-
+import useSchemaStore from '../../store/schemaStore';
+import useDataStore from '../../store/dataStore';
+import useQueryStore from '../../store/queryStore';
+import useFlowStore from '../../store/flowStore';
+import useSettingsStore from '../../store/settingsStore';
+import createInitialEdges from '../../components/ReactFlow/Edges';
+import createInitialNodes from '../../components/ReactFlow/Nodes';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
-  const user = useCredentialsStore(state => state.user);
-  const setUser = useCredentialsStore(state => state.setUser);
+  const {dataStore, setDataStore, dataInd, setDataInd} = useDataStore(state => state);
+  const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
+  const {setEdges, setNodes} = useFlowStore(state => state);
+  const {setSchemaStore}= useSchemaStore(state => state);
+  const {setWelcome}= useSettingsStore(state => state);
   //END: STATE DECLARATION
-  
+  //Functions for state management
+  const setData = (data:any) =>{
+    const newData = {...dataStore };
+    newData.set(dataInd, data);
+    setDataStore(newData);
+    setDataInd(dataInd + 1);
+    return dataStore;
+  };
+  const getData = (ind:number) => dataStore.get(ind);
+  const clearDataStore = () => {
+    setDataStore(new Map());
+    setDataInd(0);
+  };
+  const getQueries = (ind:number) => queryStore.get(ind);
+  const setQueries = (queries: any) => {
+    const newQueries = { ...queryStore };
+    newQueries.set(queryInd, queries);
+    setQueryStore(newQueries);
+    setQueryInd(queryInd + 1);
+    return queryStore;
+  };
+  const exportData = () => queryList.map((listItem) => listItem['query']);
+  const clearQueryStore = () => {
+    setQueryStore(new Map());
+    setQueryInd(0);
+    setQueryList([]);
+  };
+  //End: Functions for state management
+
   /* Form Input State
+  
   "form" - a state that initializes the value of the form for Mantine;
   */
-/*   const form = useForm({
-    initialValues: {
-      tablename: '',
+ /*   const form = useForm({
+   initialValues: {
+     tablename: '',
     },
   }); */
   /* UI State
   "modalOpened" - a state that opens and closes the input box for tablename when adding a new table to the Schema;
   "history" - a state that tracks the list of history when table schema is editted
   */
-  const [modalOpened, setModalOpened] = useState(false);
-  const [history, setHistory] = useState([]);
-
-  const mySideBarId:any = useRef();
-  const mainId:any = useRef();
-
-  function uploadSQL() {
-    // creating an input element for user to upload sql file
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.click();
-    input.onchange = (e: any): void => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = (event: any) => {
-        //this is where the logic to pass sql file into parser and setting it in expected place in zustand stores should go
-/*         //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
-        DataStore.clearStore();
-        sessionStorage.removeItem('Query');
-        sessionStorage.removeItem('Data');
-
-        //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
-        DataStore.loadedFile = true;
-        sessionStorage.loadedFile = 'true';
-
-        //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
-        //const parsedData = parseSql(event.target.result);
-
-        //Update DataStore data with parsedData and reset to an empty query
-        DataStore.setData(parsedData);
-        DataStore.setQuery([{ type: '', query: '' }]);
-
-        //Update sessionStorage Data and Query with recently updated DataStore.
-        sessionStorage.Data = JSON.stringify(
-          Array.from(DataStore.store.entries())
-        );
-        sessionStorage.Query = JSON.stringify(
-          Array.from(DataStore.queries.entries())
-        );
-
-        //Update the rendering of the tables with latest table model.
-        //setFetchedData(parsedData); */
-      };
-    };
-  }
-
+ const [modalOpened, setModalOpened] = useState(false);
+ const [history, setHistory] = useState([]);
+ 
   
-  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
-
-
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
-
-
-  /* 
-  "undo" - a function that gets invoked when Undo button is clicked; render previous table
-  "redo" - a function that gets invoked when Redo button is clicked; render next table
-  */
  /* 
-  function undo() {
-    if (DataStore.counter > 0) {
-      const prev: any = DataStore.getData(DataStore.counter - 1);
-      setFetchedData(prev);
-      DataStore.counter--;
-    }
+ "undo" - a function that gets invoked when Undo button is clicked; render previous table
+ "redo" - a function that gets invoked when Redo button is clicked; render next table
+ */
+/* 
+function undo() {
+  if (DataStore.counter > 0) {
+    const prev: any = DataStore.getData(DataStore.counter - 1);
+    setFetchedData(prev);
+    DataStore.counter--;
   }
+}
 
-  function redo() {
-    if (DataStore.counter < DataStore.store.size) {
-      const next: any = DataStore.getData(DataStore.counter);
-      setFetchedData(next);
-      DataStore.counter++;
-    }
+function redo() {
+  if (DataStore.counter < DataStore.store.size) {
+    const next: any = DataStore.getData(DataStore.counter);
+    setFetchedData(next);
+    DataStore.counter++;
   }
+}
+*/
 
+// HELPER FUNCTIONS
   function uploadSQL() {
     // creating an input element for user to upload sql file
     const input = document.createElement('input');
@@ -111,36 +100,19 @@ export default function FeatureTab(props: any) {
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (event: any) => {
-        //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
-        DataStore.clearStore();
-        sessionStorage.removeItem('Query');
-        sessionStorage.removeItem('Data');
-
-        //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
-        DataStore.loadedFile = true;
-        sessionStorage.loadedFile = 'true';
-
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
-        const parsedData = parseSql(event.target.result);
-
-        //Update DataStore data with parsedData and reset to an empty query
-        DataStore.setData(parsedData);
-        DataStore.setQuery([{ type: '', query: '' }]);
-
-        //Update sessionStorage Data and Query with recently updated DataStore.
-        sessionStorage.Data = JSON.stringify(
-          Array.from(DataStore.store.entries())
-        );
-        sessionStorage.Query = JSON.stringify(
-          Array.from(DataStore.queries.entries())
-        );
-
-        //Update the rendering of the tables with latest table model.
-        setFetchedData(parsedData);
+        const parsedData:any = parseSql(event.target.result);
+        setSchemaStore(parsedData);
+      const initialEdges = createInitialEdges(parsedData);
+      setEdges(initialEdges);
+      const initialNodes = createInitialNodes(parsedData, initialEdges);
+      setNodes(initialNodes);
+      setWelcome();
       };
     };
   }
- */
+// END: HELPER FUNCTIONS
+
 /* this interface and function weren't being used anywhere, commented out
   interface EditToolbarProps {
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -219,6 +191,7 @@ export default function FeatureTab(props: any) {
     setHistory(historyComponent);
   }, [fetchedData]); */
 //modal is left over from mantine for now, it is the box that pops up when you click Add Table
+
   return (
     <>
   {/* <Modal
@@ -310,11 +283,7 @@ export default function FeatureTab(props: any) {
           </li>
           <li>
             <a
-               onClick={() => {
-                if (DataStore.connectedToDB) {
-                  alert('Please disconnect your database first.');
-                } else uploadSQL();
-              }}
+              onClick={uploadSQL} 
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -325,19 +294,11 @@ export default function FeatureTab(props: any) {
           </li>
           <li>
             <a
-          /*     onClick={() => {
-                if (DataStore.connectedToDB) {
-                  alert('Please disconnect your database first.');
-                  return;
-                } else if (DataStore.loadedFile) {
-                  alert('Please clear the canvas first.');
-                  return;
-                } else {
-                  DataStore.loadedFile = true;
-                  sessionStorage.loadedFile = 'true';
-                  setModalOpened(true);
-                }
-              }} */
+              onClick={()=>{
+                setSchemaStore(null);
+                setNodes([]);
+                setEdges([]);
+                setWelcome(false)}}
               className=" cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -345,26 +306,7 @@ export default function FeatureTab(props: any) {
               <span className="flex-1 ml-3 whitespace-nowrap">Build Database</span>
             </a>
           </li>
-          <li>
-            <a
-             /*  onClick={() => {
-                if (DataStore.connectedToDB) {
-                  alert('Please disconnect your database first.');
-                  return;
-                } else if (DataStore.loadedFile) {
-                  sessionStorage.clear();
-                  DataStore.loadedFile = false;
-                  location.reload();
-                }
-              }} */
-              className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-              </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Clear Canvas</span>
-            </a>
-          </li>
+          
           <li>
             <a
               onClick={() => alert('Feature coming soon!')}
@@ -395,6 +337,23 @@ export default function FeatureTab(props: any) {
           </li>
           <li>
             <a
+              onClick={() => {
+                setDataStore(null);
+                setEdges([]);
+                setNodes([]);
+                setWelcome(true);
+                }
+              }
+              className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+              <span className="flex-1 ml-3 whitespace-nowrap">Clear Canvas</span>
+            </a>
+          </li>
+          <li>
+            <a
              /*  onClick={undo} */
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
@@ -411,17 +370,6 @@ export default function FeatureTab(props: any) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Redo</span>
-            </a>
-          </li>
-          <li>
-            <a
-            /*   onClick={screenshot} */
-              className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-              </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Screenshot</span>
             </a>
           </li>
         </ul>

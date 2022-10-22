@@ -17,7 +17,7 @@ const createInitialEdges = (schemaObject) => {
         type: 'smoothstep',
         style: {
           stroke: '#4a7187',
-          strokeWidth: 8,
+          strokeWidth: 5,
         },
         markerEnd: {
           type: 'arrowclosed',

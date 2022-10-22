@@ -379,6 +379,7 @@
   border: none;
   background: none;
   padding-top: 10px;
+  padding-right: 5px;;
 }
 
 .add-field:hover {
@@ -456,6 +457,57 @@ tr {
   /* 0.5 second transition effect to slide in the sidenav */
 }
 
+/* download image button style*/
+#download-image .react-flow {
+  background: #1a365d;
+}
+
+#download-image .react-flow__node {
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: white;
+}
+
+#download-image .react-flow__node-custom {
+  font-size: 12px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+}
+
+#download-image .react-flow__node-custom .react-flow__handle-right {
+  transform: none;
+}
+
+#download-image.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+#download-image .download-btn {
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  /* border: 1px solid #273943; */
+  background: none;
+  /* padding: 10px 20px; */
+  border-radius: 5px;
+  font-weight: 700;
+  color:black;
+  cursor: pointer;
+}
+
+
 /* The navigation menu links */
 .sidenav a {
   padding: 8px 8px 8px 32px;
@@ -482,6 +534,7 @@ tr {
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
+  margin-left: 300px;
   transition: margin-left .5s;
   padding: 20px;
 }

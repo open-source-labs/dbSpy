@@ -8,12 +8,10 @@ import { devtools, persist } from 'zustand/middleware';
 let schemaStore = (set) => ({
   //schemaStore state
   schemaStore: null,
-  //schema is an object
   setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
 });
 
 schemaStore = devtools(schemaStore);
-// schemaStore = persist(schemaStore);
 const useSchemaStore = create(schemaStore);
 
 export default useSchemaStore;
