@@ -8,7 +8,7 @@ import { devtools, persist } from 'zustand/middleware';
 let queryStore = (set) => ({
   queryStore: new Map(),
   setQueryStore: (queries) => set((state) => ({ ...state, queryStore: queries })),
-  queryList: [],
+  queryList: new Array(),
   setQueryList: (list) => set((state) => ({ ...state, queryList: list })),
   queryInd: 0,
   setQueryInd: (newInd) => set((state) => ({ ...state, queryInd: newInd })),

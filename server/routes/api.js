@@ -31,14 +31,9 @@ router.get('/testDrop', controller.testDrop, (req, res) => {
   res.status(200).json(res.locals.testresponse);
 });
 
-router.post(
-  '/getSchema',
-  controller.getSchema,
-  controller.objSchema,
-  (req, res) => {
-    res.status(200).json(res.locals.result);
-  }
-);
+router.post('/getSchema', controller.getSchema, controller.objSchema, (req, res) => {
+  res.status(200).json(res.locals.result);
+});
 
 router.get('/openSchema', controller.openSchema, (req, res) => {
   res.status(200).json({ ok: 'ok' });
@@ -87,6 +82,11 @@ router.post('/getLogs', LogController.getLogInfo, (req, res) => {
 
 router.post('/setLogs', LogController.setLogInfo, (req, res) => {
   return res.status(200);
+});
+
+//parse SQL file from front end
+router.post('/parsesql', controller.parseSql, controller.objSchema, (req, res) => {
+  return res.status(200).send(res.locals.result);
 });
 
 module.exports = router;

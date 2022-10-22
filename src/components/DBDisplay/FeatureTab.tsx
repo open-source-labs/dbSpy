@@ -8,15 +8,18 @@ import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import useDataStore from '../../store/dataStore';
 import useQueryStore from '../../store/queryStore';
-
+import useFlowStore from '../../store/flowStore';
+import createInitialEdges from '../../components/ReactFlow/Edges';
+import createInitialNodes from '../../components/ReactFlow/Nodes';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
-  const {user, setUser} = useCredentialsStore(state => state);
-  const setSchemaStore = useSchemaStore(state => state.setSchemaStore);
   const {dataStore, setDataStore, dataInd, setDataInd} = useDataStore(state => state);
   const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
+  const setSchemaStore = useSchemaStore(state => state.setSchemaStore);
+  const setEdges = useFlowStore((state) => state.setEdges);
+  const setNodes = useFlowStore((state) => state.setNodes);
   // const user = useCredentialsStore(state => state.user);
   // const setUser = useCredentialsStore(state => state.setUser);
   // const dataStore = useDataStore(state => state.dataStore);
@@ -72,6 +75,7 @@ export default function FeatureTab(props: any) {
   "modalOpened" - a state that opens and closes the input box for tablename when adding a new table to the Schema;
   "history" - a state that tracks the list of history when table schema is editted
   */
+ const [fetchedData, setFetchedData] = useState();
  const [modalOpened, setModalOpened] = useState(false);
  const [history, setHistory] = useState([]);
  
@@ -106,43 +110,50 @@ function redo() {
   }
 }
 */
-const uploadSQL = () => {
-  // creating an input element for user to upload sql file
-  const input = document.createElement('input');
-  input.setAttribute('type', 'file');
-  input.click();
-  input.onchange = (e: any): void => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = (event: any) => {
-      //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
-        clearDataStore();
+  function uploadSQL() {
+    // creating an input element for user to upload sql file
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.click();
+    input.onchange = (e: any): void => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = (event: any) => {
+        //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
+        DataStore.clearStore();
         sessionStorage.removeItem('Query');
         sessionStorage.removeItem('Data');
 
         //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
-        // DataStore.loadedFile = true;
-        // sessionStorage.loadedFile = 'true';
+        DataStore.loadedFile = true;
+        sessionStorage.loadedFile = 'true';
 
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
-        const parsedData = parseSql(event.target.result);
+        const parsedData:any = parseSql(event.target.result);
 
         //Update DataStore data with parsedData and reset to an empty query
-        setData(parsedData);
-        setQueries([{ type: '', query: '' }]);
+        DataStore.setData(parsedData);
+        DataStore.setQuery([{ type: '', query: '' }]);
 
         //Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
-          Array.from(dataStore.entries())
+          Array.from(DataStore.store.entries())
         );
         sessionStorage.Query = JSON.stringify(
-          Array.from(queryStore.entries())
+          Array.from(DataStore.queries.entries())
         );
 
         //Update the rendering of the tables with latest table model.
+        setFetchedData(parsedData);
         setSchemaStore(parsedData);
+      const initialEdges = createInitialEdges(parsedData);
+      setEdges(initialEdges);
+      const initialNodes = createInitialNodes(parsedData, initialEdges);
+      setNodes(initialNodes);
       };
+      console.log('FETCHED DATA', fetchedData);
+      
     };
   }
 
