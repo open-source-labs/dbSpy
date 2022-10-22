@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import { useMutation } from 'react-query';
-
 // Components Imported;
 // import Canvas from '../components/DBDisplay/Canvas';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
@@ -15,14 +14,13 @@ import Sidebar from '../components/DBDisplay/Sidebar';
 import Flow from '../components/ReactFlow/Flow';
 import useSchemaStore from '../store/schemaStore';
 import useCredentialsStore from '../store/credentialsStore';
-import createInitialEdges from '../components/ReactFlow/Edges'
+import createInitialEdges from '../components/ReactFlow/Edges';
 import createInitialNodes from '../components/ReactFlow/Nodes';
 
 // Miscellaneous - axios for REST API request, DataStore for global state management, AppShell for application page frame;
 import axios from 'axios';
 import DataStore from '../Store';
 import { AppShell, Box, Button, Collapse, ScrollArea, Text } from '@mantine/core';
-import { toPng } from 'html-to-image';
 
 //import fileSaver for export queries
 import FileSaver from 'file-saver';
@@ -312,23 +310,6 @@ export default function DBDisplay() {
     FileSaver.saveAs(data, 'ExportQueries.sql');
   };
 
-  const screenshot = useCallback(() => {
-    if (ref.current === null) {
-      return;
-    }
-
-    toPng(ref.current, { cacheBust: true })
-      .then((dataUrl) => {
-        const link = document.createElement('a');
-        link.download = 'dbScreenshot.png';
-        link.href = dataUrl;
-        link.click();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [ref]);
-
   let queries: any;
   if (DataStore.queries.size > 0) {
     queries = DataStore.queries.get(DataStore.queries.size - 1);
@@ -347,8 +328,8 @@ export default function DBDisplay() {
   } else {
     queryGen = 'MySQL';
   }
- 
-  if(schemaStore) {
+
+  if (schemaStore) {
     createInitialEdges();
     createInitialNodes();
   }
@@ -371,7 +352,6 @@ export default function DBDisplay() {
           setTablename={setTablename}
           setFetchedData={setFetchedData}
           fetchedData={fetchedData}
-          screenshot={screenshot}
         ></FeatureTab>
       }
       styles={(theme) => ({

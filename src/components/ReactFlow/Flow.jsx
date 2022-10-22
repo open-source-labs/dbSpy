@@ -3,6 +3,7 @@ import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   Controls,
+  ControlButton,
   Background,
   applyEdgeChanges,
   applyNodeChanges,
@@ -654,9 +655,6 @@ function Flow() {
 
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
-      <div id="download-image">
-        <DownloadButton />
-      </div>
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}
@@ -666,8 +664,13 @@ function Flow() {
         nodeTypes={nodeTypes}
         fitView
       >
+        <div id="download-image"></div>
         <Background />
-        <Controls />
+        <Controls>
+          <ControlButton>
+            <DownloadButton />
+          </ControlButton>
+        </Controls>
       </ReactFlow>
     </div>
   );

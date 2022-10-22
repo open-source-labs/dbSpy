@@ -459,14 +459,18 @@ tr {
 }
 
 #download-image .download-btn {
+  height: 30px;
+  width: 30px;
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 10;
-  border: 1px solid #eee;
-  background: #ebf8ff;
-  padding: 10px 20px;
+  /* border: 1px solid #273943; */
+  background: none;
+  /* padding: 10px 20px; */
   border-radius: 5px;
   font-weight: 700;
+  color:black;
   cursor: pointer;
 }
+
