@@ -98,8 +98,8 @@ app.get(
 
 // Implementation is flexibile, can change if needed
 // Note: currently working on the mySQL routes
-// app.use('/apimysql', apiMySQLRouter);
-// app.use('/api', apiPgRouter);
+app.use('/apimysql', apiMySQLRouter);
+app.use('/api', apiPgRouter);
 
 // statically serve everything in the build folder on the route '/build'
 // if (process.env.NODE_ENV === 'production') {
