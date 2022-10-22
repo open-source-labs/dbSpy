@@ -25,7 +25,7 @@ function Navbar() {
         <NavLink to='/signup' className={linkbtn}>Sign Up</NavLink>
         <NavLink to='/login' className={linkbtn}>Login</NavLink>
         <NavLink to='/display'className={linkbtn}>Display</NavLink>
-        <button onClick={toggleClass}>Dark Mode</button>
+        <button className='text-blue-200 hover:text-white' onClick={toggleClass}>Dark Mode</button>
       </div>
     </nav>
   )

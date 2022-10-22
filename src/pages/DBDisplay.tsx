@@ -46,7 +46,7 @@ const DBDisplay = () => {
   }
 
   return (
-    <div className='bg-inherit dark:bg-slate-700'>
+    <div className=' dark:bg-slate-700'>
       <div ref={mySideBarId} id="mySidenav" className="sidenav">
         <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
@@ -56,7 +56,7 @@ const DBDisplay = () => {
       <FeatureTab handleSidebar={handleSidebar} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
-      <div ref={mainId} id="main" className='main'>
+      <div ref={mainId} id="main" className='main dark:bg-slate-700'>
         {schemaStore ? <Flow nds={nodes} eds={edges} /> : <></>}
       </div>
     </div> 
