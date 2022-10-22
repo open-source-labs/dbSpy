@@ -17,21 +17,8 @@ export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const {dataStore, setDataStore, dataInd, setDataInd} = useDataStore(state => state);
   const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
-  const setSchemaStore = useSchemaStore(state => state.setSchemaStore);
-  const setEdges = useFlowStore((state) => state.setEdges);
-  const setNodes = useFlowStore((state) => state.setNodes);
-  // const user = useCredentialsStore(state => state.user);
-  // const setUser = useCredentialsStore(state => state.setUser);
-  // const dataStore = useDataStore(state => state.dataStore);
-  // const setDataStore = useDataStore(state => state.setDataStore);
-  // const dataInd = useDataStore(state => state.dataInd);
-  // const setDataInd = useDataStore(state => state.setDataInd);
-  // const queryStore = useQueryStore(state => state.queryStore);
-  // const setQueryStore = useQueryStore(state => state.setQueryStore);
-  // const queryInd = useQueryStore(state => state.queryInd);
-  // const setQueryInd = useQueryStore(state => state.setQueryInd);
-  // const queryList = useQueryStore(state => state.queryList);
-  // const setQueryList = useQueryStore(state => state.setQueryList);
+  const {setEdges, setNodes} = useFlowStore(state => state);
+  const {setSchemaStore}= useSchemaStore(state => state);
   //END: STATE DECLARATION
   //Functions for state management
   const setData = (data:any) =>{
@@ -75,20 +62,10 @@ export default function FeatureTab(props: any) {
   "modalOpened" - a state that opens and closes the input box for tablename when adding a new table to the Schema;
   "history" - a state that tracks the list of history when table schema is editted
   */
- const [fetchedData, setFetchedData] = useState();
  const [modalOpened, setModalOpened] = useState(false);
  const [history, setHistory] = useState([]);
  
- const mySideBarId:any = useRef();
- const mainId:any = useRef();
- 
- 
- /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
- 
- 
- /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
- 
- 
+  
  /* 
  "undo" - a function that gets invoked when Undo button is clicked; render previous table
  "redo" - a function that gets invoked when Redo button is clicked; render next table
@@ -110,6 +87,8 @@ function redo() {
   }
 }
 */
+
+// HELPER FUNCTIONS
   function uploadSQL() {
     // creating an input element for user to upload sql file
     const input = document.createElement('input');
@@ -120,42 +99,17 @@ function redo() {
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (event: any) => {
-        //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
-        DataStore.clearStore();
-        sessionStorage.removeItem('Query');
-        sessionStorage.removeItem('Data');
-
-        //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
-        DataStore.loadedFile = true;
-        sessionStorage.loadedFile = 'true';
-
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData:any = parseSql(event.target.result);
-
-        //Update DataStore data with parsedData and reset to an empty query
-        DataStore.setData(parsedData);
-        DataStore.setQuery([{ type: '', query: '' }]);
-
-        //Update sessionStorage Data and Query with recently updated DataStore.
-        sessionStorage.Data = JSON.stringify(
-          Array.from(DataStore.store.entries())
-        );
-        sessionStorage.Query = JSON.stringify(
-          Array.from(DataStore.queries.entries())
-        );
-
-        //Update the rendering of the tables with latest table model.
-        setFetchedData(parsedData);
         setSchemaStore(parsedData);
       const initialEdges = createInitialEdges(parsedData);
       setEdges(initialEdges);
       const initialNodes = createInitialNodes(parsedData, initialEdges);
       setNodes(initialNodes);
       };
-      console.log('FETCHED DATA', fetchedData);
-      
     };
   }
+// END: HELPER FUNCTIONS
 
 /* this interface and function weren't being used anywhere, commented out
   interface EditToolbarProps {
@@ -235,6 +189,7 @@ function redo() {
     setHistory(historyComponent);
   }, [fetchedData]); */
 //modal is left over from mantine for now, it is the box that pops up when you click Add Table
+
   return (
     <>
   {/* <Modal
@@ -326,12 +281,7 @@ function redo() {
           </li>
           <li>
             <a
-              onClick={() => {
-                // if (DataStore.connectedToDB) {
-                //   alert('Please disconnect your database first.');
-                // } else 
-                uploadSQL();
-              }} 
+              onClick={uploadSQL} 
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -428,17 +378,6 @@ function redo() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Redo</span>
-            </a>
-          </li>
-          <li>
-            <a
-            /*   onClick={screenshot} */
-              className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-              </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Screenshot</span>
             </a>
           </li>
         </ul>
