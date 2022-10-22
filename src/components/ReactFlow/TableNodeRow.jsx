@@ -10,6 +10,7 @@ export default function TableNodeRow({ row, tableData }) {
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
 
+  
   const inDefaultMode = () => {
     console.log('you are in default mode');
     setDefaultMode(true);

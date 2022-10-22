@@ -44,29 +44,7 @@ function TableNode({ data }) {
       );
     }
   }
-
-  // if (row.IsPrimaryKey) {
-  //   row.primaryHandle = (
-  // <Handle
-  //   type="source"
-  //   position={Position.Right}
-  //   id={`${row.field_name}-in-${row.TableName}`}
-  //   style={{ bottom: 12, top: 'auto' }} // kind of confused by these
-  // />
-  //   );
-  // }
-  // if (row.IsForeignKey) {
-  //   console.log(`foreign key is true, the primary key is ${row.References[0].PrimaryKeyName}
-  //   and the primary key table is ${row.References[0].PrimaryKeyTableName}`);
-  //   row.foreignHandle = (
-  //     <Handle
-  //       type="target"
-  //       position={Position.Left}
-  //       id={`${row.References[0].ReferencesPropertyName}-in-${row.References[0].ReferencesTableName}`}
-  //       style={{ bottom: 12, top: 'auto' }} // kind of confused by these
-  //     />
-  //   );
-  // }
+  const addRow = () => console.log('youAddedRow')
 
   return (
     <div className="table-node">
@@ -75,7 +53,7 @@ function TableNode({ data }) {
         <label htmlFor="text">{data.table[0]}</label>
       </div>
       <div>
-        <button className="add-field">+ FIELD</button>
+        <button className="add-field" onClick={addRow}>+ FIELD</button>
       </div>
       <div>
         <table>
@@ -104,18 +82,6 @@ function TableNode({ data }) {
           </tbody>
         </table>
       </div>
-      {/* <Handle
-        type="source"
-        position={Position.Right}
-        id="output1"
-        style={{ top: 10 }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="output2"
-        style={{ bottom: 10, top: 'auto' }}
-      /> */}
     </div>
   );
 }
