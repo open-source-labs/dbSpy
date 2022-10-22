@@ -6,6 +6,7 @@ import axios from 'axios';
 import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
+import useSettingsStore from '../../store/settingsStore';
 import createInitialEdges from '../../components/ReactFlow/Edges';
 import createInitialNodes from '../../components/ReactFlow/Nodes';
 
@@ -13,8 +14,8 @@ const Sidebar = (props:any) => {
 //STATE DECLARATION (dbSpy3.0)
   const setDbCredentials = useCredentialsStore((state)=> state.setDbCredentials);
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
-  const setEdges = useFlowStore((state) => state.setEdges);
-  const setNodes = useFlowStore((state) => state.setNodes);
+  const {setEdges, setNodes} = useFlowStore((state) => state);
+  const {setWelcome} = useSettingsStore((state) => state);
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
@@ -57,9 +58,9 @@ const Sidebar = (props:any) => {
     setEdges(initialEdges);
     const initialNodes = createInitialNodes(dbSchema, initialEdges);
     setNodes(initialNodes);
+    setWelcome(false);
     props.closeNav();
   };
-
   //END: HELPER FUNCTIONS
 
   //form state hooks

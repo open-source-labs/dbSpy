@@ -6,15 +6,16 @@ import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 let settingsStore = (set) => ({
-  //darkMode state defaults to true
   darkMode: true,
+  setDarkMode: () => set((state) => ({ ...state, darkMode: !state.darkMode })),
+
   sidebarDisplayState: false,
-  //toggles darkMode
-  setsettingsStore: () => set((state) => ({ darkMode: !state.darkMode })),
+
+  welcome: true,
+  setWelcome: (input) => set((state) => ({ ...state, welcome: input })),
 });
 
 settingsStore = devtools(settingsStore);
-settingsStore = persist(settingsStore);
 const useSettingsStore = create(settingsStore);
 
 export default useSettingsStore;

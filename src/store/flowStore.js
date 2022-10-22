@@ -7,9 +7,9 @@ import { devtools } from 'zustand/middleware';
 import { addEdge, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 
 let flowStore = (set, get) => ({
-  edges: null,
+  edges: [],
   setEdges: (eds) => set((state) => ({ ...state, edges: eds })),
-  nodes: null,
+  nodes: [],
   setNodes: (nds) => set((state) => ({ ...state, nodes: nds })),
 
   //functions

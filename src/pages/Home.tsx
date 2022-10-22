@@ -22,7 +22,7 @@ export default function Home() {
   const user = useCredentialsStore(state => state.user);
   const setUser = useCredentialsStore(state => state.setUser);
   //END: STATE DECLARATION
-
+  
   
   /*
   Three main components under Home:
