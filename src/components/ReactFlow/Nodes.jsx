@@ -3,7 +3,7 @@ const createInitialNodes = (schemaObject, edges) => {
     return {
       id: table[0],
       type: 'table',
-      position: { x: 100 * index + 50, y: 100 }, // got to figure out how to lay out the positions better
+      position: { x: 0 + index * 125, y: 0 + index * 125 }, // got to figure out how to lay out the positions better
       data: { table, edges },
     };
   });

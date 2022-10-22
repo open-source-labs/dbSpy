@@ -3,13 +3,14 @@ import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   Controls,
+  ControlButton,
   Background,
   applyEdgeChanges,
   applyNodeChanges,
   addEdge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
+import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
 
 
@@ -30,7 +31,7 @@ function Flow(props) {
   setNodes(props.nds);
   
   return (
-    <div className="flow" style={{ height: '85%', width: '95%' }}>
+    <div className="flow" style={{ height: '80%', width: '95%' }}>
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}
@@ -38,10 +39,15 @@ function Flow(props) {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        // fitView
+        fitView
       >
+        <div id="download-image"></div>
         <Background />
-        <Controls />
+        <Controls>
+          <ControlButton>
+            <DownloadButton />
+          </ControlButton>
+        </Controls>
       </ReactFlow>
     </div>
   );
