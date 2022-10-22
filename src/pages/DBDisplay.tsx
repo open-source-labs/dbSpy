@@ -11,10 +11,9 @@ import useSettingsStore from '../store/settingsStore';
 
 
 const DBDisplay = () => {
-  const schemaStore = useSchemaStore((state) => state.schemaStore);
-  const edges = useFlowStore((state) => state.edges);
-  const nodes = useFlowStore((state) => state.nodes);
-  const sidebarDisplayState = useSettingsStore((state) => state.sidebarDisplayState);
+  const {schemaStore} = useSchemaStore(state=>state);
+  const {edges, nodes} = useFlowStore(state=>state);
+  const {sidebarDisplayState, welcome} = useSettingsStore(state=>state);
   console.log(sidebarDisplayState);
   //END: STATE DECLARATION
 
@@ -26,14 +25,14 @@ const DBDisplay = () => {
   /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
   function openNav() {
     mySideBarId.current.style.width = "400px";
-    mainId.current.style.marginLeft = "400px";
+    mainId.current.style.marginRight = "400px";
     document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
   }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
   function closeNav() {
     mySideBarId.current.style.width = "0";
-    mainId.current.style.marginLeft = "0";
+    mainId.current.style.marginRight = "50px";
     document.body.style.backgroundColor = "white";
   }
 
@@ -46,7 +45,7 @@ const DBDisplay = () => {
   }
 
   return (
-    <div>
+    <div id='DBDisplay'>
       <div ref={mySideBarId} id="mySidenav" className="sidenav">
         <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
@@ -57,7 +56,13 @@ const DBDisplay = () => {
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main">
-        {schemaStore ? <Flow nds={nodes} eds={edges}/> : <></>}
+        {welcome ? <div className="canvas-ConnectToDatabase">
+          <h3>Welcome to dbSpy!</h3>
+          Please connect your database, upload a SQL file, or build your
+          database from scratch!
+        </div>     
+        : <Flow />
+        }
       </div>
     </div> 
   )

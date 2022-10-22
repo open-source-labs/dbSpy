@@ -4,11 +4,11 @@ import React, { useEffect, useState, useRef } from 'react';
 // Components imported;
 import parseSql from '../../parse';
 import DataStore from '../../Store';
-import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import useDataStore from '../../store/dataStore';
 import useQueryStore from '../../store/queryStore';
 import useFlowStore from '../../store/flowStore';
+import useSettingsStore from '../../store/settingsStore';
 import createInitialEdges from '../../components/ReactFlow/Edges';
 import createInitialNodes from '../../components/ReactFlow/Nodes';
 
@@ -19,6 +19,7 @@ export default function FeatureTab(props: any) {
   const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
   const {setEdges, setNodes} = useFlowStore(state => state);
   const {setSchemaStore}= useSchemaStore(state => state);
+  const {setWelcome}= useSettingsStore(state => state);
   //END: STATE DECLARATION
   //Functions for state management
   const setData = (data:any) =>{
@@ -106,6 +107,7 @@ function redo() {
       setEdges(initialEdges);
       const initialNodes = createInitialNodes(parsedData, initialEdges);
       setNodes(initialNodes);
+      setWelcome();
       };
     };
   }
@@ -292,19 +294,11 @@ function redo() {
           </li>
           <li>
             <a
-          /*     onClick={() => {
-                if (DataStore.connectedToDB) {
-                  alert('Please disconnect your database first.');
-                  return;
-                } else if (DataStore.loadedFile) {
-                  alert('Please clear the canvas first.');
-                  return;
-                } else {
-                  DataStore.loadedFile = true;
-                  sessionStorage.loadedFile = 'true';
-                  setModalOpened(true);
-                }
-              }} */
+              onClick={()=>{
+                setSchemaStore(null);
+                setNodes([]);
+                setEdges([]);
+                setWelcome(false)}}
               className=" cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -312,26 +306,7 @@ function redo() {
               <span className="flex-1 ml-3 whitespace-nowrap">Build Database</span>
             </a>
           </li>
-          <li>
-            <a
-             /*  onClick={() => {
-                if (DataStore.connectedToDB) {
-                  alert('Please disconnect your database first.');
-                  return;
-                } else if (DataStore.loadedFile) {
-                  sessionStorage.clear();
-                  DataStore.loadedFile = false;
-                  location.reload();
-                }
-              }} */
-              className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-              </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Clear Canvas</span>
-            </a>
-          </li>
+          
           <li>
             <a
               onClick={() => alert('Feature coming soon!')}
@@ -358,6 +333,23 @@ function redo() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Add Table</span>
+            </a>
+          </li>
+          <li>
+            <a
+              onClick={() => {
+                setDataStore(null);
+                setEdges([]);
+                setNodes([]);
+                setWelcome(true);
+                }
+              }
+              className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+              <span className="flex-1 ml-3 whitespace-nowrap">Clear Canvas</span>
             </a>
           </li>
           <li>

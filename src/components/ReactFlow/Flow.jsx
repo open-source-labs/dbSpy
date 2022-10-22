@@ -18,17 +18,9 @@ const nodeTypes = {
   table: TableNode,
 };
 
-function Flow(props) {
+function Flow() {
   // // set up states for nodes and edges
-  const edges = useFlowStore((state) => state.edges);
-  const setEdges = useFlowStore((state) => state.setEdges);
-  const nodes = useFlowStore((state) => state.nodes);
-  const setNodes = useFlowStore((state) => state.setNodes);
-  const onNodesChange = useFlowStore((state) => state.onNodesChange);
-  const onEdgesChange = useFlowStore((state) => state.onEdgesChange);
-  const onConnect = useFlowStore((state) => state.onConnect);
-  setEdges(props.eds);
-  setNodes(props.nds);
+  const {edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect} = useFlowStore(state=>state);
   
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
