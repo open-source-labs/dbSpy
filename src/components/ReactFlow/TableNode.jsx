@@ -69,17 +69,17 @@ function TableNode({ data }) {
         <label htmlFor="text">{data.table[0]}</label>
       </div>
       <div>
-        <button className="add-field">+ FIELD</button>
+        <button className="add-field dark:text-white">+ FIELD</button>
       </div>
-      <div>
-        <table>
+      <div className='table-bg dark:bg-slate-600'>
+        <table className='dark:text-white'>
           <thead>
             <tr className="head-row">
-              <th scope="col">Column</th>
-              <th scope="col">Type</th>
-              <th scope="col">Constraints</th>
-              <th scope="col">PK</th>
-              <th scope="col">FK</th>
+              <th scope="col" className='dark:text-white'>Column</th>
+              <th scope="col" className='dark:text-white'>Type</th>
+              <th scope="col" className='dark:text-white'>Constraints</th>
+              <th scope="col" className='dark:text-white'>PK</th>
+              <th scope="col" className='dark:text-white'>FK</th>
             </tr>
           </thead>
           <tbody>
