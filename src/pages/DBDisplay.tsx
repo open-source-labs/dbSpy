@@ -27,16 +27,14 @@ const DBDisplay = () => {
   function openNav() {
     mySideBarId.current.style.width = "400px";
     mainId.current.style.marginLeft = "400px";
-    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
   }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
   function closeNav() {
     mySideBarId.current.style.width = "0";
     mainId.current.style.marginLeft = "0";
-    document.body.style.backgroundColor = "white";
   }
-
+/* Sidebar handler*/
   function handleSidebar(){
     if (sidebarDisplayState){
       closeNav();
@@ -46,8 +44,8 @@ const DBDisplay = () => {
   }
 
   return (
-    <div className=' dark:bg-slate-700'>
-      <div ref={mySideBarId} id="mySidenav" className="sidenav">
+    <div className='dark:bg-slate-700 transition-colors duration-500'>
+      <div ref={mySideBarId} id="mySidenav" className="sidenav dark:bg-slate-700 shadow-2xl">
         <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
       </div>
@@ -56,7 +54,7 @@ const DBDisplay = () => {
       <FeatureTab handleSidebar={handleSidebar} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
-      <div ref={mainId} id="main" className='main dark:bg-slate-700'>
+      <div ref={mainId} id="main" className='main dark:bg-slate-700 transition-colors duration-500'>
         {schemaStore ? <Flow nds={nodes} eds={edges} /> : <></>}
       </div>
     </div> 

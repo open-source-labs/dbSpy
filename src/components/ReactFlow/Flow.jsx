@@ -30,7 +30,7 @@ function Flow(props) {
   setNodes(props.nds);
   
   return (
-    <div className="flow" style={{ height: '85%', width: '80%' }}>
+    <div className="flow transition-colors duration-500" style={{ height: '85%', width: '80%' }}>
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}
@@ -40,7 +40,7 @@ function Flow(props) {
         nodeTypes={nodeTypes}
         // fitView
       >
-        <Background className=" dark:bg-slate-800" />
+        <Background className=" dark:bg-slate-800 transition-colors duration-500" />
         <Controls className=''/>
       </ReactFlow>
     </div>

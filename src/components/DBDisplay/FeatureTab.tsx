@@ -293,7 +293,7 @@ export default function FeatureTab(props: any) {
     <div className="max-w-2xl mx-auto">
 
     <aside className="w-64 absolute inset-y-0 left-0 top-24" aria-label="FeatureTab">
-      <div className="px-3 py-4 overflow-y-auto rounded bg-gray-50 dark:bg-gray-800 menuBar">
+      <div className="px-3 py-4 overflow-y-auto rounded bg-gray-50 dark:bg-gray-800 menuBar transition-colors duration-500">
         <p className='text-slate-900 dark:text-white'>Action</p>
         <hr />
         <ul className="space-y-2">

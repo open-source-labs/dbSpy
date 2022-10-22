@@ -63,23 +63,23 @@ function TableNode({ data }) {
   // }
 
   return (
-    <div className="table-node">
+    <div className="table-node transition-colors duration-500">
       {tableHandles}
       <div>
-        <label htmlFor="text">{data.table[0]}</label>
+        <label htmlFor="text" className='bg-[#075985] dark:opacity-75'>{data.table[0]}</label>
       </div>
       <div>
-        <button className="add-field dark:text-white">+ FIELD</button>
+        <button className="add-field dark:text-[#fbf3de] transition-colors duration-500">+ FIELD</button>
       </div>
-      <div className='table-bg dark:bg-slate-600'>
-        <table className='dark:text-white'>
+      <div className='table-bg dark:bg-slate-700 transition-colors duration-500'>
+        <table className='dark:text-[#fbf3de] transition-colors duration-500'>
           <thead>
             <tr className="head-row">
-              <th scope="col" className='dark:text-white'>Column</th>
-              <th scope="col" className='dark:text-white'>Type</th>
-              <th scope="col" className='dark:text-white'>Constraints</th>
-              <th scope="col" className='dark:text-white'>PK</th>
-              <th scope="col" className='dark:text-white'>FK</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Column</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Type</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Constraints</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>PK</th>
+              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>FK</th>
             </tr>
           </thead>
           <tbody>

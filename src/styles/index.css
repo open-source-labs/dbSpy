@@ -2,17 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-#root {
-  background-color: rgb(61,84,97);
-} 
- */
+
 .dark {
   background-color: #334155;
 }
 
 .testing {
   margin-top: -75px;
+}
+
+#dbConnect {
+  border: none;
 }
 
 .heroCard {
@@ -358,7 +358,6 @@
 .table-node label {
   display: block;
   text-align: left;
-  background-color: #075985;
   color: 7 89 133;
   font-size: 15px;
   font-weight: bold;
@@ -444,7 +443,7 @@ tr {
   /* Stay on top */
   top: 0;
   right: 0;
-  background-color: rgb(177, 207, 228);
+  background-color: #fff;
   /* Black*/
   overflow-x: hidden;
   /* Disable horizontal scroll */
@@ -504,10 +503,8 @@ tr {
   margin: 100px auto;
   padding: 20px;
   height: 600px;
-  border-style: solid;
-  border-width: 1px;
-  border-style: solid;
-  border-width: 1px;
+  border: none;
+  transition: 0.5s;
 }
 
 .form-item {
@@ -518,7 +515,7 @@ tr {
 
 .form-box{
   border-style: solid;
-  border-width: 1px;
+  border-width: 2px;
 }
 
 .form-button {
