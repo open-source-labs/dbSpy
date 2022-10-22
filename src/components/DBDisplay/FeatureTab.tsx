@@ -2,104 +2,150 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 // Components imported;
+import parseSql from '../../parse';
 import DataStore from '../../Store';
 import useCredentialsStore from '../../store/credentialsStore';
-
+import useSchemaStore from '../../store/schemaStore';
+import useDataStore from '../../store/dataStore';
+import useQueryStore from '../../store/queryStore';
 
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
-  const user = useCredentialsStore(state => state.user);
-  const setUser = useCredentialsStore(state => state.setUser);
+  const {user, setUser} = useCredentialsStore(state => state);
+  const setSchemaStore = useSchemaStore(state => state.setSchemaStore);
+  const {dataStore, setDataStore, dataInd, setDataInd} = useDataStore(state => state);
+  const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
+  // const user = useCredentialsStore(state => state.user);
+  // const setUser = useCredentialsStore(state => state.setUser);
+  // const dataStore = useDataStore(state => state.dataStore);
+  // const setDataStore = useDataStore(state => state.setDataStore);
+  // const dataInd = useDataStore(state => state.dataInd);
+  // const setDataInd = useDataStore(state => state.setDataInd);
+  // const queryStore = useQueryStore(state => state.queryStore);
+  // const setQueryStore = useQueryStore(state => state.setQueryStore);
+  // const queryInd = useQueryStore(state => state.queryInd);
+  // const setQueryInd = useQueryStore(state => state.setQueryInd);
+  // const queryList = useQueryStore(state => state.queryList);
+  // const setQueryList = useQueryStore(state => state.setQueryList);
   //END: STATE DECLARATION
-  
+  //Functions for state management
+  const setData = (data:any) =>{
+    const newData = {...dataStore };
+    newData.set(dataInd, data);
+    setDataStore(newData);
+    setDataInd(dataInd + 1);
+    return dataStore;
+  };
+  const getData = (ind:number) => dataStore.get(ind);
+  const clearDataStore = () => {
+    setDataStore(new Map());
+    setDataInd(0);
+  };
+  const getQueries = (ind:number) => queryStore.get(ind);
+  const setQueries = (queries: any) => {
+    const newQueries = { ...queryStore };
+    newQueries.set(queryInd, queries);
+    setQueryStore(newQueries);
+    setQueryInd(queryInd + 1);
+    return queryStore;
+  };
+  const exportData = () => queryList.map((listItem) => listItem['query']);
+  const clearQueryStore = () => {
+    setQueryStore(new Map());
+    setQueryInd(0);
+    setQueryList([]);
+  };
+  //End: Functions for state management
+
   /* Form Input State
+  
   "form" - a state that initializes the value of the form for Mantine;
   */
-/*   const form = useForm({
-    initialValues: {
-      tablename: '',
+ /*   const form = useForm({
+   initialValues: {
+     tablename: '',
     },
   }); */
   /* UI State
   "modalOpened" - a state that opens and closes the input box for tablename when adding a new table to the Schema;
   "history" - a state that tracks the list of history when table schema is editted
   */
-  const [modalOpened, setModalOpened] = useState(false);
-  const [history, setHistory] = useState([]);
-
-  const mySideBarId:any = useRef();
-  const mainId:any = useRef();
-
-  
-  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
-
-
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
-
-
-  /* 
-  "undo" - a function that gets invoked when Undo button is clicked; render previous table
-  "redo" - a function that gets invoked when Redo button is clicked; render next table
-  */
+ const [modalOpened, setModalOpened] = useState(false);
+ const [history, setHistory] = useState([]);
+ 
+ const mySideBarId:any = useRef();
+ const mainId:any = useRef();
+ 
+ 
+ /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+ 
+ 
+ /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+ 
+ 
  /* 
-  function undo() {
-    if (DataStore.counter > 0) {
-      const prev: any = DataStore.getData(DataStore.counter - 1);
-      setFetchedData(prev);
-      DataStore.counter--;
-    }
+ "undo" - a function that gets invoked when Undo button is clicked; render previous table
+ "redo" - a function that gets invoked when Redo button is clicked; render next table
+ */
+/* 
+function undo() {
+  if (DataStore.counter > 0) {
+    const prev: any = DataStore.getData(DataStore.counter - 1);
+    setFetchedData(prev);
+    DataStore.counter--;
   }
+}
 
-  function redo() {
-    if (DataStore.counter < DataStore.store.size) {
-      const next: any = DataStore.getData(DataStore.counter);
-      setFetchedData(next);
-      DataStore.counter++;
-    }
+function redo() {
+  if (DataStore.counter < DataStore.store.size) {
+    const next: any = DataStore.getData(DataStore.counter);
+    setFetchedData(next);
+    DataStore.counter++;
   }
-
-  function uploadSQL() {
-    // creating an input element for user to upload sql file
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.click();
-    input.onchange = (e: any): void => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = (event: any) => {
-        //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
-        DataStore.clearStore();
+}
+*/
+const uploadSQL = () => {
+  // creating an input element for user to upload sql file
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.click();
+  input.onchange = (e: any): void => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = (event: any) => {
+      //After the file is uploaded, we need to clear DataStore and clear out Query and Data from session Storage
+        clearDataStore();
         sessionStorage.removeItem('Query');
         sessionStorage.removeItem('Data');
 
         //Then, we will make loadedFile in DataStore and sessionStorage to true to render Canvas without "Disconnect to DB" and "Execute" buttons
-        DataStore.loadedFile = true;
-        sessionStorage.loadedFile = 'true';
+        // DataStore.loadedFile = true;
+        // sessionStorage.loadedFile = 'true';
 
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData = parseSql(event.target.result);
 
         //Update DataStore data with parsedData and reset to an empty query
-        DataStore.setData(parsedData);
-        DataStore.setQuery([{ type: '', query: '' }]);
+        setData(parsedData);
+        setQueries([{ type: '', query: '' }]);
 
         //Update sessionStorage Data and Query with recently updated DataStore.
         sessionStorage.Data = JSON.stringify(
-          Array.from(DataStore.store.entries())
+          Array.from(dataStore.entries())
         );
         sessionStorage.Query = JSON.stringify(
-          Array.from(DataStore.queries.entries())
+          Array.from(queryStore.entries())
         );
 
         //Update the rendering of the tables with latest table model.
-        setFetchedData(parsedData);
+        setSchemaStore(parsedData);
       };
     };
   }
- */
+
 /* this interface and function weren't being used anywhere, commented out
   interface EditToolbarProps {
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -269,11 +315,12 @@ export default function FeatureTab(props: any) {
           </li>
           <li>
             <a
-/*               onClick={() => {
-                if (DataStore.connectedToDB) {
-                  alert('Please disconnect your database first.');
-                } else uploadSQL();
-              }} */
+              onClick={() => {
+                // if (DataStore.connectedToDB) {
+                //   alert('Please disconnect your database first.');
+                // } else 
+                uploadSQL();
+              }} 
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
