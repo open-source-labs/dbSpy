@@ -50,7 +50,7 @@
     "fs": "^0.0.1-security",
     "google-auth-library": "^8.6.0",
     "googleapis": "^108.0.0",
-    "html-to-image": "^1.9.0",
+    "html-to-image": "^1.10.8",
     "jest": "^28.1.1",
     "mysql-client": "^0.3.0",
     "mysql2": "^2.3.3",
