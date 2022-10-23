@@ -17,7 +17,7 @@ import TableNode from './TableNode';
 const nodeTypes = {
   table: TableNode,
 };
-const proOptions = { hideAttribution: true };
+
 
 function Flow() {
   // // set up states for nodes and edges
@@ -32,7 +32,6 @@ function Flow() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        proOptions={proOptions}
         fitView
       >
         <div id="download-image"></div>

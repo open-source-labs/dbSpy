@@ -228,7 +228,7 @@
 }
 .react-flow__attribution {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 3px;
   margin: 0;
 }
@@ -602,7 +602,7 @@ textarea:focus, input:focus, select:focus {
 
 /* Modal Content/Box */
 .modal-content {
-  margin: 20% auto;
+  margin: 15% auto;
   /* 15% from the top and centered */
   padding: 20px;
   /* Could be more or less, depending on screen size */
