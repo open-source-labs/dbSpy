@@ -15,7 +15,7 @@ import {
 } from '../controllers/dataController';
 import { getLogInfo, setLogInfo } from '../controllers/loggingController';
 
-import { dummydata } from '../dummy.ts';
+// import { dummydata } from '../dummy.ts';
 
 const router = Router();
 
@@ -72,7 +72,7 @@ router.post('/postSchema', postSchema, (req, res) => {
   ]);
 });
 
-// Recieving an array of strings (queries)
+// Receiving an array of strings (queries)
 router.post('/handleQueries', handleQueries, (req, res) => {
   res.status(200).json({ success: res.locals.success });
 });
@@ -94,4 +94,4 @@ router.post('/setLogs', setLogInfo, (req, res) => {
   return res.status(200);
 });
 
-export default router;
+export { router };

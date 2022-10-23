@@ -1,6 +1,7 @@
 // React & React Router Modules
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {getGoogleAuthUrl} from '../utils/getGoogleUrl'
 
 //state management component
 import useCredentialsStore from '../store/credentialsStore';
@@ -26,8 +27,10 @@ export default function Login() {
     // window.open('http://localhost:8080/oauth', '_self', strWindowFeatures);
   */
   const handleLogin = () => {
-    const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open('http://localhost:3000/api/me/oauth', '_self', strWindowFeatures);
+    window.open(getGoogleAuthUrl())
+    // const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+    // window.open('http://localhost:3000/api/me/oauth', '_self', strWindowFeatures);
+
     // fetch('/api/oauth')
     // // .then((res) => res.json())
     // .then(res => res.text())
