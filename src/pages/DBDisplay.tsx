@@ -22,9 +22,6 @@ const DBDisplay = () => {
   //create references for HTML elements
   const mySideBarId:any = useRef();
   const mainId:any = useRef();
-  const testBtn:any = useRef();
-  const confirmModal:any = useRef();
-
 
   /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
   const openNav = () => {
@@ -44,17 +41,6 @@ const DBDisplay = () => {
     if (sidebarDisplayState) closeNav()
     else openNav();
   }
-
-  /* When the user clicks, open the modal */
-  const openModal = () => {
-    confirmModal.current.style.display = "block";
-  }
-
-  /* When the user clicks 'yes' or 'no', close it */
-  const closeModal = () => {
-    confirmModal.current.style.display = "none";
-  }
-
 
   return (
     <div id='DBDisplay'>
