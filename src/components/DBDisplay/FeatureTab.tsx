@@ -150,7 +150,7 @@ function redo() {
       setEdges(initialEdges);
       const initialNodes = createInitialNodes(parsedData, initialEdges);
       setNodes(initialNodes);
-      setWelcome();
+      setWelcome(false);
       };
     };
   }
