@@ -228,7 +228,7 @@
 }
 .react-flow__attribution {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 3px;
   margin: 0;
 }
