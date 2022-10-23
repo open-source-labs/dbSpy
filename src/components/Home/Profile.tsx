@@ -5,7 +5,7 @@ export default function Profile(properties: any){
 
   return (
     <div className="basis-1/4 profileCard">
-      <div className="rounded-lg shadow-lg h-full block bg-white dark:bg-slate-800 profileDetails">
+      <div className="rounded-lg shadow-lg h-full block bg-[#f8f4eb] dark:bg-slate-900 profileDetails">
         <div className="flex justify-center">
           <div className="flex justify-center testing">
             <img src={props.imgUrl} className="rounded-full mx-auto shadow-lg profileImg" alt=""/>

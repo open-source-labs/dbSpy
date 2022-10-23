@@ -17,8 +17,6 @@
 
 .heroCard {
   margin-top: 5%;
-  background-color: hsla(0, 0%, 100%, 0.8);
-  backdrop-filter: saturate(200%) blur(25px);
 }
 
 .profileImg {
@@ -34,10 +32,6 @@
   padding-bottom: 150px;
   padding-right: 10px;
   padding-left: 10px;
-}
-
-.profileDetails {
-  background-color: white;
 }
 
 .menuBar {
@@ -608,11 +602,8 @@ textarea:focus, input:focus, select:focus {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
+  margin: 20% auto;
   /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
-  width: 40%;
   /* Could be more or less, depending on screen size */
 }
