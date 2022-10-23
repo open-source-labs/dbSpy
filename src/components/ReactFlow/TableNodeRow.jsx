@@ -36,10 +36,10 @@ export default function TableNodeRow({ row, tableData }) {
   return (
     <>
       <tr key={row.field_name} className='dark:text-[#f8f4eb] '>
-        <td className='dark:text-[#f8f4eb]'>{editMode ? <input></input> : row.field_name}</td>
+        <td className='dark:text-[#f8f4eb]'>{editMode ? <input className='dark:text-black bg-[#f8f4eb] hover:shadow-md focus:outline-1' defaultValue={row.field_name}></input> : row.field_name}</td>
         <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
-            <select>
+            <select className='dark:text-black bg-[#f8f4eb]' defaultValue={row.data_type}>
               <option value="binary">binary</option>
               <option value="blob">blob</option>
               <option value="boolean">boolean</option>
@@ -60,7 +60,7 @@ export default function TableNodeRow({ row, tableData }) {
         </td>
         <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
-            <select>
+            <select className='dark:text-black bg-[#f8f4eb]' defaultValue={row.additional_constraints}>
               <option value="NA">NA</option>
               <option value="NOT NULL">NOT NULL</option>
               <option value="PRIMARY">PRIMARY</option>
@@ -72,7 +72,7 @@ export default function TableNodeRow({ row, tableData }) {
         </td>
         <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
-            <select>
+            <select className='dark:text-black bg-[#f8f4eb]' defaultValue={row.IsPrimaryKey ? "primary-true" : "primary-false"}>
               <option value="primary-true">true</option>
               <option value="primary-false">false</option>
             </select>
@@ -82,7 +82,7 @@ export default function TableNodeRow({ row, tableData }) {
         </td>
         <td className='dark:text-[#f8f4eb]'>
           {editMode ? (
-            <select>
+            <select className='dark:text-black bg-[#f8f4eb]' defaultValue={row.IsForeignKey ? "foreign-true" : "foreign-false"}>
               <option value="foreign-true">true</option>
               <option value="foreign-false">false</option>
             </select>

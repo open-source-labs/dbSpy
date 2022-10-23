@@ -602,7 +602,7 @@ textarea:focus, input:focus, select:focus {
 
 /* Modal Content/Box */
 .modal-content {
-  margin: 20% auto;
+  margin: 15% auto;
   /* 15% from the top and centered */
   padding: 20px;
   /* Could be more or less, depending on screen size */
