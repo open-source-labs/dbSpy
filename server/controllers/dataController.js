@@ -206,7 +206,7 @@ dataController.objSchema = (req, res, next) => {
           );
         });
       if (propObj.data_type.includes('character varying')) propObj.data_type = 'varchar';
-
+      if (propObj.data_type.includes('bigint')) propObj.data_type = 'integer';
       if (propObj.data_type.includes('boolean')) propObj.data_type = 'boolean';
     });
   });
