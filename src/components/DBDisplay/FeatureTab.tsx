@@ -20,6 +20,7 @@ export default function FeatureTab(props: any) {
   const {setEdges, setNodes} = useFlowStore(state => state);
   const {setSchemaStore}= useSchemaStore(state => state);
   const {setWelcome}= useSettingsStore(state => state);
+  const [action, setAction] = useState(new Array());
   //END: STATE DECLARATION
   //Functions for state management
   const setData = (data:any) =>{
@@ -89,8 +90,50 @@ function redo() {
 }
 */
 
+//create references for HTML elements
+  const confirmModal:any = useRef();
+  /* When the user clicks, open the modal */
+  const openModal = (callback:any) => {
+    confirmModal.current.style.display = "block";
+    confirmModal.current.style.zIndex = "100";
+    setAction([callback]);
+  }
+  /* When the user clicks 'yes' or 'no', close it */
+  const closeModal = (response: boolean) => {
+    confirmModal.current.style.display = "none";
+    if (response) action[0]();
+  }
+
 // HELPER FUNCTIONS
-  function uploadSQL() {
+
+  const connectDb = () => {
+    //if Flow is rendered, openModal
+    if (document.querySelector('.flow'))
+      openModal(props.handleSidebar);
+    else props.handleSidebar();
+  }
+  const uploadSQL = () => {
+    //if Flow is rendered, openModal
+    if (document.querySelector('.flow'))
+      openModal(getSchemaFromFile);
+    else getSchemaFromFile();
+  }
+
+  const buildDb = () => {
+    //if Flow is rendered, open modal
+    if (document.querySelector('.flow'))
+      openModal(buildDatabase);
+    else buildDatabase();
+  }
+
+  const clearCanvas = () => {
+    //if Flow is rendered, open modal
+    if (document.querySelector('.flow'))
+      openModal(clearCanvasTables);
+    else clearCanvasTables();
+  }
+
+  const getSchemaFromFile = () => {
     // creating an input element for user to upload sql file
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -111,7 +154,28 @@ function redo() {
       };
     };
   }
+   
+  const buildDatabase = () => {
+    setSchemaStore(null);
+    setNodes([]);
+    setEdges([]);
+    setWelcome(false);
+  }
+
+  const clearCanvasTables = () => {
+    setDataStore(null);
+    setEdges([]);
+    setNodes([]);
+    setWelcome(false);
+  }
 // END: HELPER FUNCTIONS
+
+
+  
+
+  
+
+
 
 /* this interface and function weren't being used anywhere, commented out
   interface EditToolbarProps {
@@ -266,13 +330,13 @@ function redo() {
     <div className="max-w-2xl mx-auto">
 
     <aside className="w-64 absolute inset-y-0 left-0 top-24" aria-label="FeatureTab">
-      <div className="px-3 py-4 overflow-y-auto rounded bg-gray-50 dark:bg-gray-800 menuBar transition-colors duration-500">
+      <div className="px-3 py-4 overflow-y-auto rounded bg-[#f8f4eb] dark:bg-gray-800 menuBar transition-colors duration-500 shadow-lg">
         <p className='text-slate-900 dark:text-[#f8f4eb]'>Action</p>
         <hr />
         <ul className="space-y-2">
           <li>
             <a 
-              onClick={props.handleSidebar}
+              onClick={connectDb}
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
@@ -294,11 +358,7 @@ function redo() {
           </li>
           <li>
             <a
-              onClick={()=>{
-                setSchemaStore(null);
-                setNodes([]);
-                setEdges([]);
-                setWelcome(false)}}
+              onClick={buildDb}
               className=" cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -337,13 +397,7 @@ function redo() {
           </li>
           <li>
             <a
-              onClick={() => {
-                setDataStore(null);
-                setEdges([]);
-                setNodes([]);
-                setWelcome(true);
-                }
-              }
+              onClick={clearCanvas}
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700"
               >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
@@ -381,6 +435,19 @@ function redo() {
         </div>
       </div>
     </aside>
+
+    {/* MODAL FOR CONFIRMATION POPUP */}
+    <div ref={confirmModal} id="confirmModal" className="confirmModal">
+      {/* <!-- Confirm Modal content --> */}
+      <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
+        <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved changes.</p>
+        <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
+          <button onClick={()=>closeModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Confirm</button>
+          <button onClick={()=>closeModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
+        </div> 
+      </div>
+    </div>
+
   </div>
   </>
   );

@@ -19,31 +19,31 @@ const DBDisplay = () => {
 
   
   
-  //create references for HTML elemends
+  //create references for HTML elements
   const mySideBarId:any = useRef();
   const mainId:any = useRef();
+
   /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
-  function openNav() {
+  const openNav = () => {
     mySideBarId.current.style.width = "400px";
     mainId.current.style.marginRight = "400px";
   }
 
+
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
-  function closeNav() {
+  const closeNav = () => {
     mySideBarId.current.style.width = "0";
-    mainId.current.style.marginRight = "50px";
+    mainId.current.style.marginRight = "50px"
   }
+  
 /* Sidebar handler*/
   function handleSidebar(){
-    if (sidebarDisplayState){
-      closeNav();
-    } else {
-      openNav();
-    }
+    if (sidebarDisplayState) closeNav()
+    else openNav();
   }
 
   return (
-    <div id='DBDisplay' className='bg-[#fbf3de] dark:bg-slate-700 transition-colors duration-500'>
+    <div id='DBDisplay' className='bg-[#f8f4eb] dark:bg-slate-700 transition-colors duration-500'>
       <div ref={mySideBarId} id="mySidenav" className="sidenav bg-[#fbf3de] dark:bg-slate-700 shadow-2xl">
         <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
@@ -53,13 +53,15 @@ const DBDisplay = () => {
       <FeatureTab handleSidebar={handleSidebar} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
-      <div ref={mainId} id="main">
-        {welcome ? <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500">
-          <h3>Welcome to dbSpy!</h3>
-          Please connect your database, upload a SQL file, or build your
-          database from scratch!
-        </div>     
-        : <Flow />
+      <div ref={mainId} id="main" className='transition-colors duration-500'>
+        {welcome ? 
+          <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500">
+            <h3>Welcome to dbSpy!</h3>
+            <p>Please connect your database, upload a SQL file, or build your
+            database from scratch!
+            </p>
+          </div>     
+          : <Flow />
         }
       </div>
     </div> 
