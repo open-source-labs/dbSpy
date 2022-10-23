@@ -21,7 +21,6 @@ export default function FeatureTab(props: any) {
   const {setSchemaStore}= useSchemaStore(state => state);
   const {setWelcome}= useSettingsStore(state => state);
   const [action, setAction] = useState(new Array());
-
   //END: STATE DECLARATION
   //Functions for state management
   const setData = (data:any) =>{
@@ -102,7 +101,7 @@ function redo() {
   /* When the user clicks 'yes' or 'no', close it */
   const closeModal = (response: boolean) => {
     confirmModal.current.style.display = "none";
-    action[0]();
+    if (response) action[0]();
   }
 
 // HELPER FUNCTIONS
