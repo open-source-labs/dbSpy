@@ -55,9 +55,9 @@ const DBDisplay = () => {
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className='transition-colors duration-500'>
         {welcome ? 
-          <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500">
-            <h3>Welcome to dbSpy!</h3>
-            <p>Please connect your database, upload a SQL file, or build your
+          <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500 w-[50%] m-auto flex flex-col">
+            <h3 className='w-[50%] mx-auto'>Welcome to dbSpy!</h3>
+            <p className=''>Please connect your database, upload a SQL file, or build your
             database from scratch!
             </p>
           </div>     
