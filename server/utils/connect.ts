@@ -5,8 +5,6 @@ dotenv.config()
 // create the connection to db
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found');
 
-// const connection = mysql.createConnection(process.env.DATABASE_URL);
-
 const connect = () => {
     const dbUri = process.env.DATABASE_URL;
 
@@ -20,7 +18,6 @@ const connect = () => {
 }
 
 log.info('Connected to DB')
-// const pool = createPool({ uri: process.env.DATABASE_URL })
 
 
 

@@ -39,8 +39,6 @@ export const handleGoogleAuth = async (req: Request, res: Response) => {
     const decodedUser = jwt.decode(id_token) as JwtPayload;
 
     //insert or retrieve the user
-    // log.info(getUser)
-    // console.log(decodedUser);
     const foundUser: any = await findUser(decodedUser.email)
 
     // // if we did not find the user, create one

@@ -5,8 +5,6 @@ import { handleGoogleAuth } from './controllers/sessionsController'
 function routes(app: Express) {
     app.get('/api/healthcheck', (req, res) => res.sendStatus(200))
 
-    // app.get('/api/me/oauth', getAuthenticatedClient, (req, res) => res.sendStatus(200))
-    // app.get('/api/oauth/google', handleOAuthCallBack, (req, res) => res.sendStatus(200))
     app.get('/api/oauth/google', handleGoogleAuth)
 }
 
