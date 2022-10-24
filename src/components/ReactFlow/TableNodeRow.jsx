@@ -1,16 +1,27 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import useSchemaStore from '../../store/schemaStore';
 
-export default function TableNodeRow({ row, tableData }) {
+export default function TableNodeRow({ row, tableData, id }) {
   // had to convert booleans to strings or they wont show up on table
-  console.log('im in tablenoderow and these are the rows: ', tableData);
-
+  console.log('TableNodeRow-row: ', row);
+  console.log('tablename from row: ', row.TableName);
+  console.log('TableNodeRow-tableData: ', tableData);
+  console.log('is this ID: ', id);
+  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const [defaultMode, setDefaultMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
+  //create references for each row column that can be updated/deleted
+  const field_name = useRef();
+  const data_type = useRef();
+  const additional_constraints = useRef();
+  const IsPrimaryKey = useRef();
+  const IsForeignKey = useRef();
+  //capture changes in row properties
+  const [values, newValues] = useState();
 
-  
   const inDefaultMode = () => {
     console.log('you are in default mode');
     setDefaultMode(true);
@@ -32,14 +43,53 @@ export default function TableNodeRow({ row, tableData }) {
     setEditMode(false);
   };
 
+  //onSave --> updates the new row information and update schemaStore to re-render updated row information
+  //access to table name (row.TableName) and row name (row.field_name) - is now (id)
+  const onSave = () => {
+    //save the new value to
+    //declare prior values
+    console.log('you clicked save');
+    console.log(field_name.current.value);
+    console.log(data_type.current.value);
+    console.log(additional_constraints.current.value);
+    console.log(IsPrimaryKey.current.value);
+    console.log(IsForeignKey.current.value);
+
+    const tableRef = row.TableName;
+    const rowRef = row.field_name;
+    console.log('tableRef & rowRef', tableRef, rowRef);
+    const currentSchema = { ...schemaStore };
+    currentSchema[tableRef][rowRef].field_name = field_name.current.value;
+    currentSchema[tableRef][rowRef].data_type = data_type.current.value;
+    currentSchema[tableRef][rowRef].additional_constraints =
+      additional_constraints.current.value;
+    currentSchema[tableRef][rowRef].IsPrimaryKey = IsPrimaryKey.current.value === 'true';
+    currentSchema[tableRef][rowRef].IsForeignKey = IsForeignKey.current.value === 'true';
+    //check if row name has changed
+    if (rowRef !== field_name.current.value) {
+      currentSchema[tableRef][field_name.current.value] = currentSchema[tableRef][rowRef];
+      delete currentSchema[tableRef][rowRef];
+    }
+
+    //set new values to the schemaStore
+    setSchemaStore(currentSchema);
+    console.log('NEW SCHEMA', schemaStore);
+    // row.field_name = field_name.current.value;
+    // row.data_type = selected option
+    // row.additional_constraints = selected option
+    // row.IsPrimaryKey.toString() = selected option
+    // row.IsForeignKey.toString() = selected option
+  };
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr key={row.field_name} className='dark:text-[#f8f4eb]'>
-        <td className='dark:text-[#f8f4eb]'>{editMode ? <input></input> : row.field_name}</td>
-        <td className='dark:text-[#f8f4eb]'>
+      <tr key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb]">
+        <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
+          {editMode ? <input ref={field_name}></input> : row.field_name}
+        </td>
+        <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
           {editMode ? (
-            <select>
+            <select ref={data_type}>
               <option value="binary">binary</option>
               <option value="blob">blob</option>
               <option value="boolean">boolean</option>
@@ -58,9 +108,9 @@ export default function TableNodeRow({ row, tableData }) {
             row.data_type
           )}
         </td>
-        <td className='dark:text-[#f8f4eb]'>
+        <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
           {editMode ? (
-            <select>
+            <select ref={additional_constraints}>
               <option value="NA">NA</option>
               <option value="NOT NULL">NOT NULL</option>
               <option value="PRIMARY">PRIMARY</option>
@@ -70,52 +120,58 @@ export default function TableNodeRow({ row, tableData }) {
             row.additional_constraints
           )}
         </td>
-        <td className='dark:text-[#f8f4eb]'>
+        <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
           {editMode ? (
-            <select>
-              <option value="primary-true">true</option>
-              <option value="primary-false">false</option>
+            <select ref={IsPrimaryKey}>
+              <option value="true">true</option>
+              <option value="false">false</option>
             </select>
           ) : (
             row.IsPrimaryKey.toString()
           )}
         </td>
-        <td className='dark:text-[#f8f4eb]'>
+        <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {editMode ? (
-            <select>
-              <option value="foreign-true">true</option>
-              <option value="foreign-false">false</option>
+            <select ref={IsForeignKey}>
+              <option value="true">true</option>
+              <option value="false">false</option>
             </select>
           ) : (
             row.IsForeignKey.toString()
           )}
         </td>
-        <td className='dark:text-[#f8f4eb]'>
+        <td className="dark:text-[#f8f4eb]">
           {editMode ? (
-            <button className={`save-${row.field_name}`} onClick={inDefaultMode}>
+            <button
+              id={`${id}-saveBtn`}
+              onClick={() => {
+                onSave();
+                inDefaultMode();
+              }}
+            >
               SAVE
             </button>
           ) : deleteMode ? (
-            <button className={`save-${row.field_name}`} onClick={inDefaultMode}>
+            <button id={`${id}-confirmBtn`} onClick={inDefaultMode}>
               CONFIRM
             </button>
           ) : (
-            <button className={`edit-${row.field_name}`} onClick={inEditMode}>
+            <button id={`${id}-editBtn`} onClick={inEditMode}>
               EDIT
             </button>
           )}
         </td>
-        <td className='dark:text-[#f8f4eb]'>
+        <td className="dark:text-[#f8f4eb]">
           {editMode ? (
-            <button className={`cancel-${row.field_name}`} onClick={inDefaultMode}>
+            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
               CANCEL
             </button>
           ) : deleteMode ? (
-            <button className={`cancel-${row.field_name}`} onClick={inDefaultMode}>
+            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
               CANCEL
             </button>
           ) : (
-            <button className={`delete-${row.field_name}`} onClick={inDeleteMode}>
+            <button id={`${id}-deleteBtn`} onClick={inDeleteMode}>
               DELETE
             </button>
           )}

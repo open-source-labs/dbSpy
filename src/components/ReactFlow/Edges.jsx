@@ -14,6 +14,7 @@ const createInitialEdges = (schemaObject) => {
         target: row.References[0].PrimaryKeyTableName,
         targetHandle: row.References[0].PrimaryKeyName,
         animated: true,
+        label: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
         type: 'smoothstep',
         style: {
           stroke: '#4a7187',
