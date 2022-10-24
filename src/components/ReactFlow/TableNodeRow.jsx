@@ -3,8 +3,6 @@ import { Handle, Position } from 'reactflow';
 import { useState, useRef } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
-import createInitialEdges from './Edges';
-import createInitialNodes from './Nodes';
 
 export default function TableNodeRow({ row, tableData, id }) {
   // had to convert booleans to strings or they wont show up on table
@@ -13,18 +11,16 @@ export default function TableNodeRow({ row, tableData, id }) {
   console.log('TableNodeRow-tableData: ', tableData);
   console.log('is this ID: ', id);
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
-  const { edges } = useFlowStore((state) => state);
   const [defaultMode, setDefaultMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
   //create references for each row column that can be updated/deleted
+  const selectedRow = useRef();
   const field_name = useRef();
   const data_type = useRef();
   const additional_constraints = useRef();
   const IsPrimaryKey = useRef();
   const IsForeignKey = useRef();
-  //capture changes in row properties
-  const [values, newValues] = useState();
 
   const inDefaultMode = () => {
     console.log('you are in default mode');
@@ -67,8 +63,6 @@ export default function TableNodeRow({ row, tableData, id }) {
     }
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
-    createInitialEdges(currentSchema);
-    createInitialNodes(currentSchema, edges);
     console.log('NEW SCHEMA', schemaStore);
   };
 
@@ -85,7 +79,7 @@ export default function TableNodeRow({ row, tableData, id }) {
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
+      <tr ref={selectedRow} key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
           {editMode ? (
             <input
@@ -183,6 +177,7 @@ export default function TableNodeRow({ row, tableData, id }) {
               onClick={() => {
                 onDelete();
                 inDefaultMode();
+                selectedRow.current.remove();
               }}
             >
               CONFIRM
