@@ -21,7 +21,8 @@ function Navbar() {
 
   
   return (
-    <nav className="flex items-center justify-between flex-wrap bg-sky-800 p-6">
+    <>
+    <nav className="flex items-center justify-between flex-wrap bg-sky-800 p-6 fixed top-0 w-full">
       <div className='text-base lg:flex-grow'>
         <img className="fill-current mr-2 lg:inline-block" src={logo}/>
         <NavLink to='/' className={linkbtn}>Home</NavLink>
@@ -31,6 +32,10 @@ function Navbar() {
         <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={toggleClass}>{theme} Mode</button>
       </div>
     </nav>
+    <div className='h-[64px]'>
+
+    </div>
+    </>
   )
 }
 
