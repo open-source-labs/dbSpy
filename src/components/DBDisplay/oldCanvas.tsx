@@ -433,10 +433,10 @@ export default function Canvas({
         </>
       ) : (
         <>
-          <div className="canvas-ConnectToDatabase">
-            <h3>Welcome to dbSpy!</h3>
-            Please connect your database, upload a SQL file, or build your
-            database from scratch!
+          <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb]">
+            <h3 className='dark:text-[#f8f4eb]'>Welcome to dbSpy!</h3>
+            <p className='dark:text-[#f8f4eb]'>Please connect your database, upload a SQL file, or build your
+            database from scratch!</p>
           </div>
           {flows}
         </>

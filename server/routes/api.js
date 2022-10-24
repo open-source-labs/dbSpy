@@ -41,7 +41,11 @@ router.get('/testDrop', testDrop, (req, res) => {
   res.status(200).json(res.locals.testresponse);
 });
 
+<<<<<<< HEAD
 router.post('/getSchema', getSchema, objSchema, (req, res) => {
+=======
+router.post('/getSchema', controller.getSchema, controller.objSchema, (req, res) => {
+>>>>>>> dev2
   res.status(200).json(res.locals.result);
 });
 
@@ -94,4 +98,13 @@ router.post('/setLogs', setLogInfo, (req, res) => {
   return res.status(200);
 });
 
+<<<<<<< HEAD
 export { router };
+=======
+//parse SQL file from front end
+router.post('/parsesql', controller.parseSql, controller.objSchema, (req, res) => {
+  return res.status(200).send(res.locals.result);
+});
+
+module.exports = router;
+>>>>>>> dev2

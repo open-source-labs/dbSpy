@@ -2,47 +2,34 @@
 // State Management for React Flow
 //
 
-//create the store for flow (ie. )
 import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import {
-  // Connection,
-  // Edge,
-  // EdgeChange,
-  // Node,
-  // NodeChange,
-  addEdge,
-  // OnNodesChange,
-  // OnEdgesChange,
-  // OnConnect,
-  applyNodeChanges,
-  applyEdgeChanges,
-} from 'reactflow';
+import { devtools } from 'zustand/middleware';
+import { addEdge, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 
 let flowStore = (set, get) => ({
-  edges: null,
+  edges: [],
   setEdges: (eds) => set((state) => ({ ...state, edges: eds })),
-  nodes: null,
+  nodes: [],
   setNodes: (nds) => set((state) => ({ ...state, nodes: nds })),
-  onNodesChange: (changes) => {
+
+  //functions
+  onNodesChange: (changes) =>
     set({
       nodes: applyNodeChanges(changes, get().nodes),
-    });
-  },
-  onEdgesChange: (changes) => {
+    }),
+
+  onEdgesChange: (changes) =>
     set({
       edges: applyEdgeChanges(changes, get().edges),
-    });
-  },
-  onConnect: (connection) => {
+    }),
+
+  onConnect: (connection) =>
     set({
       edges: addEdge(connection, get().edges),
-    });
-  },
+    }),
 });
 
 flowStore = devtools(flowStore);
-// flowStore = persist(flowStore);
 const useFlowStore = create(flowStore);
 
 export default useFlowStore;

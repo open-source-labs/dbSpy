@@ -2,20 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-#root {
-  background-color: rgb(61,84,97);
-} 
- */
+
+.dark {
+  background-color: #334155;
+}
 
 .testing {
   margin-top: -75px;
 }
 
+#dbConnect {
+  border: none;
+}
+
 .heroCard {
   margin-top: 5%;
-  background-color: hsla(0, 0%, 100%, 0.8);
-  backdrop-filter: saturate(200%) blur(25px);
 }
 
 .profileImg {
@@ -33,12 +34,18 @@
   padding-left: 10px;
 }
 
-.profileDetails {
-  background-color: white;
-}
-
 .menuBar {
   height: calc(100% - 64px);
+}
+
+.main {
+  position: relative;
+  left: 310px;
+  margin: auto;
+}
+
+.orText {
+  text-align: left;
 }
 
 /* default react flow styles - required */
@@ -221,7 +228,7 @@
 }
 .react-flow__attribution {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 3px;
   margin: 0;
 }
@@ -349,7 +356,6 @@
 .table-node label {
   display: block;
   text-align: left;
-  background-color: #075985;
   color: 7 89 133;
   font-size: 15px;
   font-weight: bold;
@@ -367,6 +373,7 @@
   border: none;
   background: none;
   padding-top: 10px;
+  padding-right: 5px;;
 }
 
 .add-field:hover {
@@ -431,11 +438,10 @@ tr {
   /* 0 width - change this with JavaScript */
   position: fixed;
   /* Stay in place */
-  z-index: 1;
+  z-index: 99;
   /* Stay on top */
   top: 0;
   right: 0;
-  background-color: rgb(177, 207, 228);
   /* Black*/
   overflow-x: hidden;
   /* Disable horizontal scroll */
@@ -444,6 +450,57 @@ tr {
   transition: 0.5s;
   /* 0.5 second transition effect to slide in the sidenav */
 }
+
+/* download image button style*/
+#download-image .react-flow {
+  background: #1a365d;
+}
+
+#download-image .react-flow__node {
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: white;
+}
+
+#download-image .react-flow__node-custom {
+  font-size: 12px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+}
+
+#download-image .react-flow__node-custom .react-flow__handle-right {
+  transform: none;
+}
+
+#download-image.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+#download-image .download-btn {
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  /* border: 1px solid #273943; */
+  background: none;
+  /* padding: 10px 20px; */
+  border-radius: 5px;
+  font-weight: 700;
+  color:black;
+  cursor: pointer;
+}
+
 
 /* The navigation menu links */
 .sidenav a {
@@ -471,6 +528,7 @@ tr {
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
+  margin-left: 300px;
   transition: margin-left .5s;
   padding: 20px;
 }
@@ -495,10 +553,8 @@ tr {
   margin: 100px auto;
   padding: 20px;
   height: 600px;
-  border-style: solid;
-  border-width: 1px;
-  border-style: solid;
-  border-width: 1px;
+  border: none;
+  transition: 0.5s;
 }
 
 .form-item {
@@ -507,16 +563,47 @@ tr {
   width: 250px;
 }
 
-.form-box{
+.form-box {
   border-style: solid;
-  border-width: 1px;
+  border-width: 2px;
 }
 
-.form-button {
-  background-color: #d4dcfe;
-  width: 150px;
-  height: 30px;
-  border-style: solid;
-  border-color: #8891af;
-  border-width: 1px;
+textarea:focus, input:focus, select:focus {
+  outline: none;
+}
+
+
+.testBtn{
+  top: 50%;
+  left: 50%;
+}
+/* //Confirm Modal */
+/* The Modal (background) */
+.confirmModal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  /* Could be more or less, depending on screen size */
 }
