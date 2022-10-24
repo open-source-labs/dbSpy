@@ -15,7 +15,7 @@ export const findUser = async (email: string) => {
     })
 }
 
-export const createUser = (user: string[]) => {
+export const createUser = async (user: string[]) => {
     const connection = mysql.createConnection(process.env.DATABASE_URL!);
 
     const queryStr = 'INSERT IGNORE INTO users (sub, full_name, email, picture) VALUES (?, ?, ?, ?)';
