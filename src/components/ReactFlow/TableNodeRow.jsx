@@ -78,7 +78,7 @@ export default function TableNodeRow({ row, tableData, id }) {
 
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
-    <>
+    
       <tr ref={selectedRow} key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
           {editMode ? (
@@ -177,7 +177,7 @@ export default function TableNodeRow({ row, tableData, id }) {
               onClick={() => {
                 onDelete();
                 inDefaultMode();
-                selectedRow.current.remove();
+                // selectedRow.current.remove();
               }}
             >
               CONFIRM
@@ -204,6 +204,6 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
       </tr>
-    </>
+    
   );
 }

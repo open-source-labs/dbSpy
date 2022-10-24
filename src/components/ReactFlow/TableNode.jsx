@@ -2,6 +2,7 @@
 import { React, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
+import useSchemaStore from '../../store/schemaStore';
 
 // const handleStyleUp = { top: 10 };
 // const handleStyleDown = { bottom: 10 };
@@ -11,6 +12,7 @@ function TableNode({ data }) {
   console.log('table data[0]: ', data.table[0]);
   console.log('table data[1]: ', data.table[1]);
   console.log('initialEdges: ', data.edges);
+  const {schemaStore, setSchemaStore} = useSchemaStore(state=>state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
   console.log('rowData', rowData);
@@ -45,8 +47,30 @@ function TableNode({ data }) {
     }
   }
   const addRow = () => {
-    console.log(`you added a row in ${data.table[0]}`);
-    setTableRows(tableRows.push(tableRows[tableRows.length - 1]));
+    // console.log(`you added a row in ${data.table[0]}`);
+    // setTableRows(tableRows.push(tableRows[tableRows.length - 1]));
+    const currentSchema = { ...schemaStore };
+    currentSchema[data.table[0]].newRow = {
+      Name: '',
+      Value: '',
+      TableName: data.table[0],
+      References: [
+        {
+          PrimaryKeyName: '',
+          ReferencesPrimaryName: '',
+          PrimaryKeyTableName: '',
+          ReferencesTableName: '',
+          IsDestination: '',
+          constrainName: ''
+        }
+      ],
+      IsPrimaryKey: '',
+      IsForeignKey: '',
+      field_name: 'newRow',
+      data_type: '',
+      additional_constraints: ''
+    }
+    setSchemaStore(currentSchema);
   };
 
   return (
