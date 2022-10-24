@@ -26,10 +26,11 @@ export default function Login() {
     //   'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
     // window.open('http://localhost:8080/oauth', '_self', strWindowFeatures);
   */
-  const handleLogin = () => {
-    window.open(getGoogleAuthUrl())
-    // const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    // window.open('http://localhost:3000/api/me/oauth', '_self', strWindowFeatures);
+  const handleLogin = async () => {
+    // window.open(getGoogleAuthUrl())
+    const url = await getGoogleAuthUrl();
+    const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+    window.open(url , '_self', strWindowFeatures);
 
     // fetch('/api/oauth')
     // // .then((res) => res.json())

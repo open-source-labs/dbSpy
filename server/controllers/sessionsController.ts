@@ -42,11 +42,11 @@ export const handleGoogleAuth = async (req: Request, res: Response) => {
 
 
         //set a cookie, redirect back to the client
-
-        res.redirect('localhost:8080/')
+        log.error('Login successful, redirecting...')
+        return res.redirect(301, 'http://localhost:8080/')
 
     } catch (error) {
         log.error(error, "User authorization failed")
-        return res.redirect('localhost:8080/')
+        return res.redirect(301, 'http:localhost:8080/')
     }
 }
