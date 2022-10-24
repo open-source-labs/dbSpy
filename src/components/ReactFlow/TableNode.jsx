@@ -1,5 +1,5 @@
 // import { useCallback } from 'react';
-import React from 'react';
+import { React, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
 
@@ -8,13 +8,13 @@ import TableNodeRow from './TableNodeRow';
 
 function TableNode({ data }) {
   console.log('table data: ', data.table);
-  console.log('table name: ', data.table[0]);
-  console.log('rows: ', Object.values(data.table[1]));
+  console.log('table data[0]: ', data.table[0]);
+  console.log('table data[1]: ', data.table[1]);
   console.log('initialEdges: ', data.edges);
-  console.log('test: ', data.edges[0].sourceHandle);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
-
+  console.log('rowData', rowData);
+  const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
   // the table id,
   const tableHandles = [];
@@ -24,6 +24,7 @@ function TableNode({ data }) {
       const sourceHandlePos = data.edges[i].sourceHandle;
       tableHandles.push(
         <Handle
+          // key={`${data.table[0]}-${data.edges[i].sourceHandle}-source`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
@@ -34,6 +35,7 @@ function TableNode({ data }) {
     if (data.edges[i].target === data.table[0]) {
       tableHandles.push(
         <Handle
+          // key={`${data.table[0]}-${data.edges[i].targetHandle}-target`}
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
@@ -42,26 +44,61 @@ function TableNode({ data }) {
       );
     }
   }
-  const addRow = () => console.log('youAddedRow')
+  const addRow = () => {
+    console.log(`you added a row in ${data.table[0]}`);
+    setTableRows(tableRows.push(tableRows[tableRows.length - 1]));
+  };
 
   return (
     <div className="table-node transition-colors duration-500">
       {tableHandles}
       <div>
-        <label htmlFor="text" className='bg-[#075985] dark:opacity-75'>{data.table[0]}</label>
+        <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+          {data.table[0]}
+        </label>
       </div>
       <div>
-        <button className="add-field dark:text-[#fbf3de] transition-colors duration-500" onClick={addRow}>+ FIELD</button>
+        <button
+          className="add-field transition-colors duration-500 dark:text-[#fbf3de]"
+          onClick={addRow}
+        >
+          + FIELD
+        </button>
       </div>
-      <div className='table-bg dark:bg-slate-700 transition-colors duration-500'>
-        <table className='dark:text-[#fbf3de] transition-colors duration-500'>
+      <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
+        <table className="transition-colors duration-500 dark:text-[#fbf3de]">
           <thead>
             <tr className="head-row">
-              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Column</th>
-              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Type</th>
-              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>Constraints</th>
-              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>PK</th>
-              <th scope="col" className='dark:text-[#fbf3de] transition-colors duration-500'>FK</th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                Column
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                Type
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                Constraints
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                PK
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                FK
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -75,7 +112,12 @@ function TableNode({ data }) {
               <td></td>
             </tr>
             {rowData.map((row, index) => (
-              <TableNodeRow row={row} key={`row${index}`} tableData={tableData}/>
+              <TableNodeRow
+                row={row}
+                key={`${data.table[0]}-row${index}`}
+                id={`${data.table[0]}-row${index}`}
+                tableData={tableData}
+              />
             ))}
           </tbody>
         </table>

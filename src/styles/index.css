@@ -531,6 +531,7 @@ tr {
   margin-left: 300px;
   transition: margin-left .5s;
   padding: 20px;
+  margin-top: 50px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
