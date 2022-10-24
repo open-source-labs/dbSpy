@@ -46,18 +46,9 @@ export default function TableNodeRow({ row, tableData, id }) {
   //onSave --> updates the new row information and update schemaStore to re-render updated row information
   //access to table name (row.TableName) and row name (row.field_name) - is now (id)
   const onSave = () => {
-    //save the new value to
     //declare prior values
-    console.log('you clicked save');
-    console.log(field_name.current.value);
-    console.log(data_type.current.value);
-    console.log(additional_constraints.current.value);
-    console.log(IsPrimaryKey.current.value);
-    console.log(IsForeignKey.current.value);
-
     const tableRef = row.TableName;
     const rowRef = row.field_name;
-    console.log('tableRef & rowRef', tableRef, rowRef);
     const currentSchema = { ...schemaStore };
     currentSchema[tableRef][rowRef].field_name = field_name.current.value;
     currentSchema[tableRef][rowRef].data_type = data_type.current.value;
@@ -70,16 +61,23 @@ export default function TableNodeRow({ row, tableData, id }) {
       currentSchema[tableRef][field_name.current.value] = currentSchema[tableRef][rowRef];
       delete currentSchema[tableRef][rowRef];
     }
-
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
     console.log('NEW SCHEMA', schemaStore);
-    // row.field_name = field_name.current.value;
-    // row.data_type = selected option
-    // row.additional_constraints = selected option
-    // row.IsPrimaryKey.toString() = selected option
-    // row.IsForeignKey.toString() = selected option
   };
+
+  const onDelete = () => {
+    //declare prior values
+    const tableRef = row.TableName;
+    const rowRef = row.field_name;
+    const currentSchema = { ...schemaStore };
+    delete currentSchema[tableRef][rowRef];
+    setSchemaStore(currentSchema);
+    console.log('NEW SCHEMA', schemaStore);
+    
+
+  };
+
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
@@ -152,7 +150,13 @@ export default function TableNodeRow({ row, tableData, id }) {
               SAVE
             </button>
           ) : deleteMode ? (
-            <button id={`${id}-confirmBtn`} onClick={inDefaultMode}>
+            <button
+              id={`${id}-confirmBtn`}
+              onClick={() => {
+                onDelete();
+                inDefaultMode();
+              }}
+            >
               CONFIRM
             </button>
           ) : (
