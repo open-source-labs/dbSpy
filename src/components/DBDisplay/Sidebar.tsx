@@ -10,12 +10,14 @@ import useSettingsStore from '../../store/settingsStore';
 import createInitialEdges from '../../components/ReactFlow/Edges';
 import createInitialNodes from '../../components/ReactFlow/Nodes';
 
+
 const Sidebar = (props:any) => {
 //STATE DECLARATION (dbSpy3.0)
   const setDbCredentials = useCredentialsStore((state)=> state.setDbCredentials);
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const {setEdges, setNodes} = useFlowStore((state) => state);
   const {setWelcome} = useSettingsStore((state) => state);
+  const [dbType, setdbType] = useState('postgres');
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
@@ -32,24 +34,16 @@ const Sidebar = (props:any) => {
                 values.password = internalLinkArray[0];
                 values.port = '5432';
                 values.database_name = name;
+                setdbType(values.db_type)
               }
     //update dbCredentials
     setDbCredentials(values);
 
-    //check db_type
-    let endpoint: string = '/api/getSchema';
-      //check if postgres or mySQL
-      switch (values.db_type) {
-        case 'PostgreSQL':
-          endpoint = '/api/getSchema';
-          break;
-        case 'MySQL':
-          endpoint = '/apimysql/getSchema';
-          break;
-      }
-    console.log('endpoint', endpoint, '&values', values);
-    //api call
-    const dbSchema = await axios.post(endpoint, values)
+   
+    // const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values, config)
+    const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values,{
+      baseURL: 'http://localhost:8080'
+    })
       .then((res) => res.data)
       .catch((err)=>console.log('getSchema error', err));
     //update schemaStore

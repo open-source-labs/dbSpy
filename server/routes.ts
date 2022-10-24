@@ -1,4 +1,4 @@
-import { Express, Request, Response, NextFunction } from 'express';
+import { Express, Request, Response, NextFunction, Router } from 'express';
 import { handleGoogleAuth } from './controllers/sessionsController';
 import { router } from './routes/api';
 import apiMySQLRouter from './routes/apiMySQL';
@@ -44,16 +44,15 @@ const routes = async (app: Express) => {
 
     app.get('/api/oauth/google', handleGoogleAuth)
 
-    app.get('/api/sql/postgres', router)
+    app.use('/api/sql/postgres', router)
 
-    app.get('/api/sql/mysql', apiMySQLRouter)
+    app.use('/api/sql/mysql', apiMySQLRouter)
 
     app.get('/api/logout', (res: Response, req: Request) => {
         req.session.destroy((err) => {
             res.redirect('localhost:8080/')
         })
     })
-
 
 
     // Global Error Handler
