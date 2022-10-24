@@ -3,7 +3,6 @@ import log from "../logger/index"
 import { getGoogleAuthToken } from "../utils/getGoogleAuthToken"
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { createUser, findUser } from "./userController"
-import { LogOutput } from "concurrently"
 
 // interface UserInfo {
 //     iss: string;
@@ -38,6 +37,7 @@ export const handleGoogleAuth = async (req: Request, res: Response) => {
     //get user with tokens
     const decodedUser = jwt.decode(id_token) as JwtPayload;
 
+    log.info(decodedUser)
     //insert or retrieve the user
     const foundUser: any = await findUser(decodedUser.email)
 
@@ -53,10 +53,6 @@ export const handleGoogleAuth = async (req: Request, res: Response) => {
 
     const newUser = await findUser(decodedUser.email)
 
-    console.log({ foundUser, newUser });
-
-
-    // create access & refresh tokens
 
 
     //set a cookie, redirect back to the client

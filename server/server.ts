@@ -15,23 +15,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
-// app.get('/api/me/oauth', getAuthenticatedClient, (req, res) => {
-//     res.sendStatus(200);
-// });
-
-// app.get(
-//     '/google/callback',
-//     handleOAuthCallBack,
-//     user.findUser,
-//     user.createUser,
-//     user.findUser,
-//     (req, res) => {
-//         res.sendStatus(200);
-//     }
-// );
 
 app.listen(3000, () => {
     log.info(`Running at http://localhost:${port}`);
-    // connect();
     routes(app);
 })

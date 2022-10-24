@@ -16,9 +16,9 @@ export const getGoogleAuthToken: any = async ({ code }: { code: string }) => {
 
     const options = {
         code,
-        client_id: '971147535395-bd0vjrequipsrg5c74htoafjbmubgn3m.apps.googleusercontent.com',
-        client_secret: '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',
-        redirect_uri: 'http://localhost:3000/api/oauth/google',
+        client_id: process.env.GOOGLE_AUTH_CLIENT_ID,
+        client_secret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+        redirect_uri: process.env.GOOGLE_AUTH_CALLBACK,
         grant_type: 'authorization_code'
     }
 

@@ -12,8 +12,6 @@ export const getGoogleAuthUrl = () => {
             'https://www.googleapis.com/auth/userinfo.email'
         ].join(' ')
     }
-    console.log({ options })
     const queryStr = new URLSearchParams(options)
-    console.log({ queryStr })
     return `${base}?${queryStr.toString()}`
 }
