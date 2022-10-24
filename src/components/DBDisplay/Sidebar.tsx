@@ -17,12 +17,9 @@ const Sidebar = (props:any) => {
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const {setEdges, setNodes} = useFlowStore((state) => state);
   const {setWelcome} = useSettingsStore((state) => state);
-<<<<<<< HEAD
   const [dbType, setdbType] = useState('postgres');
-=======
 
   const [connectPressed, setConnectPressed] = useState(false);
->>>>>>> e9305b3d0a5e1249823ae3a3899bb7f229b20e74
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
