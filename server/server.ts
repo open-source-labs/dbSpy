@@ -1,10 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv'
 import log from './logger/index'
-import { connect } from './utils/connect'
 import routes from './routes'
-// import { getAuthenticatedClient, handleOAuthCallBack } from './controllers/googleAuth';
-// import { user } from './controllers/userController';
 dotenv.config()
 
 const port = 3000;
