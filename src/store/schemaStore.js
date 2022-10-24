@@ -41,3 +41,4 @@ export default useSchemaStore;
 //          }
 //       }
 //    }
+// row.TableName - row.field_name - IsPrimaryKey
