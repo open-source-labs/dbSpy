@@ -1,24 +1,26 @@
 const createSQL = require('./sql.ts')
 import mysql from 'mysql2';
-import { env } from 'node:process';
-
+import dotenv from 'dotenv'
+dotenv.config()
 // create the connection to db
-const connection =  mysql.createConnection(env.DATABASE_URL?? '');
+
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found');
+
+const connection =  mysql.createConnection(process.env.DATABASE_URL);
 
 // create tables
-const loadData = async () => {
+const loadData = () => {
     try {
-        if (connection) await (await connection).query(createSQL.users);
+        connection.query(createSQL.users);
         
     } catch(err) {
         console.log(err);
     }
 }
 
-async () => await loadData();
+loadData();
 
 connection.end();
 
 process.exit(0);
 
-export {}

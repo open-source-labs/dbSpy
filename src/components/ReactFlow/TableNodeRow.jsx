@@ -81,13 +81,13 @@ export default function TableNodeRow({ row, tableData, id }) {
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb]">
+      <tr key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
-          {editMode ? <input ref={field_name}></input> : row.field_name}
+          {editMode ? <input ref={field_name} className='dark:text-black bg-[#f8f4eb] hover:shadow-md focus:outline-1' defaultValue={row.field_name}></input> : row.field_name}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
           {editMode ? (
-            <select ref={data_type}>
+            <select ref={data_type} className='dark:text-black bg-[#f8f4eb]' defaultValue={row.data_type}>
               <option value="binary">binary</option>
               <option value="blob">blob</option>
               <option value="boolean">boolean</option>
@@ -108,7 +108,7 @@ export default function TableNodeRow({ row, tableData, id }) {
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
           {editMode ? (
-            <select ref={additional_constraints}>
+            <select ref={additional_constraints} className='dark:text-black bg-[#f8f4eb]' defaultValue={row.additional_constraints}>
               <option value="NA">NA</option>
               <option value="NOT NULL">NOT NULL</option>
               <option value="PRIMARY">PRIMARY</option>
@@ -120,7 +120,7 @@ export default function TableNodeRow({ row, tableData, id }) {
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
           {editMode ? (
-            <select ref={IsPrimaryKey}>
+            <select ref={IsPrimaryKey} className='dark:text-black bg-[#f8f4eb]' defaultValue={row.IsPrimaryKey ? "primary-true" : "primary-false"}>
               <option value="true">true</option>
               <option value="false">false</option>
             </select>
@@ -130,7 +130,7 @@ export default function TableNodeRow({ row, tableData, id }) {
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {editMode ? (
-            <select ref={IsForeignKey}>
+            <select ref={IsForeignKey} className='dark:text-black bg-[#f8f4eb]' defaultValue={row.IsForeignKey ? "foreign-true" : "foreign-false"}>
               <option value="true">true</option>
               <option value="false">false</option>
             </select>

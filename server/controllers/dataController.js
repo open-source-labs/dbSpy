@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+import log from '../logger/index';
 const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -91,6 +91,7 @@ dataController.testDrop = (req, res, next) => {};
  */
 dataController.getSchema = (req, res, next) => {
   console.log('THIS IS HIT', req.body);
+  log.info('Server received database uri.');
   // // Option 1 - Production
   let result = null;
   //using destructuring for concise code, commented out lines 99-103
@@ -149,28 +150,6 @@ dataController.getSchema = (req, res, next) => {
 // };
 
 /**
- * Parse SQL file from front-end
- * Generates
- *
- */
-dataController.parseSql = (req, res, next) => {
-  try {
-    const file = req.body;
-    console.log('file in parseSql middleware', file);
-    result = parseSql(file);
-    console.log('result in parseSql', result);
-    res.locals.data = result;
-    next();
-  } catch (err) {
-    next({
-      log: 'Express error handler caught error in dataController.parseSql middleware',
-      status: 500,
-      message: 'An error occurred. This is the global error handler.',
-    });
-  }
-};
-
-/**
  * objSchema
  * Iterates through testdata array of tables and grabs table name.
  * Iterates through properties array and assigns field name as key for properties.
@@ -206,7 +185,7 @@ dataController.objSchema = (req, res, next) => {
           );
         });
       if (propObj.data_type.includes('character varying')) propObj.data_type = 'varchar';
-
+      if (propObj.data_type.includes('bigint')) propObj.data_type = 'integer';
       if (propObj.data_type.includes('boolean')) propObj.data_type = 'boolean';
     });
   });

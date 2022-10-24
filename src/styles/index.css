@@ -17,8 +17,6 @@
 
 .heroCard {
   margin-top: 5%;
-  background-color: hsla(0, 0%, 100%, 0.8);
-  backdrop-filter: saturate(200%) blur(25px);
 }
 
 .profileImg {
@@ -34,10 +32,6 @@
   padding-bottom: 150px;
   padding-right: 10px;
   padding-left: 10px;
-}
-
-.profileDetails {
-  background-color: white;
 }
 
 .menuBar {
@@ -234,7 +228,7 @@
 }
 .react-flow__attribution {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 3px;
   margin: 0;
 }
@@ -537,6 +531,7 @@ tr {
   margin-left: 300px;
   transition: margin-left .5s;
   padding: 20px;
+  margin-top: 50px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
@@ -608,11 +603,8 @@ textarea:focus, input:focus, select:focus {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
   margin: 15% auto;
   /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
-  width: 40%;
   /* Could be more or less, depending on screen size */
 }

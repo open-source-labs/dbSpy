@@ -18,6 +18,7 @@ const nodeTypes = {
   table: TableNode,
 };
 
+
 function Flow() {
   // // set up states for nodes and edges
   const {edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect} = useFlowStore(state=>state);

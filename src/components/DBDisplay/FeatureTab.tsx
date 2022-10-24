@@ -330,7 +330,7 @@ function redo() {
     <div className="max-w-2xl mx-auto">
 
     <aside className="w-64 absolute inset-y-0 left-0 top-24" aria-label="FeatureTab">
-      <div className="px-3 py-4 overflow-y-auto rounded bg-gray-50 dark:bg-gray-800 menuBar transition-colors duration-500">
+      <div className="px-3 py-4 overflow-y-auto rounded bg-[#f8f4eb] dark:bg-gray-800 menuBar transition-colors duration-500 shadow-lg">
         <p className='text-slate-900 dark:text-[#f8f4eb]'>Action</p>
         <hr />
         <ul className="space-y-2">
@@ -439,11 +439,11 @@ function redo() {
     {/* MODAL FOR CONFIRMATION POPUP */}
     <div ref={confirmModal} id="confirmModal" className="confirmModal">
       {/* <!-- Confirm Modal content --> */}
-      <div className="modal-content">
-        <p>Are you sure you want to proceed?</p>
-        <div>
-        <button onClick={()=>closeModal(false)}>No</button>
-        <button onClick={()=>closeModal(true)}>Yes</button>
+      <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
+        <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved changes.</p>
+        <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
+          <button onClick={()=>closeModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Confirm</button>
+          <button onClick={()=>closeModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
         </div> 
       </div>
     </div>

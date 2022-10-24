@@ -8,7 +8,11 @@ export default defineConfig({
   server: {
     port: 8080,
     proxy: {
-      '/api': 'http://localhost:3000/',
+      '/api/': {
+        target: 'http://localhost:3000/',
+        changeOrigin: true,
+        secure: false
+      }
       // '/google/callback/': 'http://localhost:3000/',
     },
   },
