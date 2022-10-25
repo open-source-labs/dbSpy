@@ -1,19 +1,15 @@
-// import { useCallback } from 'react';
 import { React, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
 
-// const handleStyleUp = { top: 10 };
-// const handleStyleDown = { bottom: 10 };
-
 function TableNode({ data }) {
-  console.log('table data: ', data.table);
-  console.log('table data[0]: ', data.table[0]);
-  console.log('table data[1]: ', data.table[1]);
-  console.log('initialEdges: ', data.edges);
+  //console.log('table data: ', data.table);
+  //console.log('table data[0]: ', data.table[0]);
+  //console.log('table data[1]: ', data.table[1]);
+  //console.log('initialEdges: ', data.edges);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
-  console.log('rowData', rowData);
+  //console.log('rowData', rowData);
   const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
   // the table id,
@@ -45,7 +41,7 @@ function TableNode({ data }) {
     }
   }
   const addRow = () => {
-    console.log(`you added a row in ${data.table[0]}`);
+    //console.log(`you added a row in ${data.table[0]}`);
     setTableRows(tableRows.push(tableRows[tableRows.length - 1]));
   };
 

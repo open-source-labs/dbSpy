@@ -14,7 +14,6 @@ const DBDisplay = () => {
   const {schemaStore} = useSchemaStore(state=>state);
   const {edges, nodes} = useFlowStore(state=>state);
   const {sidebarDisplayState, welcome} = useSettingsStore(state=>state);
-  console.log(sidebarDisplayState);
   //END: STATE DECLARATION
 
   
@@ -23,14 +22,14 @@ const DBDisplay = () => {
   const mySideBarId:any = useRef();
   const mainId:any = useRef();
 
-  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+  /* Set the width of the side navigation to 250px and add a black background color to body */
   const openNav = () => {
     mySideBarId.current.style.width = "400px";
     mainId.current.style.marginRight = "400px";
   }
 
 
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+/* Set the width of the side navigation to 0, and the background color of body to white */
   const closeNav = () => {
     mySideBarId.current.style.width = "0";
     mainId.current.style.marginRight = "50px"
@@ -56,12 +55,16 @@ const DBDisplay = () => {
       <div ref={mainId} id="main" className='transition-colors duration-500 mx-auto'>
         {welcome ? 
           <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500 w-[50%] m-auto flex flex-col">
-            <h3 className='text-center'>Welcome to dbSpy!</h3>
-            <p className='text-center'>Please connect your database, upload a SQL file, or build your
-            database from scratch!
+            <h3 className='text-center'>
+              Welcome to dbSpy!
+            </h3>
+            <p className='text-center'>
+              Please connect your database, upload a SQL file, or build your
+              database from scratch!
             </p>
           </div>     
-          : <Flow />
+          :
+          <Flow />
         }
       </div>
     </div> 
