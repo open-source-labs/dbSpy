@@ -183,6 +183,7 @@ function redo() {
   }
 
   const clearCanvasTables = () => {
+    setSchemaStore(null);
     setDataStore(null);
     setEdges([]);
     setNodes([]);
