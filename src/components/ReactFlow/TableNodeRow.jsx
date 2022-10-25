@@ -50,7 +50,10 @@ export default function TableNodeRow({ row, tableData, id }) {
     const tableRef = row.TableName;
     const rowRef = row.field_name;
     const currentSchema = { ...schemaStore };
-    currentSchema[tableRef][rowRef].field_name = field_name.current.value;
+    currentSchema[tableRef][rowRef].field_name = field_name.current.value.replaceAll(
+      ' ',
+      '_'
+    );
     currentSchema[tableRef][rowRef].data_type = data_type.current.value;
     currentSchema[tableRef][rowRef].additional_constraints =
       additional_constraints.current.value;
