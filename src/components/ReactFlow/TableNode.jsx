@@ -1,6 +1,7 @@
 import { React, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
+import useSchemaStore from '../../store/schemaStore'
 
 function TableNode({ data }) {
   // console.log('table data: ', data.table);
