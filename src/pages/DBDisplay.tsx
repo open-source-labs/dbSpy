@@ -11,7 +11,7 @@ import useSettingsStore from '../store/settingsStore';
 
 
 const DBDisplay = () => {
-  const {schemaStore} = useSchemaStore(state=>state);
+  const {schemaStore, reference, setReference} = useSchemaStore(state=>state);
   const {edges, nodes} = useFlowStore(state=>state);
   const {sidebarDisplayState, welcome} = useSettingsStore(state=>state);
   //END: STATE DECLARATION
@@ -44,7 +44,7 @@ const DBDisplay = () => {
   return (
     <div id='DBDisplay' className='bg-[#f8f4eb] dark:bg-slate-700 transition-colors duration-500'>
       <div ref={mySideBarId} id="mySidenav" className="sidenav bg-[#fbf3de] dark:bg-slate-700 shadow-2xl">
-        <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
+        <a href="#" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
       </div>
 
@@ -67,6 +67,62 @@ const DBDisplay = () => {
           <Flow />
         }
       </div>
+      {/* MODAL FOR ADD NEW REFERENCES */}
+      <div id="addReferenceModal" className="addReferenceModal">
+        {/* <!-- Add Table Modal content --> */}
+        <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
+          <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Foreign Key References</p>
+          <div className='flex-col justify-between w-[50%] max-w-[400px] mx-auto'>
+            <div className='text-center pb-2'>
+              <label className='dark:text-[#f8f4eb]'>Primary Key Name: </label>
+              <input id='PrimaryKeyNameInput' className='foreignKeyInput w-[100%]'/>
+            </div>
+            <div className='text-center pb-2'>
+              <label className='dark:text-[#f8f4eb]'>References Property Name: </label>
+              <input id='ReferencesPropertyNameInput' className='foreignKeyInput w-[100%]'/>
+            </div>
+            <div className='text-center pb-2'>
+              <label className='dark:text-[#f8f4eb]'>Primary Key Table Name: </label>
+              <input id='PrimaryKeyTableNameInput' className='foreignKeyInput w-[100%]'/>
+            </div>
+            <div className='text-center pb-2'>
+              <label className='dark:text-[#f8f4eb]'>References Table Name: </label>
+              <input id='ReferencesTableNameInput' className='foreignKeyInput w-[100%]'/>
+            </div>
+              <div className='text-center pb-2'>
+              <label className='dark:text-[#f8f4eb]'>Is Destination: </label><input id='IsDestinationInput' className='foreignKeyInput w-[100%]'/>
+            </div>
+            <div className='text-center mb-6'>
+              <label className='dark:text-[#f8f4eb]'>Constraint Name: </label>
+              <input id='constrainNameInput' className='foreignKeyInput w-[100%]'/>
+            </div>
+          <div className='flex-between text-center'>
+            <button 
+              onClick={()=> {
+                //hide Add reference modal and pass true to next function
+                // closeAddReferenceModal(true)
+                document.querySelector('#addReferenceModal').style.display = "none";
+                // addReference();
+                setReference ([{
+                  PrimaryKeyName: document.querySelector('#PrimaryKeyNameInput').value,
+                  ReferencesPropertyName: document.querySelector('#ReferencesPropertyNameInput').value,
+                  PrimaryKeyTableName: document.querySelector('#PrimaryKeyTableNameInput').value,
+                  ReferencesTableName: document.querySelector('#ReferencesTableNameInput').value,
+                  IsDestination: document.querySelector('#IsDestinationInput').value, 
+                  constrainName: document.querySelector('#constrainNameInput').value,
+                }]);
+              }}
+              className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">SAVE</button>
+            <button 
+              onClick={()=>{
+                document.querySelector('#addReferenceModal').style.display = "none";
+              }} 
+              className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">CANCEL</button>
+            </div>
+          </div> 
+        </div>
+      </div>
+      {/* END: MODAL FOR ADD NEW REFERENCES */}
     </div> 
   )
 };

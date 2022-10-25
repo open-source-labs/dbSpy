@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import createInitialEdges from './Edges';
@@ -8,52 +8,54 @@ import createInitialNodes from './Nodes';
 
 export default function TableNodeRow({ row, tableData, id }) {
   // had to convert booleans to strings or they wont show up on table
-  console.log('TableNodeRow-row: ', row);
-  console.log('tablename from row: ', row.TableName);
-  console.log('TableNodeRow-tableData: ', tableData);
-  console.log('is this ID: ', id);
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
-  const { edges } = useFlowStore((state) => state);
+  // console.log('TableNodeRow-row: ', row);
+  // console.log('tablename from row: ', row.TableName);
+  // console.log('TableNodeRow-tableData: ', tableData);
+  // console.log('is this ID: ', id);
+  const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore((state) => state);
+  const {setEdges, setNodes} = useFlowStore(state=>state);
   const [defaultMode, setDefaultMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
-  //create references for each row column that can be updated/deleted
+  //create useRef's for each row column that can be updated/deleted
+  const selectedRow = useRef();
   const field_name = useRef();
   const data_type = useRef();
   const additional_constraints = useRef();
   const IsPrimaryKey = useRef();
   const IsForeignKey = useRef();
-  //capture changes in row properties
-  const [values, newValues] = useState();
-
+  
+  //HELPER FUNCTIONS
   const inDefaultMode = () => {
-    console.log('you are in default mode');
+    // console.log('you are in default mode');
     setDefaultMode(true);
     setEditMode(false);
     setDeleteMode(false);
   };
 
   const inEditMode = () => {
-    console.log('you are in edit mode');
+    // console.log('you are in edit mode');
     setEditMode(true);
     setDefaultMode(false);
     setDeleteMode(false);
-  };
+  }
 
   const inDeleteMode = () => {
-    console.log('you are in delete mode');
+    // console.log('you are in delete mode');
     setDeleteMode(true);
     setDefaultMode(false);
     setEditMode(false);
   };
 
-  //onSave --> updates the new row information and update schemaStore to re-render updated row information
-  //access to table name (row.TableName) and row name (row.field_name) - is now (id)
   const onSave = () => {
     //declare prior values
     const tableRef = row.TableName;
     const rowRef = row.field_name;
     const currentSchema = { ...schemaStore };
+    currentSchema[tableRef][rowRef].Name = field_name.current.value;
+    currentSchema[tableRef][rowRef].Value = null;
+    currentSchema[tableRef][rowRef].TableName = tableRef;
+    currentSchema[tableRef][rowRef].References = reference;
     currentSchema[tableRef][rowRef].field_name = field_name.current.value;
     currentSchema[tableRef][rowRef].data_type = data_type.current.value;
     currentSchema[tableRef][rowRef].additional_constraints =
@@ -67,9 +69,12 @@ export default function TableNodeRow({ row, tableData, id }) {
     }
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
-    createInitialEdges(currentSchema);
-    createInitialNodes(currentSchema, edges);
-    console.log('NEW SCHEMA', schemaStore);
+    const initialEdges = createInitialEdges(currentSchema);
+    setEdges(initialEdges);
+    const initialNodes = createInitialNodes(currentSchema, initialEdges);
+    setNodes(initialNodes);
+    setReference([]);
+    console.log('NEW SCHEMA FROM ONSAVE', schemaStore);
   };
 
   const onDelete = () => {
@@ -81,11 +86,12 @@ export default function TableNodeRow({ row, tableData, id }) {
     setSchemaStore(currentSchema);
     console.log('NEW SCHEMA', schemaStore);
   };
+  //END: HELPER FUNCTIONS
 
-  console.log('Im in tableNodeRow, here is row data: ', row);
+  // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
+      <tr ref={selectedRow} key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
           {editMode ? (
             <input
@@ -143,7 +149,7 @@ export default function TableNodeRow({ row, tableData, id }) {
             <select
               ref={IsPrimaryKey}
               className="bg-[#f8f4eb] dark:text-black"
-              defaultValue={row.IsPrimaryKey ? 'primary-true' : 'primary-false'}
+              defaultValue={row.IsPrimaryKey ? 'true' : 'false'}
             >
               <option value="true">true</option>
               <option value="false">false</option>
@@ -154,14 +160,26 @@ export default function TableNodeRow({ row, tableData, id }) {
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {editMode ? (
-            <select
+            <select 
               ref={IsForeignKey}
+              onChange={(e)=>{
+                // console.log('ONCHANGE TO TRUE', e.target.value);
+                if(e.target.value === 'true') {
+                  //expose Add Reference modal
+                  // openAddReferenceModal();
+                  document.querySelector('#addReferenceModal').style.display = "block";
+                  document.querySelector('#addReferenceModal').style.zIndex = "100";
+                }  
+                else setReference([]);
+              }}
               className="bg-[#f8f4eb] dark:text-black"
-              defaultValue={row.IsForeignKey ? 'foreign-true' : 'foreign-false'}
+              defaultValue={row.IsForeignKey ? 'true' : 'false'}
             >
               <option value="true">true</option>
               <option value="false">false</option>
+
             </select>
+            
           ) : (
             row.IsForeignKey.toString()
           )}
@@ -183,6 +201,7 @@ export default function TableNodeRow({ row, tableData, id }) {
               onClick={() => {
                 onDelete();
                 inDefaultMode();
+                // selectedRow.current.remove();
               }}
             >
               CONFIRM
