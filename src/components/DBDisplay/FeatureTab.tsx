@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, ReactComponentElement } from 'react';
 
 // Components imported;
 import parseSql from '../../parse';
@@ -18,10 +18,11 @@ export default function FeatureTab(props: any) {
   const {dataStore, setDataStore, dataInd, setDataInd} = useDataStore(state => state);
   const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
   const {setEdges, setNodes} = useFlowStore(state => state);
-  const {setSchemaStore}= useSchemaStore(state => state);
+  const {schemaStore, setSchemaStore}= useSchemaStore(state => state);
   const {setWelcome}= useSettingsStore(state => state);
   const [action, setAction] = useState(new Array());
   //END: STATE DECLARATION
+
   //Functions for state management
   const setData = (data:any) =>{
     const newData = {...dataStore };
@@ -51,21 +52,8 @@ export default function FeatureTab(props: any) {
   };
   //End: Functions for state management
 
-  /* Form Input State
-  
-  "form" - a state that initializes the value of the form for Mantine;
-  */
- /*   const form = useForm({
-   initialValues: {
-     tablename: '',
-    },
-  }); */
-  /* UI State
-  "modalOpened" - a state that opens and closes the input box for tablename when adding a new table to the Schema;
-  "history" - a state that tracks the list of history when table schema is editted
-  */
- const [modalOpened, setModalOpened] = useState(false);
- const [history, setHistory] = useState([]);
+const [modalOpened, setModalOpened] = useState(false);
+const [history, setHistory] = useState([]);
  
   
  /* 
@@ -91,18 +79,35 @@ function redo() {
 */
 
 //create references for HTML elements
-  const confirmModal:any = useRef();
+  const confirmModal: any = useRef();
   /* When the user clicks, open the modal */
-  const openModal = (callback:any) => {
+  const openModal: any = (callback:any) => {
     confirmModal.current.style.display = "block";
     confirmModal.current.style.zIndex = "100";
     setAction([callback]);
   }
   /* When the user clicks 'yes' or 'no', close it */
-  const closeModal = (response: boolean) => {
+  const closeModal: any = (response: boolean) => {
     confirmModal.current.style.display = "none";
     if (response) action[0]();
   }
+
+  //create references for HTML elements
+  const addTableModal: any = useRef();
+  const tableNameInput: any = useRef();
+  /* When the user clicks, open the modal */
+  const openAddTableModal = () => {
+    addTableModal.current.style.display = "block";
+    addTableModal.current.style.zIndex = "100";
+    if (!schemaStore) buildDatabase();
+  }
+  /* When the user clicks 'yes' or 'no', close it */
+  const closeAddTableModal = (response: boolean) => {
+    addTableModal.current.style.display = "none";
+    if (response) addTable(tableNameInput.current.value);
+  }
+
+
 
 // HELPER FUNCTIONS
 
@@ -162,12 +167,40 @@ function redo() {
     setWelcome(false);
   }
 
+  const addTable = (tableName: string) => {
+    if(schemaStore) { 
+      const currentSchema: any = {...schemaStore};
+      // currentSchema.newTable newRow = {
+      // Name: '',
+      // Value: '',
+      // TableName: data.table[0],
+      // References: [
+      //   {
+      //     PrimaryKeyName: '',
+      //     ReferencesPrimaryName: '',
+      //     PrimaryKeyTableName: '',
+      //     ReferencesTableName: '',
+      //     IsDestination: '',
+      //     constrainName: ''
+      //   }
+      //   ],
+      //   IsPrimaryKey: '',
+      //   IsForeignKey: '',
+      //   field_name: 'newRow',
+      //   data_type: '',
+      //   additional_constraints: ''
+      // }
+    }
+    
+  }
+
   const clearCanvasTables = () => {
     setDataStore(null);
     setEdges([]);
     setNodes([]);
     setWelcome(false);
   }
+
 // END: HELPER FUNCTIONS
 
 
@@ -258,75 +291,6 @@ function redo() {
 
   return (
     <>
-  {/* <Modal
-        className="modal-FeatureTab"
-        opened={modalOpened}
-        onClose={() => setModalOpened(false)}
-        title="What is the name of your table?"
-      >
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-          <form
-            onSubmit={form.onSubmit((values) => {
-              const result: any = permissiveTableCheck(
-                values.tablename,
-                fetchedData,
-                {
-                  ...fetchedData,
-                  ['public.' + values.tablename]: {},
-                }
-              );
-
-              if (result[0].errorMsg) {
-                alert(result[0].errorMsg);
-              } else {
-                setTablename(values.tablename);
-                setFetchedData({
-                  ...fetchedData,
-                  ['public.' + values.tablename]: {},
-                });
-                setModalOpened(false);
-                DataStore.setData({
-                  ...fetchedData,
-                  ['public.' + values.tablename]: {},
-                });
-                DataStore.queryList.push(...result);
-                DataStore.setQuery(DataStore.queryList.slice());
-              }
-              form.setValues({
-                tablename: '',
-              });
-            })}
-          >
-            <TextInput
-              required
-              data-autofocus
-              label="Table Name: "
-              {...form.getInputProps('tablename')}
-            />
-            <Group position="right" mt="md">
-              <Button
-                styles={(theme) => ({
-                  root: {
-                    backgroundColor: '#3c4e58',
-                    color: 'white',
-                    border: 0,
-                    height: 42,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    '&:hover': {
-                      backgroundColor: theme.fn.darken('#2b3a42', 0.1),
-                    },
-                  },
-                })}
-                type="submit"
-              >
-                Create
-              </Button>
-            </Group>
-          </form>
-        </Box>
-      </Modal>
- */}
     <div className="max-w-2xl mx-auto">
 
     <aside className="w-64 absolute inset-y-0 left-0 top-24" aria-label="FeatureTab">
@@ -382,12 +346,7 @@ function redo() {
           <hr />
           <li>
             <a
-              onClick={() => {
-                DataStore.loadedFile = true;
-                sessionStorage.loadedFile = 'true';
-                sessionStorage.clear();
-                setModalOpened(true);
-              }}
+              onClick={openAddTableModal}  
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
@@ -444,6 +403,19 @@ function redo() {
         <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
           <button onClick={()=>closeModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Confirm</button>
           <button onClick={()=>closeModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
+        </div> 
+      </div>
+    </div>
+
+    {/* MODAL FOR ADD NEW TABLE POPUP */}
+    <div ref={addTableModal} id="addTableModal" className="addTableModal">
+      {/* <!-- Add Table Modal content --> */}
+      <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
+        <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Enter your table name.</p>
+        <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
+          <input ref={tableNameInput} />
+          <button onClick={()=>closeAddTableModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Proceed</button>
+          <button onClick={()=>closeAddTableModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
         </div> 
       </div>
     </div>

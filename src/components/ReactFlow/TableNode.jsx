@@ -47,8 +47,6 @@ function TableNode({ data }) {
     }
   }
   const addRow = () => {
-    // console.log(`you added a row in ${data.table[0]}`);
-    // setTableRows(tableRows.push(tableRows[tableRows.length - 1]));
     const currentSchema = { ...schemaStore };
     currentSchema[data.table[0]].newRow = {
       Name: '',
