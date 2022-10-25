@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 import logo from "../assets/logo5-white-100-rectangle.png"
 import useCredentialsStore from '../store/credentialsStore';
 
-const linkbtn = "block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
+const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
 
 function Navbar() {
@@ -27,8 +27,8 @@ function Navbar() {
   return (
     <>
       <nav className="flex items-center justify-between flex-wrap bg-sky-800 p-6 fixed top-0 w-full">
-        <div className='text-base lg:flex-grow'>
-          <img className="fill-current mr-2 lg:inline-block" src={logo}/>
+        <div className='text-base navItems'>
+          <img className="fill-current mr-2 inline-block" src={logo}/>
           <NavLink to='/' className={linkbtn}>Home</NavLink>
           <NavLink to='/signup' className={linkbtn}>Sign Up</NavLink>
           <NavLink to='/login' className={linkbtn}>Login</NavLink>

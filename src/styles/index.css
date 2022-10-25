@@ -538,6 +538,7 @@ tr {
   transition: margin-left .5s;
   padding: 20px;
   margin-top: 50px;
+  margin-left: 300px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
@@ -613,4 +614,21 @@ textarea:focus, input:focus, select:focus {
   /* 15% from the top and centered */
   padding: 20px;
   /* Could be more or less, depending on screen size */
+}
+
+nav {
+
+}
+
+.navItems {
+  width: 50vw;
+}
+
+@media screen and (max-width: 1024px) {
+  .navItems {
+    width: 50%;
+  }
+  .featureTab {
+    top: 7rem;
+  }
 }
