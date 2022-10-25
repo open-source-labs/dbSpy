@@ -20,6 +20,7 @@ const Sidebar = (props:any) => {
   const [dbType, setdbType] = useState('postgres');
 
   const [connectPressed, setConnectPressed] = useState(false);
+  const [selected, setSelected] = useState('PostgreSQL');
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
@@ -58,6 +59,10 @@ const Sidebar = (props:any) => {
     setWelcome(false);
     props.closeNav();
   };
+
+  const handleChange = (event: any) => {
+    setSelected(event.target.value);
+  }
   //END: HELPER FUNCTIONS
 
   //form state hooks
@@ -66,21 +71,28 @@ const Sidebar = (props:any) => {
   return (        
       <div id='dbconnect' className='bg-[#fbf3de] dark:bg-slate-700'>
         <label className='dark:text-[#f8f4eb]'><h3>Connect to Database</h3></label>
+        <br></br>
         <span className='form-item'>
           <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
-          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
+          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=> {handleChange(e); setFormValues({...formValues, db_type: e.target.value})}} >
             <option value='PostgreSQL'>PostgreSQL</option>
             <option value='MySQL'>MySQL</option>
           </select>
         </span>
         <br></br>
-        <span className='form-item'>
-          <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
-        </span>
-        <div className='form-item dark:text-[#f8f4eb]'>
-          <p className="">OR</p>
+        {selected === 'PostgreSQL' ? 
+        <div>
+          <span className='form-item'>
+            <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
+            <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
+          </span>
+          <br></br>
+          <div className='form-item dark:text-[#f8f4eb]'>
+            <p className="">OR</p>
+          </div>
+          <br></br>
         </div>
+         : <></>}
         <span className='form-item'>
           <label htmlFor="hostname" className='dark:text-[#f8f4eb]' >Host</label>
           <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname'  onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
@@ -103,7 +115,7 @@ const Sidebar = (props:any) => {
         </span>
         <br></br>
         <button className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
-
+        <br></br>
         {!connectPressed ? <div className='h-[58px]'></div> : <div className="flex items-center justify-center w-full h-full">
           <div className="flex justify-center items-center space-x-1 dark:text-[#f8f4eb]">
             <svg fill='none' className="w-6 h-6 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
