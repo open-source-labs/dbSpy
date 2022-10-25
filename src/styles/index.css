@@ -616,10 +616,6 @@ textarea:focus, input:focus, select:focus {
   /* Could be more or less, depending on screen size */
 }
 
-nav {
-
-}
-
 .navItems {
   width: 50vw;
 }
