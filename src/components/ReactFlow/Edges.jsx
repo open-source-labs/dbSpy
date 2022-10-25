@@ -30,6 +30,7 @@ const createInitialEdges = (schemaObject) => {
         smoothstep: {
           borderRadius: 10,
         },
+        className: 'fill-[red]'
       });
     }
   });
