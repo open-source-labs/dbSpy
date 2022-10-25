@@ -1,6 +1,8 @@
 import React from 'react';
 import { toPng } from 'html-to-image';
 
+//this creates the button in the React Flow canvas that allows you to take a screenshot and download it to your machine
+
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
 
