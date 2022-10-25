@@ -78,132 +78,141 @@ export default function TableNodeRow({ row, tableData, id }) {
 
   console.log('Im in tableNodeRow, here is row data: ', row);
   return (
-    
-      <tr ref={selectedRow} key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
-        <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
-          {editMode ? (
-            <input
-              ref={field_name}
-              className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
-              defaultValue={row.field_name}
-            ></input>
-          ) : (
-            row.field_name
-          )}
-        </td>
-        <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
-          {editMode ? (
-            <select
-              ref={data_type}
-              className="bg-[#f8f4eb] dark:text-black"
-              defaultValue={row.data_type}
-            >
-              <option value="binary">binary</option>
-              <option value="blob">blob</option>
-              <option value="boolean">boolean</option>
-              <option value="date">date</option>
-              <option value="datetime">datetime</option>
-              <option value="decimal">decimal</option>
-              <option value="float">float</option>
-              <option value="integer">integer</option>
-              <option value="serial">serial</option>
-              <option value="text">text</option>
-              <option value="time">time</option>
-              <option value="timestamp">timestamp</option>
-              <option value="varchar">varchar</option>
-            </select>
-          ) : (
-            row.data_type
-          )}
-        </td>
-        <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
-          {editMode ? (
-            <select
-              ref={additional_constraints}
-              className="bg-[#f8f4eb] dark:text-black"
-              defaultValue={row.additional_constraints}
-            >
-              <option value="NA">NA</option>
-              <option value="NOT NULL">NOT NULL</option>
-              <option value="PRIMARY">PRIMARY</option>
-              <option value="UNIQUE">UNIQUE</option>
-            </select>
-          ) : (
-            row.additional_constraints
-          )}
-        </td>
-        <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {editMode ? (
-            <select
-              ref={IsPrimaryKey}
-              className="bg-[#f8f4eb] dark:text-black"
-              defaultValue={row.IsPrimaryKey ? 'primary-true' : 'primary-false'}
-            >
-              <option value="true">true</option>
-              <option value="false">false</option>
-            </select>
-          ) : (
-            row.IsPrimaryKey.toString()
-          )}
-        </td>
-        <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
-          {editMode ? (
-            <select
-              ref={IsForeignKey}
-              className="bg-[#f8f4eb] dark:text-black"
-              defaultValue={row.IsForeignKey ? 'foreign-true' : 'foreign-false'}
-            >
-              <option value="true">true</option>
-              <option value="false">false</option>
-            </select>
-          ) : (
-            row.IsForeignKey.toString()
-          )}
-        </td>
-        <td className="dark:text-[#f8f4eb]">
-          {editMode ? (
-            <button
-              id={`${id}-saveBtn`}
-              onClick={() => {
-                onSave();
-                inDefaultMode();
-              }}
-            >
-              SAVE
-            </button>
-          ) : deleteMode ? (
-            <button
-              id={`${id}-confirmBtn`}
-              onClick={() => {
-                onDelete();
-                inDefaultMode();
-                // selectedRow.current.remove();
-              }}
-            >
-              CONFIRM
-            </button>
-          ) : (
-            <button id={`${id}-editBtn`} onClick={inEditMode}>
-              EDIT
-            </button>
-          )}
-        </td>
-        <td className="dark:text-[#f8f4eb]">
-          {editMode ? (
-            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
-              CANCEL
-            </button>
-          ) : deleteMode ? (
-            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
-              CANCEL
-            </button>
-          ) : (
-            <button id={`${id}-deleteBtn`} onClick={inDeleteMode}>
-              DELETE
-            </button>
-          )}
-        </td>
-      </tr>
-    
+    <tr
+      ref={selectedRow}
+      key={row.field_name}
+      id={row.field_name}
+      className="dark:text-[#f8f4eb] "
+    >
+      <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
+        {editMode || row.field_name === 'newRow' ? (
+          <input
+            ref={field_name}
+            className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
+            defaultValue={row.field_name}
+          ></input>
+        ) : (
+          row.field_name
+        )}
+      </td>
+      <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
+        {editMode || row.field_name === 'newRow' ? (
+          <select
+            ref={data_type}
+            className="bg-[#f8f4eb] dark:text-black"
+            defaultValue={row.data_type}
+          >
+            <option value="binary">binary</option>
+            <option value="blob">blob</option>
+            <option value="boolean">boolean</option>
+            <option value="date">date</option>
+            <option value="datetime">datetime</option>
+            <option value="decimal">decimal</option>
+            <option value="float">float</option>
+            <option value="integer">integer</option>
+            <option value="serial">serial</option>
+            <option value="text">text</option>
+            <option value="time">time</option>
+            <option value="timestamp">timestamp</option>
+            <option value="varchar">varchar</option>
+          </select>
+        ) : (
+          row.data_type
+        )}
+      </td>
+      <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
+        {editMode || row.field_name === 'newRow' ? (
+          <select
+            ref={additional_constraints}
+            className="bg-[#f8f4eb] dark:text-black"
+            defaultValue={row.additional_constraints}
+          >
+            <option value="NA">NA</option>
+            <option value="NOT NULL">NOT NULL</option>
+            <option value="PRIMARY">PRIMARY</option>
+            <option value="UNIQUE">UNIQUE</option>
+          </select>
+        ) : (
+          row.additional_constraints
+        )}
+      </td>
+      <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
+        {editMode || row.field_name === 'newRow' ? (
+          <select
+            ref={IsPrimaryKey}
+            className="bg-[#f8f4eb] dark:text-black"
+            defaultValue={row.IsPrimaryKey ? 'primary-true' : 'primary-false'}
+          >
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        ) : (
+          row.IsPrimaryKey.toString()
+        )}
+      </td>
+      <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
+        {editMode || row.field_name === 'newRow' ? (
+          <select
+            ref={IsForeignKey}
+            className="bg-[#f8f4eb] dark:text-black"
+            defaultValue={row.IsForeignKey ? 'foreign-true' : 'foreign-false'}
+          >
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        ) : (
+          row.IsForeignKey.toString()
+        )}
+      </td>
+      <td className="dark:text-[#f8f4eb]">
+        {editMode || row.field_name === 'newRow' ? (
+          <button
+            id={`${id}-saveBtn`}
+            onClick={() => {
+              onSave();
+              inDefaultMode();
+            }}
+          >
+            SAVE
+          </button>
+        ) : deleteMode ? (
+          <button
+            id={`${id}-confirmBtn`}
+            onClick={() => {
+              onDelete();
+              inDefaultMode();
+              // selectedRow.current.remove();
+            }}
+          >
+            CONFIRM
+          </button>
+        ) : (
+          <button id={`${id}-editBtn`} onClick={inEditMode}>
+            EDIT
+          </button>
+        )}
+      </td>
+      <td className="dark:text-[#f8f4eb]">
+        {editMode || row.field_name === 'newRow' ? (
+          <button
+            id={`${id}-cancelBtn`}
+            onClick={() => {
+              onDelete();
+              inDefaultMode();
+            }}
+          >
+            CANCEL
+          </button>
+        ) : deleteMode ? (
+          <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
+            CANCEL
+          </button>
+        ) : (
+          <button id={`${id}-deleteBtn`} onClick={inDeleteMode}>
+            DELETE
+          </button>
+        )}
+      </td>
+    </tr>
   );
 }
