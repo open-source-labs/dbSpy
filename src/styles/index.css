@@ -116,8 +116,13 @@
   pointer-events: all;
 }
 .react-flow__edge-textbg {
-  fill: white;
+  fill: #4a7187;
 }
+
+.react-flow__edge-text{
+  fill: #f8f4eb;
+}
+
 .react-flow__edge .react-flow__edge-text {
   pointer-events: none;
   -webkit-user-select: none;
