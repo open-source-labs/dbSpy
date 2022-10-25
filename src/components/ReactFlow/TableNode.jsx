@@ -1,11 +1,6 @@
-// import { useCallback } from 'react';
 import { React, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
-import useSchemaStore from '../../store/schemaStore';
-
-// const handleStyleUp = { top: 10 };
-// const handleStyleDown = { bottom: 10 };
 
 function TableNode({ data }) {
   // console.log('table data: ', data.table);
@@ -15,7 +10,7 @@ function TableNode({ data }) {
   const {schemaStore, setSchemaStore} = useSchemaStore(state=>state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
-  console.log('rowData', rowData);
+  //console.log('rowData', rowData);
   const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
   // the table id,

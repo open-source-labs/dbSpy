@@ -1,3 +1,4 @@
+//creates edges array between table nodes based on the input schema object provided from state, array is provided to Flow as its initial edges
 const createInitialEdges = (schemaObject) => {
   const edges = [];
   const allRows = [];

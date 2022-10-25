@@ -14,7 +14,6 @@ const DBDisplay = () => {
   const {schemaStore, reference, setReference} = useSchemaStore(state=>state);
   const {edges, nodes} = useFlowStore(state=>state);
   const {sidebarDisplayState, welcome} = useSettingsStore(state=>state);
-  console.log(sidebarDisplayState);
   //END: STATE DECLARATION
 
   
@@ -23,14 +22,14 @@ const DBDisplay = () => {
   const mySideBarId:any = useRef();
   const mainId:any = useRef();
 
-  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+  /* Set the width of the side navigation to 250px and add a black background color to body */
   const openNav = () => {
     mySideBarId.current.style.width = "400px";
     mainId.current.style.marginRight = "400px";
   }
 
 
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+/* Set the width of the side navigation to 0, and the background color of body to white */
   const closeNav = () => {
     mySideBarId.current.style.width = "0";
     mainId.current.style.marginRight = "50px"
@@ -53,15 +52,19 @@ const DBDisplay = () => {
       <FeatureTab handleSidebar={handleSidebar} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
-      <div ref={mainId} id="main" className='transition-colors duration-500'>
+      <div ref={mainId} id="main" className='transition-colors duration-500 mx-auto'>
         {welcome ? 
           <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500 w-[50%] m-auto flex flex-col">
-            <h3 className='w-[50%] mx-auto'>Welcome to dbSpy!</h3>
-            <p className=''>Please connect your database, upload a SQL file, or build your
-            database from scratch!
+            <h3 className='text-center'>
+              Welcome to dbSpy!
+            </h3>
+            <p className='text-center'>
+              Please connect your database, upload a SQL file, or build your
+              database from scratch!
             </p>
           </div>     
-          : <Flow />
+          :
+          <Flow />
         }
       </div>
       {/* MODAL FOR ADD NEW REFERENCES */}
