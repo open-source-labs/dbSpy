@@ -18,8 +18,9 @@ const Sidebar = (props:any) => {
   const {setEdges, setNodes} = useFlowStore((state) => state);
   const {setWelcome} = useSettingsStore((state) => state);
   const [dbType, setdbType] = useState('postgres');
-
+  //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
+  //used to signal whether full database url input should display in form
   const [selected, setSelected] = useState('PostgreSQL');
   //END: STATE DECLARATION
 
@@ -59,7 +60,7 @@ const Sidebar = (props:any) => {
     setWelcome(false);
     props.closeNav();
   };
-
+  //on change for db type selection, will affect state to conditionally render database URL input if type is PostgreSQL
   const handleChange = (event: any) => {
     setSelected(event.target.value);
   }
