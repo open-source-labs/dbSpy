@@ -10,6 +10,16 @@ type profileInfo = {
   linkedInUrl: string,
   githubUrl: string
 }
+/*
+Example:
+{
+  imgUrl: '[INSERT CONTRIBUTOR'S PROFILE PHOTO HERE]',
+  name: 'Jane Doe',
+  title: 'Software Engineer',
+  linkedInUrl: '[INSERT LINKEDIN LINK HERE]',
+  githubUrl: 'https://github.com/[INSERT GITHUB HANDLE HERE]'
+}
+*/
 
 const profileList: profileInfo[] = [
   {imgUrl: 'https://avatars.githubusercontent.com/u/85323481?v=4', name: 'Angel Giron', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/acgiron/', githubUrl: 'https://github.com/g94angel'},
@@ -39,15 +49,13 @@ export default function Contributors(){
 
   return (
     <div className="container my-24 px-6 mx-auto contributors">
-
-<section className="mb-32 text-gray-800 text-center">
-  <h2 className="text-3xl font-bold mb-32 team-header text-gray-900 dark:text-[#f8f4eb]">Meet the dbSpy Team</h2>
-
-  <div className="flex flex-row flex-wrap justify-around">
-    {profiles}
-  </div>
-</section>
-
-</div>
+      <section className="mb-32 text-gray-800 text-center">
+        <h2 className="text-3xl font-bold mb-32 team-header text-gray-900 dark:text-[#f8f4eb]">Meet the dbSpy Team</h2>
+        <div className="flex flex-row flex-wrap justify-around">
+        {profiles}
+        </div>
+      </section>
+    </div>
   )
+  
 }
