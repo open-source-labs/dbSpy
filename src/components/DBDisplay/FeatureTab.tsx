@@ -105,6 +105,7 @@ function redo() {
   const closeAddTableModal = (response: boolean) => {
     addTableModal.current.style.display = "none";
     if (response) addTable(tableNameInput.current.value);
+    tableNameInput.current.value = '';
   }
 
 
@@ -168,30 +169,17 @@ function redo() {
   }
 
   const addTable = (tableName: string) => {
+    let currentSchema = {};
     if(schemaStore) { 
-      const currentSchema: any = {...schemaStore};
-      // currentSchema.newTable newRow = {
-      // Name: '',
-      // Value: '',
-      // TableName: data.table[0],
-      // References: [
-      //   {
-      //     PrimaryKeyName: '',
-      //     ReferencesPrimaryName: '',
-      //     PrimaryKeyTableName: '',
-      //     ReferencesTableName: '',
-      //     IsDestination: '',
-      //     constrainName: ''
-      //   }
-      //   ],
-      //   IsPrimaryKey: '',
-      //   IsForeignKey: '',
-      //   field_name: 'newRow',
-      //   data_type: '',
-      //   additional_constraints: ''
-      // }
+      currentSchema = {...schemaStore};
+      currentSchema[tableName] = {};
     }
-    
+    else currentSchema[tableName] = {};
+    setSchemaStore(currentSchema);
+    const initialEdges = createInitialEdges(currentSchema);
+    setEdges(initialEdges);
+    const initialNodes = createInitialNodes(currentSchema, initialEdges);
+    setNodes(initialNodes);
   }
 
   const clearCanvasTables = () => {
