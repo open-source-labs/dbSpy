@@ -61,7 +61,8 @@ export default function TableNodeRow({ row, tableData, id }) {
     currentSchema[tableRef][rowRef].IsForeignKey = IsForeignKey.current.value === 'true';
     //check if row name has changed
     if (rowRef !== field_name.current.value) {
-      currentSchema[tableRef][field_name.current.value] = currentSchema[tableRef][rowRef];
+      currentSchema[tableRef][field_name.current.value.replaceAll(' ', '_')] =
+        currentSchema[tableRef][rowRef];
       delete currentSchema[tableRef][rowRef];
     }
     //set new values to the schemaStore

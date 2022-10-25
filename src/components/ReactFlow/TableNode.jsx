@@ -12,7 +12,7 @@ function TableNode({ data }) {
   console.log('table data[0]: ', data.table[0]);
   console.log('table data[1]: ', data.table[1]);
   console.log('initialEdges: ', data.edges);
-  const {schemaStore, setSchemaStore} = useSchemaStore(state=>state);
+  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
   console.log('rowData', rowData);
@@ -59,16 +59,17 @@ function TableNode({ data }) {
           PrimaryKeyTableName: '',
           ReferencesTableName: '',
           IsDestination: '',
-          constrainName: ''
-        }
+          constrainName: '',
+        },
       ],
       IsPrimaryKey: '',
       IsForeignKey: '',
       field_name: 'newRow',
       data_type: '',
-      additional_constraints: ''
-    }
+      additional_constraints: '',
+    };
     setSchemaStore(currentSchema);
+    console.log('NEW SCHEMA: ', currentSchema);
   };
 
   return (
