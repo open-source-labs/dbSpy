@@ -2,19 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.dark {
-  background-color: #334155;
-}
-
-.testing {
-  margin-top: -75px;
-}
-
-#dbConnect {
-  border: none;
-}
-
+/* Home Page contributor card stylings  */
 .heroCard {
   margin-top: 5%;
 }
@@ -33,7 +21,7 @@
   padding-right: 10px;
   padding-left: 10px;
 }
-
+/* misc. remaining  */
 .menuBar {
   height: calc(100% - 64px);
 }
@@ -47,6 +35,20 @@
 .orText {
   text-align: left;
 }
+
+/* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
+.dark {
+  background-color: #334155;
+}
+
+.testing {
+  margin-top: -75px;
+}
+
+#dbConnect {
+  border: none;
+}
+
 
 /* default react flow styles - required */
 .react-flow__container {
@@ -572,7 +574,7 @@ tr {
   border-style: solid;
   border-width: 2px;
 }
-
+/* Gets rid of ugly black outline on form input focus  */
 textarea:focus, input:focus, select:focus {
   outline: none;
 }
