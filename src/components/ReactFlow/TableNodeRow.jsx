@@ -85,13 +85,14 @@ export default function TableNodeRow({ row, tableData, id }) {
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
     //set new nodes/edges if a new reference is added
-    if(reference.length > 0) {
+    // if(reference.length > 0) {
       const initialEdges = createInitialEdges(currentSchema);
       setEdges(initialEdges);
       const initialNodes = createInitialNodes(currentSchema, initialEdges);
       setNodes(initialNodes);
-    }
+    // }
     setDefaultMode();
+    alert('Click EDIT then SAVE on the target table row.');
     console.log('NEW SCHEMA FROM ONSAVE', schemaStore);
   };
 
@@ -105,6 +106,7 @@ export default function TableNodeRow({ row, tableData, id }) {
     console.log('NEW SCHEMA', schemaStore);
   };
   //END: HELPER FUNCTIONS
+
 
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
