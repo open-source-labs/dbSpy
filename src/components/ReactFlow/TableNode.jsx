@@ -12,6 +12,7 @@ function TableNode({ data }) {
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
+  console.log('yo this is rowData: ', rowData)
   //console.log('rowData', rowData);
   const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
@@ -20,14 +21,13 @@ function TableNode({ data }) {
   for (let i = 0; i < data.edges.length; i++) {
     // console.log('yupper', data.edges[i].sourceHandle);
     if (data.edges[i].source === data.table[0]) {
-      const sourceHandlePos = data.edges[i].sourceHandle;
       tableHandles.push(
         <Handle
           // key={`${data.table[0]}-${data.edges[i].sourceHandle}-source`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
-          style={{ sourceHandlePos }} // kind of confused by these
+          style={{ bottom: 9, top: 'auto' }} // kind of confused by these
         />
       );
     }
@@ -38,7 +38,7 @@ function TableNode({ data }) {
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
-          style={{ bottom: 'auto', top: '115' }} // kind of confused by these 146
+          style={{ bottom: 'auto', top: 113 }} // kind of confused by these 146
         />
       );
     }
@@ -82,7 +82,7 @@ function TableNode({ data }) {
           className="add-field transition-colors duration-500 dark:text-[#fbf3de]"
           onClick={addRow}
         >
-          <FaRegPlusSquare size={20}/>
+          <FaRegPlusSquare size={20} />
         </button>
       </div>
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
