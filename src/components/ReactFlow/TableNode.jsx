@@ -77,7 +77,7 @@ function TableNode({ data }) {
       </div>
       <div>
         <button
-          className="add-field transition-colors duration-500 dark:text-[#fbf3de]"
+          className="add-field transition-colors duration-500 text-[#273943] hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
           onClick={addRow}
         >
           + FIELD
