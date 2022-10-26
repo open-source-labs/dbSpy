@@ -219,6 +219,7 @@ export default function TableNodeRow({ row, tableData, id }) {
                 onSave();
                 inDefaultMode();
               }}
+              className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'
             >
               SAVE
             </button>
@@ -229,16 +230,17 @@ export default function TableNodeRow({ row, tableData, id }) {
                 onDelete();
                 inDefaultMode();
               }}
+              className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'
             >
               CONFIRM
             </button>
           ) : (
-            <button id={`${id}-editBtn`} onClick={inEditMode}>
+            <button id={`${id}-editBtn`} onClick={inEditMode} className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'>
               EDIT
             </button>
           )}
         </td>
-        <td className="dark:text-[#f8f4eb]">
+        <td className="hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500">
           {editMode ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
               CANCEL

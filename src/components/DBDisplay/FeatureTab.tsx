@@ -317,8 +317,8 @@ function redo() {
       <input ref={tableNameInput} className='w-[300px] mb-4'/>
       </div>
       <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
-            <button onClick={()=>closeAddTableModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Proceed</button>
-            <button onClick={()=>closeAddTableModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
+          <button onClick={()=>closeAddTableModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
+          <button onClick={()=>closeAddTableModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Proceed</button>
         </div> 
       </div>
     </div>

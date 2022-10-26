@@ -54,7 +54,7 @@ const DBDisplay = () => {
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className='transition-colors duration-500 mx-auto'>
         {welcome ? 
-          <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500 w-[50%] m-auto flex flex-col">
+          <div className="canvas-ConnectToDatabase dark:text-[#f8f4eb] transition-colors duration-500 w-[50%] m-auto flex flex-col relative right-[142px]">
             <h3 className='text-center'>
               Welcome to dbSpy!
             </h3>
@@ -79,7 +79,7 @@ const DBDisplay = () => {
               <input id='PrimaryKeyNameInput' className='foreignKeyInput w-[100%]'/>
             </div>
             <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>References Property Name: </label>
+              <label className='dark:text-[#f8f4eb]'>Reference Key Name: </label>
               <input id='ReferencesPropertyNameInput' className='foreignKeyInput w-[100%]'/>
             </div>
             <div className='text-center pb-2'>
@@ -87,7 +87,7 @@ const DBDisplay = () => {
               <input id='PrimaryKeyTableNameInput' className='foreignKeyInput w-[100%]'/>
             </div>
             <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>References Table Name: </label>
+              <label className='dark:text-[#f8f4eb]'>Reference Table Name: </label>
               <input id='ReferencesTableNameInput' className='foreignKeyInput w-[100%]'/>
             </div>
               <div className='text-center pb-2'>
