@@ -13,13 +13,6 @@ const AddReference = () => {
 
   //form state hooks
   const [formValues, setFormValues] = useState({});
-  //useRef's for form elements
-  const PrimaryKeyName = useRef();
-  const ReferencesPropertyName = useRef();
-  const PrimaryKeyTableName = useRef();
-  const ReferencesTableName = useRef();
-  const IsDestination = useRef() ;
-  const constrainName = useRef();
 
   //HELPER FUNCTIONS
   const onSave = (e:any) => {
