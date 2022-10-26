@@ -76,26 +76,27 @@ const DBDisplay = () => {
           <div className='flex-col justify-between w-[50%] max-w-[400px] mx-auto'>
             <div className='text-center pb-2'>
               <label className='dark:text-[#f8f4eb]'>Primary Key Name: </label>
-              <input id='PrimaryKeyNameInput' className='foreignKeyInput w-[100%]'/>
+              <input id='PrimaryKeyNameInput' className='foreignKeyInput w-[100%]' autoComplete='off'/>
             </div>
             <div className='text-center pb-2'>
               <label className='dark:text-[#f8f4eb]'>Reference Key Name: </label>
-              <input id='ReferencesPropertyNameInput' className='foreignKeyInput w-[100%]'/>
+              <input id='ReferencesPropertyNameInput' className='foreignKeyInput w-[100%]' autoComplete='off'/>
             </div>
             <div className='text-center pb-2'>
               <label className='dark:text-[#f8f4eb]'>Primary Key Table Name: </label>
-              <input id='PrimaryKeyTableNameInput' className='foreignKeyInput w-[100%]'/>
+              <input id='PrimaryKeyTableNameInput' className='foreignKeyInput w-[100%]' autoComplete='off'/>
             </div>
             <div className='text-center pb-2'>
               <label className='dark:text-[#f8f4eb]'>Reference Table Name: </label>
-              <input id='ReferencesTableNameInput' className='foreignKeyInput w-[100%]'/>
+              <input id='ReferencesTableNameInput' className='foreignKeyInput w-[100%]' autoComplete='off'/>
             </div>
               <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>Is Destination: </label><input id='IsDestinationInput' className='foreignKeyInput w-[100%]'/>
+              <label className='dark:text-[#f8f4eb]'>Is Destination: </label>
+              <input id='IsDestinationInput' className='foreignKeyInput w-[100%]' autoComplete='off'/>
             </div>
             <div className='text-center mb-6'>
               <label className='dark:text-[#f8f4eb]'>Constraint Name: </label>
-              <input id='constrainNameInput' className='foreignKeyInput w-[100%]'/>
+              <input id='constrainNameInput' className='foreignKeyInput w-[100%]' autoComplete='off'/>
             </div>
           <div className='flex-between text-center'>
             <button 
@@ -110,12 +111,12 @@ const DBDisplay = () => {
                 }]);
                 setEditRefMode(false);
               }}
-              className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">SAVE</button>
+              className="text-slate-900 hover:opacity-70 dark:text-[#f8f4eb] mx-4 modalButton">SAVE</button>
             <button 
               onClick={()=>{
                 setEditRefMode(false);
               }} 
-              className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">CANCEL</button>
+              className="text-slate-900 hover:opacity-70 dark:text-[#f8f4eb] mx-4 modalButton">CANCEL</button>
             </div>
           </div> 
         </div>
