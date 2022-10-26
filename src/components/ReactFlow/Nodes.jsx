@@ -21,6 +21,7 @@ const createInitialNodes = (schemaObject, edges) => {
     { x: 0, y: 2450 },
   ];
   const nodes = Object.entries(schemaObject).map((table, index) => {
+    console.log('SCHEMA OBJECT: ', schemaObject);
     return {
       id: table[0],
       type: 'table',
