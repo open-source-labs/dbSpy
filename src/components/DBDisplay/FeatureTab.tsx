@@ -268,7 +268,7 @@ function redo() {
           </li>
           <li>
             <a
-             /*  onClick={undo} */
+             onClick={()=>alert('Feature coming soon!')}
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -278,7 +278,7 @@ function redo() {
           </li>
           <li>
             <a
-           /*    onClick={redo} */
+              onClick={()=>alert('Feature coming soon!')} 
               className="cursor-pointer flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-[#f8f4eb] hover:bg-gray-100 dark:hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white dark:stroke-[#f8f4eb]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />

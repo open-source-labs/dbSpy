@@ -4,6 +4,7 @@ const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
+
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
@@ -37,27 +38,7 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   command.push(filename);
   return command;
 }
-//unused way to parse full postgres link from front-end into usable form for writeSchema
-/* 
-function newPostgresDumpQuery(databaseLink) {
-  const command = [];
-  const currentDateTime = new Date();
-  const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  const name = databaseLink.split('/');
-  name[2] += ':5432';
-  const dbURI = name.join('/');
-  const dbName = name[name.length - 1];
-  const filename = path.join(
-    __dirname,
-    `../db_schemas/${dbName}${dbName}${resultInSeconds.toString()}.sql`
-  );
-  command.push(
-    `pg_dump -s ${dbURI} > ${filename}`
-  );
-  command.push(filename);
-  return command;
-}
- */
+
 /**
  * writeSchema
  * Executes pg_dump and writes to destination file
@@ -73,22 +54,6 @@ const writeSchema = async (command) => {
   }
 };
 
-/**
- * testDrop
- * Usage unclear - Consider removing -- NOTE
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
-dataController.testDrop = (req, res, next) => {};
-
-/**
- * getSchema
- * Option 1 - Production:
- * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
- *
- * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
- */
 dataController.getSchema = (req, res, next) => {
   console.log('THIS IS HIT', req.body);
   log.info('Server received database uri.');
@@ -127,27 +92,6 @@ dataController.getSchema = (req, res, next) => {
     });
   });
 };
-
-//   // Option 2 - Dev
-//   fs.readFile(
-//     path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-//     'utf8',
-//     (error, data) => {
-//       if (error) {
-//         console.error(`error- in FS: ${error.message}`);
-//         return next({
-//           msg: 'Error reading database schema file',
-//           err: error,
-//         });
-//       }
-//       const result = parseSql(data);
-//       //console.log(result);
-//       //console.log('instance of table', result[records]);
-//       for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
-//       next();
-//     }
-//   );
-// };
 
 /**
  * objSchema
@@ -196,6 +140,10 @@ dataController.objSchema = (req, res, next) => {
   res.locals.result = results;
   next();
 };
+
+////////////////////
+//// SQL PARSER ////
+////////////////////
 
 function TableModel() {
   this.Name = null;
@@ -791,29 +739,9 @@ function checkSpecialKey(propertyModel) {
   }
 }
 
-dataController.getAllSchemas = (req, res) => {
-  console.log('yo');
-};
-
-dataController.openSchema = (req, res, next) => {
-  fs.readFile(
-    '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/vjcmcautvjcmcaut1657127402.sql',
-    'utf8',
-    (error, data) => {
-      if (error) {
-        console.error(`error- in FS: ${error.message}`);
-        return next({
-          msg: 'Error reading database schema file',
-          err: error,
-        });
-      }
-      let result = parseSql(data);
-      next();
-    }
-  );
-};
-
-dataController.postSchema = (req, res) => {};
+////////////////////
+//END: SQL PARSER //
+////////////////////
 
 dataController.handleQueries = async (req, res, next) => {
   /* Assumption, being passed an array of queries in req.body

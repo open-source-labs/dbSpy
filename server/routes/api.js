@@ -36,40 +36,40 @@ const router = Router();
 //   res.status(200).json({ ok: 'ok' });
 // });
 
-router.get('/testDrop', testDrop, (req, res) => {
-  res.status(200).json(res.locals.testresponse);
-});
+// router.get('/testDrop', testDrop, (req, res) => {
+//   res.status(200).json(res.locals.testresponse);
+// });
 
 router.post('/getSchema', getSchema, objSchema, (req, res) => {
   res.status(200).json(res.locals.result);
 });
 
-router.get('/openSchema', openSchema, (req, res) => {
-  res.status(200).json({ ok: 'ok' });
-});
+// router.get('/openSchema', openSchema, (req, res) => {
+//   res.status(200).json({ ok: 'ok' });
+// });
 
-router.post('/postSchema', postSchema, (req, res) => {
-  res.status(200).json([
-    {
-      columnName: 'People',
-      dataType: 'VARCHAR(200)',
-      isPrimaryKey: false,
-      isForeignKey: false,
-    },
-    {
-      columnName: 'City',
-      dataType: 'VARCHAR(200)',
-      isPrimaryKey: false,
-      isForeignKey: false,
-    },
-    {
-      columnName: 'Job',
-      dataType: 'VARCHAR(200)',
-      isPrimaryKey: false,
-      isForeignKey: false,
-    },
-  ]);
-});
+// router.post('/postSchema', postSchema, (req, res) => {
+//   res.status(200).json([
+//     {
+//       columnName: 'People',
+//       dataType: 'VARCHAR(200)',
+//       isPrimaryKey: false,
+//       isForeignKey: false,
+//     },
+//     {
+//       columnName: 'City',
+//       dataType: 'VARCHAR(200)',
+//       isPrimaryKey: false,
+//       isForeignKey: false,
+//     },
+//     {
+//       columnName: 'Job',
+//       dataType: 'VARCHAR(200)',
+//       isPrimaryKey: false,
+//       isForeignKey: false,
+//     },
+//   ]);
+// });
 
 // Receiving an array of strings (queries)
 router.post('/handleQueries', handleQueries, (req, res) => {

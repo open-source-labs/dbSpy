@@ -18,3 +18,5 @@ queryStore = devtools(queryStore);
 const useQueryStore = create(queryStore);
 
 export default useQueryStore;
+
+//queryStore is not in use. This can be used for SQL query generation functionality.
