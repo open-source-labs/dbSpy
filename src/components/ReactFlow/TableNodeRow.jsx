@@ -194,9 +194,12 @@ export default function TableNodeRow({ row, tableData, id }) {
                 }];
                 if(e.target.value === 'true') {
                   //expose Add Reference modal
+                  document.querySelector('#mySideNav').style.width = "400px";
+                  document.querySelector('#main').style.marginRight = "400px";
                   setEditRefMode(true);
                   if (row.References.length === 0) setReference(defaultRef);
                   else setReference([row.References[0]]);
+
                 }  
               }}
               className="bg-[#f8f4eb] dark:text-black"
