@@ -616,10 +616,6 @@ textarea:focus, input:focus, select:focus {
   /* Could be more or less, depending on screen size */
 }
 
-nav {
-
-}
-
 .navItems {
   width: 50vw;
 }
@@ -654,6 +650,7 @@ nav {
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
 }
+
 
 
 /* //Add Reference Modal */

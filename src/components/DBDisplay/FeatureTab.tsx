@@ -311,12 +311,14 @@ function redo() {
     {/* MODAL FOR ADD NEW TABLE POPUP */}
     <div ref={addTableModal} id="addTableModal" className="addTableModal">
       {/* <!-- Add Table Modal content --> */}
-      <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
-        <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Enter your table name.</p>
-        <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
-          <input ref={tableNameInput} />
-          <button onClick={()=>closeAddTableModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Proceed</button>
-          <button onClick={()=>closeAddTableModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
+      <div className="modal-content bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b] flex-col">
+      <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Enter your table name.</p>
+      <div className='flex justify-center'>
+      <input ref={tableNameInput} className='w-[300px] mb-4'/>
+      </div>
+      <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
+            <button onClick={()=>closeAddTableModal(true)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Proceed</button>
+            <button onClick={()=>closeAddTableModal(false)} className="text-slate-900 dark:text-[#f8f4eb] modalButton">Cancel</button>
         </div> 
       </div>
     </div>
