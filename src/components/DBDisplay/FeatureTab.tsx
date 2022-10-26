@@ -172,9 +172,8 @@ function redo() {
     let currentSchema = {};
     if(schemaStore) { 
       currentSchema = {...schemaStore};
-      currentSchema[tableName] = {};
     }
-    else currentSchema[tableName] = {};
+    currentSchema[tableName] = {};  
     setSchemaStore(currentSchema);
     const initialEdges = createInitialEdges(currentSchema);
     setEdges(initialEdges);

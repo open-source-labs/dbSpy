@@ -13,7 +13,7 @@ import useSettingsStore from '../store/settingsStore';
 const DBDisplay = () => {
   const {schemaStore, reference, setReference} = useSchemaStore(state=>state);
   const {edges, nodes} = useFlowStore(state=>state);
-  const {sidebarDisplayState, welcome} = useSettingsStore(state=>state);
+  const {sidebarDisplayState, welcome, editRefMode, setEditRefMode} = useSettingsStore(state=>state);
   //END: STATE DECLARATION
 
   
@@ -68,6 +68,7 @@ const DBDisplay = () => {
         }
       </div>
       {/* MODAL FOR ADD NEW REFERENCES */}
+      {!editRefMode ? <></> : (
       <div id="addReferenceModal" className="addReferenceModal">
         {/* <!-- Add Table Modal content --> */}
         <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
@@ -99,10 +100,6 @@ const DBDisplay = () => {
           <div className='flex-between text-center'>
             <button 
               onClick={()=> {
-                //hide Add reference modal and pass true to next function
-                // closeAddReferenceModal(true)
-                document.querySelector('#addReferenceModal').style.display = "none";
-                // addReference();
                 setReference ([{
                   PrimaryKeyName: document.querySelector('#PrimaryKeyNameInput').value,
                   ReferencesPropertyName: document.querySelector('#ReferencesPropertyNameInput').value,
@@ -111,17 +108,19 @@ const DBDisplay = () => {
                   IsDestination: document.querySelector('#IsDestinationInput').value, 
                   constrainName: document.querySelector('#constrainNameInput').value,
                 }]);
+                setEditRefMode(false);
               }}
               className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">SAVE</button>
             <button 
               onClick={()=>{
-                document.querySelector('#addReferenceModal').style.display = "none";
+                setEditRefMode(false);
               }} 
               className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">CANCEL</button>
             </div>
           </div> 
         </div>
       </div>
+      )}
       {/* END: MODAL FOR ADD NEW REFERENCES */}
     </div> 
   )

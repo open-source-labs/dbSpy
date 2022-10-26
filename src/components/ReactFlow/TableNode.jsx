@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState , useEffect} from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
 import useSchemaStore from '../../store/schemaStore'

@@ -2,6 +2,7 @@ import React from 'react';
 import { Handle, Position } from 'reactflow';
 import { useState, useRef, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
+import useSettingsStore from '../../store/settingsStore';
 import useFlowStore from '../../store/flowStore';
 import createInitialEdges from './Edges';
 import createInitialNodes from './Nodes';
@@ -13,7 +14,8 @@ export default function TableNodeRow({ row, tableData, id }) {
   // console.log('TableNodeRow-tableData: ', tableData);
   // console.log('is this ID: ', id);
   const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore((state) => state);
-  const {setEdges, setNodes} = useFlowStore(state=>state);
+  const {edges, setEdges, nodes, setNodes} = useFlowStore(state=>state);
+  const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
   const [defaultMode, setDefaultMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
@@ -48,6 +50,17 @@ export default function TableNodeRow({ row, tableData, id }) {
   };
 
   const onSave = () => {
+    console.log('THIS IS WHAT IS INSIDE REFERENCE', reference);
+    const defaultRef = [
+    {
+      PrimaryKeyName: '',
+      ReferencesPropertyName: '',
+      PrimaryKeyTableName: '',
+      ReferencesTableName: '',
+      IsDestination: '',
+      constrainName: '',
+    },
+  ]
     //declare prior values
     const tableRef = row.TableName;
     const rowRef = row.field_name;
@@ -55,13 +68,15 @@ export default function TableNodeRow({ row, tableData, id }) {
     currentSchema[tableRef][rowRef].Name = field_name.current.value;
     currentSchema[tableRef][rowRef].Value = null;
     currentSchema[tableRef][rowRef].TableName = tableRef;
-    currentSchema[tableRef][rowRef].References = reference;
+    currentSchema[tableRef][rowRef].References = IsForeignKey.current.value === 'true' ? reference : defaultRef;
     currentSchema[tableRef][rowRef].field_name = field_name.current.value;
     currentSchema[tableRef][rowRef].data_type = data_type.current.value;
     currentSchema[tableRef][rowRef].additional_constraints =
       additional_constraints.current.value;
     currentSchema[tableRef][rowRef].IsPrimaryKey = IsPrimaryKey.current.value === 'true';
     currentSchema[tableRef][rowRef].IsForeignKey = IsForeignKey.current.value === 'true';
+    //set reference back to defaultRef
+    setReference(defaultRef);
     //check if row name has changed
     if (rowRef !== field_name.current.value) {
       currentSchema[tableRef][field_name.current.value] = currentSchema[tableRef][rowRef];
@@ -69,11 +84,15 @@ export default function TableNodeRow({ row, tableData, id }) {
     }
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
-    const initialEdges = createInitialEdges(currentSchema);
-    setEdges(initialEdges);
-    const initialNodes = createInitialNodes(currentSchema, initialEdges);
-    setNodes(initialNodes);
-    setReference([]);
+    //set new nodes/edges if a new reference is added
+    // if(reference.length > 0) {
+      const initialEdges = createInitialEdges(currentSchema);
+      setEdges(initialEdges);
+      const initialNodes = createInitialNodes(currentSchema, initialEdges);
+      setNodes(initialNodes);
+    // }
+    setDefaultMode();
+    alert('Click EDIT then SAVE on the target table row.');
     console.log('NEW SCHEMA FROM ONSAVE', schemaStore);
   };
 
@@ -87,6 +106,7 @@ export default function TableNodeRow({ row, tableData, id }) {
     console.log('NEW SCHEMA', schemaStore);
   };
   //END: HELPER FUNCTIONS
+
 
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
@@ -164,13 +184,20 @@ export default function TableNodeRow({ row, tableData, id }) {
               ref={IsForeignKey}
               onChange={(e)=>{
                 // console.log('ONCHANGE TO TRUE', e.target.value);
+                const defaultRef = [{
+                  PrimaryKeyName: '',
+                  ReferencesPropertyName: '',
+                  PrimaryKeyTableName: '',
+                  ReferencesTableName: '',
+                  IsDestination: '',
+                  constrainName: '',
+                }];
                 if(e.target.value === 'true') {
                   //expose Add Reference modal
-                  // openAddReferenceModal();
-                  document.querySelector('#addReferenceModal').style.display = "block";
-                  document.querySelector('#addReferenceModal').style.zIndex = "100";
+                  setEditRefMode(true);
+                  if (row.References.length === 0) setReference(defaultRef);
+                  else setReference([row.References[0]]);
                 }  
-                else setReference([]);
               }}
               className="bg-[#f8f4eb] dark:text-black"
               defaultValue={row.IsForeignKey ? 'true' : 'false'}
@@ -201,7 +228,6 @@ export default function TableNodeRow({ row, tableData, id }) {
               onClick={() => {
                 onDelete();
                 inDefaultMode();
-                // selectedRow.current.remove();
               }}
             >
               CONFIRM
