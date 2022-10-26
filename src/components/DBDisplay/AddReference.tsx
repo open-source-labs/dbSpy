@@ -13,13 +13,6 @@ const AddReference = () => {
 
   //form state hooks
   const [formValues, setFormValues] = useState({});
-  //useRef's for form elements
-  const PrimaryKeyName = useRef();
-  const ReferencesPropertyName = useRef();
-  const PrimaryKeyTableName = useRef();
-  const ReferencesTableName = useRef();
-  const IsDestination = useRef() ;
-  const constrainName = useRef();
 
   //HELPER FUNCTIONS
   const onSave = (e:any) => {
@@ -27,10 +20,9 @@ const AddReference = () => {
     setReference([formValues]);
     setEditRefMode(false);
   };
-  
   //END: HELPER FUNCTIONS
-  
-  return (        
+
+    return (       
     <div id='addReference' className='bg-[#fbf3de] dark:bg-slate-700'>
       <label className='dark:text-[#f8f4eb]'><h3>Foreign Key References</h3></label>
       <br></br>
@@ -100,15 +92,26 @@ const AddReference = () => {
           onChange={(e)=>setFormValues({...formValues, constrainName: e.target.value})} />
       </span>
       <br></br>
-      <button 
-        className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' 
-        id='save' 
-        onClick={((e)=>onSave(e))} >Save</button>
-      <br></br>
+      <span className='add-ref-btn'>
         <button 
-        className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' 
-        id='cancel' 
-        onClick={()=>setEditRefMode(false)} >Cancel</button>
+          className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' 
+          id='save' 
+          onClick={(e)=>{
+            document.querySelector('#mySideNav').style.width = "0px";
+            document.querySelector('#main').style.marginRight = "50px";
+            onSave(e);
+            }} >Save
+        </button>
+        <button 
+          className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' 
+          id='cancel' 
+          onClick={()=>{
+            document.querySelector('#mySideNav').style.width = "0px";
+            document.querySelector('#main').style.marginRight = "50px";
+            setEditRefMode(false);
+          }} >Cancel
+          </button>
+          </span>
       <br></br>
     </div>
   )

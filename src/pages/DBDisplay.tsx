@@ -43,6 +43,7 @@ const DBDisplay = () => {
       <div ref={mySideBarId} id="mySidenav" className="sidenav bg-[#fbf3de] dark:bg-slate-700 shadow-2xl">
         <a href="#" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
+        {editRefMode ? <AddReference /> : <></>}
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
@@ -64,7 +65,7 @@ const DBDisplay = () => {
           <Flow />
         }
       </div>
-      {editRefMode ? <AddReference /> : <></>}
+      
 
     </div> 
   )

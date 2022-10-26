@@ -671,3 +671,28 @@ textarea:focus, input:focus, select:focus {
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
 }
+
+
+/* Add Reference  */
+#addReference {
+  display: flex;
+  flex-direction: column;
+  padding-left: 70px;
+  height: 100%;
+  width: 400;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  /* margin-right: 400; */
+  overflow-x: hidden;
+  padding-top: 200px;
+  transition: 0.5s;
+}
+
+.add-ref-btn {
+  display: flex;
+  justify-content: space-evenly;
+  width: 200px;
+  margin-left: 30px;
+}
