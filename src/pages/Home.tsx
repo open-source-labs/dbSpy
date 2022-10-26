@@ -6,16 +6,6 @@ import {NavLink} from 'react-router-dom';
 import Contributors from '../components/Home/Contributors';
 import useCredentialsStore from "../store/credentialsStore";
 
-// interface stateChangeProps {
-  // user: {
-  //   email: string | null;
-  //   id: string | null;
-  //   name: string | null;
-  //   picture: string | null;
-  // };
-  // setUser: (user: any) => void;
-// }
-
 /* "Home" Component - main launch page */
 export default function Home() {
   //STATE DECLARATION (dbSpy3.0)
@@ -23,25 +13,7 @@ export default function Home() {
   const setUser = useCredentialsStore(state => state.setUser);
   //END: STATE DECLARATION
   
-  
-  /*
-  Three main components under Home:
-  1. HomeNavbar - conditional rendering implemented for authorized users (localStorage)
-  2. Body - contents describe dbSpy products
-  3. HomeFooter
-  */
   return (
-  //   <div>
-  //     {user.id !== null ? (
-  //       <HomeLoggedInNavbar user={user} setUser={setUser} />
-  //     ) : (
-  //       <HomeNavbar />
-  //     )}
-  //     <Body />
-      
-  //     <HomeFooter />
-  //   </div>
-  // );
   <div className="">
     <div className="container mx-auto px-6 md:px-12 xl:px-32">
       <div className="text-center text-gray-800 dark:text-[#f8f4eb]">

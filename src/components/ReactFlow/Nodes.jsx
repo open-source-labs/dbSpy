@@ -1,3 +1,5 @@
+//creates a map of initial nodes to provide to Flow
+//currently each next node's initial position is set to 125px down and right from the last node
 const createInitialNodes = (schemaObject, edges) => {
   const nodes = Object.entries(schemaObject).map((table, index) => {
     return {

@@ -105,6 +105,7 @@ function redo() {
   const closeAddTableModal = (response: boolean) => {
     addTableModal.current.style.display = "none";
     if (response) addTable(tableNameInput.current.value);
+    tableNameInput.current.value = '';
   }
 
 
@@ -168,33 +169,20 @@ function redo() {
   }
 
   const addTable = (tableName: string) => {
+    let currentSchema = {};
     if(schemaStore) { 
-      const currentSchema: any = {...schemaStore};
-      // currentSchema.newTable newRow = {
-      // Name: '',
-      // Value: '',
-      // TableName: data.table[0],
-      // References: [
-      //   {
-      //     PrimaryKeyName: '',
-      //     ReferencesPrimaryName: '',
-      //     PrimaryKeyTableName: '',
-      //     ReferencesTableName: '',
-      //     IsDestination: '',
-      //     constrainName: ''
-      //   }
-      //   ],
-      //   IsPrimaryKey: '',
-      //   IsForeignKey: '',
-      //   field_name: 'newRow',
-      //   data_type: '',
-      //   additional_constraints: ''
-      // }
+      currentSchema = {...schemaStore};
     }
-    
+    currentSchema[tableName] = {};  
+    setSchemaStore(currentSchema);
+    const initialEdges = createInitialEdges(currentSchema);
+    setEdges(initialEdges);
+    const initialNodes = createInitialNodes(currentSchema, initialEdges);
+    setNodes(initialNodes);
   }
 
   const clearCanvasTables = () => {
+    setSchemaStore(null);
     setDataStore(null);
     setEdges([]);
     setNodes([]);
@@ -203,97 +191,10 @@ function redo() {
 
 // END: HELPER FUNCTIONS
 
-
-  
-
-  
-
-
-
-/* this interface and function weren't being used anywhere, commented out
-  interface EditToolbarProps {
-    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-    setRowModesModel: (
-      newModel: (oldModel: GridRowModesModel) => GridRowModesModel
-    ) => void;
-  }
-
-    const firstcolumn = (props: EditToolbarProps) => {
-      const { setRows, setRowModesModel } = props;
-      const id = randomId();
-      
-      setRows(() => [
-        {
-          id,
-          column: '',
-          type: '',
-          constraint: 'UNIQUE',
-          pk: 'true',
-          fk: '',
-          reference: [],
-          isNew: true,
-        },
-      ]);
-    setRowModesModel((oldModel: GridRowModesModel) => ({
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'column' },
-    }));
-  } */
-//}
-
-  /* useEffect:
-    Gets invoked when fetchedData is updated;
-    Updates "history" by iterating through the list of edits have made so far;
-  */
-
- /*  useEffect(() => {
-    let historyComponent: any = [];
-    const cacheIterator = DataStore.store.keys();
-    for (let cache of cacheIterator) {
-      const data: any = DataStore.store.get(cache);
-      const num: any = cache;
-      historyComponent.push(
-        <UnstyledButton
-          className="button-FeatureTab"
-          sx={(theme) => ({
-            display: 'block',
-            width: '100%',
-            padding: '2px 10px',
-            borderRadius: theme.radius.sm,
-            color:
-              theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
-
-            '&:hover': {
-              backgroundColor:
-                theme.colorScheme === 'dark'
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-            },
-          })}
-          onClick={() => {
-            setFetchedData(data);
-            DataStore.counter = num;
-          }}
-          key={num}
-        >
-          <Group className="group-FeatureTab">
-            {num === 0 && <Text size="md">{`Initial Data`}</Text>}
-            {num === 1 && <Text size="md">{`${num}st Edit`}</Text>}
-            {num === 2 && <Text size="md">{`${num}nd Edit`}</Text>}
-            {num === 3 && <Text size="md">{`${num}rd Edit`}</Text>}
-            {num > 3 && <Text size="md">{`${num}th Edit`}</Text>}
-          </Group>
-        </UnstyledButton>
-      );
-    }
-    setHistory(historyComponent);
-  }, [fetchedData]); */
-//modal is left over from mantine for now, it is the box that pops up when you click Add Table
-
   return (
     <>
     <div className="max-w-2xl mx-auto">
-
-    <aside className="w-64 absolute inset-y-0 left-0 top-24" aria-label="FeatureTab">
+    <aside className="w-64 absolute inset-y-0 left-0 top-24 featureTab" aria-label="FeatureTab">
       <div className="px-3 py-4 overflow-y-auto rounded bg-[#f8f4eb] dark:bg-gray-800 menuBar transition-colors duration-500 shadow-lg">
         <p className='text-slate-900 dark:text-[#f8f4eb]'>Action</p>
         <hr />

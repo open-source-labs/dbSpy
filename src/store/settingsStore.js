@@ -13,6 +13,9 @@ let settingsStore = (set) => ({
 
   welcome: true,
   setWelcome: (input) => set((state) => ({ ...state, welcome: input })),
+
+  editRefMode: false,
+  setEditRefMode: (input) => set((state) => ({ ...state, editRefMode: input })),
 });
 
 settingsStore = devtools(settingsStore);

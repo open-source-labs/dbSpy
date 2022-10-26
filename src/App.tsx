@@ -84,33 +84,5 @@ export default function App() {
         </Route>
       </Routes>
     </BrowserRouter>
-    // <Routes>
-    //   <Route path={"/"} element={<Home user={user} setUser={setUser} />} />
-    //   <Route path="/signup" element={<Signup />} />
-    //   <Route path="/login" element={<Login />} />
-
-    //   <Route
-    //     path="/display/access"
-    //     element={
-    //       user.id !== null ? (
-    //         <DBDisplay user={user} setUser={setUser} />
-    //       ) : (
-    //         "Redirecting"
-    //       )
-    //     }
-    //   />
-
-    //   <Route
-    //     path="/display/access/:id"
-    //     element={
-    //       user.id !== null ? (
-    //         <DBDisplay user={user} setUser={setUser} />
-    //       ) : (
-    //         "Redirecting"
-    //       )
-    //     }
-    //   />
-    // </Routes>
-
   );
 }
