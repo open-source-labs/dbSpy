@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const { getParsedCommandLineOfConfigFile } = require('typescript');
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+const exec = promisify(require('child_process').exec);
+import { getParsedCommandLineOfConfigFile } from 'typescript';
 
 const mySqlLogController = {};
 
 //this is not yet functional, need to connect to mySQL db to download logging data
-mySqlLogController.getLogInfo = async (req, res, next) => {
+export const getLogInfo = async (req, res, next) => {
   //return sample logging information for mySQL
   res.locals.logTable = {
     Name: 'sampleLogTable',
@@ -32,5 +32,3 @@ mySqlLogController.getLogInfo = async (req, res, next) => {
   };
   return next();
 };
-
-module.exports = mySqlLogController;

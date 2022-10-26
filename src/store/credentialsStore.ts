@@ -5,22 +5,24 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
-let credentialsStore = (set) => ({
+let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any) => ({
   //user state
   user: null,
   //user
-  setUser: (userObject) => set((state) => ({ ...state, user: userObject })),
+  setUser: (userObject: any) => set((state: any) => ({ ...state, user: userObject })),
 
   //dbCredentials state
   dbCredentials: null,
   //dbFormInput is an object
-  setDbCredentials: (dbFormInput) =>
-    set((state) => ({ ...state, dbCredentials: dbFormInput })),
+  setDbCredentials: (dbFormInput: any) =>
+    set((state: any) => ({ ...state, dbCredentials: dbFormInput })),
 });
 
-credentialsStore = devtools(credentialsStore);
-credentialsStore = persist(credentialsStore);
-const useCredentialsStore = create(credentialsStore);
+// credentialsStore = devtools(credentialsStore);
+// credentialsStore = persist(credentialsStore);
+// const useCredentialsStore = create(credentialsStore);
+
+const useCredentialsStore = create(persist(devtools(credentialsStore)))
 
 export default useCredentialsStore;
 

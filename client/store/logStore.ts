@@ -13,7 +13,7 @@ let logStore = (set) => ({
 });
 
 logStore = devtools(logStore);
-// logStore = persist(logStore);
+logStore = persist(logStore);
 const useLogStore = create(logStore);
 
 export default useLogStore;
@@ -27,6 +27,3 @@ export default useLogStore;
 //      Context: string
 //    }
 //  ]
-
-
-//logStore is not in use. This can be used for SQL logging functionality.

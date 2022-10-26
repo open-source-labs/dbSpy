@@ -10,7 +10,10 @@ function LogModel(name) {
   this.Properties = [];
 }
 
+// this feature is not yet functional in dbSpy 3.0
+
 // sampled from dataController PropertyModel Handles all columns of log table
+
 function LogPropertyModel() {
   this.Name = null;
   this.Setting = null;
@@ -20,14 +23,7 @@ function LogPropertyModel() {
   this.EnumVals = [];
 }
 
-function createLogProperty(
-  name,
-  setting,
-  source,
-  sourcefile,
-  context,
-  enumvals
-) {
+function createLogProperty(name, setting, source, sourcefile, context, enumvals) {
   const property = new LogPropertyModel();
   property.Name = name;
   property.Setting = setting;
@@ -78,9 +74,7 @@ const loggingController = {
       return next();
     } catch (err) {
       console.log({ err }, '<err\n\n');
-      console.log(
-        '--You arent yet connected to a database\n--Transaction declined'
-      );
+      console.log('--You arent yet connected to a database\n--Transaction declined');
 
       throw err;
     } finally {

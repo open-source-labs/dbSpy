@@ -19,7 +19,7 @@ function Navbar() {
   const toggleClass = () => {
     const page = document.getElementById("body");
     //TS gives a "potentially null" warning but it does not error when deployed
-    page.classList.toggle('dark');
+    page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   }
 

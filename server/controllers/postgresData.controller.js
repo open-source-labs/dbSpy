@@ -4,6 +4,7 @@ const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
+
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
@@ -37,27 +38,7 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   command.push(filename);
   return command;
 }
-//unused way to parse full postgres link from front-end into usable form for writeSchema
-/* 
-function newPostgresDumpQuery(databaseLink) {
-  const command = [];
-  const currentDateTime = new Date();
-  const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  const name = databaseLink.split('/');
-  name[2] += ':5432';
-  const dbURI = name.join('/');
-  const dbName = name[name.length - 1];
-  const filename = path.join(
-    __dirname,
-    `../db_schemas/${dbName}${dbName}${resultInSeconds.toString()}.sql`
-  );
-  command.push(
-    `pg_dump -s ${dbURI} > ${filename}`
-  );
-  command.push(filename);
-  return command;
-}
- */
+
 /**
  * writeSchema
  * Executes pg_dump and writes to destination file
@@ -74,43 +55,20 @@ const writeSchema = async (command) => {
 };
 
 /**
- * testDrop
- * Usage unclear - Consider removing -- NOTE
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
-dataController.testDrop = (req, res, next) => {};
-
-/**
  * getSchema
  * Option 1 - Production:
  * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
  *
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
-dataController.getSchema = (req, res, next) => {
-  console.log('THIS IS HIT', req.body);
+export const getSchema = (req, res, next) => {
   log.info('Server received database uri.');
   // // Option 1 - Production
   let result = null;
-  //using destructuring for concise code, commented out lines 99-103
+  //using destructuring for concise code, commented out lines
   const { hostname, password, port, username, database_name } = req.body;
-  /*   const hostname = req.body.hostname;
-  const password = req.body.password;
-  const port = req.body.port;
-  const username = req.body.username;
-  const database_name = req.body.database_name; */
+
   const command = postgresDumpQuery(hostname, password, port, username, database_name);
-  //below is the code for an alternate path if database link is included in req.body before front-end changes were made
-  //to ensure compatibility with other front-end components and sessions
-  //let command;
-  /*   if (database_link.length !== 0){
-    command = newPostgresDumpQuery(database_link);
-  }
-  else {
-    command = postgresDumpQuery(hostname, password, port, username, database_name);
-  } */
 
   writeSchema(command).then((resq) => {
     fs.readFile(command[1], 'utf8', (error, data) => {
@@ -128,33 +86,12 @@ dataController.getSchema = (req, res, next) => {
   });
 };
 
-//   // Option 2 - Dev
-//   fs.readFile(
-//     path.join(__dirname, '../db_schemas/vjcmcautvjcmcaut1657127402.sql'),
-//     'utf8',
-//     (error, data) => {
-//       if (error) {
-//         console.error(`error- in FS: ${error.message}`);
-//         return next({
-//           msg: 'Error reading database schema file',
-//           err: error,
-//         });
-//       }
-//       const result = parseSql(data);
-//       //console.log(result);
-//       //console.log('instance of table', result[records]);
-//       for (let records in result) res.locals.testdata = result; // Is this for loop necessary? -- NOTE
-//       next();
-//     }
-//   );
-// };
-
 /**
  * objSchema
  * Iterates through testdata array of tables and grabs table name.
  * Iterates through properties array and assigns field name as key for properties.
  */
-dataController.objSchema = (req, res, next) => {
+export const objSchema = (req, res, next) => {
   const data = res.locals.data;
   const results = {};
   // console.log(data);
@@ -196,6 +133,10 @@ dataController.objSchema = (req, res, next) => {
   res.locals.result = results;
   next();
 };
+
+////////////////////
+//// SQL PARSER ////
+////////////////////
 
 function TableModel() {
   this.Name = null;
@@ -791,11 +732,11 @@ function checkSpecialKey(propertyModel) {
   }
 }
 
-dataController.getAllSchemas = (req, res) => {
+export const getAllSchemas = (req, res) => {
   console.log('yo');
 };
 
-dataController.openSchema = (req, res, next) => {
+export const openSchema = (req, res, next) => {
   fs.readFile(
     '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/vjcmcautvjcmcaut1657127402.sql',
     'utf8',
@@ -813,9 +754,9 @@ dataController.openSchema = (req, res, next) => {
   );
 };
 
-dataController.postSchema = (req, res) => {};
+export const postSchema = (req, res) => {};
 
-dataController.handleQueries = async (req, res, next) => {
+export const handleQueries = async (req, res, next) => {
   /* Assumption, being passed an array of queries in req.body
   grab PG_URI from user when they connect to DB
 
@@ -895,7 +836,7 @@ dataController.handleQueries = async (req, res, next) => {
     });
 };
 
-dataController.saveSchema = (req, res) => {};
-dataController.deleteSchema = (req, res) => {};
+export const saveSchema = (req, res) => {};
+export const deleteSchema = (req, res) => {};
 
-module.exports = dataController;
+export default dataController;

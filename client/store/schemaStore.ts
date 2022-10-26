@@ -3,28 +3,18 @@
 //
 
 import create from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
 let schemaStore = (set) => ({
   //schemaStore state
   schemaStore: null,
-  setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
-
-  //reference state (used to add reference to foreign keys)
-  reference: [
-    {
-      PrimaryKeyName: '',
-      ReferencesPropertyName: '',
-      PrimaryKeyTableName: '',
-      ReferencesTableName: '',
-      IsDestination: '',
-      constrainName: '',
-    },
-  ],
-  setReference: (newRef) => set((state) => ({ ...state, reference: newRef })),
+  //schema is an object
+  setSchemaStore: (schema) =>
+    set((state) => ({ ...state, schemaStore: schema })),
 });
 
 schemaStore = devtools(schemaStore);
+schemaStore = persist(schemaStore);
 const useSchemaStore = create(schemaStore);
 
 export default useSchemaStore;
@@ -54,4 +44,3 @@ export default useSchemaStore;
 //          }
 //       }
 //    }
-// row.TableName - row.field_name - IsPrimaryKey

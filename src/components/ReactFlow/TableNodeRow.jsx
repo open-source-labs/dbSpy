@@ -214,6 +214,8 @@ export default function TableNodeRow({ row, tableData, id }) {
                 ];
                 if (e.target.value === 'true') {
                   //expose Add Reference modal
+                  document.querySelector('#mySideNav').style.width = "400px";
+                  document.querySelector('#main').style.marginRight = "400px";
                   setEditRefMode(true);
                   if (row.References.length === 0) setReference(defaultRef);
                   else setReference([row.References[0]]);
@@ -237,6 +239,7 @@ export default function TableNodeRow({ row, tableData, id }) {
                 onSave();
                 inDefaultMode();
               }}
+              className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'
             >
               <FaRegSave size={17} />
             </button>
@@ -247,6 +250,7 @@ export default function TableNodeRow({ row, tableData, id }) {
                 onDelete();
                 inDefaultMode();
               }}
+              className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'
             >
               <FaRegCheckSquare size={17} />
             </button>
@@ -256,7 +260,7 @@ export default function TableNodeRow({ row, tableData, id }) {
             </button>
           )}
         </td>
-        <td className="dark:text-[#f8f4eb]">
+        <td className="hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500">
           {editMode ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
               <FaRegWindowClose size={17} />

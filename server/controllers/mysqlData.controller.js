@@ -1,9 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const mySQL = require('mysql2');
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+const exec = promisify(require('child_process').exec);
+import mySQL from 'mysql2';
+// import mysqldump from 'mysqldump';
 const mysqldump = require('mysqldump');
+import dotenv from 'dotenv';
+dotenv.config();
 
 const mySQLdataController = {};
 
@@ -16,8 +19,7 @@ const mySQLdataController = {};
  * @param {string} databaseName - A required string with the database name
  **/
 
-mySQLdataController.getSchema = async (req, res, next) => {
-  console.log('THIS IS HIT', req.body);
+export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
   try {
@@ -29,12 +31,13 @@ mySQLdataController.getSchema = async (req, res, next) => {
         password: req.body.password,
         database: req.body.database_name,
       },
+      dumpToFile: '../db_schemas',
     });
     res.locals.data = result;
     const { tables } = result;
-    console.log(tables);
     next();
   } catch (error) {
+    console.log(error.message);
     next({ message: 'Error with getSchema middleware' });
   }
 };
@@ -44,7 +47,7 @@ mySQLdataController.getSchema = async (req, res, next) => {
  * Iterates through data tables received from mySQL server
  * Builds object to be returned to front-end
  */
-mySQLdataController.objSchema = (req, res, next) => {
+export const objSchema = (req, res, next) => {
   const db = res.locals.data;
   const { tables } = db;
   const results = {};
@@ -114,10 +117,7 @@ mySQLdataController.objSchema = (req, res, next) => {
         string = string.slice(string.indexOf('`') + 1);
         const primaryTable = string.slice(0, string.indexOf('`'));
         //find primary table name
-        const primaryKey = string.slice(
-          string.indexOf('(') + 2,
-          string.indexOf(')') - 1
-        );
+        const primaryKey = string.slice(string.indexOf('(') + 2, string.indexOf(')') - 1);
         //create new ForeignKeyModel and assign properties
         foreignKeyReferences[fKey] = new ForeignKeyModel();
         foreignKeyReferences[fKey].ReferencesPropertyName = fKey;
@@ -166,7 +166,6 @@ mySQLdataController.objSchema = (req, res, next) => {
   });
 
   res.locals.data = results;
-  console.log('END OF MYSQL DATA CONTROLLER');
   return next();
 };
 
@@ -283,4 +282,4 @@ mySQLdataController.objSchema = (req, res, next) => {
 // mySQLdataController.saveSchema = (req, res) => {};
 // mySQLdataController.deleteSchema = (req, res) => {};
 
-module.exports = mySQLdataController;
+export default mySQLdataController;

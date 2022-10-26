@@ -1,33 +1,23 @@
 //
-// State Management for db Schema
+// State Management for React Flow
 //
 
 import create from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
-let schemaStore = (set) => ({
-  //schemaStore state
-  schemaStore: null,
-  setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
-
-  //reference state (used to add reference to foreign keys)
-  reference: [
-    {
-      PrimaryKeyName: '',
-      ReferencesPropertyName: '',
-      PrimaryKeyTableName: '',
-      ReferencesTableName: '',
-      IsDestination: '',
-      constrainName: '',
-    },
-  ],
-  setReference: (newRef) => set((state) => ({ ...state, reference: newRef })),
+const displayStore = (set) => ({
+  //displayStore state
+  displayStore: null,
+  //schema is an object
+  setDisplayStore: (schema) =>
+    set((state) => ({ ...state, displayStore: schema })),
 });
 
-schemaStore = devtools(schemaStore);
-const useSchemaStore = create(schemaStore);
+displayStore = devtools(displayStore);
+displayStore = persist(displayStore);
+const useDisplayStore = create(displayStore);
 
-export default useSchemaStore;
+export default useDisplayStore;
 
 // Here is the shape of the object in the store
 //     {
@@ -54,4 +44,3 @@ export default useSchemaStore;
 //          }
 //       }
 //    }
-// row.TableName - row.field_name - IsPrimaryKey
