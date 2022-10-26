@@ -8,10 +8,6 @@ import useCredentialsStore from '../store/credentialsStore';
 import axios from 'axios';
 import { response } from 'express';
 
-// const strWindowFeatures =
-// 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-// window.open('http://localhost:8080/auth/google', '_self', strWindowFeatures);
-
 /* "Login" Component - login page for user login */
 export default function Login() {
   //STATE DECLARATION (dbSpy3.0)
@@ -20,16 +16,11 @@ export default function Login() {
   //END: STATE DECLARATION
   const [loggedIn, setLoggedIn] = useState(false)
 
-
   /*
   "google" - a function that gets invoked when Google login button is clicked;
-  Opens up "http://localhost:8080/auth/google", the page that asks for authorization for server to receive access token from Google;
-      // const strWindowFeatures =
-    //   'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    // window.open('http://localhost:8080/oauth', '_self', strWindowFeatures);
+  Opens up the page that asks for authorization for server to receive access token from Google;
   */
   const handleLogin = async () => {
-    // window.open(getGoogleAuthUrl())
     const url = await getGoogleAuthUrl();
     const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
     window.open(url , '_self', strWindowFeatures);

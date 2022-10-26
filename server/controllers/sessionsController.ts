@@ -3,7 +3,11 @@ import { Request, RequestHandler, Response } from "express"
 import log from "../logger/index"
 import { getGoogleAuthToken } from "../utils/getGoogleAuthToken"
 import { createUser, findUser } from "./userController"
-
+declare module "express-session" {
+    interface SessionData {
+        user: string;
+    }
+}
 
 export const handleGoogleAuth: RequestHandler = async (req, res) => {
     // get code from qs
@@ -12,6 +16,7 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
     try {
         // get the id and access token w/ the code
         const { id_token, access_token } = await getGoogleAuthToken({ code })
+
 
         //get user with tokens
         const decodedUser = jwt.decode(id_token) as JwtPayload;
@@ -50,9 +55,7 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
         const accessToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '1d' })
         // create a session
         //refresh token expires in 1 day
-        // const refreshToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '5h' })
-
-        console.log(accessToken)
+        const refreshToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '5h' })
 
 
         req.session.user = accessToken;

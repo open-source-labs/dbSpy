@@ -2,11 +2,10 @@ import { Express, Request, Response, NextFunction, Router } from 'express';
 import { handleGoogleAuth } from './controllers/sessionsController';
 import { router } from './routes/api';
 import apiMySQLRouter from './routes/apiMySQL';
-// import * as redis from 'redis'
 import session from 'express-session'
 declare module "express-session" {
     interface SessionData {
-        user: any;
+        user: string;
     }
 }
 import connectRedis from 'connect-redis'
@@ -18,13 +17,10 @@ import { getCurrentUser } from './service/sessionService'
 
 
 const routes = async (app: Express) => {
-
     // setup UpStash client and Redis store 
     const RedisStore = connectRedis(session);
 
-
     const client = new Redis(`rediss://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}:${process.env.REDIS_PORT}`)
-
 
     app.use(cors())
 
@@ -43,12 +39,6 @@ const routes = async (app: Express) => {
 
     app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200))
 
-    // app.get('/api/oauth/google', handleGoogleAuth, (res: Response, req: Request) => {
-    //     res.set("accessToken", res.locals.accessToken)
-    //     res.set("refreshToken", res.locals.refreshToken)
-    //     res.redirect('http://localhost:8080')
-    // })
-
     app.get('/api/oauth/google', handleGoogleAuth)
 
     app.use('/api/sql/postgres', router)
@@ -62,7 +52,6 @@ const routes = async (app: Express) => {
             res.redirect('http://localhost:8080/login')
         })
     })
-
 
     // Global Error Handler
     app.use((err: ErrorEvent, req: Request, res: Response, next: NextFunction) => {
