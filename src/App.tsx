@@ -41,5 +41,9 @@ export default function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 48fc738 (Implement redirect and protected route)
   );
 }
