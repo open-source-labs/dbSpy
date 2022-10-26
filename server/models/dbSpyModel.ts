@@ -1,5 +1,11 @@
-const mysql = require('mysql2');
-require('dotenv').config();
+import mysql from 'mysql2';
+// import { env } from 'node:process';
+import dotenv from 'dotenv'
+dotenv.config()
+// create the connection to db
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found');
 
-const pool = mysql
+const connection =  mysql.createConnection(process.env.DATABASE_URL);
+
+export {connection}
 

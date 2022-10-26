@@ -1,89 +1,122 @@
-// import { useCallback } from 'react';
-import React from 'react';
+import { React, useState , useEffect} from 'react';
 import { Handle, Position } from 'reactflow';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import TableNodeRow from './TableNodeRow';
-
-// const handleStyleUp = { top: 10 };
-// const handleStyleDown = { bottom: 10 };
+import useSchemaStore from '../../store/schemaStore'
 
 function TableNode({ data }) {
-  console.log('table data: ', data.table);
-  console.log('table name: ', data.table[0]);
-  console.log('yup: ', Object.values(data.table[1]));
-  console.log('initialEdges: ', data.initialEdges);
-  console.log('test: ', data.initialEdges[0].sourceHandle);
+  // console.log('table data: ', data.table);
+  // console.log('table data[0]: ', data.table[0]);
+  // console.log('table data[1]: ', data.table[1]);
+  // console.log('initialEdges: ', data.edges);
+  const {schemaStore, setSchemaStore} = useSchemaStore(state=>state);
+  const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
-
+  //console.log('rowData', rowData);
+  const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
   // the table id,
   const tableHandles = [];
-
-  for (let i = 0; i < data.initialEdges.length; i++) {
-    if (data.initialEdges[i].source === data.table[0]) {
+  for (let i = 0; i < data.edges.length; i++) {
+    // console.log('yupper', data.edges[i].sourceHandle);
+    if (data.edges[i].source === data.table[0]) {
+      const sourceHandlePos = data.edges[i].sourceHandle;
       tableHandles.push(
         <Handle
+          // key={`${data.table[0]}-${data.edges[i].sourceHandle}-source`}
           type="source"
           position={Position.Right}
-          id={data.initialEdges[i].sourceHandle}
-          style={{ bottom: 12, top: 'auto' }} // kind of confused by these
+          id={data.edges[i].sourceHandle}
+          style={{ sourceHandlePos }} // kind of confused by these
         />
       );
     }
-    if (data.initialEdges[i].target === data.table[0]) {
+    if (data.edges[i].target === data.table[0]) {
       tableHandles.push(
         <Handle
+          // key={`${data.table[0]}-${data.edges[i].targetHandle}-target`}
           type="target"
           position={Position.Left}
-          id={data.initialEdges[i].targetHandle}
-          style={{ bottom: 12, top: 'auto' }} // kind of confused by these
+          id={data.edges[i].targetHandle}
+          style={{ bottom: 'auto', top: '115' }} // kind of confused by these 146
         />
       );
     }
   }
-
-  // if (row.IsPrimaryKey) {
-  //   row.primaryHandle = (
-  // <Handle
-  //   type="source"
-  //   position={Position.Right}
-  //   id={`${row.field_name}-in-${row.TableName}`}
-  //   style={{ bottom: 12, top: 'auto' }} // kind of confused by these
-  // />
-  //   );
-  // }
-  // if (row.IsForeignKey) {
-  //   console.log(`foreign key is true, the primary key is ${row.References[0].PrimaryKeyName}
-  //   and the primary key table is ${row.References[0].PrimaryKeyTableName}`);
-  //   row.foreignHandle = (
-  //     <Handle
-  //       type="target"
-  //       position={Position.Left}
-  //       id={`${row.References[0].ReferencesPropertyName}-in-${row.References[0].ReferencesTableName}`}
-  //       style={{ bottom: 12, top: 'auto' }} // kind of confused by these
-  //     />
-  //   );
-  // }
+  const addRow = () => {
+    const currentSchema = { ...schemaStore };
+    currentSchema[data.table[0]].newRow = {
+      Name: '',
+      Value: '',
+      TableName: data.table[0],
+      References: [
+        {
+          PrimaryKeyName: '',
+          ReferencesPrimaryName: '',
+          PrimaryKeyTableName: '',
+          ReferencesTableName: '',
+          IsDestination: '',
+          constrainName: ''
+        }
+      ],
+      IsPrimaryKey: '',
+      IsForeignKey: '',
+      field_name: 'newRow',
+      data_type: '',
+      additional_constraints: ''
+    }
+    setSchemaStore(currentSchema);
+  };
 
   return (
-    <div className="table-node">
+    <div className="table-node transition-colors duration-500">
       {tableHandles}
       <div>
-        <label htmlFor="text">{data.table[0]}</label>
+        <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+          {data.table[0]}
+        </label>
       </div>
       <div>
-        <button className="add-field">+ FIELD</button>
+        <button
+          className="add-field transition-colors duration-500 text-[#273943] hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+          onClick={addRow}
+        >
+          + FIELD
+        </button>
       </div>
-      <div>
-        <table>
+      <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
+        <table className="transition-colors duration-500 dark:text-[#fbf3de]">
           <thead>
             <tr className="head-row">
-              <th scope="col">Column</th>
-              <th scope="col">Type</th>
-              <th scope="col">Constraints</th>
-              <th scope="col">PK</th>
-              <th scope="col">FK</th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                Column
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                Type
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                Constraints
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                PK
+              </th>
+              <th
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              >
+                FK
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -97,23 +130,16 @@ function TableNode({ data }) {
               <td></td>
             </tr>
             {rowData.map((row, index) => (
-              <TableNodeRow row={row} key={`row${index}`} />
+              <TableNodeRow
+                row={row}
+                key={`${data.table[0]}-row${index}`}
+                id={`${data.table[0]}-row${index}`}
+                tableData={tableData}
+              />
             ))}
           </tbody>
         </table>
       </div>
-      {/* <Handle
-        type="source"
-        position={Position.Right}
-        id="output1"
-        style={{ top: 10 }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="output2"
-        style={{ bottom: 10, top: 'auto' }}
-      /> */}
     </div>
   );
 }

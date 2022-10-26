@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+import log from '../logger/index';
 const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -91,6 +91,7 @@ dataController.testDrop = (req, res, next) => {};
  */
 dataController.getSchema = (req, res, next) => {
   console.log('THIS IS HIT', req.body);
+  log.info('Server received database uri.');
   // // Option 1 - Production
   let result = null;
   //using destructuring for concise code, commented out lines 99-103
@@ -100,13 +101,7 @@ dataController.getSchema = (req, res, next) => {
   const port = req.body.port;
   const username = req.body.username;
   const database_name = req.body.database_name; */
-  const command = postgresDumpQuery(
-    hostname,
-    password,
-    port,
-    username,
-    database_name
-  );
+  const command = postgresDumpQuery(hostname, password, port, username, database_name);
   //below is the code for an alternate path if database link is included in req.body before front-end changes were made
   //to ensure compatibility with other front-end components and sessions
   //let command;
@@ -160,9 +155,9 @@ dataController.getSchema = (req, res, next) => {
  * Iterates through properties array and assigns field name as key for properties.
  */
 dataController.objSchema = (req, res, next) => {
-  const { data } = res.locals;
+  const data = res.locals.data;
   const results = {};
-  console.log(data);
+  // console.log(data);
   for (let i = 0; i < data.length; i++) {
     // this outer loop will iterate through tables within data
     const properties = {};
@@ -189,11 +184,9 @@ dataController.objSchema = (req, res, next) => {
             refObj.ReferencesPropertyName.indexOf(' ')
           );
         });
-      if (propObj.data_type.includes('character varying'))
-        propObj.data_type = 'varchar';
-
-      if (propObj.data_type.includes('boolean'))
-        propObj.data_type = 'boolean';
+      if (propObj.data_type.includes('character varying')) propObj.data_type = 'varchar';
+      if (propObj.data_type.includes('bigint')) propObj.data_type = 'integer';
+      if (propObj.data_type.includes('boolean')) propObj.data_type = 'boolean';
     });
   });
   //
@@ -273,9 +266,7 @@ function createForeignKey(
   foreignKey.ReferencesPropertyName = referencesPropertyName;
   foreignKey.ReferencesTableName = referencesTableName;
   foreignKey.IsDestination =
-    isDestination !== undefined && isDestination !== null
-      ? isDestination
-      : false;
+    isDestination !== undefined && isDestination !== null ? isDestination : false;
   return foreignKey;
 }
 
@@ -290,9 +281,7 @@ function createPrimaryKey(primaryKeyName, primaryKeyTableName) {
 // Parses foreign key with SQL Server syntax
 function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
   // Regex expression to find referenced foreign table
-  const referencesIndex = name.match(
-    /(?<=REFERENCES\s)([a-zA-Z_]+)(\([a-zA-Z_]*\))/
-  );
+  const referencesIndex = name.match(/(?<=REFERENCES\s)([a-zA-Z_]+)(\([a-zA-Z_]*\))/);
 
   // Match element at index 1 references table names
   const referencedTableName = referencesIndex[1];
@@ -333,12 +322,7 @@ function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
   foreignKeyList.push(foreignKeyDestinationModel);
 
   // Create Property
-  const propertyModel = createProperty(
-    foreignKey,
-    currentTableModel.Name,
-    null,
-    false
-  );
+  const propertyModel = createProperty(foreignKey, currentTableModel.Name, null, false);
 
   // If property is both primary key and foreign key, set IsPrimaryKey property to true
   if (propertyType === 'SQLServer both') {
@@ -392,8 +376,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
           referencedPropertyName
         ) !== -1
       ) {
-        referencedPropertyName =
-          primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name;
+        referencedPropertyName = primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name;
         break;
       }
     }
@@ -544,12 +527,7 @@ function parseSQLServerPrimaryKey(name, currentTableModel, propertyType) {
   primaryKeyList.push(primaryKeyModel);
 
   // Create Property
-  const propertyModel = createProperty(
-    primaryKey,
-    currentTableModel.Name,
-    null,
-    true
-  );
+  const propertyModel = createProperty(primaryKey, currentTableModel.Name, null, true);
 
   // Add Property to table if not both primary key and foreign key
   // If both, property is added when parsing foreign key
@@ -616,8 +594,7 @@ function parseSql(text) {
         }
       }
       //check for TableName and following line with constraint bound on database
-      if (tname !== null && lines[i + 1] !== null)
-        parseAlterTable(tname, lines[i + 1]);
+      if (tname !== null && lines[i + 1] !== null) parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }
 
@@ -651,10 +628,7 @@ function parseSql(text) {
       let propertyType = name.substring(0, 11).toLowerCase();
       // Add special constraints
       if (propertyType !== 'primary key' && propertyType !== 'foreign key') {
-        if (
-          tmp.indexOf('PRIMARY KEY') !== -1 &&
-          tmp.indexOf('FOREIGN KEY') !== -1
-        ) {
+        if (tmp.indexOf('PRIMARY KEY') !== -1 && tmp.indexOf('FOREIGN KEY') !== -1) {
           propertyType = 'SQLServer both';
         } else if (tmp.indexOf('PRIMARY KEY') !== -1) {
           propertyType = 'SQLServer primary key';
@@ -717,10 +691,7 @@ function parseSql(text) {
           propertyType === 'SQLServer primary key' ||
           propertyType === 'SQLServer both'
         ) {
-          if (
-            name.indexOf('PRIMARY KEY') !== -1 &&
-            name.indexOf('CLUSTERED') === -1
-          ) {
+          if (name.indexOf('PRIMARY KEY') !== -1 && name.indexOf('CLUSTERED') === -1) {
             parseSQLServerPrimaryKey(name, currentTableModel, propertyType);
           }
 
@@ -753,11 +724,7 @@ function parseSql(text) {
               ' ' +
               referencesRow;
           }
-          parseSQLServerForeignKey(
-            completeRow,
-            currentTableModel,
-            propertyType
-          );
+          parseSQLServerForeignKey(completeRow, currentTableModel, propertyType);
         } else {
           parseMySQLForeignKey(name, currentTableModel);
         }
@@ -774,8 +741,7 @@ function parseSql(text) {
   for (let i in tableList) {
     for (let k in tableList[i].Properties) {
       if (tableList[i].Properties[k] !== undefined) {
-        let composite =
-          tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
+        let composite = tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
 
         let value = composite[1].search(/NOT/i);
         if (value > 0) {
@@ -784,15 +750,13 @@ function parseSql(text) {
 
           tableList[i].Properties[k].field_name = composite[0];
           tableList[i].Properties[k].data_type = type;
-          tableList[i].Properties[k].additional_constraints =
-            additional_constraints;
+          tableList[i].Properties[k].additional_constraints = additional_constraints;
         } else {
           let type = composite[1].substring(value);
           let additional_constraints = null;
           tableList[i].Properties[k].field_name = composite[0];
           tableList[i].Properties[k].data_type = type;
-          tableList[i].Properties[k].additional_constraints =
-            additional_constraints;
+          tableList[i].Properties[k].additional_constraints = additional_constraints;
         }
       }
     }
@@ -887,9 +851,7 @@ dataController.handleQueries = async (req, res, next) => {
       await client.query('COMMIT');
     } catch (err) {
       console.log({ err }, '<err\n\n');
-      console.log(
-        '--Invalid query detected in handleQueries\n--Transaction declined'
-      );
+      console.log('--Invalid query detected in handleQueries\n--Transaction declined');
       await client.query('ROLLBACK');
       throw err;
     } finally {

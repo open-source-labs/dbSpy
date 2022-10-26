@@ -2,20 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-#root {
-  background-color: rgb(61,84,97);
-} 
- */
-
-.testing {
-  margin-top: -75px;
-}
-
+/* Home Page contributor card stylings  */
 .heroCard {
   margin-top: 5%;
-  background-color: hsla(0, 0%, 100%, 0.8);
-  backdrop-filter: saturate(200%) blur(25px);
 }
 
 .profileImg {
@@ -32,14 +21,34 @@
   padding-right: 10px;
   padding-left: 10px;
 }
-
-.profileDetails {
-  background-color: white;
-}
-
+/* misc. remaining  */
 .menuBar {
   height: calc(100% - 64px);
 }
+
+.main {
+  position: relative;
+  left: 310px;
+  margin: auto;
+}
+
+.orText {
+  text-align: left;
+}
+
+/* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
+.dark {
+  background-color: #334155;
+}
+
+.testing {
+  margin-top: -75px;
+}
+
+#dbConnect {
+  border: none;
+}
+
 
 /* default react flow styles - required */
 .react-flow__container {
@@ -109,8 +118,13 @@
   pointer-events: all;
 }
 .react-flow__edge-textbg {
-  fill: white;
+  fill: #4a7187;
 }
+
+.react-flow__edge-text{
+  fill: #f8f4eb;
+}
+
 .react-flow__edge .react-flow__edge-text {
   pointer-events: none;
   -webkit-user-select: none;
@@ -221,7 +235,7 @@
 }
 .react-flow__attribution {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 3px;
   margin: 0;
 }
@@ -349,8 +363,7 @@
 .table-node label {
   display: block;
   text-align: left;
-  background-color: #2b3a42;
-  color: #f8f4eb;
+  color: 7 89 133;
   font-size: 15px;
   font-weight: bold;
   margin-top: -1px;
@@ -367,10 +380,7 @@
   border: none;
   background: none;
   padding-top: 10px;
-}
-
-.add-field:hover {
-  color: #618fa7;
+  padding-right: 5px;;
 }
 
 table {
@@ -421,4 +431,243 @@ tr {
 }
 .icon:hover {
   color: #618fa7;
+}
+/* Sidebar */
+/* The side navigation menu */
+.sidenav {
+  height: 100%;
+  /* 100% Full-height */
+  width: 0;
+  /* 0 width - change this with JavaScript */
+  position: fixed;
+  /* Stay in place */
+  z-index: 99;
+  /* Stay on top */
+  top: 0;
+  right: 0;
+  /* Black*/
+  overflow-x: hidden;
+  /* Disable horizontal scroll */
+  padding-top: 60px;
+  /* Place content 60px from the top */
+  transition: 0.5s;
+  /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* download image button style*/
+#download-image .react-flow {
+  background: #1a365d;
+}
+
+#download-image .react-flow__node {
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: white;
+}
+
+#download-image .react-flow__node-custom {
+  font-size: 12px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+}
+
+#download-image .react-flow__node-custom .react-flow__handle-right {
+  transform: none;
+}
+
+#download-image.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+#download-image .download-btn {
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  /* border: 1px solid #273943; */
+  background: none;
+  /* padding: 10px 20px; */
+  border-radius: 5px;
+  font-weight: 700;
+  color:black;
+  cursor: pointer;
+}
+
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+  margin-top: 50px;
+  margin-left: 300px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+/* DBdisplay dbconnect form  */
+#dbconnect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: 100px auto;
+  padding: 20px;
+  height: 600px;
+  border: none;
+  transition: 0.5s;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+.form-box {
+  border-style: solid;
+  border-width: 2px;
+}
+/* Gets rid of ugly black outline on form input focus  */
+textarea:focus, input:focus, select:focus {
+  outline: none;
+}
+
+
+.testBtn{
+  top: 50%;
+  left: 50%;
+}
+/* //Confirm Modal */
+/* The Modal (background) */
+.confirmModal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  /* Could be more or less, depending on screen size */
+}
+
+.navItems {
+  width: 50vw;
+}
+
+@media screen and (max-width: 1024px) {
+  .navItems {
+    width: 50%;
+  }
+  .featureTab {
+    top: 7rem;
+  }
+}
+/* //Add Table Modal */
+/* The Modal (background) */
+.addTableModal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+
+
+/* //Add Reference Modal */
+/* The Modal (background) */
+.addReferenceModal {
+  display: block;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 100;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
 }

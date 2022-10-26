@@ -69,47 +69,20 @@ export default function App() {
 
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<Shared/>}>
-      {/* index renders root directory */}
-      <Route index element={<Home />}/>
-      <Route path='login' element={<Login/>}/>
-      <Route path='signup' element={<Signup/>}/>
-      <Route path='display' element={
-        <ProtectedRoute user={user}>
-          <Dashboard/>
-        </ProtectedRoute>
-      }/>
-      <Route path='display/access' element={<DBDisplay/>}/>
-      </Route>
-    </Routes>
+      <Routes>
+        <Route path='/' element={<Shared/>}>
+          {/* index renders root directory */}
+          <Route index element={<Home />}/>
+          <Route path='login' element={<Login/>}/>
+          <Route path='signup' element={<Signup/>}/>
+          <Route path='display' element={
+            <ProtectedRoute user={user}>
+              <Dashboard/>
+            </ProtectedRoute>
+          }/>
+          <Route path='display/access' element={<DBDisplay/>}/>
+        </Route>
+      </Routes>
     </BrowserRouter>
-    // <Routes>
-    //   <Route path={"/"} element={<Home user={user} setUser={setUser} />} />
-    //   <Route path="/signup" element={<Signup />} />
-    //   <Route path="/login" element={<Login />} />
-
-    //   <Route
-    //     path="/display/access"
-    //     element={
-    //       user.id !== null ? (
-    //         <DBDisplay user={user} setUser={setUser} />
-    //       ) : (
-    //         "Redirecting"
-    //       )
-    //     }
-    //   />
-
-    //   <Route
-    //     path="/display/access/:id"
-    //     element={
-    //       user.id !== null ? (
-    //         <DBDisplay user={user} setUser={setUser} />
-    //       ) : (
-    //         "Redirecting"
-    //       )
-    //     }
-    //   />
-    // </Routes>
   );
 }
