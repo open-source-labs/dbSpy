@@ -257,7 +257,11 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
-          {editMode || row.field_name === 'newRow' ? (
+          {editMode ? (
+            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
+              <FaRegWindowClose size={17} />
+            </button>
+          ) : editMode || row.field_name === 'newRow' ? (
             <button
               id={`${id}-cancelBtn`}
               onClick={() => {
