@@ -1,7 +1,7 @@
 import { Express, Request, Response, NextFunction, Router } from 'express';
-import { handleGoogleAuth } from '../controllers/sessionsController';
-import { router } from './api';
-import apiMySQLRouter from './apiMySQL';
+import { handleGoogleAuth } from '../controllers/auth.controller';
+import { postgresRouter } from './postgres.router';
+import mysqlRouter from './mysql.router';
 import session from 'express-session'
 declare module "express-session" {
     interface SessionData {
@@ -13,7 +13,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 import Redis from 'ioredis'
 import cors from 'cors'
-import { getCurrentUser } from '../service/sessionService'
+import { getCurrentUser } from '../service/session.service'
 
 
 const routes = async (app: Express) => {
@@ -39,9 +39,9 @@ const routes = async (app: Express) => {
 
     app.get('/api/oauth/google', handleGoogleAuth)
 
-    app.use('/api/sql/postgres', router)
+    app.use('/api/sql/postgres', postgresRouter)
 
-    app.use('/api/sql/mysql', apiMySQLRouter)
+    app.use('/api/sql/mysql', mysqlRouter)
 
     app.use('/api/me', getCurrentUser)
 

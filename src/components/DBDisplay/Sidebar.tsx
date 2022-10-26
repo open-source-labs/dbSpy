@@ -17,9 +17,10 @@ const Sidebar = (props:any) => {
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const {setEdges, setNodes} = useFlowStore((state) => state);
   const {setWelcome} = useSettingsStore((state) => state);
-  const [dbType, setdbType] = useState('postgres');
-
+  //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
+  //used to signal whether full database url input should display in form
+  const [selected, setSelected] = useState('PostgreSQL');
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
@@ -36,15 +37,13 @@ const Sidebar = (props:any) => {
                 values.password = internalLinkArray[0];
                 values.port = '5432';
                 values.database_name = name;
-                setdbType(values.db_type)
               }
+
     //update dbCredentials
     setDbCredentials(values);
     setConnectPressed(true);
-
    
-    // const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values, config)
-    const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values,{
+    const dbSchema = await axios.post(`api/sql/${values.db_type}/getSchema`, values,{
       baseURL: 'http://localhost:8080'
     })
       .then((res) => res.data)
@@ -56,31 +55,47 @@ const Sidebar = (props:any) => {
     const initialNodes = createInitialNodes(dbSchema, initialEdges);
     setNodes(initialNodes);
     setWelcome(false);
+    setConnectPressed(false);
     props.closeNav();
   };
+  //on change for db type selection, will affect state to conditionally render database URL input if type is PostgreSQL
+  const handleChange = (event: any) => {
+    setSelected(event.target.value);
+  }
   //END: HELPER FUNCTIONS
 
   //form state hooks
   const [formValues, setFormValues] = useState({});
-
+  
   return (        
       <div id='dbconnect' className='bg-[#fbf3de] dark:bg-slate-700'>
         <label className='dark:text-[#f8f4eb]'><h3>Connect to Database</h3></label>
+        <br></br>
         <span className='form-item'>
           <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
-          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
-            <option value='PostgreSQL'>PostgreSQL</option>
-            <option value='MySQL'>MySQL</option>
+          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' 
+            onChange={(e)=>{
+              setFormValues({...formValues, db_type: e.target.value});
+              handleChange(e);
+            }} >
+            <option value='postgres'>PostgreSQL</option>
+            <option value='mysql'>MySQL</option>
           </select>
         </span>
         <br></br>
-        <span className='form-item'>
-          <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
-        </span>
-        <div className='form-item dark:text-[#f8f4eb]'>
-          <p className="">OR</p>
+        {selected === 'postgres' ? 
+        <div>
+          <span className='form-item'>
+            <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
+            <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
+          </span>
+          <br></br>
+          <div className='form-item dark:text-[#f8f4eb]'>
+            <p className="">OR</p>
+          </div>
+          <br></br>
         </div>
+         : <></>}
         <span className='form-item'>
           <label htmlFor="hostname" className='dark:text-[#f8f4eb]' >Host</label>
           <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname'  onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
@@ -103,7 +118,7 @@ const Sidebar = (props:any) => {
         </span>
         <br></br>
         <button className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
-
+        <br></br>
         {!connectPressed ? <div className='h-[58px]'></div> : <div className="flex items-center justify-center w-full h-full">
           <div className="flex justify-center items-center space-x-1 dark:text-[#f8f4eb]">
             <svg fill='none' className="w-6 h-6 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>

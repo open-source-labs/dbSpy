@@ -2,7 +2,7 @@ import jwt, { JwtPayload, sign } from 'jsonwebtoken'
 import { Request, RequestHandler, Response } from "express"
 import log from "../logger/index"
 import { getGoogleAuthToken } from "../utils/getGoogleAuthToken"
-import { createUser, findUser } from "./userController"
+import { createUser, findUser } from "./user.controller"
 declare module "express-session" {
     interface SessionData {
         user: string;
