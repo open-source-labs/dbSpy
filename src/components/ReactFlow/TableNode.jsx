@@ -1,21 +1,17 @@
-// import { useCallback } from 'react';
-import { React, useState } from 'react';
+import { React, useState , useEffect} from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
-import useSchemaStore from '../../store/schemaStore';
-
-// const handleStyleUp = { top: 10 };
-// const handleStyleDown = { bottom: 10 };
+import useSchemaStore from '../../store/schemaStore'
 
 function TableNode({ data }) {
-  console.log('table data: ', data.table);
-  console.log('table data[0]: ', data.table[0]);
-  console.log('table data[1]: ', data.table[1]);
-  console.log('initialEdges: ', data.edges);
+  // console.log('table data: ', data.table);
+  // console.log('table data[0]: ', data.table[0]);
+  // console.log('table data[1]: ', data.table[1]);
+  // console.log('initialEdges: ', data.edges);
   const {schemaStore, setSchemaStore} = useSchemaStore(state=>state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
-  console.log('rowData', rowData);
+  //console.log('rowData', rowData);
   const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
   // the table id,
@@ -47,8 +43,6 @@ function TableNode({ data }) {
     }
   }
   const addRow = () => {
-    // console.log(`you added a row in ${data.table[0]}`);
-    // setTableRows(tableRows.push(tableRows[tableRows.length - 1]));
     const currentSchema = { ...schemaStore };
     currentSchema[data.table[0]].newRow = {
       Name: '',
@@ -83,7 +77,7 @@ function TableNode({ data }) {
       </div>
       <div>
         <button
-          className="add-field transition-colors duration-500 dark:text-[#fbf3de]"
+          className="add-field transition-colors duration-500 text-[#273943] hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
           onClick={addRow}
         >
           + FIELD

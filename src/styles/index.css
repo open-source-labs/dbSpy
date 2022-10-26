@@ -2,19 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.dark {
-  background-color: #334155;
-}
-
-.testing {
-  margin-top: -75px;
-}
-
-#dbConnect {
-  border: none;
-}
-
+/* Home Page contributor card stylings  */
 .heroCard {
   margin-top: 5%;
 }
@@ -33,7 +21,7 @@
   padding-right: 10px;
   padding-left: 10px;
 }
-
+/* misc. remaining  */
 .menuBar {
   height: calc(100% - 64px);
 }
@@ -47,6 +35,20 @@
 .orText {
   text-align: left;
 }
+
+/* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
+.dark {
+  background-color: #334155;
+}
+
+.testing {
+  margin-top: -75px;
+}
+
+#dbConnect {
+  border: none;
+}
+
 
 /* default react flow styles - required */
 .react-flow__container {
@@ -116,8 +118,13 @@
   pointer-events: all;
 }
 .react-flow__edge-textbg {
-  fill: white;
+  fill: #4a7187;
 }
+
+.react-flow__edge-text{
+  fill: #f8f4eb;
+}
+
 .react-flow__edge .react-flow__edge-text {
   pointer-events: none;
   -webkit-user-select: none;
@@ -376,10 +383,6 @@
   padding-right: 5px;;
 }
 
-.add-field:hover {
-  color: #618fa7;
-}
-
 table {
   border-collapse: collapse;
 }
@@ -528,10 +531,10 @@ tr {
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
-  margin-left: 300px;
   transition: margin-left .5s;
   padding: 20px;
   margin-top: 50px;
+  margin-left: 300px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
@@ -568,7 +571,7 @@ tr {
   border-style: solid;
   border-width: 2px;
 }
-
+/* Gets rid of ugly black outline on form input focus  */
 textarea:focus, input:focus, select:focus {
   outline: none;
 }
@@ -667,17 +670,4 @@ textarea:focus, input:focus, select:focus {
   /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
-}
-
-/* Add Reference  */
-#addReference {
-  height: 100%;
-  width: 400;
-  position: fixed;
-  z-index: 99;
-  top: 0;
-  right: 0;
-  overflow-x: hidden;
-  padding-top: 60px;
-  transition: 0.5s;
 }
