@@ -6,13 +6,11 @@ import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import Flow from '../components/ReactFlow/Flow';
 import useSchemaStore from '../store/schemaStore';
-import useFlowStore from '../store/flowStore';
 import useSettingsStore from '../store/settingsStore';
 
 
 const DBDisplay = () => {
-  const {schemaStore, reference, setReference} = useSchemaStore(state=>state);
-  const {edges, nodes} = useFlowStore(state=>state);
+  const {setReference} = useSchemaStore(state=>state);
   const {sidebarDisplayState, welcome, editRefMode, setEditRefMode} = useSettingsStore(state=>state);
   //END: STATE DECLARATION
 

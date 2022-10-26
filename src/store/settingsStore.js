@@ -22,3 +22,5 @@ settingsStore = devtools(settingsStore);
 const useSettingsStore = create(settingsStore);
 
 export default useSettingsStore;
+
+//settingsStore is used to manage settings that need to persist between components.

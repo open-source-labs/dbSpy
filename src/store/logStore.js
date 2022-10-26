@@ -27,3 +27,6 @@ export default useLogStore;
 //      Context: string
 //    }
 //  ]
+
+
+//logStore is not in use. This can be used for SQL logging functionality.

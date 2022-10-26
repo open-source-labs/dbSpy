@@ -7,6 +7,7 @@ const { getParsedCommandLineOfConfigFile } = require('typescript');
 const mySqlLogController = {};
 
 //this is not yet functional, need to connect to mySQL db to download logging data
+
 mySqlLogController.getLogInfo = async (req, res, next) => {
   //return sample logging information for mySQL
   res.locals.logTable = {

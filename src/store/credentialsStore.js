@@ -19,7 +19,7 @@ let credentialsStore = (set) => ({
 });
 
 credentialsStore = devtools(credentialsStore);
-credentialsStore = persist(credentialsStore);
+// credentialsStore = persist(credentialsStore);
 const useCredentialsStore = create(credentialsStore);
 
 export default useCredentialsStore;
