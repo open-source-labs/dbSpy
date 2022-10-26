@@ -4,6 +4,7 @@ const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
+
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 let foreignKeyList = [];
 let primaryKeyList = [];
@@ -132,6 +133,10 @@ export const objSchema = (req, res, next) => {
   res.locals.result = results;
   next();
 };
+
+////////////////////
+//// SQL PARSER ////
+////////////////////
 
 function TableModel() {
   this.Name = null;

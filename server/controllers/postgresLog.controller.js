@@ -10,7 +10,10 @@ function LogModel(name) {
   this.Properties = [];
 }
 
+// this feature is not yet functional in dbSpy 3.0
+
 // sampled from dataController PropertyModel Handles all columns of log table
+
 function LogPropertyModel() {
   this.Name = null;
   this.Setting = null;

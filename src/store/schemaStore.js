@@ -3,12 +3,13 @@
 //
 
 import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 
 let schemaStore = (set) => ({
   //schemaStore state
   schemaStore: null,
   setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
+
   //reference state (used to add reference to foreign keys)
   reference: [
     {

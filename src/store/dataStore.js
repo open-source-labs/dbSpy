@@ -16,3 +16,6 @@ dataStore = devtools(dataStore);
 const useDataStore = create(dataStore);
 
 export default useDataStore;
+
+
+//dataStore is not in use. This can be used for history feature
