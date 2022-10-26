@@ -608,3 +608,76 @@ textarea:focus, input:focus, select:focus {
   padding: 20px;
   /* Could be more or less, depending on screen size */
 }
+
+.navItems {
+  width: 50vw;
+}
+
+@media screen and (max-width: 1024px) {
+  .navItems {
+    width: 50%;
+  }
+  .featureTab {
+    top: 7rem;
+  }
+}
+/* //Add Table Modal */
+/* The Modal (background) */
+.addTableModal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+
+
+/* //Add Reference Modal */
+/* The Modal (background) */
+.addReferenceModal {
+  display: block;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 100;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+/* Add Reference  */
+#addReference {
+  height: 100%;
+  width: 400;
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  right: 0;
+  overflow-x: hidden;
+  padding-top: 60px;
+  transition: 0.5s;
+}

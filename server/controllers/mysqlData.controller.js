@@ -22,15 +22,6 @@ const mySQLdataController = {};
 export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
-  console.log(req.body);
-  const connection = {
-    host: req.body.hostname,
-    port: req.body.port,
-    user: req.body.username,
-    password: req.body.password,
-    database: req.body.database_name,
-  };
-  console.log(connection);
   try {
     const result = await mysqldump({
       connection: {
@@ -39,15 +30,11 @@ export const getSchema = async (req, res, next) => {
         user: req.body.username,
         password: req.body.password,
         database: req.body.database_name,
-        ssl: {
-          ca: process.env.MYSQL_ATTR_SSL_CA,
-        },
       },
       dumpToFile: '../db_schemas',
     });
     res.locals.data = result;
     const { tables } = result;
-    console.log(tables);
     next();
   } catch (error) {
     console.log(error.message);
@@ -61,7 +48,6 @@ export const getSchema = async (req, res, next) => {
  * Builds object to be returned to front-end
  */
 export const objSchema = (req, res, next) => {
-  console.log('in objSchema');
   const db = res.locals.data;
   const { tables } = db;
   const results = {};
@@ -180,7 +166,6 @@ export const objSchema = (req, res, next) => {
   });
 
   res.locals.data = results;
-  console.log('END OF MYSQL DATA CONTROLLER');
   return next();
 };
 
