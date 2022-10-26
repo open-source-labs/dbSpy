@@ -5,17 +5,19 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
-let schemaStore = (set) => ({
+let schemaStore = (set: (arg0: (state: any) => any) => any) => ({
   //schemaStore state
   schemaStore: null,
   //schema is an object
-  setSchemaStore: (schema) =>
-    set((state) => ({ ...state, schemaStore: schema })),
+  setSchemaStore: (schema: any) =>
+    set((state: any) => ({ ...state, schemaStore: schema })),
 });
 
-schemaStore = devtools(schemaStore);
-schemaStore = persist(schemaStore);
-const useSchemaStore = create(schemaStore);
+// schemaStore = devtools(schemaStore);
+// schemaStore = persist(schemaStore);
+// const useSchemaStore = create(schemaStore);
+
+const useSchemaStore = create(persist(devtools(schemaStore)));
 
 export default useSchemaStore;
 
