@@ -11,9 +11,9 @@ import useSettingsStore from '../store/settingsStore';
 
 
 const DBDisplay = () => {
-  const {schemaStore} = useSchemaStore(state=>state);
+  const {schemaStore, reference, setReference} = useSchemaStore(state=>state);
   const {edges, nodes} = useFlowStore(state=>state);
-  const {sidebarDisplayState, welcome} = useSettingsStore(state=>state);
+  const {sidebarDisplayState, welcome, editRefMode, setEditRefMode} = useSettingsStore(state=>state);
   //END: STATE DECLARATION
 
   
@@ -44,7 +44,7 @@ const DBDisplay = () => {
   return (
     <div id='DBDisplay' className='bg-[#f8f4eb] dark:bg-slate-700 transition-colors duration-500'>
       <div ref={mySideBarId} id="mySidenav" className="sidenav bg-[#fbf3de] dark:bg-slate-700 shadow-2xl">
-        <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
+        <a href="#" className="closebtn" onClick={closeNav}>&times;</a>
         <Sidebar closeNav={closeNav} />
       </div>
 
@@ -67,6 +67,55 @@ const DBDisplay = () => {
           <Flow />
         }
       </div>
+      {/* MODAL FOR ADD NEW REFERENCES */}
+      {!editRefMode ? <></> : (
+      <div id="addReferenceModal" className="addReferenceModal">
+        {/* <!-- Add Table Modal content --> */}
+        <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
+          <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Foreign Key References</p>
+          <div className='flex justify-between w-[50%] max-w-[200px] mx-auto'>
+            <label>PrimaryKeyName: </label><input 
+            defaultValue={reference[0].PrimaryKeyName}
+            id='PrimaryKeyNameInput' />
+            <label>ReferencesPropertyName: </label><input 
+            defaultValue={reference[0].ReferencesPropertyName}
+            id='ReferencesPropertyNameInput' />
+            <label>PrimaryKeyTableName: </label><input 
+            defaultValue={reference[0].PrimaryKeyTableName}
+            id='PrimaryKeyTableNameInput'
+             />
+            <label>ReferencesTableName: </label><input 
+            defaultValue={reference[0].ReferencesTableName}
+            id='ReferencesTableNameInput' />
+            <label>IsDestination: </label><input 
+            defaultValue={reference[0].IsDestination}
+            id='IsDestinationInput' />
+            <label>constraintName: </label><input 
+            defaultValue={reference[0].constrainName}
+            id='constrainNameInput' />
+            <button 
+              onClick={()=> {
+                setReference ([{
+                  PrimaryKeyName: document.querySelector('#PrimaryKeyNameInput').value,
+                  ReferencesPropertyName: document.querySelector('#ReferencesPropertyNameInput').value,
+                  PrimaryKeyTableName: document.querySelector('#PrimaryKeyTableNameInput').value,
+                  ReferencesTableName: document.querySelector('#ReferencesTableNameInput').value,
+                  IsDestination: document.querySelector('#IsDestinationInput').value, 
+                  constrainName: document.querySelector('#constrainNameInput').value,
+                }]);
+                setEditRefMode(false);
+              }}
+              className="text-slate-900 dark:text-[#f8f4eb] modalButton">SAVE</button>
+            <button 
+              onClick={()=>{
+                setEditRefMode(false);
+              }} 
+              className="text-slate-900 dark:text-[#f8f4eb] modalButton">CANCEL</button>
+          </div> 
+        </div>
+      </div>
+      )}
+      {/* END: MODAL FOR ADD NEW REFERENCES */}
     </div> 
   )
 };

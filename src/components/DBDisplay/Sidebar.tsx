@@ -17,7 +17,6 @@ const Sidebar = (props:any) => {
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const {setEdges, setNodes} = useFlowStore((state) => state);
   const {setWelcome} = useSettingsStore((state) => state);
-  const [dbType, setdbType] = useState('postgres');
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
@@ -38,7 +37,6 @@ const Sidebar = (props:any) => {
                 values.password = internalLinkArray[0];
                 values.port = '5432';
                 values.database_name = name;
-                setdbType(values.db_type)
               }
     //update dbCredentials
     setDbCredentials(values);
@@ -46,7 +44,7 @@ const Sidebar = (props:any) => {
 
    
     // const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values, config)
-    const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values,{
+    const dbSchema = await axios.post(`api/sql/${values.db_type}/getSchema`, values,{
       baseURL: 'http://localhost:8080'
     })
       .then((res) => res.data)
@@ -75,9 +73,9 @@ const Sidebar = (props:any) => {
         <br></br>
         <span className='form-item'>
           <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
-          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=> {handleChange(e); setFormValues({...formValues, db_type: e.target.value})}} >
-            <option value='PostgreSQL'>PostgreSQL</option>
-            <option value='MySQL'>MySQL</option>
+          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
+            <option value='postgres'>PostgreSQL</option>
+            <option value='mysql'>MySQL</option>
           </select>
         </span>
         <br></br>

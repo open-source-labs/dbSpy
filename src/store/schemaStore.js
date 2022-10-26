@@ -9,6 +9,18 @@ let schemaStore = (set) => ({
   //schemaStore state
   schemaStore: null,
   setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
+  //reference state (used to add reference to foreign keys)
+  reference: [
+    {
+      PrimaryKeyName: '',
+      ReferencesPropertyName: '',
+      PrimaryKeyTableName: '',
+      ReferencesTableName: '',
+      IsDestination: '',
+      constrainName: '',
+    },
+  ],
+  setReference: (newRef) => set((state) => ({ ...state, reference: newRef })),
 });
 
 schemaStore = devtools(schemaStore);
