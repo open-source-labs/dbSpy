@@ -12,7 +12,7 @@ function TableNode({ data }) {
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
-  console.log('yo this is rowData: ', rowData)
+  console.log('yo this is rowData: ', rowData);
   //console.log('rowData', rowData);
   const [tableRows, setTableRows] = useState(rowData);
   // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
@@ -24,6 +24,7 @@ function TableNode({ data }) {
       tableHandles.push(
         <Handle
           // key={`${data.table[0]}-${data.edges[i].sourceHandle}-source`}
+          key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
@@ -35,6 +36,7 @@ function TableNode({ data }) {
       tableHandles.push(
         <Handle
           // key={`${data.table[0]}-${data.edges[i].targetHandle}-target`}
+          key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
@@ -70,7 +72,7 @@ function TableNode({ data }) {
   };
 
   return (
-    <div className="table-node transition-colors duration-500">
+    <div className="table-node transition-colors duration-500" key={data.table[0]}>
       {tableHandles}
       <div>
         <label htmlFor="text" className="bg-[#075985] dark:opacity-75">

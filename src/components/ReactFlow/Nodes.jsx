@@ -24,7 +24,7 @@ const createInitialNodes = (schemaObject, edges) => {
     return {
       id: table[0],
       type: 'table',
-      position: nodePositions[index], // got to figure out how to lay out the positions better
+      position: nodePositions[index],
       data: { table, edges },
     };
   });
