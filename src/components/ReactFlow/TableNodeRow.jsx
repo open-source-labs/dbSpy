@@ -6,6 +6,7 @@ import useSettingsStore from '../../store/settingsStore';
 import useFlowStore from '../../store/flowStore';
 import createInitialEdges from './Edges';
 import createInitialNodes from './Nodes';
+import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose } from 'react-icons/fa';
 
 export default function TableNodeRow({ row, tableData, id }) {
   // had to convert booleans to strings or they wont show up on table
@@ -13,8 +14,10 @@ export default function TableNodeRow({ row, tableData, id }) {
   // console.log('tablename from row: ', row.TableName);
   // console.log('TableNodeRow-tableData: ', tableData);
   // console.log('is this ID: ', id);
-  const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore((state) => state);
-  const {edges, setEdges, nodes, setNodes} = useFlowStore(state=>state);
+  const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore(
+    (state) => state
+  );
+  const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
   const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
   const [defaultMode, setDefaultMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -26,7 +29,7 @@ export default function TableNodeRow({ row, tableData, id }) {
   const additional_constraints = useRef();
   const IsPrimaryKey = useRef();
   const IsForeignKey = useRef();
-  
+
   //HELPER FUNCTIONS
   const inDefaultMode = () => {
     // console.log('you are in default mode');
@@ -40,7 +43,7 @@ export default function TableNodeRow({ row, tableData, id }) {
     setEditMode(true);
     setDefaultMode(false);
     setDeleteMode(false);
-  }
+  };
 
   const inDeleteMode = () => {
     // console.log('you are in delete mode');
@@ -52,15 +55,15 @@ export default function TableNodeRow({ row, tableData, id }) {
   const onSave = () => {
     console.log('THIS IS WHAT IS INSIDE REFERENCE', reference);
     const defaultRef = [
-    {
-      PrimaryKeyName: '',
-      ReferencesPropertyName: '',
-      PrimaryKeyTableName: '',
-      ReferencesTableName: '',
-      IsDestination: '',
-      constrainName: '',
-    },
-  ]
+      {
+        PrimaryKeyName: '',
+        ReferencesPropertyName: '',
+        PrimaryKeyTableName: '',
+        ReferencesTableName: '',
+        IsDestination: '',
+        constrainName: '',
+      },
+    ];
     //declare prior values
     const tableRef = row.TableName;
     const rowRef = row.field_name;
@@ -68,7 +71,8 @@ export default function TableNodeRow({ row, tableData, id }) {
     currentSchema[tableRef][rowRef].Name = field_name.current.value;
     currentSchema[tableRef][rowRef].Value = null;
     currentSchema[tableRef][rowRef].TableName = tableRef;
-    currentSchema[tableRef][rowRef].References = IsForeignKey.current.value === 'true' ? reference : defaultRef;
+    currentSchema[tableRef][rowRef].References =
+      IsForeignKey.current.value === 'true' ? reference : defaultRef;
     currentSchema[tableRef][rowRef].field_name = field_name.current.value.replaceAll(
       ' ',
       '_'
@@ -90,10 +94,10 @@ export default function TableNodeRow({ row, tableData, id }) {
     setSchemaStore(currentSchema);
     //set new nodes/edges if a new reference is added
     // if(reference.length > 0) {
-      const initialEdges = createInitialEdges(currentSchema);
-      setEdges(initialEdges);
-      const initialNodes = createInitialNodes(currentSchema, initialEdges);
-      setNodes(initialNodes);
+    const initialEdges = createInitialEdges(currentSchema);
+    setEdges(initialEdges);
+    const initialNodes = createInitialNodes(currentSchema, initialEdges);
+    setNodes(initialNodes);
     // }
     setDefaultMode();
     alert('Click EDIT then SAVE on the target table row.');
@@ -111,11 +115,15 @@ export default function TableNodeRow({ row, tableData, id }) {
   };
   //END: HELPER FUNCTIONS
 
-
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
-      <tr ref={selectedRow} key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
+      <tr
+        ref={selectedRow}
+        key={row.field_name}
+        id={row.field_name}
+        className="dark:text-[#f8f4eb] "
+      >
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
           {editMode ? (
             <input
@@ -184,33 +192,33 @@ export default function TableNodeRow({ row, tableData, id }) {
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {editMode ? (
-            <select 
+            <select
               ref={IsForeignKey}
-              onChange={(e)=>{
+              onChange={(e) => {
                 // console.log('ONCHANGE TO TRUE', e.target.value);
-                const defaultRef = [{
-                  PrimaryKeyName: '',
-                  ReferencesPropertyName: '',
-                  PrimaryKeyTableName: '',
-                  ReferencesTableName: '',
-                  IsDestination: '',
-                  constrainName: '',
-                }];
-                if(e.target.value === 'true') {
+                const defaultRef = [
+                  {
+                    PrimaryKeyName: '',
+                    ReferencesPropertyName: '',
+                    PrimaryKeyTableName: '',
+                    ReferencesTableName: '',
+                    IsDestination: '',
+                    constrainName: '',
+                  },
+                ];
+                if (e.target.value === 'true') {
                   //expose Add Reference modal
                   setEditRefMode(true);
                   if (row.References.length === 0) setReference(defaultRef);
                   else setReference([row.References[0]]);
-                }  
+                }
               }}
               className="bg-[#f8f4eb] dark:text-black"
               defaultValue={row.IsForeignKey ? 'true' : 'false'}
             >
               <option value="true">true</option>
               <option value="false">false</option>
-
             </select>
-            
           ) : (
             row.IsForeignKey.toString()
           )}
@@ -224,7 +232,7 @@ export default function TableNodeRow({ row, tableData, id }) {
                 inDefaultMode();
               }}
             >
-              SAVE
+              <FaRegSave size={17}/>
             </button>
           ) : deleteMode ? (
             <button
@@ -234,26 +242,26 @@ export default function TableNodeRow({ row, tableData, id }) {
                 inDefaultMode();
               }}
             >
-              CONFIRM
+              <FaRegCheckSquare size={17}/>
             </button>
           ) : (
             <button id={`${id}-editBtn`} onClick={inEditMode}>
-              EDIT
+              <FaRegEdit size={17}/>
             </button>
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
           {editMode ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
-              CANCEL
+              <FaRegWindowClose size={17}/>
             </button>
           ) : deleteMode ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
-              CANCEL
+              <FaRegWindowClose size={17}/>
             </button>
           ) : (
             <button id={`${id}-deleteBtn`} onClick={inDeleteMode}>
-              DELETE
+              <FaRegTrashAlt size={17}/>
             </button>
           )}
         </td>

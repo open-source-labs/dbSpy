@@ -1,14 +1,15 @@
-import { React, useState , useEffect} from 'react';
+import { React, useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
-import useSchemaStore from '../../store/schemaStore'
+import useSchemaStore from '../../store/schemaStore';
+import { FaRegPlusSquare } from 'react-icons/fa';
 
 function TableNode({ data }) {
   // console.log('table data: ', data.table);
   // console.log('table data[0]: ', data.table[0]);
   // console.log('table data[1]: ', data.table[1]);
   // console.log('initialEdges: ', data.edges);
-  const {schemaStore, setSchemaStore} = useSchemaStore(state=>state);
+  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const tableData = data.table[1];
   const rowData = Object.values(data.table[1]);
   //console.log('rowData', rowData);
@@ -81,7 +82,7 @@ function TableNode({ data }) {
           className="add-field transition-colors duration-500 dark:text-[#fbf3de]"
           onClick={addRow}
         >
-          + FIELD
+          <FaRegPlusSquare size={20}/>
         </button>
       </div>
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
