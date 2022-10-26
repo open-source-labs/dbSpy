@@ -54,28 +54,21 @@ const writeSchema = async (command) => {
   }
 };
 
-dataController.getSchema = (req, res, next) => {
-  console.log('THIS IS HIT', req.body);
+/**
+ * getSchema
+ * Option 1 - Production:
+ * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
+ *
+ * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
+ */
+export const getSchema = (req, res, next) => {
   log.info('Server received database uri.');
   // // Option 1 - Production
   let result = null;
-  //using destructuring for concise code, commented out lines 99-103
+  //using destructuring for concise code, commented out lines
   const { hostname, password, port, username, database_name } = req.body;
-  /*   const hostname = req.body.hostname;
-  const password = req.body.password;
-  const port = req.body.port;
-  const username = req.body.username;
-  const database_name = req.body.database_name; */
+
   const command = postgresDumpQuery(hostname, password, port, username, database_name);
-  //below is the code for an alternate path if database link is included in req.body before front-end changes were made
-  //to ensure compatibility with other front-end components and sessions
-  //let command;
-  /*   if (database_link.length !== 0){
-    command = newPostgresDumpQuery(database_link);
-  }
-  else {
-    command = postgresDumpQuery(hostname, password, port, username, database_name);
-  } */
 
   writeSchema(command).then((resq) => {
     fs.readFile(command[1], 'utf8', (error, data) => {
@@ -98,7 +91,7 @@ dataController.getSchema = (req, res, next) => {
  * Iterates through testdata array of tables and grabs table name.
  * Iterates through properties array and assigns field name as key for properties.
  */
-dataController.objSchema = (req, res, next) => {
+export const objSchema = (req, res, next) => {
   const data = res.locals.data;
   const results = {};
   // console.log(data);
@@ -739,11 +732,31 @@ function checkSpecialKey(propertyModel) {
   }
 }
 
-////////////////////
-//END: SQL PARSER //
-////////////////////
+export const getAllSchemas = (req, res) => {
+  console.log('yo');
+};
 
-dataController.handleQueries = async (req, res, next) => {
+export const openSchema = (req, res, next) => {
+  fs.readFile(
+    '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/vjcmcautvjcmcaut1657127402.sql',
+    'utf8',
+    (error, data) => {
+      if (error) {
+        console.error(`error- in FS: ${error.message}`);
+        return next({
+          msg: 'Error reading database schema file',
+          err: error,
+        });
+      }
+      let result = parseSql(data);
+      next();
+    }
+  );
+};
+
+export const postSchema = (req, res) => {};
+
+export const handleQueries = async (req, res, next) => {
   /* Assumption, being passed an array of queries in req.body
   grab PG_URI from user when they connect to DB
 
@@ -823,7 +836,7 @@ dataController.handleQueries = async (req, res, next) => {
     });
 };
 
-dataController.saveSchema = (req, res) => {};
-dataController.deleteSchema = (req, res) => {};
+export const saveSchema = (req, res) => {};
+export const deleteSchema = (req, res) => {};
 
-module.exports = dataController;
+export default dataController;

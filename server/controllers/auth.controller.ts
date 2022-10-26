@@ -1,10 +1,15 @@
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import { Request, Response } from "express"
+import jwt, { JwtPayload, sign } from 'jsonwebtoken'
+import { Request, RequestHandler, Response } from "express"
 import log from "../logger/index"
 import { getGoogleAuthToken } from "../utils/getGoogleAuthToken"
-import { createUser, findUser } from "./userController"
+import { createUser, findUser } from "./user.controller"
+declare module "express-session" {
+    interface SessionData {
+        user: string;
+    }
+}
 
-export const handleGoogleAuth = async (req: Request, res: Response) => {
+export const handleGoogleAuth: RequestHandler = async (req, res) => {
     // get code from qs
     const code = req.query.code as string
 
@@ -40,16 +45,28 @@ export const handleGoogleAuth = async (req: Request, res: Response) => {
 
         const newUser = await findUser(decodedUser.email)
 
+        const user = await foundUser || newUser
 
-        //set a cookie, redirect back to the client
+        // create an access token to be provided on every call user makes to backend
+        // expires in 1 day
+        const obj = { user: user[0], session: 'session' }
+
+        const accessToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '1d' })
+        // create a session
+        //refresh token expires in 1 day
+        const refreshToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '5h' })
+
+
+        req.session.user = accessToken;
+
         log.info('Login successful, redirecting...')
 
-        req.session.user = foundUser || newUser;
+        const queryStr = 'true'
 
-        return res.redirect(301, 'http://localhost:8080/')
+        res.redirect(301, 'http://localhost:8080/login?success=' + queryStr)
 
     } catch (error) {
         log.error(error, "User authorization failed")
-        return res.redirect(301, 'http://localhost:8080/')
+        res.redirect('http://localhost:8080/')
     }
 }
