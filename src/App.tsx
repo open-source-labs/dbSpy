@@ -61,11 +61,9 @@ export default function App() {
     1. "/" - main launch page
     2. "/signup" - sign up page
     3. "/login" - login page
-    4. "/display" | "/display/:id" - database visualization application page; only accessible when user is authorized;
+    4. "/display" | "/display/" - database visualization application page; only accessible when user is authorized;
   */
 
-  // const user = null;
-  
 
   return (
     <BrowserRouter>
@@ -77,40 +75,12 @@ export default function App() {
           <Route path='signup' element={<Signup/>}/>
           <Route path='display' element={
             <ProtectedRoute user={user}>
-              <Dashboard/>
+              <DBDisplay/>
             </ProtectedRoute>
           }/>
-          <Route path='display/access' element={<DBDisplay/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
-    // <Routes>
-    //   <Route path={"/"} element={<Home user={user} setUser={setUser} />} />
-    //   <Route path="/signup" element={<Signup />} />
-    //   <Route path="/login" element={<Login />} />
-
-    //   <Route
-    //     path="/display/access"
-    //     element={
-    //       user.id !== null ? (
-    //         <DBDisplay user={user} setUser={setUser} />
-    //       ) : (
-    //         "Redirecting"
-    //       )
-    //     }
-    //   />
-
-    //   <Route
-    //     path="/display/access/:id"
-    //     element={
-    //       user.id !== null ? (
-    //         <DBDisplay user={user} setUser={setUser} />
-    //       ) : (
-    //         "Redirecting"
-    //       )
-    //     }
-    //   />
-    // </Routes>
 
   );
 }

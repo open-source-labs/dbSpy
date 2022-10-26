@@ -15,7 +15,7 @@ function Navbar() {
   //END: STATE DECLARATION
   const toggleClass = () => {
     const page = document.getElementById("body");
-    page.classList.toggle('dark');
+    page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   }
 

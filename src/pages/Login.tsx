@@ -1,10 +1,12 @@
 // React & React Router Modules
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {getGoogleAuthUrl} from '../utils/getGoogleUrl'
 
 //state management component
 import useCredentialsStore from '../store/credentialsStore';
+import axios from 'axios';
+import { response } from 'express';
 
 // const strWindowFeatures =
 // 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
@@ -16,8 +18,8 @@ export default function Login() {
   const user = useCredentialsStore((state: { user: any; }) => state.user);
   const setUser = useCredentialsStore((state: { setUser: any; }) => state.setUser);
   //END: STATE DECLARATION
+  const [loggedIn, setLoggedIn] = useState(false)
 
-  
 
   /*
   "google" - a function that gets invoked when Google login button is clicked;
@@ -31,26 +33,20 @@ export default function Login() {
     const url = await getGoogleAuthUrl();
     const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
     window.open(url , '_self', strWindowFeatures);
-
-    // fetch('/api/oauth')
-    // // .then((res) => res.json())
-    // .then(res => res.text())
-    // .then((data) => console.log(data))
-    // .catch((err) => console.log(err));
-    // fetch('/api/oauth', {
-    //   method: 'POST',
-    //   mode: 'cors',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   // body: JSON.stringify('null'),
-    // })
-    // .then((res) => {
-    //   if (res.ok) return res.json();
-    //   else throw new Error('Authentication Failed');
-    // })
-    // .catch((e) => console.log(e));
     }
+
+    useEffect(() => {
+      const getUserData = async () => {
+        const response = await axios('http://localhost:8080/api/me')
+        setUser(response.data)
+        console.log(user)
+        return response.data
+      }
+      if (window.location.search === '?success=true') {
+      getUserData()
+      window.history.replaceState({}, document.title, "/" + "login");
+    }
+    },[])
 
 
   return (
