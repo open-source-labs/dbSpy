@@ -258,7 +258,13 @@ export default function TableNodeRow({ row, tableData, id }) {
         </td>
         <td className="dark:text-[#f8f4eb]">
           {editMode || row.field_name === 'newRow' ? (
-            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
+            <button
+              id={`${id}-cancelBtn`}
+              onClick={() => {
+                onDelete();
+                inDefaultMode();
+              }}
+            >
               <FaRegWindowClose size={17} />
             </button>
           ) : deleteMode ? (
