@@ -5,16 +5,18 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
-let logStore = (set) => ({
+let logStore = (set: (arg0: (state: any) => any) => any) => ({
   //logs state
   logs: null,
   //logEntries is an array
-  setLogs: (logEntries) => set((state) => ({ ...state, logs: logEntries })),
+  setLogs: (logEntries: any) => set((state: any) => ({ ...state, logs: logEntries })),
 });
 
-logStore = devtools(logStore);
-logStore = persist(logStore);
-const useLogStore = create(logStore);
+// logStore = devtools(logStore);
+// logStore = persist(logStore);
+// const useLogStore = create(logStore);
+
+const useLogStore = create(persist(devtools(logStore)))
 
 export default useLogStore;
 

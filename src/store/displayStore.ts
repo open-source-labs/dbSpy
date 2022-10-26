@@ -7,17 +7,19 @@ import { devtools, persist } from 'zustand/middleware';
 
 
 
-const displayStore = (set) => ({
+const displayStore = (set: (arg0: (state: any) => any) => any) => ({
   //displayStore state
   displayStore: null,
   //schema is an object
-  setDisplayStore: (schema) =>
-    set((state) => ({ ...state, displayStore: schema })),
+  setDisplayStore: (schema: any) =>
+    set((state: any) => ({ ...state, displayStore: schema })),
 });
 
-displayStore = devtools(displayStore);
-displayStore = persist(displayStore);
-const useDisplayStore = create(displayStore);
+// displayStore = devtools(displayStore);
+// displayStore = persist(displayStore);
+// const useDisplayStore = create(displayStore);
+
+const useDisplayStore = create(persist(devtools(displayStore)))
 
 export default useDisplayStore;
 

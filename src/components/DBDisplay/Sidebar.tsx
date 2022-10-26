@@ -43,7 +43,6 @@ const Sidebar = (props:any) => {
     setDbCredentials(values);
     setConnectPressed(true);
    
-    // const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values, config)
     const dbSchema = await axios.post(`api/sql/${values.db_type}/getSchema`, values,{
       baseURL: 'http://localhost:8080'
     })
@@ -74,13 +73,17 @@ const Sidebar = (props:any) => {
         <br></br>
         <span className='form-item'>
           <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
-          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
+          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' 
+            onChange={(e)=>{
+              setFormValues({...formValues, db_type: e.target.value});
+              handleChange(e);
+            }} >
             <option value='postgres'>PostgreSQL</option>
             <option value='mysql'>MySQL</option>
           </select>
         </span>
         <br></br>
-        {selected === 'PostgreSQL' ? 
+        {selected === 'postgres' ? 
         <div>
           <span className='form-item'>
             <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
