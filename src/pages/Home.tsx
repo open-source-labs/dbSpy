@@ -5,6 +5,7 @@ import {NavLink} from 'react-router-dom';
 //Components imported
 import Contributors from '../components/Home/Contributors';
 import useCredentialsStore from "../store/credentialsStore";
+import screenshot from '../assets/ScreenshotDemo.png';
 
 /* "Home" Component - main launch page */
 export default function Home() {
@@ -29,7 +30,7 @@ export default function Home() {
     <div className="block rounded-lg shadow-lg bg-[#f8f4eb] dark:text-[#f8f4eb] dark:bg-slate-900 descriptionCard">
       <div className="flex flex-wrap items-center">
         <div className="grow-0 shrink-0 basis-auto block w-full lg:flex lg:w-6/12 xl:w-4/12">
-          <img src="https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif"
+          <img src={screenshot}
             className="w-11/12 mx-8 my-8 rounded-lg lg:rounded-bl-lg descriptionImg" />
         </div>
         <div className="grow-0 shrink-0 basis-auto w-full lg:w-6/12 xl:w-8/12">
