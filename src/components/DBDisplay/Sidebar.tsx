@@ -38,12 +38,15 @@ const Sidebar = (props:any) => {
                 values.port = '5432';
                 values.database_name = name;
               }
+
     //update dbCredentials
     setDbCredentials(values);
     setConnectPressed(true);
-
    
+<<<<<<< HEAD
+=======
     // const dbSchema = await axios.post(`api/sql/${dbType}/getSchema`, values, config)
+>>>>>>> dev2
     const dbSchema = await axios.post(`api/sql/${values.db_type}/getSchema`, values,{
       baseURL: 'http://localhost:8080'
     })
@@ -56,6 +59,7 @@ const Sidebar = (props:any) => {
     const initialNodes = createInitialNodes(dbSchema, initialEdges);
     setNodes(initialNodes);
     setWelcome(false);
+    setConnectPressed(false);
     props.closeNav();
   };
   //on change for db type selection, will affect state to conditionally render database URL input if type is PostgreSQL
@@ -66,20 +70,32 @@ const Sidebar = (props:any) => {
 
   //form state hooks
   const [formValues, setFormValues] = useState({});
-
+  
   return (        
       <div id='dbconnect' className='bg-[#fbf3de] dark:bg-slate-700'>
         <label className='dark:text-[#f8f4eb]'><h3>Connect to Database</h3></label>
         <br></br>
         <span className='form-item'>
           <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
+<<<<<<< HEAD
+          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' 
+            onChange={(e)=>{
+              setFormValues({...formValues, db_type: e.target.value});
+              handleChange(e);
+            }} >
+=======
           <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' onChange={(e)=>setFormValues({...formValues, db_type: e.target.value})} >
+>>>>>>> dev2
             <option value='postgres'>PostgreSQL</option>
             <option value='mysql'>MySQL</option>
           </select>
         </span>
         <br></br>
+<<<<<<< HEAD
+        {selected === 'postgres' ? 
+=======
         {selected === 'PostgreSQL' ? 
+>>>>>>> dev2
         <div>
           <span className='form-item'>
             <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
