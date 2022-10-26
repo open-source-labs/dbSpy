@@ -20,7 +20,7 @@ const Sidebar = (props:any) => {
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
-  const [selected, setSelected] = useState('PostgreSQL');
+  const [selected, setSelected] = useState('postgres');
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
