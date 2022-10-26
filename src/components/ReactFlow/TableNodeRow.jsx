@@ -6,7 +6,13 @@ import useSettingsStore from '../../store/settingsStore';
 import useFlowStore from '../../store/flowStore';
 import createInitialEdges from './Edges';
 import createInitialNodes from './Nodes';
-import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose } from 'react-icons/fa';
+import {
+  FaRegEdit,
+  FaRegTrashAlt,
+  FaRegSave,
+  FaRegCheckSquare,
+  FaRegWindowClose,
+} from 'react-icons/fa';
 
 export default function TableNodeRow({ row, tableData, id }) {
   // had to convert booleans to strings or they wont show up on table
@@ -125,7 +131,7 @@ export default function TableNodeRow({ row, tableData, id }) {
         className="dark:text-[#f8f4eb] "
       >
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <input
               ref={field_name}
               className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
@@ -136,7 +142,7 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <select
               ref={data_type}
               className="bg-[#f8f4eb] dark:text-black"
@@ -161,7 +167,7 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <select
               ref={additional_constraints}
               className="bg-[#f8f4eb] dark:text-black"
@@ -177,7 +183,7 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <select
               ref={IsPrimaryKey}
               className="bg-[#f8f4eb] dark:text-black"
@@ -191,7 +197,7 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <select
               ref={IsForeignKey}
               onChange={(e) => {
@@ -224,7 +230,7 @@ export default function TableNodeRow({ row, tableData, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <button
               id={`${id}-saveBtn`}
               onClick={() => {
@@ -232,7 +238,7 @@ export default function TableNodeRow({ row, tableData, id }) {
                 inDefaultMode();
               }}
             >
-              <FaRegSave size={17}/>
+              <FaRegSave size={17} />
             </button>
           ) : deleteMode ? (
             <button
@@ -242,26 +248,26 @@ export default function TableNodeRow({ row, tableData, id }) {
                 inDefaultMode();
               }}
             >
-              <FaRegCheckSquare size={17}/>
+              <FaRegCheckSquare size={17} />
             </button>
           ) : (
             <button id={`${id}-editBtn`} onClick={inEditMode}>
-              <FaRegEdit size={17}/>
+              <FaRegEdit size={17} />
             </button>
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
-          {editMode ? (
+          {editMode || row.field_name === 'newRow' ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
-              <FaRegWindowClose size={17}/>
+              <FaRegWindowClose size={17} />
             </button>
           ) : deleteMode ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
-              <FaRegWindowClose size={17}/>
+              <FaRegWindowClose size={17} />
             </button>
           ) : (
             <button id={`${id}-deleteBtn`} onClick={inDeleteMode}>
-              <FaRegTrashAlt size={17}/>
+              <FaRegTrashAlt size={17} />
             </button>
           )}
         </td>
