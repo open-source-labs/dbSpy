@@ -20,14 +20,7 @@ function LogPropertyModel() {
   this.EnumVals = [];
 }
 
-function createLogProperty(
-  name,
-  setting,
-  source,
-  sourcefile,
-  context,
-  enumvals
-) {
+function createLogProperty(name, setting, source, sourcefile, context, enumvals) {
   const property = new LogPropertyModel();
   property.Name = name;
   property.Setting = setting;
@@ -78,9 +71,7 @@ const loggingController = {
       return next();
     } catch (err) {
       console.log({ err }, '<err\n\n');
-      console.log(
-        '--You arent yet connected to a database\n--Transaction declined'
-      );
+      console.log('--You arent yet connected to a database\n--Transaction declined');
 
       throw err;
     } finally {
