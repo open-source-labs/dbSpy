@@ -47,9 +47,8 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
         const user = await foundUser || newUser
 
-        // req.session.user = newUser || foundUser
         // create an access token to be provided on every call user makes to backend
-        // expires in 15 minutes 
+        // expires in 1 day
         const obj = { user: user[0], session: 'session' }
 
         const accessToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '1d' })

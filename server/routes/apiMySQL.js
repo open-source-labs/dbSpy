@@ -7,7 +7,7 @@ const mySQLdataController = require('../controllers/mySQLdataController');
 //Note: LogController is not yet built
 const mySqlLogController = require('../controllers/mySqlLogController');
 
-const { dummydata } = require('../dummy.ts');
+// const { dummydata } = require('../dummy.ts');
 
 const router = express.Router();
 

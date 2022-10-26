@@ -1,7 +1,7 @@
 import { Express, Request, Response, NextFunction, Router } from 'express';
-import { handleGoogleAuth } from './controllers/sessionsController';
-import { router } from './routes/api';
-import apiMySQLRouter from './routes/apiMySQL';
+import { handleGoogleAuth } from '../controllers/sessionsController';
+import { router } from './api';
+import apiMySQLRouter from './apiMySQL';
 import session from 'express-session'
 declare module "express-session" {
     interface SessionData {
@@ -13,7 +13,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 import Redis from 'ioredis'
 import cors from 'cors'
-import { getCurrentUser } from './service/sessionService'
+import { getCurrentUser } from '../service/sessionService'
 
 
 const routes = async (app: Express) => {
