@@ -22,7 +22,7 @@ export default function Home() {
         const response = await axios(`http://localhost:8080/api/me`, {
           withCredentials: true
         })
-      console.log(user);
+      //console.log(user);
       setUser(response.data)
       return response.data
     }
