@@ -87,7 +87,7 @@ const Sidebar = (props:any) => {
         <div>
           <span className='form-item'>
             <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
-            <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_link 'name='database_link'  onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
+            <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_link 'name='database_link' autoComplete='off' onChange={(e)=>setFormValues({...formValues, database_link: e.target.value})} />
           </span>
           <br></br>
           <div className='form-item dark:text-[#f8f4eb]'>
@@ -98,26 +98,26 @@ const Sidebar = (props:any) => {
          : <></>}
         <span className='form-item'>
           <label htmlFor="hostname" className='dark:text-[#f8f4eb]' >Host</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname'  onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
+          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname' autoComplete='off' onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
         </span>
         <span className='form-item'>
           <label htmlFor="port" className='dark:text-[#f8f4eb]'>Port</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='port' name='port'  onChange={(e)=>setFormValues({...formValues, port: e.target.value})} />
+          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='port' name='port' autoComplete='off' onChange={(e)=>setFormValues({...formValues, port: e.target.value})} />
         </span>
         <span className='form-item'>
           <label htmlFor="username" className='dark:text-[#f8f4eb]'>Database Username</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='username' name='username'  onChange={(e)=>setFormValues({...formValues, username: e.target.value})} />
+          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='username' name='username' autoComplete='off'  onChange={(e)=>setFormValues({...formValues, username: e.target.value})} />
         </span>
         <span className='form-item'>
           <label htmlFor="password" className='dark:text-[#f8f4eb]'>Database Password</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='password' name='password'  onChange={(e)=>setFormValues({...formValues, password: e.target.value})} />
+          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='password' name='password' autoComplete='off'  onChange={(e)=>setFormValues({...formValues, password: e.target.value})} />
         </span>
         <span className='form-item'>
           <label htmlFor="database_name" className='dark:text-[#f8f4eb]'>Database Name</label>
-          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_name 'name='database_name'  onChange={(e)=>setFormValues({...formValues, database_name: e.target.value})} />
+          <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='database_name 'name='database_name' autoComplete='off'  onChange={(e)=>setFormValues({...formValues, database_name: e.target.value})} />
         </span>
         <br></br>
-        <button className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:shadow-inner dark:hover:shadow-lg' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
+        <button className='form-button rounded border py-2 px-4 bg-[#f8f4eb] dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] hover:opacity-80 hover:shadow-inner dark:hover:shadow-lg' id='submit' onClick={((e)=>handleSubmit(e))} >Connect</button>
         <br></br>
         {!connectPressed ? <div className='h-[58px]'></div> : <div className="flex items-center justify-center w-full h-full">
           <div className="flex justify-center items-center space-x-1 dark:text-[#f8f4eb]">
