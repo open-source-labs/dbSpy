@@ -23,7 +23,7 @@ Example:
 
 const profileList: profileInfo[] = [
   {imgUrl: 'https://avatars.githubusercontent.com/u/85323481?v=4', name: 'Angel Giron', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/acgiron/', githubUrl: 'https://github.com/g94angel'},
-  {imgUrl: 'https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1666828800&v=beta&t=eu2vPhIW8hB7Ho9BERJfVevfPpYsPAzFj0UOO6iOvIg', name: 'John Paul Adigwu', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/johnpaul-adigwu/', githubUrl: 'https://github.com/engineerous'},
+  {imgUrl: 'https://media-exp1.licdn.com/dms/image/C5603AQH-DE3IvkV3tQ/profile-displayphoto-shrink_800_800/0/1659225312575?e=1672272000&v=beta&t=NPKD4ucxHC04KcH1YKcH0ifpVO0NSmMnxdAgL9-GJO4', name: 'John Paul Adigwu', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/johnpaul-adigwu/', githubUrl: 'https://github.com/engineerous'},
   {imgUrl: 'https://avatars.githubusercontent.com/u/11093217?v=4', name: 'Kevin Park-Lee', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/kevin38424/', githubUrl: 'https://github.com/kevin38424'},
   {imgUrl: 'https://avatars.githubusercontent.com/u/83368864?v=4', name: 'Tarik Mokhtech', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/tarik-mokhtech/', githubUrl: 'https://github.com/MockTech'},
   {imgUrl: 'https://cdn.discordapp.com/attachments/1006201036714819756/1011742768286142594/hands.jpg', name: 'Brett Guidry', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/brett-guidry-6b6085107/', githubUrl: 'https://github.com/Lurkbot9000'},
