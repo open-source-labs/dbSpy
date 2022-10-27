@@ -255,7 +255,7 @@ export default function TableNodeRow({ row, tableData, id }) {
               <FaRegCheckSquare size={17} />
             </button>
           ) : (
-            <button id={`${id}-editBtn`} onClick={inEditMode}>
+            <button id={`${id}-editBtn`} onClick={inEditMode} className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'>
               <FaRegEdit size={17} />
             </button>
           )}
