@@ -1,12 +1,9 @@
 // React & React Router & React Query Modules
-import React, { useEffect, useState, useRef, ReactComponentElement } from 'react';
+import React, {useState, useRef } from 'react';
 
 // Components imported;
 import parseSql from '../../parse';
-import DataStore from '../../Store';
 import useSchemaStore from '../../store/schemaStore';
-import useDataStore from '../../store/dataStore';
-import useQueryStore from '../../store/queryStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import createInitialEdges from '../../components/ReactFlow/Edges';
@@ -15,68 +12,14 @@ import createInitialNodes from '../../components/ReactFlow/Nodes';
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
-  const {dataStore, setDataStore, dataInd, setDataInd} = useDataStore(state => state);
-  const {queryStore, setQueryStore, queryInd, setQueryInd, queryList, setQueryList} = useQueryStore(state => state);
   const {setEdges, setNodes} = useFlowStore(state => state);
   const {schemaStore, setSchemaStore}= useSchemaStore(state => state);
   const {setWelcome}= useSettingsStore(state => state);
   const [action, setAction] = useState(new Array());
   //END: STATE DECLARATION
 
-  //Functions for state management
-  const setData = (data:any) =>{
-    const newData = {...dataStore };
-    newData.set(dataInd, data);
-    setDataStore(newData);
-    setDataInd(dataInd + 1);
-    return dataStore;
-  };
-  const getData = (ind:number) => dataStore.get(ind);
-  const clearDataStore = () => {
-    setDataStore(new Map());
-    setDataInd(0);
-  };
-  const getQueries = (ind:number) => queryStore.get(ind);
-  const setQueries = (queries: any) => {
-    const newQueries = { ...queryStore };
-    newQueries.set(queryInd, queries);
-    setQueryStore(newQueries);
-    setQueryInd(queryInd + 1);
-    return queryStore;
-  };
-  const exportData = () => queryList.map((listItem) => listItem['query']);
-  const clearQueryStore = () => {
-    setQueryStore(new Map());
-    setQueryInd(0);
-    setQueryList([]);
-  };
-  //End: Functions for state management
-
-const [modalOpened, setModalOpened] = useState(false);
-const [history, setHistory] = useState([]);
+// const [history, setHistory] = useState([]);
  
-  
- /* 
- "undo" - a function that gets invoked when Undo button is clicked; render previous table
- "redo" - a function that gets invoked when Redo button is clicked; render next table
- */
-/* 
-function undo() {
-  if (DataStore.counter > 0) {
-    const prev: any = DataStore.getData(DataStore.counter - 1);
-    setFetchedData(prev);
-    DataStore.counter--;
-  }
-}
-
-function redo() {
-  if (DataStore.counter < DataStore.store.size) {
-    const next: any = DataStore.getData(DataStore.counter);
-    setFetchedData(next);
-    DataStore.counter++;
-  }
-}
-*/
 
 //create references for HTML elements
   const confirmModal: any = useRef();
@@ -107,8 +50,6 @@ function redo() {
     if (response) addTable(tableNameInput.current.value);
     tableNameInput.current.value = '';
   }
-
-
 
 // HELPER FUNCTIONS
 
@@ -183,7 +124,6 @@ function redo() {
 
   const clearCanvasTables = () => {
     setSchemaStore(null);
-    setDataStore(null);
     setEdges([]);
     setNodes([]);
     setWelcome(false);
@@ -291,7 +231,6 @@ function redo() {
         <div className='historyBlock'>
           <p className='text-slate-900 dark:text-[#f8f4eb]'>History</p>
           <hr />
-          {history}
         </div>
       </div>
     </aside>

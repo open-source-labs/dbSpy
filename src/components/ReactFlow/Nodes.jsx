@@ -1,6 +1,5 @@
-//creates a map of initial nodes to provide to Flow
-//currently each next node's initial position is set to 125px down and right from the last node
-const createInitialNodes = (schemaObject, edges) => {
+//hard-coded xy positioning of each node in the canvas
+export default function createInitialNodes (schemaObject, edges) {
   const nodePositions = [
     { x: 0, y: 0 },
     { x: 500, y: 0 },
@@ -20,8 +19,8 @@ const createInitialNodes = (schemaObject, edges) => {
     { x: 500, y: 2450 },
     { x: 0, y: 2450 },
   ];
+  // renders each table on the React Flow canvas
   const nodes = Object.entries(schemaObject).map((table, index) => {
-    console.log('SCHEMA OBJECT: ', schemaObject);
     return {
       id: table[0],
       type: 'table',
@@ -32,4 +31,3 @@ const createInitialNodes = (schemaObject, edges) => {
   return nodes;
 };
 
-export default createInitialNodes;

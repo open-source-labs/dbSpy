@@ -18,11 +18,11 @@ const nodeTypes = {
   table: TableNode,
 };
 
-
-function Flow() {
-  // // set up states for nodes and edges
-  const {edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect} = useFlowStore(state=>state);
-  
+export default function Flow() {
+  // set up states for nodes and edges
+  const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
+    useFlowStore((state) => state);
+  // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
       <ReactFlow
@@ -35,7 +35,7 @@ function Flow() {
         fitView
       >
         <div id="download-image"></div>
-        <Background className=" dark:bg-slate-800 transition-colors duration-500"/>
+        <Background className=" transition-colors duration-500 dark:bg-slate-800" />
         <Controls>
           <ControlButton>
             <DownloadButton />
@@ -46,4 +46,3 @@ function Flow() {
   );
 }
 
-export default Flow;

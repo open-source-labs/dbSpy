@@ -27,12 +27,6 @@
     "project": "./tsconfig.json",
     "plugins": ["tailwindcss"]
   },
-  // "parserOptions": {
-  //   "sourceType": "module",
-  //   "ecmaFeatures": {
-  //     "jsx": true
-  //   }
-  // },
   "rules": {
     "prettier/prettier": "error",
     "no-unused-vars": "warn",

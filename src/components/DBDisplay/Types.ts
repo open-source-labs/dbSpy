@@ -1,5 +1,3 @@
-//brought from table.tsx
-
 export type Props = {
   isActive: boolean;
   setIsActive: (active: boolean) => void;

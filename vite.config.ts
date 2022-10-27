@@ -13,7 +13,6 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       }
-      // '/google/callback/': 'http://localhost:3000/',
     },
   },
   build: {

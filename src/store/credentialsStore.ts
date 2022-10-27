@@ -18,9 +18,6 @@ let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) =
     set((state: any) => ({ ...state, dbCredentials: dbFormInput })),
 });
 
-// credentialsStore = devtools(credentialsStore);
-// credentialsStore = persist(credentialsStore);
-// const useCredentialsStore = create(credentialsStore);
 
 const useCredentialsStore = create(persist(devtools(credentialsStore)))
 

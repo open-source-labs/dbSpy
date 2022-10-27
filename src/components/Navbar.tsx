@@ -1,16 +1,12 @@
 import React, {useState} from 'react'
 import {NavLink} from 'react-router-dom';
-import logo from "../assets/logo5-white-100-rectangle.png"
-import useCredentialsStore from '../store/credentialsStore';
+import logo from "../assets/logo5-white-100-rectangle.png";
 
 const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
 
 function Navbar() {
   //STATE DECLARATION (dbSpy3.0)
-  const user = useCredentialsStore(state => state.user);
-  const setUser = useCredentialsStore(state => state.setUser);
-
   const [theme, setTheme] = useState('Dark');
   //END: STATE DECLARATION
 

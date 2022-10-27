@@ -2,7 +2,8 @@ import React from 'react';
 import { toPng } from 'html-to-image';
 import { BsFillCameraFill } from 'react-icons/bs';
 
-//this creates the button in the React Flow canvas that allows you to take a screenshot and download it to your machine
+// this creates the custom button in the React Flow Controls panel 
+// that allows you to take a screenshot and download it to your machine
 
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
@@ -12,7 +13,7 @@ function downloadImage(dataUrl) {
   a.click();
 }
 
-function DownloadButton() {
+export default function DownloadButton() {
   const onClick = () => {
     toPng(document.querySelector('.react-flow'), {
       filter: (node) => {
@@ -44,4 +45,3 @@ function DownloadButton() {
   );
 }
 
-export default DownloadButton;

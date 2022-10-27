@@ -1,12 +1,9 @@
 // React & React Router Modules
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import {getGoogleAuthUrl} from '../utils/getGoogleUrl'
 
 //state management component
 import useCredentialsStore from '../store/credentialsStore';
-
-
 
 /* "Login" Component - login page for user login */
 export default function Login() {

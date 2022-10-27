@@ -65,7 +65,7 @@ const Sidebar = (props:any) => {
   //END: HELPER FUNCTIONS
 
   //form state hooks
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({db_type:'postgres'});
   
   return (        
       <div id='dbconnect' className='bg-[#fbf3de] dark:bg-slate-700'>
@@ -73,7 +73,7 @@ const Sidebar = (props:any) => {
         <br></br>
         <span className='form-item'>
           <label htmlFor="db_type" className='dark:text-white'>Database Type</label>
-          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type' 
+          <select className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' id='db_type' name='db_type'
             onChange={(e)=>{
               setFormValues({...formValues, db_type: e.target.value});
               handleChange(e);
@@ -122,9 +122,9 @@ const Sidebar = (props:any) => {
         {!connectPressed ? <div className='h-[58px]'></div> : <div className="flex items-center justify-center w-full h-full">
           <div className="flex justify-center items-center space-x-1 dark:text-[#f8f4eb]">
             <svg fill='none' className="w-6 h-6 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
-              <path clip-rule='evenodd'
+              <path clipRule='evenodd'
                 d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
-                fill='currentColor' fill-rule='evenodd' />
+                fill='currentColor' fillRule='evenodd' />
             </svg>
             <p>Loading...</p>
 	        </div>

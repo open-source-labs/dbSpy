@@ -4,47 +4,40 @@ import TableNodeRow from './TableNodeRow';
 import useSchemaStore from '../../store/schemaStore';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
-function TableNode({ data }) {
-  // console.log('table data: ', data.table);
-  // console.log('table data[0]: ', data.table[0]);
-  // console.log('table data[1]: ', data.table[1]);
-  // console.log('initialEdges: ', data.edges);
+export default function TableNode({ data }) {
+  // state of schema object
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
-  const tableData = data.table[1];
+  // rowData is an array of objects with each row in the table as an element
   const rowData = Object.values(data.table[1]);
-  console.log('yo this is rowData: ', rowData);
-  //console.log('rowData', rowData);
   const [tableRows, setTableRows] = useState(rowData);
-  // everytime we generate a table, we need to iterate through every edge and check if if the source of the edge matches the table id and if the target of the edge matches
-  // the table id,
+  // function to generate handles on the table by iterating through all
+  // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    // console.log('yupper', data.edges[i].sourceHandle);
     if (data.edges[i].source === data.table[0]) {
       tableHandles.push(
         <Handle
-          // key={`${data.table[0]}-${data.edges[i].sourceHandle}-source`}
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
-          style={{ bottom: 9, top: 'auto' }} // kind of confused by these
+          style={{ bottom: 9, top: 'auto' }}
         />
       );
     }
     if (data.edges[i].target === data.table[0]) {
       tableHandles.push(
         <Handle
-          // key={`${data.table[0]}-${data.edges[i].targetHandle}-target`}
           key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
-          style={{ bottom: 'auto', top: 113 }} // kind of confused by these 146
+          style={{ bottom: 'auto', top: 113 }}
         />
       );
     }
   }
+  // helper function when adding row to table
   const addRow = () => {
     const currentSchema = { ...schemaStore };
     currentSchema[data.table[0]].newRow = {
@@ -68,9 +61,8 @@ function TableNode({ data }) {
       additional_constraints: '',
     };
     setSchemaStore(currentSchema);
-    console.log('NEW SCHEMA: ', currentSchema);
   };
-
+  // renders rows within table
   return (
     <div className="table-node transition-colors duration-500" key={data.table[0]}>
       {tableHandles}
@@ -81,7 +73,7 @@ function TableNode({ data }) {
       </div>
       <div>
         <button
-          className="add-field transition-colors duration-500 text-[#273943] hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+          className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
           onClick={addRow}
         >
           <FaRegPlusSquare size={20} />
@@ -133,12 +125,12 @@ function TableNode({ data }) {
               <td></td>
               <td></td>
             </tr>
+            {/* generates dynamic rows */}
             {rowData.map((row, index) => (
               <TableNodeRow
                 row={row}
                 key={`${data.table[0]}-row${index}`}
                 id={`${data.table[0]}-row${index}`}
-                tableData={tableData}
               />
             ))}
           </tbody>
@@ -146,6 +138,5 @@ function TableNode({ data }) {
       </div>
     </div>
   );
-}
+};
 
-export default TableNode;

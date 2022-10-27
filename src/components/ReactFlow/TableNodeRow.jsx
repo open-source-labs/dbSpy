@@ -14,12 +14,7 @@ import {
   FaRegWindowClose,
 } from 'react-icons/fa';
 
-export default function TableNodeRow({ row, tableData, id }) {
-  // had to convert booleans to strings or they wont show up on table
-  // console.log('TableNodeRow-row: ', row);
-  // console.log('tablename from row: ', row.TableName);
-  // console.log('TableNodeRow-tableData: ', tableData);
-  // console.log('is this ID: ', id);
+export default function TableNodeRow({ row, id }) {
   const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore(
     (state) => state
   );
@@ -28,7 +23,7 @@ export default function TableNodeRow({ row, tableData, id }) {
   const [defaultMode, setDefaultMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
-  //create useRef's for each row column that can be updated/deleted
+
   const selectedRow = useRef();
   const field_name = useRef();
   const data_type = useRef();
@@ -38,28 +33,24 @@ export default function TableNodeRow({ row, tableData, id }) {
 
   //HELPER FUNCTIONS
   const inDefaultMode = () => {
-    // console.log('you are in default mode');
     setDefaultMode(true);
     setEditMode(false);
     setDeleteMode(false);
   };
 
   const inEditMode = () => {
-    // console.log('you are in edit mode');
     setEditMode(true);
     setDefaultMode(false);
     setDeleteMode(false);
   };
 
   const inDeleteMode = () => {
-    // console.log('you are in delete mode');
     setDeleteMode(true);
     setDefaultMode(false);
     setEditMode(false);
   };
 
   const onSave = () => {
-    console.log('THIS IS WHAT IS INSIDE REFERENCE', reference);
     const defaultRef = [
       {
         PrimaryKeyName: '',
@@ -107,7 +98,6 @@ export default function TableNodeRow({ row, tableData, id }) {
     // }
     setDefaultMode();
     alert('Click EDIT then SAVE on the target table row.');
-    console.log('NEW SCHEMA FROM ONSAVE', schemaStore);
   };
 
   const onDelete = () => {
@@ -117,9 +107,8 @@ export default function TableNodeRow({ row, tableData, id }) {
     const currentSchema = { ...schemaStore };
     delete currentSchema[tableRef][rowRef];
     setSchemaStore(currentSchema);
-    console.log('NEW SCHEMA', schemaStore);
   };
-  //END: HELPER FUNCTIONS
+
 
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
@@ -214,8 +203,8 @@ export default function TableNodeRow({ row, tableData, id }) {
                 ];
                 if (e.target.value === 'true') {
                   //expose Add Reference modal
-                  document.querySelector('#mySideNav').style.width = "400px";
-                  document.querySelector('#main').style.marginRight = "400px";
+                  document.querySelector('#mySideNav').style.width = '400px';
+                  document.querySelector('#main').style.marginRight = '400px';
                   setEditRefMode(true);
                   if (row.References.length === 0) setReference(defaultRef);
                   else setReference([row.References[0]]);
@@ -239,7 +228,7 @@ export default function TableNodeRow({ row, tableData, id }) {
                 onSave();
                 inDefaultMode();
               }}
-              className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'
+              className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
             >
               <FaRegSave size={17} />
             </button>
@@ -250,17 +239,21 @@ export default function TableNodeRow({ row, tableData, id }) {
                 onDelete();
                 inDefaultMode();
               }}
-              className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'
+              className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
             >
               <FaRegCheckSquare size={17} />
             </button>
           ) : (
-            <button id={`${id}-editBtn`} onClick={inEditMode} className='hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500'>
+            <button
+              id={`${id}-editBtn`}
+              onClick={inEditMode}
+              className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+            >
               <FaRegEdit size={17} />
             </button>
           )}
         </td>
-        <td className="hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] transition-colors duration-500">
+        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
           {editMode ? (
             <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
               <FaRegWindowClose size={17} />
