@@ -97,6 +97,11 @@ TOKEN_KEY = [any string]
 $ npm install
 ```
 
+- Execute the following command to populate your mySql database with the user table.
+```bash
+$ npm run seed
+```
+
 - Run the project in development mode:
 
 ```bash
