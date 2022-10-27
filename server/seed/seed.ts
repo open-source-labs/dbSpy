@@ -6,21 +6,20 @@ dotenv.config()
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found');
 
-const connection =  mysql.createConnection(process.env.DATABASE_URL);
+const connection = mysql.createConnection(process.env.DATABASE_URL);
 
 // create tables
 const loadData = () => {
     try {
         connection.query(createSQL.users);
-        
-    } catch(err) {
+
+    } catch (err) {
         console.log(err);
     }
 }
 
 loadData();
 
-connection.end();
 
 process.exit(0);
 
