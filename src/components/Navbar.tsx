@@ -21,7 +21,6 @@ function Navbar() {
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   }
-
   
   return (
     <>

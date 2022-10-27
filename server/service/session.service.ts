@@ -12,7 +12,6 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
     const accessToken = req.session.user;
 
     const decoded = jwt.verify(accessToken as string, process.env.TOKEN_KEY as string, (err: any, user: any) => {
-        console.log(user.user)
         return user.user;
 
     })

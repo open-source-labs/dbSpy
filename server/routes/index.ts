@@ -39,12 +39,6 @@ const routes = async (app: Express) => {
 
     app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200))
 
-    // app.get('/api/oauth/google', handleGoogleAuth, (res: Response, req: Request) => {
-    //     res.set("accessToken", res.locals.accessToken)
-    //     res.set("refreshToken", res.locals.refreshToken)
-    //     res.redirect('http://localhost:8080')
-    // })
-
     app.get('/api/oauth/google', handleGoogleAuth)
 
     app.use('/api/sql/postgres', postgresRouter)
@@ -53,9 +47,8 @@ const routes = async (app: Express) => {
 
     app.use('/api/me', getCurrentUser)
 
-    app.use('/api/me', getCurrentUser)
 
-    app.get('/api/logout', (res: Response, req: Request) => {
+    app.use('/api/logout', (res: Response, req: Request) => {
         req.session.destroy((err) => {
             res.redirect('http://localhost:8080/login')
         })

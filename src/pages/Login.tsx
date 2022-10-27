@@ -5,12 +5,8 @@ import {getGoogleAuthUrl} from '../utils/getGoogleUrl'
 
 //state management component
 import useCredentialsStore from '../store/credentialsStore';
-import axios from 'axios';
-import { response } from 'express';
 
-// const strWindowFeatures =
-// 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-// window.open('http://localhost:8080/auth/google', '_self', strWindowFeatures);
+
 
 /* "Login" Component - login page for user login */
 export default function Login() {
@@ -29,20 +25,6 @@ export default function Login() {
     const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
     window.open(url , '_self', strWindowFeatures);
     }
-
-    useEffect(() => {
-      const getUserData = async () => {
-        const response = await axios('http://localhost:8080/api/me')
-        setUser(response.data)
-        console.log(user)
-        return response.data
-      }
-      if (window.location.search === '?success=true') {
-      getUserData()
-      window.history.replaceState({}, document.title, "/" + "login");
-    }
-    },[])
-
 
   return (
     <div className='grid h-80 place-items-center'>
