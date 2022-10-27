@@ -63,10 +63,10 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
         const queryStr = 'true'
 
-        res.redirect(301, 'http://localhost:8080/display?success=' + queryStr)
+        res.redirect(301, 'http://localhost:8080/?success=' + queryStr)
 
     } catch (error) {
         log.error(error, "User authorization failed")
-        return res.redirect(301, 'http://localhost:8080/')
+        return res.redirect(301, 'http://localhost:8080/login')
     }
 }

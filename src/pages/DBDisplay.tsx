@@ -13,24 +13,10 @@ import axios from 'axios';
 
 const DBDisplay = () => {
   const {sidebarDisplayState, welcome, editRefMode} = useSettingsStore(state=>state);
-  const user = useCredentialsStore((state: { user: any; }) => state.user);
-  const setUser = useCredentialsStore((state: { setUser: any; }) => state.setUser);
+
   //END: STATE DECLARATION
 
-  /* Retrieve user data from server*/
-  useEffect(() => {
-    const getUserData = async () => {
-      const response = await axios('http://localhost:8080/api/me', {
-        withCredentials: true
-      })
-      setUser(response.data)
-      return response.data
-    }
-    if (window.location.search === '?success=true') {
-    getUserData()
-    window.history.replaceState({}, document.title, "/" + "display");
-  }
-  },[])
+
 
   //create references for HTML elements
   const mySideBarId:any = useRef();

@@ -1,17 +1,14 @@
 // React & React Router Modules
-import React, { useState } from 'react';
+import React from 'react';
 import {getGoogleAuthUrl} from '../utils/getGoogleUrl'
 
 //state management component
-import useCredentialsStore from '../store/credentialsStore';
+
 
 /* "Login" Component - login page for user login */
 export default function Login() {
   //STATE DECLARATION (dbSpy3.0)
-  const user = useCredentialsStore((state: { user: any; }) => state.user);
-  const setUser = useCredentialsStore((state: { setUser: any; }) => state.setUser);
   //END: STATE DECLARATION
-  const [loggedIn, setLoggedIn] = useState(false)
 
   /*
   "google" - a function that gets invoked when Google login button is clicked;

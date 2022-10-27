@@ -15,7 +15,7 @@ export default function App() {
     const setUser = useCredentialsStore(state => state.setUser);
   //END: STATE DECLARATION
 
-
+  console.log(user, 'in app.tsx');
   /*
     React Router, a library for Client-Side Rendering, with 4 different paths:
     1. "/" - main launch page

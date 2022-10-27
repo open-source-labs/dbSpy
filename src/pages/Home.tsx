@@ -1,6 +1,7 @@
 // React & React Router Modules
-import React from "react";
+import React, {useEffect} from "react";
 import {NavLink} from 'react-router-dom';
+import axios from "axios";
 
 //Components imported
 import Contributors from '../components/Home/Contributors';
@@ -9,10 +10,24 @@ import screenshot from '../assets/ScreenshotDemo.png';
 
 /* "Home" Component - main launch page */
 export default function Home() {
-  //STATE DECLARATION (dbSpy3.0)
-  const user = useCredentialsStore(state => state.user);
-  const setUser = useCredentialsStore(state => state.setUser);
+  const user = useCredentialsStore((state: { user: any; }) => state.user);
+  const setUser = useCredentialsStore((state: { setUser: any; }) => state.setUser);
   //END: STATE DECLARATION
+
+  /* Retrieve user data from server*/
+  useEffect(() => {
+    const getUserData = async () => {
+      const response = await axios('http://localhost:8080/api/me', {
+        withCredentials: true
+      })
+      setUser(response.data)
+      return response.data
+    }
+    console.log(window.location.search);
+    getUserData()
+    window.history.replaceState({}, document.title, "/");
+  },[])
+  
   
   return (
   <div className="">
