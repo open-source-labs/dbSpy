@@ -18,7 +18,6 @@ function Navbar() {
   //FOR FUTURE DEVS: there's probably a more elegant way to do this with settings store and sharing that state globally but tailwind cascades dark mode from the top element so this works
   const toggleClass = () => {
     const page = document.getElementById("body");
-    //TS gives a "potentially null" warning but it does not error when deployed
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   }

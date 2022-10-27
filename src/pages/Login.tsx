@@ -8,6 +8,10 @@ import useCredentialsStore from '../store/credentialsStore';
 import axios from 'axios';
 import { response } from 'express';
 
+// const strWindowFeatures =
+// 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+// window.open('http://localhost:8080/auth/google', '_self', strWindowFeatures);
+
 /* "Login" Component - login page for user login */
 export default function Login() {
   //STATE DECLARATION (dbSpy3.0)

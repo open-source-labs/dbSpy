@@ -65,8 +65,6 @@ const DBDisplay = () => {
           <Flow />
         }
       </div>
-      
-
     </div> 
   )
 };
