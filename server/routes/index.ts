@@ -15,6 +15,8 @@ import Redis from 'ioredis'
 import cors from 'cors'
 import { getCurrentUser } from '../service/session.service'
 
+const client_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
+
 
 const routes = async (app: Express) => {
     // setup UpStash client and Redis store 
@@ -50,7 +52,7 @@ const routes = async (app: Express) => {
 
     app.use('/api/logout', (res: Response, req: Request) => {
         req.session.destroy((err) => {
-            res.redirect('http://localhost:8080/login')
+            res.redirect(`${client_url}/login`)
         })
     })
 

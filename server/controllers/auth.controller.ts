@@ -9,6 +9,8 @@ declare module "express-session" {
     }
 }
 
+const client_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
+
 export const handleGoogleAuth: RequestHandler = async (req, res) => {
     // get code from qs
     const code = req.query.code as string
@@ -63,10 +65,10 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
         const queryStr = 'true'
 
-        res.redirect(301, 'http://localhost:8080/?success=' + queryStr)
+        res.redirect(301, `${client_url}/?success=` + queryStr)
 
     } catch (error) {
         log.error(error, "User authorization failed")
-        return res.redirect(301, 'http://localhost:8080/login')
+        return res.redirect(301, `${client_url}/login`)
     }
 }

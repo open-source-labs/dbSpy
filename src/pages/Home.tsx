@@ -8,6 +8,8 @@ import Contributors from '../components/Home/Contributors';
 import useCredentialsStore from "../store/credentialsStore";
 import screenshot from '../assets/ScreenshotDemo.png';
 
+// const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
+
 /* "Home" Component - main launch page */
 export default function Home() {
   const user = useCredentialsStore((state: { user: any; }) => state.user);
@@ -17,13 +19,13 @@ export default function Home() {
   /* Retrieve user data from server*/
   useEffect(() => {
     const getUserData = async () => {
-      const response = await axios('http://localhost:8080/api/me', {
-        withCredentials: true
-      })
+        const response = await axios(`http://localhost:8080/api/me`, {
+          withCredentials: true
+        })
+      console.log(user);
       setUser(response.data)
       return response.data
     }
-    console.log(window.location.search);
     getUserData()
     window.history.replaceState({}, document.title, "/");
   },[])

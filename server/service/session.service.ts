@@ -9,11 +9,13 @@ declare module "express-session" {
 }
 
 export const getCurrentUser: RequestHandler = async (req, res) => {
-    const accessToken = req.session.user;
+    if (req.session.user) {
 
-    const decoded = jwt.verify(accessToken as string, process.env.TOKEN_KEY as string, (err: any, user: any) => {
-        return user.user;
+        const accessToken = req.session.user;
 
-    })
-    res.status(200).json(decoded);
+        const decoded = jwt.verify(accessToken as string, process.env.TOKEN_KEY as string, (err: any, user: any) => {
+            if (user.user) return user.user;
+        })
+        res.status(200).json(decoded);
+    }
 }

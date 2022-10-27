@@ -18,7 +18,7 @@ export const getGoogleAuthToken: any = async ({ code }: { code: string }) => {
         code,
         client_id: process.env.GOOGLE_AUTH_CLIENT_ID,
         client_secret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-        redirect_uri: process.env.GOOGLE_AUTH_CALLBACK,
+        redirect_uri: process.env.DEV_GOOGLE_AUTH_CALLBACK,
         grant_type: 'authorization_code'
     }
 

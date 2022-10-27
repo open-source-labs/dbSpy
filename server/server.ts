@@ -4,7 +4,7 @@ import log from './logger/index'
 import routes from './routes'
 dotenv.config()
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 
@@ -13,6 +13,6 @@ app.use(express.urlencoded({ extended: true }))
 
 
 app.listen(3000, () => {
-    log.info(`Running at http://localhost:${port}`);
+    log.info(`Running at ${port}`);
     routes(app);
 })

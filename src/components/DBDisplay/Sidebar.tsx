@@ -11,6 +11,8 @@ import createInitialEdges from '../../components/ReactFlow/Edges';
 import createInitialNodes from '../../components/ReactFlow/Nodes';
 
 
+// const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
+
 const Sidebar = (props:any) => {
 //STATE DECLARATION (dbSpy3.0)
   const setDbCredentials = useCredentialsStore((state)=> state.setDbCredentials);
@@ -44,7 +46,7 @@ const Sidebar = (props:any) => {
     setConnectPressed(true);
    
     const dbSchema = await axios.post(`api/sql/${values.db_type}/getSchema`, values,{
-      baseURL: 'http://localhost:8080'
+      baseURL: 'http://localhost:3000'
     })
       .then((res) => res.data)
       .catch((err)=>console.log('getSchema error', err));
