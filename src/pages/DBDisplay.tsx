@@ -65,66 +65,6 @@ const DBDisplay = () => {
           <Flow />
         }
       </div>
-<<<<<<< HEAD
-      
-
-=======
-      {/* MODAL FOR ADD NEW REFERENCES */}
-      {!editRefMode ? <></> : (
-      <div id="addReferenceModal" className="addReferenceModal">
-        {/* <!-- Add Table Modal content --> */}
-        <div className="modal-content content-center bg-[#f8f4eb] dark:bg-slate-800 rounded-md border-0 w-[30%] min-w-[300px] max-w-[550px] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
-          <p className="text-center mb-4 text-slate-900 dark:text-[#f8f4eb]">Foreign Key References</p>
-          <div className='flex-col justify-between w-[50%] max-w-[400px] mx-auto'>
-            <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>Primary Key Name: </label>
-              <input id='PrimaryKeyNameInput' className='foreignKeyInput w-[100%]'/>
-            </div>
-            <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>Reference Key Name: </label>
-              <input id='ReferencesPropertyNameInput' className='foreignKeyInput w-[100%]'/>
-            </div>
-            <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>Primary Key Table Name: </label>
-              <input id='PrimaryKeyTableNameInput' className='foreignKeyInput w-[100%]'/>
-            </div>
-            <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>Reference Table Name: </label>
-              <input id='ReferencesTableNameInput' className='foreignKeyInput w-[100%]'/>
-            </div>
-              <div className='text-center pb-2'>
-              <label className='dark:text-[#f8f4eb]'>Is Destination: </label><input id='IsDestinationInput' className='foreignKeyInput w-[100%]'/>
-            </div>
-            <div className='text-center mb-6'>
-              <label className='dark:text-[#f8f4eb]'>Constraint Name: </label>
-              <input id='constrainNameInput' className='foreignKeyInput w-[100%]'/>
-            </div>
-          <div className='flex-between text-center'>
-            <button 
-              onClick={()=> {
-                setReference ([{
-                  PrimaryKeyName: document.querySelector('#PrimaryKeyNameInput').value,
-                  ReferencesPropertyName: document.querySelector('#ReferencesPropertyNameInput').value,
-                  PrimaryKeyTableName: document.querySelector('#PrimaryKeyTableNameInput').value,
-                  ReferencesTableName: document.querySelector('#ReferencesTableNameInput').value,
-                  IsDestination: document.querySelector('#IsDestinationInput').value, 
-                  constrainName: document.querySelector('#constrainNameInput').value,
-                }]);
-                setEditRefMode(false);
-              }}
-              className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">SAVE</button>
-            <button 
-              onClick={()=>{
-                setEditRefMode(false);
-              }} 
-              className="text-slate-900 dark:text-[#f8f4eb] mx-4 modalButton">CANCEL</button>
-            </div>
-          </div> 
-        </div>
-      </div>
-      )}
-      {/* END: MODAL FOR ADD NEW REFERENCES */}
->>>>>>> be01e15 (added hover effect to edit and delete buttons on tables, adjusted add table modal)
     </div> 
   )
 };

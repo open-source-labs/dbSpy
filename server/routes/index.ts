@@ -13,7 +13,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 import Redis from 'ioredis'
 import cors from 'cors'
-import { getCurrentUser } from './service/sessionService'
+import { getCurrentUser } from '../service/session.service'
 
 
 const routes = async (app: Express) => {
