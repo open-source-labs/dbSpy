@@ -9,7 +9,7 @@
 
 <div align="center">
   
-![logo 5](https://github.com/open-source-labs/dbSpy/blob/main/src/assets/newLogoWhite.png?raw=true)
+![logo2x](https://user-images.githubusercontent.com/101940529/198836631-31a657f7-feaa-4247-8abc-cedb86540e21.png)
 
 </div>
 
@@ -39,6 +39,7 @@
 8. **Screenshot:** Take a screenshot of the canvas with all your tables
 
 9. **Dark Mode** Additional visual setting to provide a more comfortable viewing experience in low-light environements
+![dbSpyTheme](https://user-images.githubusercontent.com/101940529/198836752-9727c0b4-4a8f-459b-be39-81922be15fd3.gif)
 
 ## Future Enhancements
 
@@ -122,6 +123,7 @@ How To Start
 2. You will be redirected to the display page where you can connect, upload, or build a mySQL or Postgres database.
 
 Connecting to an existing database
+![Screenshot 2022-10-29 093105](https://user-images.githubusercontent.com/101940529/198837154-072d2d90-3f81-4fed-ab17-8301f1387b5c.png)
 
 1. Click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
 2. Select the database type from the dropdown.
@@ -143,6 +145,7 @@ Starting an ER diagram from scratch
 Adding a new row to a table
 
 1. To add a new row in a table, click on the add icon on the top right of the table node. This will render a new row in the table in edit mode.
+![Screenshot 2022-10-29 093211](https://user-images.githubusercontent.com/101940529/198837146-e81a858a-a7aa-41d8-9396-e4db38776fa5.png)
 
 Editing an existing row in a table
 
