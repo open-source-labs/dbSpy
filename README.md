@@ -76,11 +76,11 @@
 - Populate the .env file with the newly created code below:
 
 ```bash
-CLIENT_ID = [client id]
-CLIENT_SECRET = [client secret]
-GOOGLE_AUTH_CALLBACK = 'http://localhost:3000/api/oauth/google'
+GOOGLE_AUTH_CALLBACK = ''
 DATABASE_URL = [mysql url for storing user data]
-SERVER_ENDPOINT = 'http://localhost:3000'
+DEV_SERVER_ENDPOINT = 'http://localhost:3000'
+DEV_CLIENT_ENDPOINT = 'http://localhost:8080'
+GOOGLE_AUTH_CALLBACK = 'http://localhost:3000/api/oauth/google'
 GOOGLE_AUTH_CLIENT_ID = [google auth client id]
 GOOGLE_AUTH_CLIENT_SECRET = [google auth client secret]
 REDIS_URL = [redis url]

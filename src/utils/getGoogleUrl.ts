@@ -3,7 +3,7 @@ export const getGoogleAuthUrl = () => {
 
     const options = {
         redirect_uri: 'http://localhost:3000/api/oauth/google',
-        client_id: '971147535395-bd0vjrequipsrg5c74htoafjbmubgn3m.apps.googleusercontent.com',
+        client_id: process.env.GOOGLE_AUTH_CLIENT_ID as string,
         access_type: 'offline',
         response_type: 'code',
         prompt: 'consent',
