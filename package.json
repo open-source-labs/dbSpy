@@ -2,7 +2,7 @@
   "name": "dbspy",
   "version": "3.0.0",
   "description": "The BEST database visualizer, baby!",
-  "main": "index.js",
+  "main": "server/server.ts",
   "engines": {
     "npm": "6.x",
     "node": "16.x"
@@ -15,7 +15,7 @@
     "preview": "vite preview"
   },
   "author": "Kris Magat, Anthony Al-Rifai, Adrian Reczek, Santiago Gil, Kevin Wang",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@testing-library/react": "^13.3.0",
     "@types/node-fetch": "^2.6.2",
