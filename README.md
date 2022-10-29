@@ -9,7 +9,7 @@
 
 <div align="center">
   
-![logo 5](https://user-images.githubusercontent.com/11093217/179366043-624ba23a-408d-499a-a1aa-162acf56d247.jpg)
+![logo 5](https://github.com/open-source-labs/dbSpy/blob/main/src/assets/newLogoWhite.png?raw=true)
 
 </div>
 
@@ -128,23 +128,17 @@ Connecting to an existing database
 3. Input your database URI information OR database connection credentials and click on "Connect".
 4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
 
-![dbSpy_connectToDB](https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif)
-
-![dbSpy_makeAndExecuteChanges](https://user-images.githubusercontent.com/83368864/179806700-4f67386b-d66d-469b-a92d-856d7bacc677.gif)
+![dbSpy_connectToDB](https://github.com/open-source-labs/dbSpy/blob/main/src/assets/ScreenshotDemo.png?raw=true)
 
 Uploading your database's SQL file
 
 1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a dialog box for you to select the SQL file you wish to upload.
 2. Once the file uploads, the canvas will render and generate the tables and their relationships.
 
-![dbSpy_uploadSQLFile](https://user-images.githubusercontent.com/83368864/179806547-52b4ffd3-bb15-4d13-b9d6-27fd1e777da3.gif)
-
 Starting an ER diagram from scratch
 
 1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will render the canvas for you to create your database schema.
 2. Click on "Add Table" to name the first table and start building your database.
-
-![dbSpy_buildDatabase](https://user-images.githubusercontent.com/83368864/179806594-fa665842-43a4-4cd0-9da2-abbb05d76d89.gif)
 
 Adding a new row to a table
 
