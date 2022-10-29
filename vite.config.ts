@@ -18,6 +18,11 @@ export default defineConfig({
     },
   },
   build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html')
+      }
+    },
     outDir: 'dist',
     commonjsOptions: {
       esmExternals: true,

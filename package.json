@@ -9,7 +9,7 @@
   },
   "scripts": {
     "seed": "ts-node ./server/seed/seed.ts",
-    "start": "ts-node server/server.js",
+    "start": "ts-node server/server.ts",
     "build": "vite build",
     "dev": "concurrently \"vite serve\" \"ts-node server/server.ts\"",
     "preview": "vite preview"
