@@ -1,8 +1,6 @@
 import { defineConfig } from 'vite';
 import dns from 'dns';
 import react from '@vitejs/plugin-react';
-import EnvironmentPlugin from 'vite-plugin-environment'
-import { resolve } from 'path'
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -18,12 +16,10 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html')
-      }
-    },
     outDir: 'dist',
+    rollupOptions: {
+      input: './src/index.tsx',
+    },
     commonjsOptions: {
       esmExternals: true,
     },
@@ -32,6 +28,5 @@ export default defineConfig({
     react({
       include: '**/*.{jsx,tsx}',
     }),
-    EnvironmentPlugin('all')
   ],
 });
