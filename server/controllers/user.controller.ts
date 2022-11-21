@@ -3,7 +3,10 @@ import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
 
+
+
 export const findUser = async (email: string) => {
+    console.log('here in user.controller findUser')
     const connection = mysql.createConnection(process.env.DATABASE_URL!);
     const queryStr = 'SELECT * FROM users WHERE email = ?'
     return new Promise((resolve, reject) => {
