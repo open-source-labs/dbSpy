@@ -15,5 +15,5 @@ mysqlRouter.post('/getLogs', getLogInfo, (req, res) => {
     res.status(200).json(res.locals.logTable);
 });
 
-export default mysqlRouter
+export default mysqlRouter;
 

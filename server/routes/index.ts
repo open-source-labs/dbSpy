@@ -15,6 +15,7 @@ import Redis from 'ioredis'
 import cors from 'cors'
 import { getCurrentUser } from '../service/session.service'
 
+// TODO: DEV_CLIENT_ENDPOINT doesn't exist etc.
 const client_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
 
 
@@ -38,7 +39,8 @@ const routes = async (app: Express) => {
             sameSite: 'lax',
         }
     }))
-
+    
+    // TODO: Healthcheck is a test. Doesn't require testing - can add a server listener event instead
     app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200))
 
     app.get('/api/oauth/google', handleGoogleAuth)
@@ -49,7 +51,7 @@ const routes = async (app: Express) => {
 
     app.use('/api/me', getCurrentUser)
 
-
+    // TODO: Never called in frontend currently
     app.use('/api/logout', (res: Response, req: Request) => {
         req.session.destroy((err) => {
             res.redirect(`${client_url}/login`)
