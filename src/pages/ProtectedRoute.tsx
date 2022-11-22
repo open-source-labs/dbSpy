@@ -18,4 +18,4 @@ const ProtectedRoute: React.FC<PropsWithChildren> = ({user:any, children}) => {
   return user ? children : <Navigate to='/login' replace />
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

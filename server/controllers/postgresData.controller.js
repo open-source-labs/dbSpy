@@ -107,7 +107,7 @@ export const objSchema = (req, res, next) => {
 
   //
   // PATCH TO RENAME SOME DATA FIELDS
-  //
+  // TODO: CAN THIS BE FOLDED INTO THE FIRST ITERATION?
   Object.keys(results).forEach((table) => {
     Object.keys(results[table]).forEach((prop) => {
       let propObj = results[table][prop];
@@ -754,7 +754,9 @@ export const openSchema = (req, res, next) => {
   );
 };
 
-export const postSchema = (req, res) => {};
+export const postSchema = (req, res) => {
+  // FIXME: This doesn't do anything but has a test route ??
+};
 
 export const handleQueries = async (req, res, next) => {
   /* Assumption, being passed an array of queries in req.body

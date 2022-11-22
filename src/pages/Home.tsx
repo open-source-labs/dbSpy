@@ -22,11 +22,12 @@ export default function Home() {
         const response = await axios(`http://localhost:8080/api/me`, {
           withCredentials: true
         })
-      //console.log(user);
+      // console.log(user);
       setUser(response.data)
       return response.data
     }
-    getUserData()
+    getUserData();
+    // TODO: Look into next line more. Necessary?
     window.history.replaceState({}, document.title, "/");
   },[])
   
@@ -122,6 +123,7 @@ export default function Home() {
       </div>
     </div>
   </section>
+  {/* TODO: ADD TEAM GAMJATANG */}
   <Contributors />
   <footer className="bg-gray-200 text-center lg:text-left dark:bg-slate-800">
   <div className="text-gray-700 text-center p-4 dark:text-[#f8f4eb]">

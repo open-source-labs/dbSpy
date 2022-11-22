@@ -14,15 +14,17 @@ import { getLogInfo, setLogInfo } from '../controllers/postgresLog.controller';
 
 const postgresRouter = Router();
 
-
+// TODO: Make RESTFUL API
 postgresRouter.post('/getSchema', getSchema, objSchema, (req, res) => {
   res.status(200).json(res.locals.result);
 });
 
+// TODO: Migrate following into test file -- Never used in frontend
 postgresRouter.get('/openSchema', openSchema, (req, res) => {
   res.status(200).json({ ok: 'ok' });
 });
 
+// TODO: Migrate following into test file -- Never used in frontend
 postgresRouter.post('/postSchema', postSchema, (req, res) => {
   res.status(200).json([
     {
@@ -46,15 +48,18 @@ postgresRouter.post('/postSchema', postSchema, (req, res) => {
   ]);
 });
 
+// TODO: Review following unused handlers: No function body -- QUERY lead?
 // Receiving an array of strings (queries)
 postgresRouter.post('/handleQueries', handleQueries, (req, res) => {
   res.status(200).json({ success: res.locals.success });
 });
 
+// No function body -- Associated with Save feature - featureTab
 postgresRouter.post('/saveSchema', saveSchema, (req, res) => {
   res.status(200).send('Save successful!');
 });
 
+// No function body --
 postgresRouter.post('/deleteSchema', deleteSchema, (req, res) => {
   res.status(200).send('Delete successful!');
 });
