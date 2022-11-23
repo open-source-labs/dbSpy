@@ -5,6 +5,8 @@
 node_modules/
 server/db_schemas
 
+coverage/
+
 # output from webpack
 dist/
 
