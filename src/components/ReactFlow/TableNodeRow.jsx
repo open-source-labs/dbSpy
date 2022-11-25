@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fa';
 
 export default function TableNodeRow({ row, id }) {
+  // TODO: can we take reference out of the store? only accessed in this component I believe
   const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore(
     (state) => state
   );
@@ -24,6 +25,7 @@ export default function TableNodeRow({ row, id }) {
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
 
+  // TODO: change to formData state
   const selectedRow = useRef();
   const field_name = useRef();
   const data_type = useRef();
@@ -32,6 +34,7 @@ export default function TableNodeRow({ row, id }) {
   const IsForeignKey = useRef();
 
   //HELPER FUNCTIONS
+  // TODO: these modes can be one state: a string declaring the mode
   const inDefaultMode = () => {
     setDefaultMode(true);
     setEditMode(false);
@@ -97,7 +100,7 @@ export default function TableNodeRow({ row, id }) {
     setNodes(initialNodes);
     // }
     setDefaultMode();
-    alert('Click EDIT then SAVE on the target table row.');
+    // alert('Click EDIT then SAVE on the target table row.');
   };
 
   const onDelete = () => {
@@ -108,7 +111,6 @@ export default function TableNodeRow({ row, id }) {
     delete currentSchema[tableRef][rowRef];
     setSchemaStore(currentSchema);
   };
-
 
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (

@@ -13,7 +13,6 @@ import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
 
-
 const nodeTypes = {
   table: TableNode,
 };
@@ -45,4 +44,3 @@ export default function Flow() {
     </div>
   );
 }
-
