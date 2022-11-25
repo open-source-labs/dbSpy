@@ -11,9 +11,9 @@ let queryStore = (
   queries: [],
   // setQueryStore can potentially be used for undo / redo functionality later
   setQueryStore: (queries: string[]) => set((state: any) => ({ ...state, queries })),
-  addTable: (tableName: string) =>
+  writeAddTableQuery: (tableName: string) =>
     set((state: any) => {
-      const newQuery = `create table "public"."${tableName}" ();`;
+      const newQuery: string = `create table "public"."${tableName}" ();`;
       return {
         ...state,
         queries: [...state.queries, newQuery],
@@ -24,5 +24,3 @@ let queryStore = (
 const useQueryStore = create(devtools(queryStore));
 
 export default useQueryStore;
-
-//queryStore is not in use. This can be used for SQL query generation functionality.
