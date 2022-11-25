@@ -239,6 +239,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={openAddTableModal}
+                  id="addTable"
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
@@ -360,24 +361,36 @@ export default function FeatureTab(props: any) {
         </div>
 
         {/* MODAL FOR ADD NEW TABLE POPUP */}
-        <div ref={addTableModal} id="addTableModal" className="addTableModal">
+        <div
+          ref={addTableModal}
+          id="addTableModal"
+          className="addTableModal"
+          style={{ display: 'none' }}
+        >
           {/* <!-- Add Table Modal content --> */}
           <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] flex-col rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
             <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
               Enter your table name.
             </p>
             <div className="flex justify-center">
-              <input ref={tableNameInput} className="mb-4 w-[300px]" autoComplete="off" />
+              <input
+                ref={tableNameInput}
+                id="tableNameInput"
+                className="mb-4 w-[300px]"
+                autoComplete="off"
+              />
             </div>
             <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
               <button
                 onClick={() => closeAddTableModal(false)}
+                id="closeAddTable"
                 className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => closeAddTableModal(true)}
+                id="closeAddTable-true"
                 className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
               >
                 Proceed
