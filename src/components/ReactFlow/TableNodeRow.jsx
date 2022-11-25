@@ -20,9 +20,9 @@ export default function TableNodeRow({ row, id }) {
   );
   const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
   const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
-  const [defaultMode, setDefaultMode] = useState(true);
-  const [editMode, setEditMode] = useState(false);
-  const [deleteMode, setDeleteMode] = useState(false);
+
+  // Rows can be in one of three modes: default, edit, or delete
+  const [mode, setMode] = useState('default');
 
   const selectedRow = useRef();
   const field_name = useRef();
@@ -30,25 +30,6 @@ export default function TableNodeRow({ row, id }) {
   const additional_constraints = useRef();
   const IsPrimaryKey = useRef();
   const IsForeignKey = useRef();
-
-  //HELPER FUNCTIONS
-  const inDefaultMode = () => {
-    setDefaultMode(true);
-    setEditMode(false);
-    setDeleteMode(false);
-  };
-
-  const inEditMode = () => {
-    setEditMode(true);
-    setDefaultMode(false);
-    setDeleteMode(false);
-  };
-
-  const inDeleteMode = () => {
-    setDeleteMode(true);
-    setDefaultMode(false);
-    setEditMode(false);
-  };
 
   const onSave = () => {
     const defaultRef = [
@@ -96,7 +77,7 @@ export default function TableNodeRow({ row, id }) {
     const initialNodes = createInitialNodes(currentSchema, initialEdges);
     setNodes(initialNodes);
     // }
-    setDefaultMode();
+    setMode('default');
     alert('Click EDIT then SAVE on the target table row.');
   };
 
@@ -109,7 +90,6 @@ export default function TableNodeRow({ row, id }) {
     setSchemaStore(currentSchema);
   };
 
-
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
@@ -120,7 +100,7 @@ export default function TableNodeRow({ row, id }) {
         className="dark:text-[#f8f4eb] "
       >
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
-          {editMode || row.field_name === 'newRow' ? (
+          {mode === 'edit' || row.field_name === 'newRow' ? (
             <input
               ref={field_name}
               className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
@@ -131,7 +111,7 @@ export default function TableNodeRow({ row, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
-          {editMode || row.field_name === 'newRow' ? (
+          {mode === 'edit' || row.field_name === 'newRow' ? (
             <select
               ref={data_type}
               className="bg-[#f8f4eb] dark:text-black"
@@ -156,7 +136,7 @@ export default function TableNodeRow({ row, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
-          {editMode || row.field_name === 'newRow' ? (
+          {mode === 'edit' || row.field_name === 'newRow' ? (
             <select
               ref={additional_constraints}
               className="bg-[#f8f4eb] dark:text-black"
@@ -172,7 +152,7 @@ export default function TableNodeRow({ row, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {editMode || row.field_name === 'newRow' ? (
+          {mode === 'edit' || row.field_name === 'newRow' ? (
             <select
               ref={IsPrimaryKey}
               className="bg-[#f8f4eb] dark:text-black"
@@ -186,7 +166,7 @@ export default function TableNodeRow({ row, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
-          {editMode || row.field_name === 'newRow' ? (
+          {mode === 'edit' || row.field_name === 'newRow' ? (
             <select
               ref={IsForeignKey}
               onChange={(e) => {
@@ -221,23 +201,23 @@ export default function TableNodeRow({ row, id }) {
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
-          {editMode || row.field_name === 'newRow' ? (
+          {mode === 'edit' || row.field_name === 'newRow' ? (
             <button
               id={`${id}-saveBtn`}
               onClick={() => {
                 onSave();
-                inDefaultMode();
+                setMode('default');
               }}
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
             >
               <FaRegSave size={17} />
             </button>
-          ) : deleteMode ? (
+          ) : mode === 'delete' ? (
             <button
               id={`${id}-confirmBtn`}
               onClick={() => {
                 onDelete();
-                inDefaultMode();
+                setMode('default');
               }}
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
             >
@@ -246,7 +226,7 @@ export default function TableNodeRow({ row, id }) {
           ) : (
             <button
               id={`${id}-editBtn`}
-              onClick={inEditMode}
+              onClick={() => setMode('edit')}
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
             >
               <FaRegEdit size={17} />
@@ -254,26 +234,26 @@ export default function TableNodeRow({ row, id }) {
           )}
         </td>
         <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-          {editMode ? (
-            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
+          {mode === 'edit' ? (
+            <button id={`${id}-cancelBtn`} onClick={() => setMode('default')}>
               <FaRegWindowClose size={17} />
             </button>
-          ) : editMode || row.field_name === 'newRow' ? (
+          ) : mode === 'edit' || row.field_name === 'newRow' ? (
             <button
               id={`${id}-cancelBtn`}
               onClick={() => {
                 onDelete();
-                inDefaultMode();
+                setMode('default');
               }}
             >
               <FaRegWindowClose size={17} />
             </button>
-          ) : deleteMode ? (
-            <button id={`${id}-cancelBtn`} onClick={inDefaultMode}>
+          ) : mode === 'delete' ? (
+            <button id={`${id}-cancelBtn`} onClick={() => setMode('default')}>
               <FaRegWindowClose size={17} />
             </button>
           ) : (
-            <button id={`${id}-deleteBtn`} onClick={inDeleteMode}>
+            <button id={`${id}-deleteBtn`} onClick={() => setMode('delete')}>
               <FaRegTrashAlt size={17} />
             </button>
           )}
