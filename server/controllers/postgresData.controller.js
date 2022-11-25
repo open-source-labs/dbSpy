@@ -755,7 +755,7 @@ export const openSchema = (req, res, next) => {
 };
 
 export const postSchema = (req, res) => {
-  // FIXME: This doesn't do anything but has a test route ??
+  // TODO: This doesn't do anything but has a test route ??
 };
 
 export const handleQueries = async (req, res, next) => {

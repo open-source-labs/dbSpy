@@ -13,9 +13,10 @@
     "build": "vite build",
     "dev": "concurrently \"vite serve\" \"ts-node server/server.ts\"",
     "preview": "vite preview",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'"
   },
-  "author": "Kris Magat, Anthony Al-Rifai, Adrian Reczek, Santiago Gil, Kevin Wang",
+  "author": "Steven Geiger, Michael Costello, Alexander Tu, Yufa Li",
   "license": "MIT",
   "dependencies": {
     "@testing-library/react": "^13.4.0",
@@ -81,6 +82,7 @@
     "@types/testing-library__jest-dom": "^5.14.5",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
+    "@vitejs/plugin-basic-ssl": "^0.1.2",
     "@vitejs/plugin-react": "^2.1.0",
     "autoprefixer": "^10.4.12",
     "babel-jest": "^29.3.1",
