@@ -13,7 +13,7 @@
     "build": "vite build",
     "dev": "concurrently \"vite serve\" \"ts-node server/server.ts\"",
     "preview": "vite preview",
-    "test": "jest",
+    "test": "jest --verbose",
     "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'"
   },
   "author": "Steven Geiger, Michael Costello, Alexander Tu, Yufa Li",
@@ -64,6 +64,7 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
     "@types/connect-redis": "^0.0.18",
     "@types/cors": "^2.8.12",
     "@types/express-session": "^1.17.5",
