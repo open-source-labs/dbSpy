@@ -2,7 +2,7 @@ import { Express, Request, Response, NextFunction, Router } from 'express';
 import { handleGoogleAuth } from '../controllers/auth.controller';
 import { postgresRouter } from './postgres.router';
 import mysqlRouter from './mysql.router';
-import session from 'express-session'
+import session from 'express-session';
 declare module "express-session" {
     interface SessionData {
         user: string;

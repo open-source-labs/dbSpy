@@ -1,11 +1,13 @@
 import fs from 'fs';
+import { Buffer } from 'node:buffer';
 import path from 'path';
 import { promisify } from 'util';
 const exec = promisify(require('child_process').exec);
 import mySQL from 'mysql2';
-// import mysqldump from 'mysqldump';
+//import mysqldump from 'mysqldump';
 const mysqldump = require('mysqldump');
 import dotenv from 'dotenv';
+import { NONAME } from 'dns';
 dotenv.config();
 
 const mySQLdataController = {};
@@ -30,6 +32,11 @@ export const getSchema = async (req, res, next) => {
         user: req.body.username,
         password: req.body.password,
         database: req.body.database_name,
+        // Add SSL certification to avoid security issue.
+          ssl: {
+        key: fs.readFileSync('./.cert/key.pem').toString(),
+        cert: fs.readFileSync('./.cert/cert.pem').toString(),
+       }
       },
       dumpToFile: '../db_schemas',
     });

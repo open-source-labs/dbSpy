@@ -97,7 +97,7 @@ const Sidebar = (props:any) => {
           </div>
           <br></br>
         </div>
-         : <></>}
+        : <></>} 
         <span className='form-item'>
           <label htmlFor="hostname" className='dark:text-[#f8f4eb]' >Host</label>
           <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname' autoComplete='off' onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
