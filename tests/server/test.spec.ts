@@ -1,8 +1,8 @@
 import request from 'supertest';
 import express from 'express'
-import { postgresRouter } from '../server/routes/postgres.router'
+import { postgresRouter } from '../../server/routes/postgres.router'
 import dotenv from 'dotenv';
-import routes from '../server/routes'
+import routes from '../../server/routes'
 
 describe('does stuff', () => {
   it('runs tests', () => {
@@ -32,6 +32,10 @@ describe('touches the server', () => {
     const response = await request(app).get('/api/healthcheck');
     expect(response.statusCode).toBe(200);
   })
+  // it('throws an error for invalid post requests for sql', async() => {
+
+  //   const response = await request(app).post('/api/sql/postgres')
+  // })
 
 
 })
