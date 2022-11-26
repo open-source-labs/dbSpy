@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 // Helps properly render router pages/components
 import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
@@ -26,7 +26,6 @@ describe("placeholder", () => {
     await userEvent.click(btnTest);
     expect(mockFn).toBeCalled;
   })
-
   it('Renders signup', () => {
     render(<Signup />);
     expect(screen.getByText('Sign Up with Google')).toBeInTheDocument;
@@ -35,8 +34,13 @@ describe("placeholder", () => {
 
 describe('DB Display Interface', () => {
   // render DBDisplay.tsx
+  let container: any = null;
   beforeEach(() => {
-    render(<DBDisplay />);
+    container = document.createElement('div');
+    container.setAttribute('id', 'dbDisplayCount');
+    document.body.appendChild(container);
+    render(<DBDisplay />, container);
+    // render(<DBDisplay />);
     global.ResizeObserver = jest.fn().mockImplementation(() => ({
       observe: jest.fn(),
       unobserve: jest.fn(),
@@ -44,6 +48,11 @@ describe('DB Display Interface', () => {
     }))
   })
 
+  afterEach(() => {
+    // unmountComponentAtNode(container);
+    container.remove();
+    container = null;
+  })
   // Lefthand features toolbar
   it('should render features tab', () => {
     expect(screen.getByText('Action')).toBeInTheDocument;
@@ -60,7 +69,7 @@ describe('DB Display Interface', () => {
   })
   // press buttons in featuretab - running into issues checking that userEvent.click is working
   xit('does stuff in featuretab', () => {
-
+    
     const createTableModal = document.querySelector('.addTableModal') as Element;
     const styles = getComputedStyle(createTableModal) as CSSStyleDeclaration;
     expect(styles.display).toBe('none');
@@ -92,11 +101,8 @@ describe('DB Display Interface', () => {
     await userEvent.click(anchor);
     expect(document.getElementsByClassName('flow').length).toBe(1);
     
-    const inputBox = document.querySelector('#tableNameInput') as Element
     // Type into our input value
-    // userEvent.type(inputBox, 'Hello World');
-    // Check that input value
-    // expect(inputBox.current.value)
+    const inputBox = document.querySelector('#tableNameInput') as Element
     await userEvent.type(tableNameInput, `first table`)
     // Click on proceed to create table
     const proceedBtn = document.querySelector('#closeAddTable-true') as Element;
@@ -140,5 +146,46 @@ describe('DB Display Interface', () => {
     await userEvent.click(anchor);
     await userEvent.click(proceedBtn);
     expect(document.getElementsByClassName('react-flow__node-table').length).toBe(4);
+  })
+});
+
+describe('Table Row Generation', () => {
+  beforeEach(() => {
+    render(<DBDisplay />);
+    global.ResizeObserver = jest.fn().mockImplementation(() => ({
+      observe: jest.fn(),
+      unobserve: jest.fn(),
+      disconnect: jest.fn(),
+    }))
+  })
+  
+  
+  it('Should begin empty', async () => {
+    const anchor = document.querySelector('#addTable') as Element;
+    const proceedBtn = document.querySelector('#closeAddTable-true') as Element;
+    const tableNameInput = document.querySelector('#tableNameInput') as Element;
+    await userEvent.click(anchor);
+    await userEvent.type(tableNameInput, `test-table`);
+    await userEvent.click(proceedBtn);
+    
+    // expect(document.getElementsByClassName('react-flow__node-table').length).toBe(6);
+    // has tr with class empty row, length of tbody children is 1
+    const table = document.querySelector(`div[data-id="test-table"]`) as Element;
+    // console.log('table:', table);
+    const tableRows = table.querySelectorAll('tbody tr');
+    // console.log('tablerows:', tableRows);
+    
+    // tableRows -> <tr>
+    expect(tableRows).toHaveLength(1);
+  })
+  xit('Add a single row', () => {
+    expect('test').toBe('exist');
+    // Expect row node length === 2
+    // Have inputted id exist inside of that row
+  }) 
+  xit('Add multiple rows', () => {
+    expect('test').toBe('exist');
+    // Expect row node length === 4 or etc
+    // Have inputted id(s) exist inside of that row
   })
 });
