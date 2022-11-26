@@ -13,8 +13,8 @@
     "build": "vite build",
     "dev": "concurrently \"vite serve\" \"ts-node server/server.ts\"",
     "preview": "vite preview",
-    "test": "jest",
-    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost' --verbose"
+    "test": "jest --verbose",
+    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'"
   },
   "author": "Steven Geiger, Michael Costello, Alexander Tu, Yufa Li",
   "license": "MIT",
