@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Buffer } from 'node:buffer';
+import log from '../logger'
 import path from 'path';
 import { promisify } from 'util';
 const exec = promisify(require('child_process').exec);
@@ -24,6 +24,7 @@ const mySQLdataController = {};
 export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
+  log.info("Connecting to mySQL database...")
   try {
     const result = await mysqldump({
       connection: {
