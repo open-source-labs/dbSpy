@@ -29,7 +29,7 @@ const Sidebar = (props:any) => {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     const values:any = formValues;
-    //parsing postgres database link defers from parsing mySQL database link
+    //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link){
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
@@ -48,7 +48,7 @@ const Sidebar = (props:any) => {
         values.hostname = internalLinkArray_mySQL[1];
         values.username = splitURI[2].split(':')[0];
         values.password = internalLinkArray_mySQL[0];
-        values.port = '5432';
+        values.port = '3306';
         values.database_name = name_mySQL[0];
         values.db_type = 'mysql';
       }
@@ -99,7 +99,6 @@ const Sidebar = (props:any) => {
           </select>
         </span>
         <br></br>
-        {/* {selected === 'postgres' ?  */}
         <div>
           <span className='form-item'>
             <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
@@ -111,7 +110,6 @@ const Sidebar = (props:any) => {
           </div>
           <br></br>
         </div>
-        {/* : <></> } */}
         <span className='form-item'>
           <label htmlFor="hostname" className='dark:text-[#f8f4eb]' >Host</label>
           <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname' autoComplete='off' onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />
