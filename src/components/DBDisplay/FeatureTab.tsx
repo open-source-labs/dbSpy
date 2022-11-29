@@ -1,16 +1,19 @@
 // React & React Router & React Query Modules
 import React, { useState, useRef } from 'react';
 
-// Components imported;
+// Functions imported:
 import parseSql from '../../parse';
+import createInitialEdges from '../../components/ReactFlow/Edges';
+import createInitialNodes from '../../components/ReactFlow/Nodes';
 
+// Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useQueryStore from '../../store/queryStore';
 
-import createInitialEdges from '../../components/ReactFlow/Edges';
-import createInitialNodes from '../../components/ReactFlow/Nodes';
+// Components imported:
+import TableModal from '../Modals/TableModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -20,6 +23,7 @@ export default function FeatureTab(props: any) {
   const { setWelcome } = useSettingsStore((state) => state);
   const { writeAddTableQuery } = useQueryStore((state) => state);
   const [action, setAction] = useState(new Array());
+  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
   //END: STATE DECLARATION
 
   // TODO: Uncover the history in legacy code
@@ -39,21 +43,22 @@ export default function FeatureTab(props: any) {
     if (response) action[0]();
   };
 
+  // TODO: delete these after styling new table modal
   //create references for HTML elements
-  const addTableModal: any = useRef();
-  const tableNameInput: any = useRef();
+  // const tableNameInput: any = useRef();
+  // const addTableModal: any = useRef();
   /* When the user clicks, open the modal */
-  const openAddTableModal = () => {
-    addTableModal.current.style.display = 'block';
-    addTableModal.current.style.zIndex = '100';
-    if (!schemaStore) buildDatabase();
-  };
+  // const openAddTableModal = () => {
+  //   addTableModal.current.style.display = 'block';
+  //   addTableModal.current.style.zIndex = '100';
+  //   if (!schemaStore) buildDatabase();
+  // };
   /* When the user clicks 'yes' or 'no', close it */
-  const closeAddTableModal = (response: boolean) => {
-    addTableModal.current.style.display = 'none';
-    if (response) addTable(tableNameInput.current.value);
-    tableNameInput.current.value = '';
-  };
+  // const closeAddTableModal = (response: boolean) => {
+  //   addTableModal.current.style.display = 'none';
+  //   if (response) addTable(tableNameInput.current.value);
+  //   tableNameInput.current.value = '';
+  // };
 
   // HELPER FUNCTIONS
 
@@ -134,6 +139,7 @@ export default function FeatureTab(props: any) {
 
   return (
     <>
+      {/* PAGE */}
       <div className="mx-auto max-w-2xl">
         <aside
           className="featureTab absolute inset-y-0 left-0 top-24 w-64"
@@ -238,7 +244,10 @@ export default function FeatureTab(props: any) {
               <hr />
               <li>
                 <a
-                  onClick={openAddTableModal}
+                  onClick={() => {
+                    setIsTableModalOpen(true);
+                    if (!schemaStore) buildDatabase();
+                  }}
                   id="addTable"
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
@@ -335,6 +344,8 @@ export default function FeatureTab(props: any) {
           </div>
         </aside>
 
+        {/* MODALS */}
+
         {/* MODAL FOR CONFIRMATION POPUP */}
         <div ref={confirmModal} id="confirmModal" className="confirmModal">
           {/* <!-- Confirm Modal content --> */}
@@ -360,44 +371,9 @@ export default function FeatureTab(props: any) {
           </div>
         </div>
 
-        {/* MODAL FOR ADD NEW TABLE POPUP */}
-        <div
-          ref={addTableModal}
-          id="addTableModal"
-          className="addTableModal"
-          style={{ display: 'none' }}
-        >
-          {/* <!-- Add Table Modal content --> */}
-          <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] flex-col rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
-            <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
-              Enter your table name.
-            </p>
-            <div className="flex justify-center">
-              <input
-                ref={tableNameInput}
-                id="tableNameInput"
-                className="mb-4 w-[300px]"
-                autoComplete="off"
-              />
-            </div>
-            <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
-              <button
-                onClick={() => closeAddTableModal(false)}
-                id="closeAddTable"
-                className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => closeAddTableModal(true)}
-                id="closeAddTable-true"
-                className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-              >
-                Proceed
-              </button>
-            </div>
-          </div>
-        </div>
+        {isTableModalOpen && (
+          <TableModal closeTableModal={() => setIsTableModalOpen(false)} />
+        )}
       </div>
     </>
   );
