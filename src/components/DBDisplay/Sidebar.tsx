@@ -29,22 +29,36 @@ const Sidebar = (props:any) => {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     const values:any = formValues;
+    //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link){
-                const fullLink = values.database_link;
-                const splitURI = fullLink.split('/');
-                const name = splitURI[3];
-                const internalLinkArray = splitURI[2].split(':')[1].split('@');
-                values.hostname = internalLinkArray[1];
-                values.username = name;
-                values.password = internalLinkArray[0];
-                values.port = '5432';
-                values.database_name = name;
+      const fullLink = values.database_link;
+      const splitURI = fullLink.split('/');
+      if (splitURI[0] === 'postgres:') {
+        const name = splitURI[3];
+        const internalLinkArray = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray[1];
+        values.username = name;
+        values.password = internalLinkArray[0];
+        values.port = '5432';
+        values.database_name = name;
+        values.db_type = 'postgres';
+      } else if (splitURI[0] === 'mysql:') {
+        const name_mySQL = splitURI[3].split('?');
+        const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_mySQL[1];
+        values.username = splitURI[2].split(':')[0];
+        values.password = internalLinkArray_mySQL[0];
+        values.port = '3306';
+        values.database_name = name_mySQL[0];
+        values.db_type = 'mysql';
+      }
               }
 
     //update dbCredentials
     setDbCredentials(values);
     setConnectPressed(true);
    
+    //change between which getSchema from MySQL to postgres based on db_type
     const dbSchema = await axios.post(`api/sql/${values.db_type}/getSchema`, values,{
       baseURL: 'http://localhost:3000'
     })
@@ -60,14 +74,14 @@ const Sidebar = (props:any) => {
     setConnectPressed(false);
     props.closeNav();
   };
-  //on change for db type selection, will affect state to conditionally render database URL input if type is PostgreSQL
+  //on change for db type selection, will affect state to conditionally render database URL
   const handleChange = (event: any) => {
     setSelected(event.target.value);
   }
   //END: HELPER FUNCTIONS
 
   //form state hooks
-  const [formValues, setFormValues] = useState({db_type:'postgres'});
+  const [formValues, setFormValues] = useState({ db_type: 'postgres' });
   
   return (        
       <div id='dbconnect' className='bg-[#fbf3de] dark:bg-slate-700'>
@@ -85,7 +99,6 @@ const Sidebar = (props:any) => {
           </select>
         </span>
         <br></br>
-        {selected === 'postgres' ? 
         <div>
           <span className='form-item'>
             <label htmlFor="database_link" className='dark:text-[#f8f4eb]'>Full Database Link</label>
@@ -97,7 +110,6 @@ const Sidebar = (props:any) => {
           </div>
           <br></br>
         </div>
-        : <></>} 
         <span className='form-item'>
           <label htmlFor="hostname" className='dark:text-[#f8f4eb]' >Host</label>
           <input className='form-box rounded bg-[#f8f4eb] focus:shadow-inner focus:shadow-[#eae7dd]/75 hover:shadow-sm dark:hover:shadow-[#f8f4eb]' type='text' id='hostname' name='hostname' autoComplete='off' onChange={(e)=>setFormValues({...formValues, hostname: e.target.value})} />

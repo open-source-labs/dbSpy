@@ -62,7 +62,7 @@ const writeSchema = async (command) => {
  * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 export const getSchema = (req, res, next) => {
-  log.info('Server received database uri.');
+  log.info('Server received Postgres database URI.');
   // // Option 1 - Production
   let result = null;
   //using destructuring for concise code, commented out lines
