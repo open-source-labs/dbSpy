@@ -55,9 +55,9 @@ describe('QueryGen...', () => {
   const output: any = queryGen(schema);
   console.log(output);
   it('should output an object of arrays containing a create table query', () => {
-    expect(output[0][0]).toContain('CREATE TABLE "public"."testTable"');
+    expect(output.create[0]).toContain('CREATE TABLE "public"."testTable"');
   })
   it('should output column details create table queries', () => {
-    expect(output[0][0]).toContain('"uhhh" BigInt');
+    expect(output.create[0]).toContain('"uhhh" BigInt');
   })
 })

@@ -90,6 +90,6 @@ export default function queryGen(schemaObj: SchemaObject) {
     createTableQs.push(createTableString);
 
   }
-  return [createTableQs, alterTableQs];
+  return { create: createTableQs, alter: alterTableQs };
 
 }
