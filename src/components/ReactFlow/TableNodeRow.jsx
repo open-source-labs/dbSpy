@@ -97,7 +97,6 @@ export default function TableNodeRow({ row, id }) {
     delete currentSchema[tableRef][rowRef];
     setSchemaStore(currentSchema);
   };
-  console.log({...schemaStore});
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>
