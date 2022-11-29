@@ -24,7 +24,6 @@ let schemaStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any
   setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
 });
 
-
 const useSchemaStore = create(devtools(schemaStore))
 
 export default useSchemaStore;
@@ -55,3 +54,27 @@ export default useSchemaStore;
 //       }
 //    }
 // row.TableName - row.field_name - IsPrimaryKey
+
+
+// const schema: SchemaObject = {
+//   'testTable': {
+//     'testTable': {
+//       Name: 'testColumn',
+//       Value: 10,
+//       TableName: 'testTable',
+//       References: [{
+//         PrimaryKeyName: "",
+//         ReferencesPropertyName: "",
+//         PrimaryKeyTableName: "",
+//         ReferencesTableName: "",
+//         IsDestination: false,
+//         constrainName: ""
+//       }],
+//       IsPrimaryKey: false,
+//       IsForeignKey: false,
+//       field_name: "uhhh",
+//       data_type: 'BigInt',
+//       additional_constraints: ""
+//     }
+//   }
+// }

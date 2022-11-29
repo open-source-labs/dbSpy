@@ -2,9 +2,9 @@
 //usable format for front-end
 const objSchema = (testdata) => {
   const results = {};
-  //iterate through the testdata Array
-  //Grab name property for each element of array - Table Name
-  //Assign properties to name property of the table within new obj
+  // Iterate through the testdata Array
+  // Grab name property for each element of array - Table Name
+  // Assign properties to name property of the table within new obj
   // iterate through the Properties Array
   // Assign field name as key for properties....
 
