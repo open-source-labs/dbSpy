@@ -71,7 +71,7 @@ export default function queryGen(schemaObj: SchemaObject) {
       // does data_type need handling?
       const constraintList: string = additional_constraints;
       // handle primary key string:
-      if (IsPrimaryKey) constraintList.concat(' PRIMARY KEY');
+      if (IsPrimaryKey) constraintList.concat(' PRIMARY KEY'); // TODO: revisit the positioning of PRIMARY KEY in the query
       const columnString: string = `"${field_name}" ${data_type} ${constraintList}, \n`
       createTableString += (columnString);
 
@@ -81,7 +81,7 @@ export default function queryGen(schemaObj: SchemaObject) {
       const ref = References[0]
       // `ALTER TABLE ${TableName} ADD CONSTRAINT fk${References{constrainName}} FOREIGN KEY (${field_name}) REFERENCES ${References{ReferencesTableName}}(${References{ReferencesPropertyName}})`
       if (IsForeignKey){
-        const alterTableString: string = `ALTER TABLE ${TableName} ADD CONSTRAINT fk_${ref['constrainName']} FOREIGN KEY (${field_name}) REFERENCES ${ref['ReferencesTableName']}(${ref['ReferencesPropertyName']})`
+        const alterTableString: string = `ALTER TABLE ${TableName} ADD CONSTRAINT fk_${ref['constrainName']} FOREIGN KEY (${field_name}) REFERENCES ${ref['ReferencesTableName']}(${ref['ReferencesPropertyName']}) ON UPDATE SET NULL ON DELETE SET NULL`
         alterTableQs.push(alterTableString);
       }
     }
