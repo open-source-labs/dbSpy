@@ -5,6 +5,7 @@ import React, { useState, useRef } from 'react';
 import parseSql from '../../parse';
 
 import useSchemaStore from '../../store/schemaStore';
+import { SchemaObject } from './Types';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useQueryStore from '../../store/queryStore';
@@ -112,9 +113,9 @@ export default function FeatureTab(props: any) {
   };
 
   const addTable = (tableName: string) => {
-    let currentSchema = {};
+    let currentSchema: SchemaObject = {} ;
     if (schemaStore) {
-      currentSchema = { ...schemaStore };
+      currentSchema = { ...schemaStore as SchemaObject };
     }
     currentSchema[tableName] = {};
     setSchemaStore(currentSchema);
