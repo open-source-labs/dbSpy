@@ -11,6 +11,7 @@ import useQueryStore from '../../store/queryStore';
 
 import createInitialEdges from '../../components/ReactFlow/Edges';
 import createInitialNodes from '../../components/ReactFlow/Nodes';
+import QueryModal from './QueryModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -20,6 +21,7 @@ export default function FeatureTab(props: any) {
   const { setWelcome } = useSettingsStore((state) => state);
   const { writeAddTableQuery } = useQueryStore((state) => state);
   const [action, setAction] = useState(new Array());
+  const [queryModalOpened, setQueryModalOpened] = useState(false);
   //END: STATE DECLARATION
 
   // TODO: Uncover the history in legacy code
@@ -130,6 +132,16 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
+  const queryModal = useRef<null | HTMLParagraphElement>(null);
+  const openQueryModal = () => {
+    setQueryModalOpened(true);
+  };
+
+  const closeQueryModal = () => {
+    setQueryModalOpened(false)
+  }
+
+
   // END: HELPER FUNCTIONS
 
   return (
@@ -213,7 +225,7 @@ export default function FeatureTab(props: any) {
               {/* TODO: Add SAVE feature */}
               <li>
                 <a
-                  onClick={() => alert('Feature coming soon!')}
+                  onClick={openQueryModal}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
@@ -230,7 +242,7 @@ export default function FeatureTab(props: any) {
                       d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9"
                     />
                   </svg>
-                  <span className="ml-3 flex-1 whitespace-nowrap">Save</span>
+                  <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
               </li>
               <br />
@@ -398,6 +410,10 @@ export default function FeatureTab(props: any) {
             </div>
           </div>
         </div>
+        {/* Query Output Modal */}
+        
+        {queryModalOpened? <QueryModal closeQueryModal={closeQueryModal}/> : null}
+        
       </div>
     </>
   );

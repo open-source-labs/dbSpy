@@ -108,3 +108,33 @@ export interface HomeLoggedInNavbarProps {
   };
   setUser: (user: object /*originally any */) => void;
 }
+
+// schemaStore object interface
+interface Reference {
+  PrimaryKeyName: string,
+  ReferencesPropertyName: string,
+  PrimaryKeyTableName: string,
+  ReferencesTableName: string,
+  IsDestination: boolean,
+  constrainName: string
+}
+
+export interface Column {
+  Name: string,
+  Value: any,
+  TableName: string,
+  References: [Reference],
+  IsPrimaryKey: string,
+  IsForeignKey: string,
+  field_name: string,
+  data_type: string,
+  additional_constraints: string
+}
+
+interface Table {
+  [key: string]: Column;
+}
+
+export interface SchemaObject {
+  [key: string]: Table;
+}
