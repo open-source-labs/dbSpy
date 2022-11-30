@@ -582,7 +582,7 @@ select:focus {
 }
 /* //Confirm Modal */
 /* The Modal (background) */
-.confirmModal {
+.confirmModal, .modal {
   display: none;
   /* Hidden by default */
   position: fixed;
