@@ -74,7 +74,6 @@ const DBDisplay = () => {
         ) : (
           <Flow />
         )}
-        <QueryGenerator />
       </div>
     </div>
   );
