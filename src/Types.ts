@@ -3,38 +3,74 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
-export interface TableProps {
-  tableInfo: {
-    [key: string]: {
-      IsForeignKey: boolean;
-      IsPrimaryKey: boolean;
-      Name: string;
-      References: Array<object>;
-      TableName: string;
-      Value: string | number;
-      additional_constraints: string | null;
-      data_type: string;
-      field_name: string;
-    };
-  };
-  tableId?: string | undefined;
-  setId?: any;
-  id: string;
-  setFetchedData: (fetchedData: CanvasProps /* originally any */) => void;
-  setSqlOpen: (sqlOpen: boolean) => void;
-  fetchedData: CanvasProps /* originally any */;
-  sqlOpen: boolean;
-}
+// export interface TableProps {
+//   tableInfo: {
+//     [key: string]: {
+//       IsForeignKey: boolean;
+//       IsPrimaryKey: boolean;
+//       Name: string;
+//       References: Array<object>;
+//       TableName: string;
+//       Value: string | number;
+//       additional_constraints: string | null;
+//       data_type: string;
+//       field_name: string;
+//     };
+//   };
+//   tableId?: string | undefined;
+//   setId?: any;
+//   id: string;
+//   setFetchedData: (fetchedData: CanvasProps /* originally any */) => void;
+//   setSqlOpen: (sqlOpen: boolean) => void;
+//   fetchedData: CanvasProps /* originally any */;
+//   sqlOpen: boolean;
+// }
 
-export interface RowProps {
-  id: string;
-  column: string;
-  constraint: string;
-  fk: boolean;
-  pk: boolean;
-  type: string;
-  reference: {}[];
-}
+// export interface RowProps {
+//   id: string;
+//   column: string;
+//   constraint: string;
+//   fk: boolean;
+//   pk: boolean;
+//   type: string;
+//   reference: {}[];
+// }
+
+// ---------------------------------------------------------------------
+// ZUSTAND STORE AND FRONT-END TYPES
+
+// ColumnData is input by user and sent to schemaStore
+export type ColumnData = {
+  name: string;
+  type: SQLDataType;
+  isNullable: boolean;
+  isPrimary: boolean;
+  // Using `string | null` instead of optional `?`
+  // because default value can be added, which throws controlled type error
+  defaultValue: string | null;
+};
+
+// ColumnSchema and Reference are used by schemaStore
+type Reference = {
+  PrimaryKeyName: string;
+  PrimaryKeyTableName: string;
+  ReferencesPropertyName: string;
+  ReferencesTableName: string;
+  IsDestination: boolean;
+  constraintName: string;
+};
+
+export type ColumnSchema = {
+  Name: string;
+  Value: string | null;
+  TableName: string;
+  References: Reference[];
+  IsPrimaryKey: boolean;
+  IsForeignKey: boolean;
+  field_name: string;
+  data_type: string;
+  additional_constraints: string;
+};
 
 export type SQLDataType =
   | 'AUTOINCREMENT'
@@ -109,72 +145,72 @@ export type SQLDataType =
 
 //from canvas.tsx
 
-export interface CanvasProps {
-  fetchedData: {
-    [key: string]: {
-      [key: string]: {
-        IsForeignKey: boolean;
-        IsPrimaryKey: boolean;
-        Name: string;
-        References: any[];
-        TableName: string;
-        Value: string | boolean | number; //originally any, check if value works
-        additional_constraints: string | null;
-        data_type: string;
-        field_name: string;
-      };
-    };
-  };
-  tableId?: string; //originally any, check if value works
-  isLoadingProps: boolean;
-  isErrorProps: boolean;
-  setFetchedData: (fetchedData: object) => void;
-  setSideBarOpened: (param: boolean) => void;
-  reference: any;
-  setSqlOpen: (sqlOpen: boolean) => void;
-  sqlOpen: boolean;
-}
+// export interface CanvasProps {
+//   fetchedData: {
+//     [key: string]: {
+//       [key: string]: {
+//         IsForeignKey: boolean;
+//         IsPrimaryKey: boolean;
+//         Name: string;
+//         References: any[];
+//         TableName: string;
+//         Value: string | boolean | number; //originally any, check if value works
+//         additional_constraints: string | null;
+//         data_type: string;
+//         field_name: string;
+//       };
+//     };
+//   };
+//   tableId?: string; //originally any, check if value works
+//   isLoadingProps: boolean;
+//   isErrorProps: boolean;
+//   setFetchedData: (fetchedData: object) => void;
+//   setSideBarOpened: (param: boolean) => void;
+//   reference: any;
+//   setSqlOpen: (sqlOpen: boolean) => void;
+//   sqlOpen: boolean;
+// }
 
-//from displayheader.tsx
-export interface DisplayHeaderProps {
-  menuPopUpOpened: boolean;
-  name: string | null;
-  picture: string | null | undefined;
-  setMenuPopUpOpened: (opened: boolean) => void;
-  setUser: (user: object /*originally any */) => void;
-}
+// //from displayheader.tsx
+// export interface DisplayHeaderProps {
+//   menuPopUpOpened: boolean;
+//   name: string | null;
+//   picture: string | null | undefined;
+//   setMenuPopUpOpened: (opened: boolean) => void;
+//   setUser: (user: object /*originally any */) => void;
+// }
 
-//from featuretab.tsx
-export interface FeatureTabProps {
-  setTablename: (e: string) => void;
-  fetchedData: {};
-  setFetchedData: (e: {}) => void;
-  setSideBarOpened: (param: boolean) => void;
-  screenshot: any;
-}
+// //from featuretab.tsx
+// export interface FeatureTabProps {
+//   setTablename: (e: string) => void;
+//   fetchedData: {};
+//   setFetchedData: (e: {}) => void;
+//   setSideBarOpened: (param: boolean) => void;
+//   screenshot: any;
+// }
 
-//from menupopup.tsx
-export interface MenuPopUpProps {
-  opened: boolean;
-  setOpened: (opened: boolean) => void;
-}
+// //from menupopup.tsx
+// export interface MenuPopUpProps {
+//   opened: boolean;
+//   setOpened: (opened: boolean) => void;
+// }
 
-//from sidebar.tsx
-export interface SideBarProps {
-  isLoadingProps: boolean;
-  isErrorProps: boolean;
-  mutate: (data: object) => void;
-  sideBarOpened: boolean;
-  setSideBarOpened: (param: boolean) => void;
-}
+// //from sidebar.tsx
+// export interface SideBarProps {
+//   isLoadingProps: boolean;
+//   isErrorProps: boolean;
+//   mutate: (data: object) => void;
+//   sideBarOpened: boolean;
+//   setSideBarOpened: (param: boolean) => void;
+// }
 
-// from homeloggedinnavbar.tsx
-export interface HomeLoggedInNavbarProps {
-  user: {
-    email: string | null;
-    id: string | null;
-    name: string | null;
-    picture: string | null;
-  };
-  setUser: (user: object /*originally any */) => void;
-}
+// // from homeloggedinnavbar.tsx
+// export interface HomeLoggedInNavbarProps {
+//   user: {
+//     email: string | null;
+//     id: string | null;
+//     name: string | null;
+//     picture: string | null;
+//   };
+//   setUser: (user: object /*originally any */) => void;
+// }

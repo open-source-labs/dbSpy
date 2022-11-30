@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { SQLDataType } from '../../Types';
+import { SQLDataType, ColumnData } from '../../Types';
 import DataTypeArr from '../../utils/DataTypeArr';
-import { ColumnData } from './TableModal';
-import { nanoid } from 'nanoid';
 
 type ColumnInputProps = {
   index: number;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { SQLDataType } from '../../Types';
+import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
+import useSchemaStore from '../../store/schemaStore';
 
 type TableModalProps = {
   closeTableModal: () => void;
@@ -9,16 +10,6 @@ type TableModalProps = {
 type TableData = {
   tableName: string;
   columns: ColumnData[];
-};
-
-export type ColumnData = {
-  name: string;
-  type: SQLDataType;
-  isNullable: boolean;
-  isPrimary: boolean;
-  // Using `string | null` instead of optional `?`
-  // because default value can be added, which throws controlled type error
-  defaultValue: string | null;
 };
 
 export default function TableModal({ closeTableModal }: TableModalProps) {
@@ -52,10 +43,14 @@ export default function TableModal({ closeTableModal }: TableModalProps) {
     defaultValue: null,
   };
 
+  const { addTableSchema, addColumnSchema } = useSchemaStore((state) => state);
+
   const onSubmit = (e: Event) => {
     e.preventDefault();
     addTableSchema(tableData.tableName);
-    tableData.columns.forEach((columnData) => addColumnSchema(columnData));
+    tableData.columns.forEach((columnData) =>
+      addColumnSchema(tableData.tableName, columnData)
+    );
   };
 
   const addColumn = () => {

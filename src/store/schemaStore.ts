@@ -4,28 +4,43 @@
 
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { ColumnData, ColumnSchema } from '../Types';
 
-let schemaStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any) => ({
+//reference state (used to add reference to foreign keys)
+
+let schemaStore = (set: (arg0: { (state: any): any; (state: any): any }) => any) => ({
   //schemaStore state
   schemaStore: null,
-  setSchemaStore: (schema: any) => set((state: any) => ({ ...state, schemaStore: schema })),
+  setSchemaStore: (schema: any) =>
+    set((state: any) => ({ ...state, schemaStore: schema })),
+  addTableSchema: (tableName: string) => set((state) => ({ ...state, [tableName]: {} })),
+  addColumnSchema: (tableName: string, columnData: ColumnData) =>
+    set((state) => {
+      // write dield_name const
+      const newCol: ColumnSchema = {
+        Name: columnData.name,
+        Value: columnData.defaultValue,
+        TableName: tableName,
+        // TODO: see if we can get away with not initializing an empty reference
+        References: [
+          {
+            PrimaryKeyName: '',
+            PrimaryKeyTableName: tableName,
+            ReferencesPropertyName: '',
+            ReferencesTableName: '',
+            IsDestination: false,
+            constraintName: '',
+          },
+        ],
+        IsPrimaryKey: columnData.isPrimary,
+        IsForeignKey: false,
+      };
+    }),
 
-  //reference state (used to add reference to foreign keys)
-  reference: [
-    {
-      PrimaryKeyName: '',
-      ReferencesPropertyName: '',
-      PrimaryKeyTableName: '',
-      ReferencesTableName: '',
-      IsDestination: '',
-      constrainName: '',
-    },
-  ],
   setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
 });
 
-
-const useSchemaStore = create(devtools(schemaStore))
+const useSchemaStore = create(devtools(schemaStore));
 
 export default useSchemaStore;
 
