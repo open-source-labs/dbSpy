@@ -13,10 +13,16 @@ let schemaStore = (set: (arg0: { (state: any): any; (state: any): any }) => any)
   schemaStore: null,
   setSchemaStore: (schema: any) =>
     set((state: any) => ({ ...state, schemaStore: schema })),
-  addTableSchema: (tableName: string) => set((state) => ({ ...state, [tableName]: {} })),
+  addTableSchema: (tableName: string) =>
+    set((state) => {
+      console.log('adding table schema');
+      const newSchema = { ...state, [tableName]: {} };
+      return newSchema;
+    }),
   addColumnSchema: (tableName: string, columnData: ColumnData) =>
     set((state) => {
-      // write dield_name const
+      // write field_name const
+      console.log('adding column schema');
       const newCol: ColumnSchema = {
         Name: columnData.name,
         Value: columnData.defaultValue,
@@ -34,7 +40,19 @@ let schemaStore = (set: (arg0: { (state: any): any; (state: any): any }) => any)
         ],
         IsPrimaryKey: columnData.isPrimary,
         IsForeignKey: false,
+        field_name: columnData.name.replace(/\s/g, '_'),
+        data_type: columnData.type,
+        additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
       };
+      const newSchema = {
+        ...state,
+        [tableName]: {
+          ...state[tableName],
+          [columnData.name]: newCol,
+        },
+      };
+
+      return newSchema;
     }),
 
   setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),

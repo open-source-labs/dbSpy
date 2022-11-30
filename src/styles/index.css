@@ -625,7 +625,7 @@ select:focus {
 }
 /* //Add Table Modal */
 /* The Modal (background) */
-.addTableModal {
+.inputModal {
   /* Hidden by default */
   position: fixed;
   /* Stay in place */

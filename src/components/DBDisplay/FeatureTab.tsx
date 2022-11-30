@@ -10,10 +10,9 @@ import createInitialNodes from '../../components/ReactFlow/Nodes';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
-import useQueryStore from '../../store/queryStore';
 
 // Components imported:
-import TableModal from '../Modals/TableModal';
+import InputModal from '../Modals/InputModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -21,9 +20,8 @@ export default function FeatureTab(props: any) {
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { setWelcome } = useSettingsStore((state) => state);
-  const { writeAddTableQuery } = useQueryStore((state) => state);
   const [action, setAction] = useState(new Array());
-  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
+  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   //END: STATE DECLARATION
 
   // TODO: Uncover the history in legacy code
@@ -112,20 +110,6 @@ export default function FeatureTab(props: any) {
     setNodes([]);
     setEdges([]);
     setWelcome(false);
-  };
-
-  const addTable = (tableName: string) => {
-    let currentSchema = {};
-    if (schemaStore) {
-      currentSchema = { ...schemaStore };
-    }
-    currentSchema[tableName] = {};
-    setSchemaStore(currentSchema);
-    const initialEdges = createInitialEdges(currentSchema);
-    setEdges(initialEdges);
-    const initialNodes = createInitialNodes(currentSchema, initialEdges);
-    setNodes(initialNodes);
-    writeAddTableQuery(tableName);
   };
 
   const clearCanvasTables = () => {
@@ -245,7 +229,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={() => {
-                    setIsTableModalOpen(true);
+                    setIsInputModalOpen(true);
                     if (!schemaStore) buildDatabase();
                   }}
                   id="addTable"
@@ -371,8 +355,8 @@ export default function FeatureTab(props: any) {
           </div>
         </div>
 
-        {isTableModalOpen && (
-          <TableModal closeTableModal={() => setIsTableModalOpen(false)} />
+        {isInputModalOpen && (
+          <InputModal closeInputModal={() => setIsInputModalOpen(false)} />
         )}
       </div>
     </>

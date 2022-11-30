@@ -68,7 +68,7 @@ export type ColumnSchema = {
   IsPrimaryKey: boolean;
   IsForeignKey: boolean;
   field_name: string;
-  data_type: string;
+  data_type: SQLDataType;
   additional_constraints: string;
 };
 

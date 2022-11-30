@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
+import useFlowStore from '../../store/flowStore';
+import createInitialEdges from '../ReactFlow/Edges';
+import createInitialNodes from '../ReactFlow/Nodes';
 
-type TableModalProps = {
-  closeTableModal: () => void;
+type InputModalProps = {
+  closeInputModal: () => void;
 };
 
 type TableData = {
@@ -12,7 +15,9 @@ type TableData = {
   columns: ColumnData[];
 };
 
-export default function TableModal({ closeTableModal }: TableModalProps) {
+// TODO: ADD FORM VALIDATION
+
+export default function InputModal({ closeInputModal }: InputModalProps) {
   const initialTable: TableData = {
     tableName: 'untitled_table',
     columns: [
@@ -43,14 +48,20 @@ export default function TableModal({ closeTableModal }: TableModalProps) {
     defaultValue: null,
   };
 
-  const { addTableSchema, addColumnSchema } = useSchemaStore((state) => state);
+  const { schemaStore, addTableSchema, addColumnSchema } = useSchemaStore(
+    (state) => state
+  );
+  const { setEdges, setNodes } = useFlowStore((state) => state);
 
-  const onSubmit = (e: Event) => {
-    e.preventDefault();
+  const onSubmit = () => {
     addTableSchema(tableData.tableName);
     tableData.columns.forEach((columnData) =>
       addColumnSchema(tableData.tableName, columnData)
     );
+    const initialEdges = createInitialEdges(schemaStore);
+    setEdges(initialEdges);
+    const initialNodes = createInitialNodes(schemaStore, initialEdges);
+    setNodes(initialNodes);
   };
 
   const addColumn = () => {
@@ -94,13 +105,13 @@ export default function TableModal({ closeTableModal }: TableModalProps) {
   ));
 
   return (
-    <div id="addTableModal" className="addTableModal">
+    <div id="inputModal" className="inputModal">
       <form
         autoComplete="off"
         onSubmit={(e) => {
           e.preventDefault();
-          console.log('table submitted');
-          closeTableModal();
+          onSubmit();
+          closeInputModal();
         }}
         className="modal-content w-[30%] min-w-[300px] max-w-[550px] flex-col rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
@@ -126,7 +137,7 @@ export default function TableModal({ closeTableModal }: TableModalProps) {
           <button
             type="button"
             className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-            onClick={closeTableModal}
+            onClick={closeInputModal}
           >
             Cancel
           </button>
