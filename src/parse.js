@@ -636,3 +636,63 @@ function checkSpecialKey(propertyModel) {
     return '';
   }
 }
+
+// parsedtables {
+//   accounts: {
+//     user_id: PropertyModel {
+//       Name: 'user_id',
+//       Value: null,
+//       TableName: 'accounts',
+//       References: [],
+//       IsPrimaryKey: true,
+//       IsForeignKey: false,
+//       field_name: 'user_id',
+//       data_type: 'serial',
+//       additional_constraints: null
+//     },
+//     username: PropertyModel {
+//       Name: 'username',
+//       Value: null,
+//       TableName: 'accounts',
+//       References: [],
+//       IsPrimaryKey: false,
+//       IsForeignKey: false,
+//       field_name: 'username',
+//       data_type: 'VARCHAR ( 50 ) UNIQUE',
+//       additional_constraints: 'NOT NULL'
+//     },
+//     password: PropertyModel {
+//       Name: 'password',
+//       Value: null,
+//       TableName: 'accounts',
+//       References: [],
+//       IsPrimaryKey: false,
+//       IsForeignKey: false,
+//       field_name: 'password',
+//       data_type: 'VARCHAR ( 50 )',
+//       additional_constraints: 'NOT NULL'
+//     },
+//     email: PropertyModel {
+//       Name: 'email',
+//       Value: null,
+//       TableName: 'accounts',
+//       References: [],
+//       IsPrimaryKey: false,
+//       IsForeignKey: false,
+//       field_name: 'email',
+//       data_type: 'VARCHAR ( 255 ) UNIQUE',
+//       additional_constraints: 'NOT NULL'
+//     },
+//     created_on: PropertyModel {
+//       Name: 'created_on',
+//       Value: null,
+//       TableName: 'accounts',
+//       References: [],
+//       IsPrimaryKey: false,
+//       IsForeignKey: false,
+//       field_name: 'created_on',
+//       data_type: 'TIMESTAMP',
+//       additional_constraints: 'NOT NULL'
+//     }
+//   }
+// }
