@@ -132,7 +132,6 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
-  const queryModal = useRef<null | HTMLParagraphElement>(null);
   const openQueryModal = () => {
     setQueryModalOpened(true);
   };
