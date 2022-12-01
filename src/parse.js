@@ -416,7 +416,6 @@ export default function parseSql(text) {
     const tmp = lines[i].trim();
 
     const propertyRow = tmp.substring(0, 12).toLowerCase().trim();
-    console.log('property row', propertyRow)
     if (currentTableModel !== null && tmp.includes(');')) {
       tableList.push(currentTableModel);
       currentTableModel = null;
@@ -440,8 +439,7 @@ export default function parseSql(text) {
           tname = tableList[i].Name;
         }
       }
-      console.log('alterQuerySplit', alterQuerySplit)
-      console.log(lines[i+1])
+
       parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }
