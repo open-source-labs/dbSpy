@@ -95,7 +95,7 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
   ));
 
   return (
-    <div id="inputModal" className="inputModal">
+    <div id="inputModal" className="input-modal">
       <form
         autoComplete="off"
         onSubmit={(e) => {
@@ -103,25 +103,33 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
           onSubmit();
           closeInputModal();
         }}
-        className="modal-content w-[30%] min-w-[300px] max-w-[550px] flex-col rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+        className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
-        <button type="button" onClick={addColumn}>
-          Add Column
-        </button>
-        <label
-          htmlFor="table-modal-name"
-          className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]"
-        >
-          Table Name
-        </label>
-        <input
-          id="table-modal-name"
-          className="mb-4 w-[300px]"
-          value={tableData.tableName}
-          onChange={(e) =>
-            setTableData((prevData) => ({ ...prevData, tableName: e.target.value }))
-          }
-        />
+        <div className="table-name">
+          <label
+            htmlFor="table-modal-name"
+            className="  text-slate-900 dark:text-[#f8f4eb]"
+          >
+            Table Name
+          </label>
+          <input
+            id="table-modal-name"
+            value={tableData.tableName}
+            onChange={(e) =>
+              setTableData((prevData) => ({ ...prevData, tableName: e.target.value }))
+            }
+          />
+        </div>
+        <div className="column-header">
+          <h1 className="  text-slate-900 dark:text-[#f8f4eb]">Columns</h1>
+          <button
+            type="button"
+            className="  text-slate-900 dark:text-[#f8f4eb]"
+            onClick={addColumn}
+          >
+            Add Column
+          </button>
+        </div>
         {columnInputs}
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
