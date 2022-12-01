@@ -582,7 +582,8 @@ select:focus {
 }
 /* //Confirm Modal */
 /* The Modal (background) */
-.confirmModal, .modal {
+.confirmModal,
+.modal {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -625,7 +626,7 @@ select:focus {
 }
 /* //Add Table Modal */
 /* The Modal (background) */
-.inputModal {
+.input-modal {
   /* Hidden by default */
   position: fixed;
   /* Stay in place */
@@ -645,6 +646,62 @@ select:focus {
   /* Black w/ opacity */
 }
 
+.input-modal form {
+  width: 40%;
+}
+
+.input-modal .table-name {
+  display: flex;
+}
+
+.table-name input {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.input-modal .column-header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: -10px;
+}
+
+.column-header h1 {
+  font-size: 1.3rem;
+}
+
+.column-header button {
+  border: 2px solid gray;
+  border-radius: 5px;
+  padding: 0px 5px;
+}
+
+/* Column Input Component */
+
+.column-input {
+  display: flex;
+  margin: 10px 0px;
+  justify-content: space-between;
+  border-bottom: 1px solid gray;
+  padding: 10px 0px;
+}
+
+.column-input > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-input input,
+.column-input select {
+  max-width: 150px;
+}
+.column-input select {
+  font-size: 0.9rem;
+  background-color: white;
+}
+
+.column-input button {
+}
 /* //Add Reference Modal */
 /* The Modal (background) */
 .addReferenceModal {
