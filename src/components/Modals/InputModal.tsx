@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
-import useFlowStore from '../../store/flowStore';
-import createInitialEdges from '../ReactFlow/Edges';
-import createInitialNodes from '../ReactFlow/Nodes';
 
 type InputModalProps = {
   closeInputModal: () => void;
@@ -48,20 +45,13 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     defaultValue: null,
   };
 
-  const { schemaStore, addTableSchema, addColumnSchema } = useSchemaStore(
-    (state) => state
-  );
-  const { setEdges, setNodes } = useFlowStore((state) => state);
+  const { addTableSchema, addColumnSchema } = useSchemaStore((state) => state);
 
   const onSubmit = () => {
     addTableSchema(tableData.tableName);
     tableData.columns.forEach((columnData) =>
       addColumnSchema(tableData.tableName, columnData)
     );
-    const initialEdges = createInitialEdges(schemaStore);
-    setEdges(initialEdges);
-    const initialNodes = createInitialNodes(schemaStore, initialEdges);
-    setNodes(initialNodes);
   };
 
   const addColumn = () => {

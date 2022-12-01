@@ -3,8 +3,8 @@ import React, { useState, useRef } from 'react';
 
 // Functions imported:
 import parseSql from '../../parse';
-import createInitialEdges from '../../components/ReactFlow/Edges';
-import createInitialNodes from '../../components/ReactFlow/Nodes';
+import createInitialEdges from '../ReactFlow/Edges';
+import createInitialNodes from '../ReactFlow/Nodes';
 
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
@@ -108,14 +108,13 @@ export default function FeatureTab(props: any) {
   };
 
   const buildDatabase = () => {
-    setSchemaStore(null);
     setNodes([]);
     setEdges([]);
     setWelcome(false);
   };
 
   const clearCanvasTables = () => {
-    setSchemaStore(null);
+    setSchemaStore({});
     setEdges([]);
     setNodes([]);
     setWelcome(false);
@@ -241,7 +240,8 @@ export default function FeatureTab(props: any) {
                 <a
                   onClick={() => {
                     setIsInputModalOpen(true);
-                    if (!schemaStore) buildDatabase();
+                    // if schemaStore is empty, initialize
+                    if (!Object.keys(schemaStore).length) buildDatabase();
                   }}
                   id="addTable"
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"

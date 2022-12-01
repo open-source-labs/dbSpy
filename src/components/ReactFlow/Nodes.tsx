@@ -1,5 +1,5 @@
 //hard-coded xy positioning of each node in the canvas
-export default function createInitialNodes (schemaObject, edges) {
+export default function createInitialNodes(schemaObject, edges) {
   const nodePositions = [
     { x: 0, y: 0 },
     { x: 500, y: 0 },
@@ -21,6 +21,7 @@ export default function createInitialNodes (schemaObject, edges) {
   ];
   // renders each table on the React Flow canvas
   const nodes = Object.entries(schemaObject).map((table, index) => {
+    console.log({ table, edges });
     return {
       id: table[0],
       type: 'table',
@@ -29,5 +30,4 @@ export default function createInitialNodes (schemaObject, edges) {
     };
   });
   return nodes;
-};
-
+}

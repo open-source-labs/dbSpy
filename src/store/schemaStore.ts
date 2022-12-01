@@ -3,21 +3,28 @@
 //
 
 import create from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { ColumnData, ColumnSchema } from '../Types';
 
 //reference state (used to add reference to foreign keys)
 
 let schemaStore = (set: (arg0: { (state: any): any; (state: any): any }) => any) => ({
   //schemaStore state
-  schemaStore: null,
+  schemaStore: {},
   setSchemaStore: (schema: any) =>
     set((state: any) => ({ ...state, schemaStore: schema })),
   addTableSchema: (tableName: string) =>
     set((state) => {
       console.log('adding table schema');
-      const newSchema = { ...state, [tableName]: {} };
-      return newSchema;
+      const newState = {
+        ...state,
+        schemaStore: {
+          ...state.schemaStore,
+          [tableName]: {},
+        },
+      };
+      console.log({ newState });
+      return newState;
     }),
   addColumnSchema: (tableName: string, columnData: ColumnData) =>
     set((state) => {
@@ -44,21 +51,26 @@ let schemaStore = (set: (arg0: { (state: any): any; (state: any): any }) => any)
         data_type: columnData.type,
         additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
       };
-      const newSchema = {
+      const newState = {
         ...state,
-        [tableName]: {
-          ...state[tableName],
-          [columnData.name]: newCol,
+        schemaStore: {
+          ...state.schemaStore,
+          [tableName]: {
+            ...state.schemaStore[tableName],
+            [columnData.name]: newCol,
+          },
         },
       };
-
-      return newSchema;
+      console.log({ newState });
+      return newState;
     }),
 
   setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
 });
 
-const useSchemaStore = create(devtools(schemaStore));
+// subscribeWithSelector allows us to listen for changes in store
+// listener is in Flow.jsx
+const useSchemaStore = create(subscribeWithSelector(devtools(schemaStore)));
 
 export default useSchemaStore;
 
