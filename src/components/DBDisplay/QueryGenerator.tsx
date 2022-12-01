@@ -11,7 +11,7 @@ export default function QueryGenerator() {
 
   return (
     <div id="QueryGenerator">
-      <h1>Query Generator</h1>
+      {/* <h1>Query Generator</h1> */}
       {queryElements}
     </div>
   );
