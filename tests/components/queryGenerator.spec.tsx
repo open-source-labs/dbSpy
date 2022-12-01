@@ -76,31 +76,4 @@ describe('QueryGenerator...', () => {
 
     })
   });
-
-  describe('Query Exports', () => {
-    xit('Functional copy to clipboard button', () => {
-      // Checks user copy click event history(?)
-      // Compares to value inside our #QueryGenerator elements/store
-    })
-    xit('Functional download query button', () => {
-      // Creates a .sql query file(?)
-      // Compares to value inside our #QueryGenerator elements/store
-    })
-    xit('Export parses db model accurately', () => {
-      // Expects # of tables to match length of output arr
-      // Expects array element to match following
-        // {
-        //   name,
-        //   data,
-        //   primary key or not,
-        //   misc. requirements,
-        //   reference: {
-        //     name,
-        //     data,
-        //     primary key or not,
-        //     misc. requirements,
-        //   }
-        // }
-    })
-  })
 })
