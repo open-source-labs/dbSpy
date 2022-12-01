@@ -49,7 +49,6 @@
   border: none;
 }
 
-
 /* default react flow styles - required */
 .react-flow__container {
   position: absolute;
@@ -121,7 +120,7 @@
   fill: #4a7187;
 }
 
-.react-flow__edge-text{
+.react-flow__edge-text {
   fill: #f8f4eb;
 }
 
@@ -380,7 +379,7 @@
   border: none;
   background: none;
   padding-top: 10px;
-  padding-right: 5px;;
+  padding-right: 5px;
 }
 
 table {
@@ -500,10 +499,9 @@ tr {
   /* padding: 10px 20px; */
   border-radius: 5px;
   font-weight: 700;
-  color:black;
+  color: black;
   cursor: pointer;
 }
-
 
 /* The navigation menu links */
 .sidenav a {
@@ -531,7 +529,7 @@ tr {
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
-  transition: margin-left .5s;
+  transition: margin-left 0.5s;
   padding: 20px;
   margin-top: 50px;
   margin-left: 300px;
@@ -572,12 +570,13 @@ tr {
   border-width: 2px;
 }
 /* Gets rid of ugly black outline on form input focus  */
-textarea:focus, input:focus, select:focus {
+textarea:focus,
+input:focus,
+select:focus {
   outline: none;
 }
 
-
-.testBtn{
+.testBtn {
   top: 50%;
   left: 50%;
 }
@@ -626,12 +625,11 @@ textarea:focus, input:focus, select:focus {
 }
 /* //Add Table Modal */
 /* The Modal (background) */
-.addTableModal {
-  display: none;
+.inputModal {
   /* Hidden by default */
   position: fixed;
   /* Stay in place */
-  z-index: 2;
+  z-index: 100;
   /* Sit on top */
   left: 0;
   top: 0;
@@ -646,8 +644,6 @@ textarea:focus, input:focus, select:focus {
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
 }
-
-
 
 /* //Add Reference Modal */
 /* The Modal (background) */
@@ -671,7 +667,6 @@ textarea:focus, input:focus, select:focus {
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
 }
-
 
 /* Add Reference  */
 #addReference {
