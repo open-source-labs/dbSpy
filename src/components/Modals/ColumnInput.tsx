@@ -36,81 +36,90 @@ function ColumnInput({
   ));
   return (
     <div className="column-input">
-      <label
-        className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]"
-        htmlFor={`column-${index}-name`}
-      >
-        Column Name
-      </label>
-      <input
-        type="text"
-        id={`column-${index}-name`}
-        className="mb-4 w-[300px]"
-        value={name}
-        onChange={(e) => {
-          onColumnChange(index, 'name', e.target.value);
-        }}
-      />
+      <div>
+        <label
+          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          htmlFor={`column-${index}-name`}
+        >
+          Column Name
+        </label>
+        <input
+          type="text"
+          id={`column-${index}-name`}
+          value={name}
+          onChange={(e) => {
+            onColumnChange(index, 'name', e.target.value);
+          }}
+        />
+      </div>
 
-      <label
-        className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]"
-        htmlFor={`column-${index}-type`}
-      >
-        Type
-      </label>
-      <select
-        id={`column-${index}-type`}
-        className="mb-4 w-[300px]"
-        defaultValue={type}
-        onChange={(e) => onColumnChange(index, 'type', e.target.value)}
-      >
-        {dataTypeOptions}
-      </select>
+      <div>
+        <label
+          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          htmlFor={`column-${index}-type`}
+        >
+          Type
+        </label>
+        <select
+          id={`column-${index}-type`}
+          defaultValue={type}
+          onChange={(e) => onColumnChange(index, 'type', e.target.value)}
+        >
+          {dataTypeOptions}
+        </select>
+      </div>
 
-      <label
-        className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]"
-        htmlFor={`column-${index}-isNullable`}
-      >
-        isNullable
-      </label>
-      <input
-        type="checkbox"
-        id={`column-${index}-isNullable`}
-        className="mb-4 w-[300px]"
-        checked={isNullable}
-        onChange={() => onColumnChange(index, 'isNullable', !isNullable)}
-      />
+      <div>
+        <label
+          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          htmlFor={`column-${index}-isNullable`}
+        >
+          isNullable
+        </label>
+        <input
+          type="checkbox"
+          id={`column-${index}-isNullable`}
+          checked={isNullable}
+          onChange={() => onColumnChange(index, 'isNullable', !isNullable)}
+        />
+      </div>
 
-      <label
-        className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]"
-        htmlFor={`column-${index}-default-val`}
-      >
-        Default Value
-      </label>
-      <input
-        type="text"
-        id={`column-${index}-default-val`}
-        className="mb-4 w-[300px]"
-        placeholder="(NULL)"
-        value={defaultValue || ''}
-        onChange={(e) => onColumnChange(index, 'defaultValue', e.target.value)}
-      />
+      <div>
+        <label
+          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          htmlFor={`column-${index}-default-val`}
+        >
+          Default Value
+        </label>
+        <input
+          type="text"
+          id={`column-${index}-default-val`}
+          placeholder="(NULL)"
+          value={defaultValue || ''}
+          onChange={(e) => onColumnChange(index, 'defaultValue', e.target.value)}
+        />
+      </div>
 
-      <label
-        className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]"
-        htmlFor={`column-${index}-primary`}
-      >
-        Primary Key
-      </label>
-      <input
-        type="checkbox"
-        id={`column-${index}-primary`}
-        className="mb-4 w-[300px]"
-        checked={isPrimary}
-        onChange={() => onColumnChange(index, 'isPrimary', !isPrimary)}
-      />
+      <div>
+        <label
+          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          htmlFor={`column-${index}-primary`}
+        >
+          Primary Key
+        </label>
+        <input
+          type="checkbox"
+          id={`column-${index}-primary`}
+          checked={isPrimary}
+          onChange={() => onColumnChange(index, 'isPrimary', !isPrimary)}
+        />
+      </div>
 
-      <button type="button" onClick={() => deleteColumn(index)}>
+      <button
+        type="button"
+        className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+        onClick={() => deleteColumn(index)}
+      >
         {/* TODO: ADD X SVG */}X
       </button>
     </div>
