@@ -1,7 +1,8 @@
 // creates an array of all edges in the schema
-export default function createInitialEdges (schemaObject)  {
+import { ColumnSchema } from '@/Types';
+export default function createInitialEdges(schemaObject) {
   const edges = [];
-  const allRows = [];
+  const allRows: ColumnSchema[] = [];
   const schemaVals = Object.values(schemaObject);
   for (const table of schemaVals) {
     allRows.push(...Object.values(table));
@@ -16,22 +17,20 @@ export default function createInitialEdges (schemaObject)  {
         targetHandle: row.References[0].PrimaryKeyName,
         animated: true,
         label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
-        type: 'smoothstep',
         style: {
-          stroke: '#4a7187',
-          strokeWidth: 5,
+          strokeWidth: 2,
+          stroke: '#FF0072',
         },
         markerEnd: {
           type: 'arrowclosed',
           orient: 'auto',
-          height: 6,
-          width: 6,
-          color: '#4a7187',
+          width: 20,
+          height: 20,
+          color: '#FF0072',
         },
       });
     }
   });
+  console.log('returning edges: ', edges);
   return edges;
-};
-
-
+}

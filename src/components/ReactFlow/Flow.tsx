@@ -1,6 +1,7 @@
 import useFlowStore from '../../store/flowStore';
+import useSchemaStore from '../../store/schemaStore';
 import React from 'react';
-import { useState, useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import ReactFlow, {
   Controls,
   ControlButton,
@@ -12,6 +13,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
+import createInitialEdges from './Edges';
+import createInitialNodes from './Nodes';
 
 const nodeTypes = {
   table: TableNode,
@@ -21,6 +24,21 @@ export default function Flow() {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
+
+  // re-render every time schemaStore updates
+  useSchemaStore.subscribe((state) => state.schemaStore, reRender);
+
+  function reRender(schemaStore) {
+    console.log('attempting to re-render');
+    if (!Object.keys(schemaStore).length)
+      return console.log('returning. schema store', schemaStore);
+    console.log('re-rendering with', schemaStore);
+    const initialEdges = createInitialEdges(schemaStore);
+    setEdges(initialEdges);
+    const initialNodes = createInitialNodes(schemaStore, initialEdges);
+    setNodes(initialNodes);
+  }
+
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>

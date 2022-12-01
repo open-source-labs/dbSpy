@@ -1,16 +1,19 @@
 // React & React Router & React Query Modules
 import React, { useState, useRef } from 'react';
 
-// Components imported;
+// Functions imported:
 import parseSql from '../../parse';
+import createInitialEdges from '../ReactFlow/Edges';
+import createInitialNodes from '../ReactFlow/Nodes';
 
+// Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
-import useQueryStore from '../../store/queryStore';
 
-import createInitialEdges from '../../components/ReactFlow/Edges';
-import createInitialNodes from '../../components/ReactFlow/Nodes';
+// Components imported:
+import InputModal from '../Modals/InputModal';
+import QueryModal from './QueryModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -18,8 +21,9 @@ export default function FeatureTab(props: any) {
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { setWelcome } = useSettingsStore((state) => state);
-  const { writeAddTableQuery } = useQueryStore((state) => state);
   const [action, setAction] = useState(new Array());
+  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
+  const [queryModalOpened, setQueryModalOpened] = useState(false);
   //END: STATE DECLARATION
 
   // TODO: Uncover the history in legacy code
@@ -39,21 +43,22 @@ export default function FeatureTab(props: any) {
     if (response) action[0]();
   };
 
+  // TODO: delete these after styling new table modal
   //create references for HTML elements
-  const addTableModal: any = useRef();
-  const tableNameInput: any = useRef();
+  // const tableNameInput: any = useRef();
+  // const addTableModal: any = useRef();
   /* When the user clicks, open the modal */
-  const openAddTableModal = () => {
-    addTableModal.current.style.display = 'block';
-    addTableModal.current.style.zIndex = '100';
-    if (!schemaStore) buildDatabase();
-  };
+  // const openAddTableModal = () => {
+  //   addTableModal.current.style.display = 'block';
+  //   addTableModal.current.style.zIndex = '100';
+  //   if (!schemaStore) buildDatabase();
+  // };
   /* When the user clicks 'yes' or 'no', close it */
-  const closeAddTableModal = (response: boolean) => {
-    addTableModal.current.style.display = 'none';
-    if (response) addTable(tableNameInput.current.value);
-    tableNameInput.current.value = '';
-  };
+  // const closeAddTableModal = (response: boolean) => {
+  //   addTableModal.current.style.display = 'none';
+  //   if (response) addTable(tableNameInput.current.value);
+  //   tableNameInput.current.value = '';
+  // };
 
   // HELPER FUNCTIONS
 
@@ -103,37 +108,32 @@ export default function FeatureTab(props: any) {
   };
 
   const buildDatabase = () => {
-    setSchemaStore(null);
     setNodes([]);
     setEdges([]);
     setWelcome(false);
-  };
-
-  const addTable = (tableName: string) => {
-    let currentSchema = {};
-    if (schemaStore) {
-      currentSchema = { ...schemaStore };
-    }
-    currentSchema[tableName] = {};
-    setSchemaStore(currentSchema);
-    const initialEdges = createInitialEdges(currentSchema);
-    setEdges(initialEdges);
-    const initialNodes = createInitialNodes(currentSchema, initialEdges);
-    setNodes(initialNodes);
-    writeAddTableQuery(tableName);
   };
 
   const clearCanvasTables = () => {
-    setSchemaStore(null);
+    setSchemaStore({});
     setEdges([]);
     setNodes([]);
     setWelcome(false);
+  };
+
+  const queryModal = useRef<null | HTMLParagraphElement>(null);
+  const openQueryModal = () => {
+    setQueryModalOpened(true);
+  };
+
+  const closeQueryModal = () => {
+    setQueryModalOpened(false);
   };
 
   // END: HELPER FUNCTIONS
 
   return (
     <>
+      {/* PAGE */}
       <div className="mx-auto max-w-2xl">
         <aside
           className="featureTab absolute inset-y-0 left-0 top-24 w-64"
@@ -213,7 +213,7 @@ export default function FeatureTab(props: any) {
               {/* TODO: Add SAVE feature */}
               <li>
                 <a
-                  onClick={() => alert('Feature coming soon!')}
+                  onClick={openQueryModal}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
@@ -230,7 +230,7 @@ export default function FeatureTab(props: any) {
                       d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9"
                     />
                   </svg>
-                  <span className="ml-3 flex-1 whitespace-nowrap">Save</span>
+                  <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
               </li>
               <br />
@@ -238,7 +238,11 @@ export default function FeatureTab(props: any) {
               <hr />
               <li>
                 <a
-                  onClick={openAddTableModal}
+                  onClick={() => {
+                    setIsInputModalOpen(true);
+                    // if schemaStore is empty, initialize
+                    if (!Object.keys(schemaStore).length) buildDatabase();
+                  }}
                   id="addTable"
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
@@ -335,6 +339,8 @@ export default function FeatureTab(props: any) {
           </div>
         </aside>
 
+        {/* MODALS */}
+
         {/* MODAL FOR CONFIRMATION POPUP */}
         <div ref={confirmModal} id="confirmModal" className="confirmModal">
           {/* <!-- Confirm Modal content --> */}
@@ -360,44 +366,12 @@ export default function FeatureTab(props: any) {
           </div>
         </div>
 
-        {/* MODAL FOR ADD NEW TABLE POPUP */}
-        <div
-          ref={addTableModal}
-          id="addTableModal"
-          className="addTableModal"
-          style={{ display: 'none' }}
-        >
-          {/* <!-- Add Table Modal content --> */}
-          <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] flex-col rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
-            <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
-              Enter your table name.
-            </p>
-            <div className="flex justify-center">
-              <input
-                ref={tableNameInput}
-                id="tableNameInput"
-                className="mb-4 w-[300px]"
-                autoComplete="off"
-              />
-            </div>
-            <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
-              <button
-                onClick={() => closeAddTableModal(false)}
-                id="closeAddTable"
-                className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => closeAddTableModal(true)}
-                id="closeAddTable-true"
-                className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-              >
-                Proceed
-              </button>
-            </div>
-          </div>
-        </div>
+        {isInputModalOpen && (
+          <InputModal closeInputModal={() => setIsInputModalOpen(false)} />
+        )}
+        {/* Query Output Modal */}
+
+        {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
       </div>
     </>
   );
