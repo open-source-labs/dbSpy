@@ -8,25 +8,14 @@ export default function Login() {
   //STATE DECLARATION (dbSpy3.0)
   //END: STATE DECLARATION
 
-  // Temp state stuck at true
+  // Registration Page state
   const { registrationPage, setRegistrationPage } = useCredentialsStore((state) => state);
 
   const greeting = !registrationPage
     ? <h3>Please Log In</h3>
     : <h3>Please Register</h3>
 
-  /*
-  Register an account page trigger
-  */
-  const toggleRegister = (e: React.FormEvent): void => {
-    e.preventDefault();
-    console.log('Register Status:', registrationPage);
-    setRegistrationPage();
-  }
-
-  /*
-  Regular login using JWTs without OAuth
-  */
+  //Regular login using JWTs without OAuth  
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     console.log('Login Submitted')
@@ -52,15 +41,15 @@ export default function Login() {
           <input type='password'></input>
           <input type='submit'></input>
         </form>
-
+        
         {!registrationPage
           ? <span>
             Not a user?
-            <button onClick={(e) => toggleRegister(e)}>Create an account!</button>
+            <button onClick={() => setRegistrationPage()}>Create an account!</button>
           </span>
           : <span>
             Return to login
-            <button onClick={(e) => toggleRegister(e)}>Cancel</button>
+            <button onClick={() => setRegistrationPage()}>Cancel</button>
           </span>}
       </div>
 
