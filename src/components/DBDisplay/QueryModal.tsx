@@ -6,7 +6,7 @@ import { SchemaObject } from './Types'
 export default function QueryModal ({closeQueryModal} : {closeQueryModal : () => void}) {
 
   // read from schemaStore, then run queryGen 
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+  const { schemaStore } = useSchemaStore((state) => state);
   const queryObj = queryGen(schemaStore as unknown as SchemaObject);
 
 

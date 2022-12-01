@@ -109,7 +109,8 @@ export interface HomeLoggedInNavbarProps {
   setUser: (user: object /*originally any */) => void;
 }
 
-// schemaStore object interface
+// schemaStore object interface - mirrors what is stored in and used from schemaStore
+// slightly redundant: can the code be refactored to use TableProp/RowProp interfaces instead?
 interface Reference {
   PrimaryKeyName: string,
   ReferencesPropertyName: string,
