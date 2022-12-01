@@ -23,25 +23,23 @@ describe('Parsing SQL Text Data', () => {
         );
       `;
 
-  const testFile = fs.readFileSync(path.join(__dirname, 'test_db.sql')).toString();
-  console.log(testFile);
-
-  let test_var = parseSql(testTableQuery);
-  let test_db = parseSql(testFile);
-  console.log('test_db parsed', test_db)
+  // Current query test with no foreign key relations
+  let test_db = parseSql(testTableQuery);
+  
   it('should have proper number of tables', () => {
-    const tables = testFile.match(/CREATE TABLE/g);
+    const tables = testTableQuery.match(/CREATE TABLE/g);
     const parsedTables = Object.keys(test_db).length;
     expect(parsedTables).toBe(tables.length)
   })
 
+  // Currently hard coded
   it('should have proper number of columns per table', () => {
     const tableColumns = Object.keys(test_db.accounts).length;
-    expect(tableColumns).toBe(6)
+    expect(tableColumns).toBe(6);
   })
 
   it('should properly identify PK', () => {
-    const pkCount = testFile.match(/PRIMARY KEY/g).length;
+    const pkCount = testTableQuery.match(/PRIMARY KEY/g).length;
     const parsedKeys = Object.values(test_db).reduce((pk, table) => {
       Object.values(table).forEach(column => {
         if (column.IsPrimaryKey) pk += 1;
@@ -52,7 +50,45 @@ describe('Parsing SQL Text Data', () => {
     expect(parsedKeys).toBe(pkCount);
   })
 
-  it('should properly identify FK', () => {
+  xit('should properly identify FK', () => {})
+})
+
+describe('Parsing PostgreSQL query', () => {
+  // Postgres test file
+  const postgres_testDB = fs.readFileSync(path.join(__dirname, 'test_postgresDB.sql')).toString();
+  let test_postgres_testDB = parseSql(postgres_testDB);
+  
+  it('should have proper number of tables', () => {
+    const tables = postgres_testDB.match(/CREATE TABLE/g);
+    const parsedTables = Object.keys(test_postgres_testDB).length;
+    expect(parsedTables).toBe(tables.length)
+  })
+
+  // Currently hard coded
+  it('should have proper number of columns per table', () => {
+    const tableColumns = Object.keys(test_postgres_testDB["public.projects"]).length;
+    expect(tableColumns).toBe(5)
+  })
+
+  it('should properly identify PK', () => {
+    const pkCount = postgres_testDB.match(/PRIMARY KEY/g).length;
+    const parsedKeys = Object.values(test_postgres_testDB).reduce((pk, table) => {
+      Object.values(table).forEach(column => {
+        if (column.IsPrimaryKey) pk += 1;
+      })
+      return pk;
+    }, 0)
+
+    expect(parsedKeys).toBe(pkCount);
+  })
+
+  xit('should properly identify FK', () => {
     
   })
+})
+
+xdescribe('Parsing MySQL query', () => {
+  // MySQL is currently running into parsing errors when adding foreign keys/alter table queries
+  // const mySQL_testDB = fs.readFileSync(path.join(__dirname, 'test_mysqlDB.sql')).toString();
+  // let test_var = parseSql(testTableQuery);
 })

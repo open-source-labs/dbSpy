@@ -341,6 +341,7 @@ function parseAlterTable(tableName, constraint) {
   });
 
   if (constraint.indexOf('FOREIGN KEY') !== -1) {
+    // console.log('Alter foreign:', constraint)
     const name = constraint.substring(
       constraint.indexOf('FOREIGN KEY'),
       constraint.length - 1
@@ -352,10 +353,12 @@ function parseAlterTable(tableName, constraint) {
       constrainName !== null ? constrainName[0] : null
     );
   } else if (constraint.indexOf('PRIMARY KEY') !== -1) {
+    // console.log('Alter constraint:', constraint)
     const name = constraint.substring(
       constraint.indexOf('PRIMARY KEY'),
       constraint.length - 1
     );
+    // console.log(currentTableModel, "\n", name)
     parseMYSQLPrimaryKey(name, currentTableModel);
   }
 }
@@ -413,7 +416,7 @@ export default function parseSql(text) {
     const tmp = lines[i].trim();
 
     const propertyRow = tmp.substring(0, 12).toLowerCase().trim();
-
+    console.log('property row', propertyRow)
     if (currentTableModel !== null && tmp.includes(');')) {
       tableList.push(currentTableModel);
       currentTableModel = null;
@@ -432,13 +435,13 @@ export default function parseSql(text) {
     else if (propertyRow == 'alter table') {
       let alterQuerySplit = tmp.toLowerCase().trim();
       let tname = null;
-
       for (let i = 0; i < tableList.length; i++) {
         if (alterQuerySplit.indexOf(tableList[i].Name) !== -1) {
           tname = tableList[i].Name;
         }
       }
-
+      console.log('alterQuerySplit', alterQuerySplit)
+      console.log(lines[i+1])
       parseAlterTable(tname, lines[i + 1]);
       i += 3;
     }
@@ -636,63 +639,3 @@ function checkSpecialKey(propertyModel) {
     return '';
   }
 }
-
-// parsedtables {
-//   accounts: {
-//     user_id: PropertyModel {
-//       Name: 'user_id',
-//       Value: null,
-//       TableName: 'accounts',
-//       References: [],
-//       IsPrimaryKey: true,
-//       IsForeignKey: false,
-//       field_name: 'user_id',
-//       data_type: 'serial',
-//       additional_constraints: null
-//     },
-//     username: PropertyModel {
-//       Name: 'username',
-//       Value: null,
-//       TableName: 'accounts',
-//       References: [],
-//       IsPrimaryKey: false,
-//       IsForeignKey: false,
-//       field_name: 'username',
-//       data_type: 'VARCHAR ( 50 ) UNIQUE',
-//       additional_constraints: 'NOT NULL'
-//     },
-//     password: PropertyModel {
-//       Name: 'password',
-//       Value: null,
-//       TableName: 'accounts',
-//       References: [],
-//       IsPrimaryKey: false,
-//       IsForeignKey: false,
-//       field_name: 'password',
-//       data_type: 'VARCHAR ( 50 )',
-//       additional_constraints: 'NOT NULL'
-//     },
-//     email: PropertyModel {
-//       Name: 'email',
-//       Value: null,
-//       TableName: 'accounts',
-//       References: [],
-//       IsPrimaryKey: false,
-//       IsForeignKey: false,
-//       field_name: 'email',
-//       data_type: 'VARCHAR ( 255 ) UNIQUE',
-//       additional_constraints: 'NOT NULL'
-//     },
-//     created_on: PropertyModel {
-//       Name: 'created_on',
-//       Value: null,
-//       TableName: 'accounts',
-//       References: [],
-//       IsPrimaryKey: false,
-//       IsForeignKey: false,
-//       field_name: 'created_on',
-//       data_type: 'TIMESTAMP',
-//       additional_constraints: 'NOT NULL'
-//     }
-//   }
-// }
