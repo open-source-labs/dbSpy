@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
 import logo from "../assets/newLogoWhite.png";
 import login from "../assets/right-to-bracket-solid.svg";
+import logout from "../assets/right-from-bracket-solid.svg";
 
 const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
@@ -10,7 +11,7 @@ const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 function Navbar() {
   //STATE DECLARATION (dbSpy3.0)
   const [theme, setTheme] = useState('Dark');
-  const user = useCredentialsStore((state: { user: any; }) => state.user);
+  const { user, setUser } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
   
   //this is a function to toggle class between light and dark using vanilla DOM manipulation and local state.
@@ -33,13 +34,15 @@ function Navbar() {
         <div>
           {user
             ? (<>
-              <span className='text-blue-200'>Welcome back, {user.full_name}</span>
-              <img className="ml-3 h-[25] inline-block" src={user.picture} />
+              <span className='mt-1 inline-block lg:mt-0 text-blue-200'>Welcome back, {user.full_name}</span>
+              <img className="ml-2 mr-2 h-[25] inline-block" src={user.picture} />
+              {/* <img className="ml-3 h-[25] inline-block" onClick={() => setUser(null)} src={logout} /> */}
+              <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={() => setUser(null)}>Log Out</button>
             </>)
-            : (<>
-                <NavLink to='/login' className={linkbtn}>Login</NavLink>
-                <img className="mr-3 h-[20] inline-block" src={login} />
-              </>)
+            : (<div>
+              <NavLink to='/login' className='mt-1 inline-block lg:mt-0 text-blue-200 hover:text-white'>Login</NavLink>
+              <img className="mr-3 ml-3 h-[20] inline-block" src={login} />
+            </div>)
           }
         </div>
       </nav>
