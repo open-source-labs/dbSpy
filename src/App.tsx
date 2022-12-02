@@ -4,15 +4,15 @@ import Home from "./pages/Home";
 import DBDisplay from "./pages/DBDisplay";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import  "./styles/index.css"
+import "./styles/index.css"
 import Shared from "./pages/Shared";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import useCredentialsStore from "./store/credentialsStore";
 
 export default function App() {
   //STATE DECLARATION (dbSpy3.0)
-    const user = useCredentialsStore(state => state.user);
-    const setUser = useCredentialsStore(state => state.setUser);
+  const user = useCredentialsStore(state => state.user);
+  const setUser = useCredentialsStore(state => state.setUser);
   //END: STATE DECLARATION
 
   /*
@@ -26,16 +26,16 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Shared/>}>
+        <Route path='/' element={<Shared />}>
           {/* index renders root directory */}
-          <Route index element={<Home />}/>
-          <Route path='login' element={<Login/>}/>
-          <Route path='signup' element={<Signup/>}/>
+          <Route index element={<Home />} />
+          <Route path='login' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
           <Route path='display' element={
             <ProtectedRoute user={user}>
-              <DBDisplay/>
+              <DBDisplay />
             </ProtectedRoute>
-          }/>
+          } />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -12,7 +12,7 @@ function Navbar() {
   const [theme, setTheme] = useState('Dark');
   const { user, setUser } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
-  
+  console.log('user', user)
   //this is a function to toggle class between light and dark using vanilla DOM manipulation and local state.
   //FOR FUTURE DEVS: there's probably a more elegant way to do this with settings store and sharing that state globally but tailwind cascades dark mode from the top element so this works
   const toggleClass = () => {

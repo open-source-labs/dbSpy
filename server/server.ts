@@ -1,7 +1,4 @@
 import express from 'express';
-const https = require('https')
-const path = require('path')
-const fs = require('fs')
 import dotenv from 'dotenv'
 import log from './logger/index'
 import routes from './routes'
