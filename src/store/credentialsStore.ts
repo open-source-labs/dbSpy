@@ -11,8 +11,8 @@ let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) =
   //user
   setUser: (userObject: any) => set((state: any) => ({ ...state, user: userObject })),
   //
-  registrationPage: false,
-  setRegistrationPage: () => set((state: any) => ({...state, registrationPage: !state.registrationPage})),
+  loginStatus: false,
+  setLoginStatus: () => set((state: any) => ({...state, registrationPage: !state.registrationPage})),
 
 
   //dbCredentials state

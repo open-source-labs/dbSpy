@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom';
+import useCredentialsStore from '../store/credentialsStore';
 import logo from "../assets/newLogoWhite.png";
 import login from "../assets/right-to-bracket-solid.svg";
-import signup from "../assets/user-plus-solid.svg";
 
 const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
@@ -10,8 +10,9 @@ const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 function Navbar() {
   //STATE DECLARATION (dbSpy3.0)
   const [theme, setTheme] = useState('Dark');
+  const user = useCredentialsStore((state: { user: any; }) => state.user);
   //END: STATE DECLARATION
-
+  
   //this is a function to toggle class between light and dark using vanilla DOM manipulation and local state.
   //FOR FUTURE DEVS: there's probably a more elegant way to do this with settings store and sharing that state globally but tailwind cascades dark mode from the top element so this works
   const toggleClass = () => {
@@ -30,10 +31,16 @@ function Navbar() {
           <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={toggleClass}>{theme} Mode</button>
         </div>
         <div>
-          <img className="mr-3 h-[20] inline-block" src={signup} />
-          <NavLink to='/signup' className={linkbtn}>Sign Up</NavLink>
-          <img className="mr-3 h-[20] inline-block" src={login} />
-          <NavLink to='/login' className={linkbtn}>Login</NavLink>
+          {user
+            ? (<>
+              <span className='text-blue-200'>Welcome back, {user.full_name}</span>
+              <img className="ml-3 h-[25] inline-block" src={user.picture} />
+            </>)
+            : (<>
+                <NavLink to='/login' className={linkbtn}>Login</NavLink>
+                <img className="mr-3 h-[20] inline-block" src={login} />
+              </>)
+          }
         </div>
       </nav>
       <div className='h-[64px]'>

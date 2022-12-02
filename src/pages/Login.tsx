@@ -1,19 +1,13 @@
 // React & React Router Modules
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { getGoogleAuthUrl } from '../utils/getGoogleUrl'
-import useCredentialsStore from '../store/credentialsStore';
+
 
 /* "Login" Component - login page for user login */
 export default function Login() {
   //STATE DECLARATION (dbSpy3.0)
   //END: STATE DECLARATION
-
-  // Registration Page state
-  const { registrationPage, setRegistrationPage } = useCredentialsStore((state) => state);
-
-  const greeting = !registrationPage
-    ? <h3>Please Log In</h3>
-    : <h3>Please Register</h3>
 
   //Regular login using JWTs without OAuth  
   const handleSubmit = (e: React.FormEvent): void => {
@@ -35,22 +29,16 @@ export default function Login() {
   return (
     <div className='grid h-80 place-items-center'>
       <div>
-        {greeting}
+        <h3>Please Log In</h3>
         <form onSubmit={(e) => handleSubmit(e)}>
-          <input type='text'></input>
-          <input type='password'></input>
+          <input type='text' required></input>
+          <input type='password' required></input>
           <input type='submit'></input>
         </form>
-        
-        {!registrationPage
-          ? <span>
-            Not a user?
-            <button onClick={() => setRegistrationPage()}>Create an account!</button>
-          </span>
-          : <span>
-            Return to login
-            <button onClick={() => setRegistrationPage()}>Cancel</button>
-          </span>}
+        <span>
+          Not a user?
+          <NavLink to='/signup' >Create an Account!</NavLink>
+        </span>
       </div>
 
       <button className='bg-red-600 hover:bg-red-700 text-stone-100 font-bold py-2 px-4 rounded inline-flex items-center' onClick={handleOAuthLogin}>

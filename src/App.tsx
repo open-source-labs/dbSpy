@@ -23,7 +23,6 @@ export default function App() {
     4. "/display" | "/display/" - database visualization application page; only accessible when user is authorized;
   */
 
-
   return (
     <BrowserRouter>
       <Routes>
