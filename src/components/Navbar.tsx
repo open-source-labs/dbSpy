@@ -12,10 +12,15 @@ function Navbar() {
   const [theme, setTheme] = useState('Dark');
   const { user, setUser } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
-  console.log('user', user)
+
+  const logoutSession = async () => {
+    await fetch(`http://localhost:8080/api/logout`);
+    setUser(null);
+  }
+
   //this is a function to toggle class between light and dark using vanilla DOM manipulation and local state.
   //FOR FUTURE DEVS: there's probably a more elegant way to do this with settings store and sharing that state globally but tailwind cascades dark mode from the top element so this works
-  const toggleClass = () => {
+  const toggleClass = ():void => {
     const page = document.getElementById("body");
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
@@ -33,7 +38,7 @@ function Navbar() {
         <div>
           {user
             ? (<>
-              <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={() => setUser(null)}>Log Out</button>
+              <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={() => logoutSession()}>Log Out</button>
               <img className="ml-2 mr-2 h-[25] inline-block" src={user.picture} alt='alt n/a' />
             </>)
             : (<div>

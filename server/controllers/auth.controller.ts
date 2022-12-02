@@ -63,7 +63,7 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
         log.info('Login successful, redirecting...')
         
         const queryStr = 'true'
-        console.log('req.session.user', req.session.user)
+        
         console.log(client_url)
         res.redirect(301, `${client_url}/?success=` + queryStr)
 

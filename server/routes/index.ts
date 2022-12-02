@@ -16,7 +16,7 @@ import cors from 'cors'
 import { getCurrentUser } from '../service/session.service'
 
 // TODO: DEV_CLIENT_ENDPOINT doesn't exist etc.
-const client_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
+const client_url = process.env.NODE_ENV === 'development' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
 
 
 const routes = async (app: Express) => {
@@ -53,12 +53,11 @@ const routes = async (app: Express) => {
 
   // TODO: Never called in frontend currently
   app.use('/api/logout', (req: Request, res: Response) => {
-    console.log('index.ts: Firing /api/logout');
     req.session.destroy((err) => {
-      if(err) console.log('Error destroying:', err)
+      if(err) console.log('Error destroying session:', err)
       else {
-        console.log('succesfully destroyed session')
-        return res.status(200).redirect(`${client_url}/`)
+        console.log('Succesfully destroyed session')
+        return res.redirect(`${client_url}/`)
       }
     });
   })
