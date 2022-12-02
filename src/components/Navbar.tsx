@@ -1,6 +1,8 @@
-import React, {useState} from 'react'
-import {NavLink} from 'react-router-dom';
+import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom';
 import logo from "../assets/newLogoWhite.png";
+import login from "../assets/right-to-bracket-solid.svg";
+import signup from "../assets/user-plus-solid.svg";
 
 const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
@@ -17,17 +19,21 @@ function Navbar() {
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   }
-  
+
   return (
     <>
       <nav className="flex items-center justify-between flex-wrap bg-sky-800 p-6 fixed top-0 w-full">
         <div className='text-base navItems'>
-          <img className="fill-current mr-5 h-[45] inline-block" src={logo}/>
+          <img className="fill-current mr-5 h-[45] inline-block" src={logo} />
           <NavLink to='/' className={linkbtn}>Home</NavLink>
-          <NavLink to='/signup' className={linkbtn}>Sign Up</NavLink>
-          <NavLink to='/login' className={linkbtn}>Login</NavLink>
-          <NavLink to='/display'className={linkbtn}>Display</NavLink>
+          <NavLink to='/display' className={linkbtn}>Display</NavLink>
           <button className='text-blue-200 hover:text-[#f8f4eb]' onClick={toggleClass}>{theme} Mode</button>
+        </div>
+        <div>
+          <img className="mr-3 h-[20] inline-block" src={signup} />
+          <NavLink to='/signup' className={linkbtn}>Sign Up</NavLink>
+          <img className="mr-3 h-[20] inline-block" src={login} />
+          <NavLink to='/login' className={linkbtn}>Login</NavLink>
         </div>
       </nav>
       <div className='h-[64px]'>

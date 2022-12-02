@@ -14,6 +14,7 @@ let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) =
   registrationPage: false,
   setRegistrationPage: () => set((state: any) => ({...state, registrationPage: !state.registrationPage})),
 
+
   //dbCredentials state
   dbCredentials: null,
   //dbFormInput is an object
