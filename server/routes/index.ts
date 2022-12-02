@@ -54,7 +54,7 @@ const routes = async (app: Express) => {
     // TODO: Never called in frontend currently
     app.use('/api/logout', (res: Response, req: Request) => {
         req.session.destroy((err) => {
-            res.redirect(`${client_url}/login`)
+            res.redirect(`${client_url}/`)
         })
     })
 
