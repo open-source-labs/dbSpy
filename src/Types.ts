@@ -71,6 +71,13 @@ export type ColumnSchema = {
   data_type: SQLDataType;
   additional_constraints: string;
 };
+export interface Table {
+  [key: string]: ColumnSchema;
+}
+
+export interface SchemaObject {
+  [key: string]: Table;
+}
 
 export type SQLDataType =
   | 'AUTOINCREMENT'
@@ -142,6 +149,7 @@ export type SQLDataType =
   | 'GEOGRAPHY'
   | 'CUBE'
   | 'LTREE';
+
 
 //from canvas.tsx
 

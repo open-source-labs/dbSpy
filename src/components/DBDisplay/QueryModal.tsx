@@ -1,7 +1,7 @@
 import React from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import queryGen from '../../queryGen';
-import { SchemaObject } from './Types'
+import { SchemaObject } from '../../Types'
 
 export default function QueryModal ({closeQueryModal} : {closeQueryModal : () => void}) {
 

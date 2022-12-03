@@ -52,7 +52,7 @@ export default function TableNode({ data }) {
           PrimaryKeyTableName: '',
           ReferencesTableName: '',
           IsDestination: '',
-          constrainName: '',
+          constraintName: '',
         },
       ],
       IsPrimaryKey: '',
@@ -61,6 +61,7 @@ export default function TableNode({ data }) {
       data_type: '',
       additional_constraints: '',
     };
+    console.log(currentSchema);
     setSchemaStore(currentSchema);
   };
   // renders rows within table
