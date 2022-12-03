@@ -38,6 +38,12 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
       },
     ],
   };
+
+  // functions that check validity and add schema to the store
+  const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+    (state) => state
+  );
+
   // TODO: set tablename to parent table when in column mode
   const [tableData, setTableData] = useState(initialTable);
 
@@ -49,30 +55,16 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     defaultValue: null,
   };
 
-  // functions that check validity and add schema to the store
-  const { addTableSchema, addColumnSchema, checkTableValidity, checkColumnValidity } =
-    useSchemaStore((state) => state);
-
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
-    const tableStatus = checkTableValidity(tableData.tableName);
-    if (tableStatus.isValid) addTableSchema(tableData.tableName);
-    else {
-      window.alert(tableStatus.errorMessage);
+    try {
+      addTableSchema(tableData.tableName, tableData.columns);
+      return true;
+    } catch (error) {
+      console.error(error);
+      window.alert(error);
       return false;
     }
-
-    const columnStatus = checkColumnValidity(tableData.tableName, tableData.columns);
-    if (columnStatus.isValid) addColumnSchema(tableData.tableName, tableData.columns);
-    else {
-      // Delete the table from the schema if unable to initialize with columns
-      //TODO: deleteTableSchema(tableData.tableName);
-      window.alert(columnStatus.errorMessage);
-      return false;
-    }
-
-    // Submission successful
-    return true;
   };
 
   const addColumn = () => {

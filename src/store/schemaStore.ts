@@ -362,17 +362,13 @@ interface SchemaState {
   schemaStore: SchemaStore;
   system: 'PostgreSQL' | 'MySQL';
   setSchemaStore: (schema: SchemaStore) => void;
-  addTableSchema: (tableName: string) => void;
+  addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
+  deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
-  _checkNameValidity: (...names: string[]) => ValidityStatus;
-  checkTableValidity: (tableName: string) => ValidityStatus;
-  checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => ValidityStatus;
+  _checkNameValidity: (...names: string[]) => void;
+  _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
+  _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
 }
-
-type ValidityStatus = {
-  isValid: boolean;
-  errorMessage?: string;
-};
 
 // For Zustand to work nicely with TS, just include store interface as a generic for `create()`
 // see https://www.npmjs.com/package/zustand#typescript-usage
@@ -387,9 +383,10 @@ const useSchemaStore = create<SchemaState>()(
         schemaStore: {},
         system: 'PostgreSQL',
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
-        addTableSchema: (tableName: string) =>
+        addTableSchema: (tableName, columnDataArr) =>
           set((state) => {
-            console.log('adding table schema');
+            // Check data validity first. If invalid, error is thrown
+            get()._checkTableValidity(tableName, columnDataArr);
             const newState = {
               ...state,
               schemaStore: {
@@ -397,10 +394,41 @@ const useSchemaStore = create<SchemaState>()(
                 [tableName]: {},
               },
             };
-            console.log({ newState });
+            for (const columnData of columnDataArr) {
+              const newCol: ColumnSchema = {
+                Name: columnData.name,
+                Value: columnData.defaultValue,
+                TableName: tableName,
+                // TODO: see if we can get away with not initializing an empty reference
+                References: [
+                  {
+                    PrimaryKeyName: '',
+                    PrimaryKeyTableName: tableName,
+                    ReferencesPropertyName: '',
+                    ReferencesTableName: '',
+                    IsDestination: false,
+                    constraintName: '',
+                  },
+                ],
+                IsPrimaryKey: columnData.isPrimary,
+                IsForeignKey: false,
+                field_name: columnData.name.replace(/\s/g, '_'),
+                data_type: columnData.type,
+                additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
+              };
+              newState.schemaStore[tableName][columnData.name] = newCol;
+            }
             return newState;
           }),
-        addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) =>
+        deleteTableSchema: (tableName) =>
+          set((state) => {
+            const newState = { ...state };
+            console.log({ newState });
+            delete newState.schemaStore[tableName];
+            console.log('newState post-deletion', newState);
+            return newState;
+          }),
+        addColumnSchema: (tableName, columnDataArr) =>
           set((state) => {
             // write field_name const
             const newState = {
@@ -449,41 +477,40 @@ const useSchemaStore = create<SchemaState>()(
           const system = get().system;
           const restrictedNames =
             system === 'PostgreSQL' ? restrictedPgNames : restrictedMySqlNames;
-          if (!name || name.length < 1)
-            return { isValid: false, errorMessage: 'Names must not be empty' };
+          if (!name || name.length < 1) throw new TypeError('Names must not be empty');
 
           if (Object.hasOwn(restrictedNames, name.toUpperCase()))
-            return {
-              isValid: false,
-              errorMessage: `Name must not be ${system} syntax ("${name}")`,
-            };
+            throw new TypeError(`Name must not be ${system} syntax ("${name}")`);
           if (!name.match(nameRe))
-            return {
-              isValid: false,
-              errorMessage: `Name must only contain letters, numbers, and underscores ("${name}")`,
-            };
-
-          // All checks passed, names are valid
-          return { isValid: true };
+            throw new TypeError(
+              `Name must only contain letters, numbers, and underscores ("${name}")`
+            );
         },
-        checkTableValidity(tableName) {
+        _checkTableValidity(tableName, columnDataArr) {
           // Check table name syntax
           const checkNameValidity = get()._checkNameValidity;
-          const nameStatus = checkNameValidity(tableName);
-          if (!nameStatus.isValid) return nameStatus;
+          checkNameValidity(tableName);
 
           // Check against current state
-          const schemaStore = get().schemaStore;
-          if (Object.hasOwn(schemaStore, tableName))
-            return {
-              isValid: false,
-              errorMessage: `Schema already contains table named ${tableName}`,
-            };
+          if (Object.hasOwn(get().schemaStore, tableName))
+            throw new TypeError(`Schema already contains table named ${tableName}`);
 
-          // All checks passed, table is valid
-          return { isValid: true };
+          // If columnDataArr is being passed, that means the table is being initialized
+          if (columnDataArr) {
+            // Check table has *one* primary key
+            const pkCount = columnDataArr.filter((column) => column.isPrimary).length;
+            if (pkCount !== 1)
+              throw new TypeError(
+                `Table must have one primary key (currently has ${pkCount})`
+              );
+
+            // Check column name syntax
+            for (const column of columnDataArr) {
+              checkNameValidity(column.name);
+            }
+          }
         },
-        checkColumnValidity(tableName, columnDataArr) {
+        _checkColumnValidity(tableName, columnDataArr) {
           const checkNameValidity = get()._checkNameValidity;
           const currentTable = get().schemaStore[tableName];
 
