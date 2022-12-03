@@ -61,8 +61,8 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
       addTableSchema(tableData.tableName, tableData.columns);
       return true;
     } catch (error) {
-      console.error(error);
       window.alert(error);
+      console.error(error);
       return false;
     }
   };
@@ -81,15 +81,28 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     });
   };
 
-  const onColumnChange = (
+  const handleColumnChange = (
     index: number,
     property: keyof ColumnData,
     value: string | boolean
   ) => {
     setTableData((prevData) => {
-      // TODO: LEARN WHY TS IS YELLING
-      prevData.columns[index][property] = value;
-      return { ...prevData };
+      // isPrimary is special. Only one column may be pk. Extra logic required
+      if (property !== 'isPrimary') {
+        // TODO: LEARN WHY TS IS YELLING
+        prevData.columns[index][property] = value;
+        return { ...prevData };
+      }
+      // Disables unchecking pk
+      else if (!value) return { ...prevData };
+      else {
+        // If checking new column, uncheck old pk
+        for (const column of prevData.columns) {
+          column.isPrimary = false;
+        }
+        prevData.columns[index].isPrimary = true;
+        return { ...prevData };
+      }
     });
   };
 
@@ -98,12 +111,13 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
       key={`column-${index}`}
       index={index}
       deleteColumn={deleteColumn}
-      onColumnChange={onColumnChange}
+      handleColumnChange={handleColumnChange}
       name={col.name}
       type={col.type}
       isNullable={col.isNullable}
       isPrimary={col.isPrimary}
       defaultValue={col.defaultValue}
+      columnCount={tableData.columns.length}
     />
   ));
 
@@ -128,6 +142,8 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
           <input
             id="table-modal-name"
             value={tableData.tableName}
+            required
+            maxLength={63}
             onChange={(e) =>
               setTableData((prevData) => ({
                 ...prevData,

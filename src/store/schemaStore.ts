@@ -477,13 +477,15 @@ const useSchemaStore = create<SchemaState>()(
           const system = get().system;
           const restrictedNames =
             system === 'PostgreSQL' ? restrictedPgNames : restrictedMySqlNames;
-          if (!name || name.length < 1) throw new TypeError('Names must not be empty');
+          if (!name || name.length < 1) throw new Error('Names must not be empty');
 
           if (Object.hasOwn(restrictedNames, name.toUpperCase()))
-            throw new TypeError(`Name must not be ${system} syntax ("${name}")`);
+            throw new Error(
+              `Table and column names must not be ${system} syntax (cause: "${name}")`
+            );
           if (!name.match(nameRe))
-            throw new TypeError(
-              `Name must only contain letters, numbers, and underscores ("${name}")`
+            throw new Error(
+              `Name must only contain letters, numbers, and underscores (cause: "${name}")`
             );
         },
         _checkTableValidity(tableName, columnDataArr) {
@@ -493,20 +495,26 @@ const useSchemaStore = create<SchemaState>()(
 
           // Check against current state
           if (Object.hasOwn(get().schemaStore, tableName))
-            throw new TypeError(`Schema already contains table named ${tableName}`);
+            throw new Error(`Schema already contains table named ${tableName}`);
 
-          // If columnDataArr is being passed, that means the table is being initialized
+          // If columnDataArr is being passed as arg, that means the table is being initialized
           if (columnDataArr) {
             // Check table has *one* primary key
             const pkCount = columnDataArr.filter((column) => column.isPrimary).length;
             if (pkCount !== 1)
-              throw new TypeError(
+              throw new Error(
                 `Table must have one primary key (currently has ${pkCount})`
               );
 
-            // Check column name syntax
-            for (const column of columnDataArr) {
-              checkNameValidity(column.name);
+            // Check name syntax and for duplicates
+            const nameRegister: { [name: string]: boolean } = {};
+            for (const { name } of columnDataArr) {
+              // Check column name syntax
+              checkNameValidity(name);
+              // Add to name register and throw error if duplicate
+              if (nameRegister[name])
+                throw new Error(`Table contains duplicate names (${name})`);
+              else nameRegister[name] = true;
             }
           }
         },

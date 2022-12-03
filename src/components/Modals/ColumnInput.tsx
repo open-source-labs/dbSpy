@@ -5,7 +5,7 @@ import DataTypeArr from '../../utils/DataTypeArr';
 type ColumnInputProps = {
   index: number;
   deleteColumn: (index: number) => void;
-  onColumnChange: (
+  handleColumnChange: (
     index: number,
     property: keyof ColumnData,
     value: string | boolean
@@ -15,17 +15,19 @@ type ColumnInputProps = {
   isNullable: boolean;
   isPrimary: boolean;
   defaultValue: string | null;
+  columnCount: number;
 };
 
 function ColumnInput({
   index,
   deleteColumn,
-  onColumnChange,
+  handleColumnChange,
   name,
   type,
   isNullable,
   isPrimary,
   defaultValue,
+  columnCount,
 }: ColumnInputProps) {
   const dataTypeOptions = DataTypeArr.map((dataType) => (
     // populate the options for data type
@@ -46,9 +48,11 @@ function ColumnInput({
         <input
           type="text"
           id={`column-${index}-name`}
+          required
+          maxLength={63}
           value={name}
           onChange={(e) => {
-            onColumnChange(index, 'name', e.target.value.trim());
+            handleColumnChange(index, 'name', e.target.value.trim());
           }}
         />
       </div>
@@ -63,7 +67,7 @@ function ColumnInput({
         <select
           id={`column-${index}-type`}
           defaultValue={type}
-          onChange={(e) => onColumnChange(index, 'type', e.target.value)}
+          onChange={(e) => handleColumnChange(index, 'type', e.target.value)}
         >
           {dataTypeOptions}
         </select>
@@ -74,13 +78,13 @@ function ColumnInput({
           className=" text-center text-slate-900 dark:text-[#f8f4eb]"
           htmlFor={`column-${index}-isNullable`}
         >
-          isNullable
+          Nullable
         </label>
         <input
           type="checkbox"
           id={`column-${index}-isNullable`}
           checked={isNullable}
-          onChange={() => onColumnChange(index, 'isNullable', !isNullable)}
+          onChange={() => handleColumnChange(index, 'isNullable', !isNullable)}
         />
       </div>
 
@@ -94,9 +98,10 @@ function ColumnInput({
         <input
           type="text"
           id={`column-${index}-default-val`}
+          maxLength={63}
           placeholder="(NULL)"
           value={defaultValue || ''}
-          onChange={(e) => onColumnChange(index, 'defaultValue', e.target.value)}
+          onChange={(e) => handleColumnChange(index, 'defaultValue', e.target.value)}
         />
       </div>
 
@@ -111,17 +116,19 @@ function ColumnInput({
           type="checkbox"
           id={`column-${index}-primary`}
           checked={isPrimary}
-          onChange={() => onColumnChange(index, 'isPrimary', !isPrimary)}
+          onChange={() => handleColumnChange(index, 'isPrimary', !isPrimary)}
         />
       </div>
 
-      <button
-        type="button"
-        className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-        onClick={() => deleteColumn(index)}
-      >
-        {/* TODO: ADD X SVG */}X
-      </button>
+      {columnCount > 1 && (
+        <button
+          type="button"
+          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          onClick={() => deleteColumn(index)}
+        >
+          {/* TODO: ADD X SVG */}X
+        </button>
+      )}
     </div>
   );
 }
