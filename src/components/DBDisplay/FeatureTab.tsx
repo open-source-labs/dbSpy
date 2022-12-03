@@ -26,9 +26,6 @@ export default function FeatureTab(props: any) {
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   //END: STATE DECLARATION
 
-  // TODO: Uncover the history in legacy code
-  // const [history, setHistory] = useState([]);
-
   //create references for HTML elements
   const confirmModal: any = useRef();
   /* When the user clicks, open the modal */
@@ -42,23 +39,6 @@ export default function FeatureTab(props: any) {
     confirmModal.current.style.display = 'none';
     if (response) action[0]();
   };
-
-  // TODO: delete these after styling new table modal
-  //create references for HTML elements
-  // const tableNameInput: any = useRef();
-  // const addTableModal: any = useRef();
-  /* When the user clicks, open the modal */
-  // const openAddTableModal = () => {
-  //   addTableModal.current.style.display = 'block';
-  //   addTableModal.current.style.zIndex = '100';
-  //   if (!schemaStore) buildDatabase();
-  // };
-  /* When the user clicks 'yes' or 'no', close it */
-  // const closeAddTableModal = (response: boolean) => {
-  //   addTableModal.current.style.display = 'none';
-  //   if (response) addTable(tableNameInput.current.value);
-  //   tableNameInput.current.value = '';
-  // };
 
   // HELPER FUNCTIONS
 
