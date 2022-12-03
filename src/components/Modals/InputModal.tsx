@@ -13,8 +13,12 @@ type TableData = {
 };
 
 // TODO: ADD FORM VALIDATION
+// table or column name can have length <= 63
 
 export default function InputModal({ closeInputModal }: InputModalProps) {
+  // TODO: separate state for table name and column data
+  // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
+  // AFTERWARDS, PK MAY NOT BE EDITED
   const initialTable: TableData = {
     tableName: 'untitled_table',
     columns: [
@@ -34,7 +38,7 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
       },
     ],
   };
-
+  // TODO: set tablename to parent table when in column mode
   const [tableData, setTableData] = useState(initialTable);
 
   const newColumn: ColumnData = {
@@ -45,13 +49,30 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     defaultValue: null,
   };
 
-  const { addTableSchema, addColumnSchema } = useSchemaStore((state) => state);
+  // functions that check validity and add schema to the store
+  const { addTableSchema, addColumnSchema, checkTableValidity, checkColumnValidity } =
+    useSchemaStore((state) => state);
 
-  const onSubmit = () => {
-    addTableSchema(tableData.tableName);
-    tableData.columns.forEach((columnData) =>
-      addColumnSchema(tableData.tableName, columnData)
-    );
+  const handleSubmit = (): boolean => {
+    // table must be added to schema first to enable column validity checks
+    const tableStatus = checkTableValidity(tableData.tableName);
+    if (tableStatus.isValid) addTableSchema(tableData.tableName);
+    else {
+      window.alert(tableStatus.errorMessage);
+      return false;
+    }
+
+    const columnStatus = checkColumnValidity(tableData.tableName, tableData.columns);
+    if (columnStatus.isValid) addColumnSchema(tableData.tableName, tableData.columns);
+    else {
+      // Delete the table from the schema if unable to initialize with columns
+      //TODO: deleteTableSchema(tableData.tableName);
+      window.alert(columnStatus.errorMessage);
+      return false;
+    }
+
+    // Submission successful
+    return true;
   };
 
   const addColumn = () => {
@@ -100,8 +121,8 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
         autoComplete="off"
         onSubmit={(e) => {
           e.preventDefault();
-          onSubmit();
-          closeInputModal();
+          const isSuccessful: boolean = handleSubmit();
+          if (isSuccessful) closeInputModal();
         }}
         className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
@@ -116,7 +137,10 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
             id="table-modal-name"
             value={tableData.tableName}
             onChange={(e) =>
-              setTableData((prevData) => ({ ...prevData, tableName: e.target.value }))
+              setTableData((prevData) => ({
+                ...prevData,
+                tableName: e.target.value.trim(),
+              }))
             }
           />
         </div>

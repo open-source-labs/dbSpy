@@ -48,7 +48,7 @@ function ColumnInput({
           id={`column-${index}-name`}
           value={name}
           onChange={(e) => {
-            onColumnChange(index, 'name', e.target.value);
+            onColumnChange(index, 'name', e.target.value.trim());
           }}
         />
       </div>
