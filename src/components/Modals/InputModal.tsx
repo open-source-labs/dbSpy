@@ -37,23 +37,38 @@ export default function InputModal({
       defaultValue: 'NOW()',
     },
   ];
+  const additionalColumn: ColumnData[] = [
+    {
+      name: 'column_1',
+      type: 'VARCHAR(255)',
+      isNullable: false,
+      isPrimary: false,
+      defaultValue: null,
+    },
+  ];
+  const [tableName, setTableName] = useState<string>(() => {
+    if (!tableNameProp) return initialTable;
+    else return tableNameProp;
+  });
+  const [columnData, setColumnData] = useState<ColumnData[]>(() => {
+    if (mode === 'table') return initialColumns;
+    else return additionalColumn;
+  });
 
   // functions that check validity and add schema to the store
   const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
     (state) => state
   );
 
-  const [tableName, setTableName] = useState<string>(() => {
-    if (!tableNameProp) return initialTable;
-    else return tableNameProp;
-  });
-  const [columnData, setColumnData] = useState<ColumnData[]>(initialColumns);
-
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
       if (mode === 'table') addTableSchema(tableName, columnData);
-      else if (mode === 'column') addColumnSchema(tableName, columnData);
+      else if (mode === 'column') {
+        console.log('adding column');
+        addColumnSchema(tableName, columnData);
+      }
+
       return true;
     } catch (error) {
       window.alert(error);
@@ -123,6 +138,7 @@ export default function InputModal({
       isPrimary={col.isPrimary}
       defaultValue={col.defaultValue}
       columnCount={columnData.length}
+      mode={mode}
     />
   ));
 
@@ -159,7 +175,9 @@ export default function InputModal({
           )}
         </div>
         <div className="column-header">
-          <h1 className="  text-slate-900 dark:text-[#f8f4eb]">Columns</h1>
+          <h1 className="  text-slate-900 dark:text-[#f8f4eb]">
+            {mode === 'table' ? 'Columns' : 'New Columns'}
+          </h1>
           <button
             type="button"
             className="  text-slate-900 dark:text-[#f8f4eb]"
@@ -178,7 +196,7 @@ export default function InputModal({
             Cancel
           </button>
           <button className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]">
-            Create Table
+            {mode === 'table' ? 'Create Table' : 'Submit'}
           </button>
         </div>
       </form>

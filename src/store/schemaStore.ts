@@ -2,6 +2,7 @@
 // State Management for db Schema
 //
 
+import { table } from 'console';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { ColumnData, ColumnSchema } from '../Types';
@@ -30,7 +31,7 @@ export interface SchemaState {
     newStore: SchemaStore,
     tableName: string,
     columnDataArr: ColumnData[]
-  ) => void;
+  ) => SchemaStore;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
@@ -66,7 +67,11 @@ const useSchemaStore = create<SchemaState>()(
                 [tableName]: {},
               },
             };
-            get()._addColumns(newState.schemaStore, tableName, columnDataArr);
+            newState.schemaStore = get()._addColumns(
+              newState.schemaStore,
+              tableName,
+              columnDataArr
+            );
             return newState;
           }),
         deleteTableSchema: (tableName) =>
@@ -80,8 +85,13 @@ const useSchemaStore = create<SchemaState>()(
         addColumnSchema: (tableName, columnDataArr) =>
           set((state) => {
             // write field_name const
+            console.log({ tableName, columnDataArr });
             const newState = { ...state };
-            get()._addColumns(newState.schemaStore, tableName, columnDataArr);
+            newState.schemaStore = get()._addColumns(
+              newState.schemaStore,
+              tableName,
+              columnDataArr
+            );
             return newState;
           }),
         _addColumns: (newStore, tableName, columnDataArr) => {
@@ -107,8 +117,16 @@ const useSchemaStore = create<SchemaState>()(
               data_type: columnData.type,
               additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
             };
-            newStore[tableName][columnData.name] = newCol;
+            // newStore[tableName][columnData.name] = newCol;
+            newStore = {
+              ...newStore,
+              [tableName]: {
+                ...newStore[tableName],
+                [columnData.name]: newCol,
+              },
+            };
           }
+          return newStore;
         },
         // TODO: delete setReference after refactoring adding reference functionality
         // setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
