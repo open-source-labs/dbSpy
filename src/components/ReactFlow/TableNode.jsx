@@ -2,12 +2,13 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
+import InputModal from '../Modals/InputModal';
 import useSchemaStore from '../../store/schemaStore';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 export default function TableNode({ data }) {
   // state of schema object
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+  const { schemaStore, addColumnSchema } = useSchemaStore((state) => state);
   // rowData is an array of objects with each row in the table as an element
   const rowData = Object.values(data.table[1]);
   const [tableRows, setTableRows] = useState(rowData);
@@ -39,30 +40,30 @@ export default function TableNode({ data }) {
     }
   }
   // helper function when adding row to table
-  const addRow = () => {
-    const currentSchema = { ...schemaStore };
-    currentSchema[data.table[0]].newRow = {
-      Name: '',
-      Value: '',
-      TableName: data.table[0],
-      References: [
-        {
-          PrimaryKeyName: '',
-          ReferencesPrimaryName: '',
-          PrimaryKeyTableName: '',
-          ReferencesTableName: '',
-          IsDestination: '',
-          constrainName: '',
-        },
-      ],
-      IsPrimaryKey: '',
-      IsForeignKey: '',
-      field_name: 'newRow',
-      data_type: '',
-      additional_constraints: '',
-    };
-    setSchemaStore(currentSchema);
-  };
+  // const addRow = () => {
+  //   const currentSchema = { ...schemaStore };
+  //   currentSchema[data.table[0]].newRow = {
+  //     Name: '',
+  //     Value: '',
+  //     TableName: data.table[0],
+  //     References: [
+  //       {
+  //         PrimaryKeyName: '',
+  //         ReferencesPrimaryName: '',
+  //         PrimaryKeyTableName: '',
+  //         ReferencesTableName: '',
+  //         IsDestination: '',
+  //         constrainName: '',
+  //       },
+  //     ],
+  //     IsPrimaryKey: '',
+  //     IsForeignKey: '',
+  //     field_name: 'newRow',
+  //     data_type: '',
+  //     additional_constraints: '',
+  //   };
+  //   setSchemaStore(currentSchema);
+  // };
   // renders rows within table
   return (
     <div className="table-node transition-colors duration-500" key={data.table[0]}>
@@ -75,7 +76,7 @@ export default function TableNode({ data }) {
       <div>
         <button
           className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-          onClick={addRow}
+          // onClick={addRow}
         >
           <FaRegPlusSquare size={20} />
         </button>
@@ -139,5 +140,4 @@ export default function TableNode({ data }) {
       </div>
     </div>
   );
-};
-
+}

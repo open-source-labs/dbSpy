@@ -12,7 +12,6 @@ import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 
 // Components imported:
-import InputModal from '../Modals/InputModal';
 import QueryModal from './QueryModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
@@ -22,7 +21,6 @@ export default function FeatureTab(props: any) {
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { setWelcome } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
-  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   //END: STATE DECLARATION
 
@@ -219,7 +217,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={() => {
-                    setIsInputModalOpen(true);
+                    props.openInputModal();
                     // if schemaStore is empty, initialize
                     if (!Object.keys(schemaStore).length) buildDatabase();
                   }}
@@ -346,9 +344,6 @@ export default function FeatureTab(props: any) {
           </div>
         </div>
 
-        {isInputModalOpen && (
-          <InputModal closeInputModal={() => setIsInputModalOpen(false)} />
-        )}
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}

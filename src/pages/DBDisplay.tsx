@@ -1,12 +1,13 @@
 // React & React Router & React Query Modules;
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 // Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
-import QueryGenerator from '../components/DBDisplay/QueryGenerator';
+import QueryGenerator from '../components/Modals/InputModal';
+import InputModal from '../components/Modals/InputModal';
 
 import useSettingsStore from '../store/settingsStore';
 import useCredentialsStore from '../store/credentialsStore';
@@ -16,6 +17,9 @@ const DBDisplay = () => {
   const { sidebarDisplayState, welcome, editRefMode } = useSettingsStore(
     (state) => state
   );
+
+  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
+  const openInputModal = () => setIsInputModalOpen(true);
 
   //END: STATE DECLARATION
 
@@ -59,7 +63,7 @@ const DBDisplay = () => {
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
-      <FeatureTab handleSidebar={handleSidebar} />
+      <FeatureTab handleSidebar={handleSidebar} openInputModal={openInputModal} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
@@ -74,8 +78,11 @@ const DBDisplay = () => {
         ) : (
           <Flow />
         )}
-        <QueryGenerator />
       </div>
+      {/* MODALS */}
+      {isInputModalOpen && (
+        <InputModal closeInputModal={() => setIsInputModalOpen(false)} />
+      )}
     </div>
   );
 };

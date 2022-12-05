@@ -1,5 +1,5 @@
 import useFlowStore from '../../store/flowStore';
-import useSchemaStore from '../../store/schemaStore';
+import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React from 'react';
 import { useEffect } from 'react';
 import ReactFlow, {
@@ -28,7 +28,7 @@ export default function Flow() {
   // re-render every time schemaStore updates
   useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
-  function reRender(schemaStore) {
+  function reRender(schemaStore: SchemaStore) {
     if (!Object.keys(schemaStore).length) return;
     const initialEdges = createInitialEdges(schemaStore);
     setEdges(initialEdges);
