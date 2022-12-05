@@ -20,18 +20,12 @@ import QueryModal from './QueryModal';
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+  const { schemaStore, setSchemaStore, undoHandler, redoHandler, historyCounter } = useSchemaStore((state) => state);
   const { setWelcome } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   const [queryModalOpened, setQueryModalOpened] = useState(false);
-  const [schemaHistory, setSchemaHistory] = useState<{}[]>([]);
-  const [undo, setUndo] = useState<{}[]>([]);
-  const [redo, setRedo] = useState<{}[]>([]);
   //END: STATE DECLARATION
-
-  // TODO: Uncover the history in legacy code
-  // const [history, setHistory] = useState([]);
 
   //create references for HTML elements
   const confirmModal: any = useRef();
@@ -46,23 +40,6 @@ export default function FeatureTab(props: any) {
     confirmModal.current.style.display = 'none';
     if (response) action[0]();
   };
-
-  // TODO: delete these after styling new table modal
-  //create references for HTML elements
-  // const tableNameInput: any = useRef();
-  // const addTableModal: any = useRef();
-  /* When the user clicks, open the modal */
-  // const openAddTableModal = () => {
-  //   addTableModal.current.style.display = 'block';
-  //   addTableModal.current.style.zIndex = '100';
-  //   if (!schemaStore) buildDatabase();
-  // };
-  /* When the user clicks 'yes' or 'no', close it */
-  // const closeAddTableModal = (response: boolean) => {
-  //   addTableModal.current.style.display = 'none';
-  //   if (response) addTable(tableNameInput.current.value);
-  //   tableNameInput.current.value = '';
-  // };
 
   // HELPER FUNCTIONS
 
@@ -133,22 +110,12 @@ export default function FeatureTab(props: any) {
   };
 
   // Undo/Redo functionality
-  // first, listen for changes to schema store, and add to history array
-  // useEffect(() => {
-  //   setSchemaHistory([...schemaHistory, schemaStore]);
-  //   console.log('useEffect is working! ', schemaHistory)
-  // }, [schemaStore])
-  // dump history into undo, wipe the history, put current state into redo, setstore as undo?
-  const undoHandler =  () => {
-    console.log(undo);
-    setSchemaStore(undo[undo.length - 1]);
+  const undoClick = () => { // commented logic for undoing at history[0] because there's a button for clearing canvas anyway
+    // if (historyCounter <= 1){
+    //   clearCanvasTables();
+    // }
+    undoHandler(); // from schemaStore
   }
-    const unsubSchema = useSchemaStore.subscribe(
-      (state) => state.schemaStore,
-      (schemaStore, previousschemaStore) => {
-        console.log(schemaStore, previousschemaStore)
-        setUndo([...undo, previousschemaStore]);
-      });
 
   // END: HELPER FUNCTIONS
 
@@ -309,7 +276,7 @@ export default function FeatureTab(props: any) {
               {/* TODO: Add UNDO & REDO feature */}
               <li>
                 <a
-                  onClick={undoHandler}
+                  onClick={undoClick}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
@@ -331,7 +298,7 @@ export default function FeatureTab(props: any) {
               </li>
               <li>
                 <a
-                  onClick={() => alert('Feature coming soon!')}
+                  onClick={redoHandler}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg

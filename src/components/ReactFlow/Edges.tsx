@@ -1,14 +1,13 @@
 // creates an array of all edges in the schema
 import { ColumnSchema } from '@/Types';
 export default function createInitialEdges(schemaObject) {
-  const edges = [];
+  const edges: {}[] = [];
   const allRows: ColumnSchema[] = [];
-  const schemaVals = Object.values(schemaObject);
+  const schemaVals = Object.values(schemaObject) as {}[];
   for (const table of schemaVals) {
     allRows.push(...Object.values(table));
   }
   allRows.forEach((row) => {
-    console.log(row);
     if (row.IsForeignKey) {
       edges.push({
         id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
@@ -32,6 +31,5 @@ export default function createInitialEdges(schemaObject) {
       });
     }
   });
-  console.log('returning edges: ', edges);
   return edges;
 }

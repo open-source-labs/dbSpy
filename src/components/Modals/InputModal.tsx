@@ -13,8 +13,12 @@ type TableData = {
 };
 
 // TODO: ADD FORM VALIDATION
+// table or column name can have length <= 63
 
 export default function InputModal({ closeInputModal }: InputModalProps) {
+  // TODO: separate state for table name and column data
+  // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
+  // AFTERWARDS, PK MAY NOT BE EDITED
   const initialTable: TableData = {
     tableName: 'untitled_table',
     columns: [
@@ -35,6 +39,12 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     ],
   };
 
+  // functions that check validity and add schema to the store
+  const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+    (state) => state
+  );
+
+  // TODO: set tablename to parent table when in column mode
   const [tableData, setTableData] = useState(initialTable);
 
   const newColumn: ColumnData = {
@@ -45,13 +55,16 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     defaultValue: null,
   };
 
-  const { addTableSchema, addColumnSchema } = useSchemaStore((state) => state);
-
-  const onSubmit = () => {
-    addTableSchema(tableData.tableName);
-    tableData.columns.forEach((columnData) =>
-      addColumnSchema(tableData.tableName, columnData)
-    );
+  const handleSubmit = (): boolean => {
+    // table must be added to schema first to enable column validity checks
+    try {
+      addTableSchema(tableData.tableName, tableData.columns);
+      return true;
+    } catch (error) {
+      window.alert(error);
+      console.error(error);
+      return false;
+    }
   };
 
   const addColumn = () => {
@@ -68,15 +81,28 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
     });
   };
 
-  const onColumnChange = (
+  const handleColumnChange = (
     index: number,
     property: keyof ColumnData,
     value: string | boolean
   ) => {
     setTableData((prevData) => {
-      // TODO: LEARN WHY TS IS YELLING
-      prevData.columns[index][property] = value;
-      return { ...prevData };
+      // isPrimary is special. Only one column may be pk. Extra logic required
+      if (property !== 'isPrimary') {
+        // TODO: LEARN WHY TS IS YELLING
+        prevData.columns[index][property] = value;
+        return { ...prevData };
+      }
+      // Disables unchecking pk
+      else if (!value) return { ...prevData };
+      else {
+        // If checking new column, uncheck old pk
+        for (const column of prevData.columns) {
+          column.isPrimary = false;
+        }
+        prevData.columns[index].isPrimary = true;
+        return { ...prevData };
+      }
     });
   };
 
@@ -85,12 +111,13 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
       key={`column-${index}`}
       index={index}
       deleteColumn={deleteColumn}
-      onColumnChange={onColumnChange}
+      handleColumnChange={handleColumnChange}
       name={col.name}
       type={col.type}
       isNullable={col.isNullable}
       isPrimary={col.isPrimary}
       defaultValue={col.defaultValue}
+      columnCount={tableData.columns.length}
     />
   ));
 
@@ -100,8 +127,8 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
         autoComplete="off"
         onSubmit={(e) => {
           e.preventDefault();
-          onSubmit();
-          closeInputModal();
+          const isSuccessful: boolean = handleSubmit();
+          if (isSuccessful) closeInputModal();
         }}
         className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
@@ -115,8 +142,13 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
           <input
             id="table-modal-name"
             value={tableData.tableName}
+            required
+            maxLength={63}
             onChange={(e) =>
-              setTableData((prevData) => ({ ...prevData, tableName: e.target.value }))
+              setTableData((prevData) => ({
+                ...prevData,
+                tableName: e.target.value.trim(),
+              }))
             }
           />
         </div>

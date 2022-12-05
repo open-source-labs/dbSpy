@@ -29,11 +29,8 @@ export default function Flow() {
   // re-render every time schemaStore updates
   useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
-  function reRender(schemaStore: SchemaObject) {
-    console.log('attempting to re-render');
-    if (!Object.keys(schemaStore).length)
-      return console.log('returning. schema store', schemaStore);
-    console.log('re-rendering with', schemaStore);
+  function reRender(schemaStore) {
+    if (!Object.keys(schemaStore).length) return;
     const initialEdges = createInitialEdges(schemaStore);
     setEdges(initialEdges);
     const initialNodes = createInitialNodes(schemaStore, initialEdges);
