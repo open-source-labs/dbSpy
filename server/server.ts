@@ -15,3 +15,5 @@ app.listen(3000, () => {
     log.info(`Securely Running at ${port}`);
     routes(app);
 })
+
+export default app;

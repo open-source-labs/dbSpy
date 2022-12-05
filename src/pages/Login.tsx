@@ -31,8 +31,8 @@ export default function Login() {
       <div>
         <h3>Please Log In</h3>
         <form onSubmit={(e) => handleSubmit(e)}>
-          <input type='text' required></input>
-          <input type='password' required></input>
+          <input type='email' name='email' placeholder='Email' required></input>
+          <input type='password' name='panpm ssword' placeholder='Password' required></input>
           <input type='submit'></input>
         </form>
         <span>

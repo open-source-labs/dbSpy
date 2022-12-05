@@ -1,9 +1,8 @@
+import { RequestHandler } from "express"
 import log from '../logger/index';
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
-
-
 
 export const findUser = async (email: string) => {
     console.log('user.controller: Firing findUser')
@@ -30,4 +29,9 @@ export const createUser = async (user: string[]) => {
         }
         log.info('createUser: successfully created User')
     })
+}
+
+export const userRegistration: RequestHandler = (req, res) => {
+  console.log('firing user registration', req.body)
+  return res.status(200);
 }

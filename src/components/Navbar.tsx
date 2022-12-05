@@ -13,6 +13,7 @@ function Navbar() {
   const { user, setUser } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
 
+  // Clears session + reset store
   const logoutSession = async () => {
     await fetch(`http://localhost:8080/api/logout`);
     setUser(null);

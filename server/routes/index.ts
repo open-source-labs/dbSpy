@@ -1,5 +1,6 @@
 import { Express, Request, Response, NextFunction, Router } from 'express';
 import { handleGoogleAuth } from '../controllers/auth.controller';
+import { userRegistration } from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
 import mysqlRouter from './mysql.router';
 import session from 'express-session';
@@ -40,21 +41,21 @@ const routes = async (app: Express) => {
     }
   }))
 
-  // TODO: Healthcheck is a test. Doesn't require testing - can add a server listener event instead
-  app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200))
+  app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
 
-  app.get('/api/oauth/google', handleGoogleAuth)
+  app.get('/api/oauth/google', handleGoogleAuth);
 
-  app.use('/api/sql/postgres', postgresRouter)
+  app.use('/api/sql/postgres', postgresRouter);
 
-  app.use('/api/sql/mysql', mysqlRouter)
+  app.use('/api/sql/mysql', mysqlRouter);
 
-  app.use('/api/me', getCurrentUser)
+  app.post('/api/userRegistration', userRegistration);
 
-  // TODO: Never called in frontend currently
+  app.use('/api/me', getCurrentUser);
+
   app.use('/api/logout', (req: Request, res: Response) => {
     req.session.destroy((err) => {
-      if(err) console.log('Error destroying session:', err)
+      if (err) console.log('Error destroying session:', err)
       else {
         console.log('Succesfully destroyed session')
         return res.redirect(`${client_url}/`)
@@ -72,7 +73,6 @@ const routes = async (app: Express) => {
     const errorObj = Object.assign({}, defaultErr, err);
     return res.status(errorObj.status).json(errorObj.message);
   });
-
 }
 
 export default routes;

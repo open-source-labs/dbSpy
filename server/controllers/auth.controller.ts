@@ -31,7 +31,6 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
         }
 
         //insert or retrieve the user
-        console.log('before foundUser assignment ')
         const foundUser: any = await findUser(decodedUser.email)
         console.log(client_url, ' client_url');
         // // if we did not find the user, create one

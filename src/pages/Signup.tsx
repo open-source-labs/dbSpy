@@ -8,15 +8,18 @@ export default function Signup() {
   const registerAccount = (e: React.FormEvent): void => {
     e.preventDefault();
     console.log('Registration Submitted')
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
   }
 
   return (
     <div className='grid h-80 place-items-center'>
       <div>
-        <h3>Create a dbSpy account</h3>
+        <h3>Register with dbSpy:</h3>
         <form onSubmit={(e) => registerAccount(e)}>
-          <input type='text' required></input>
-          <input type='password' required></input>
+          <input type='email' name="email" placeholder='Email' required></input>
+          <input type='password' name="password" placeholder='Password' required></input>
           <input type='submit'></input>
         </form>
       </div>
