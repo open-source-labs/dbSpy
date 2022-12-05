@@ -7,8 +7,7 @@ import useSchemaStore from '../../store/schemaStore';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 export default function TableNode({ data }) {
-  // state of schema object
-  const { schemaStore, addColumnSchema } = useSchemaStore((state) => state);
+  const tableName = data.table[0];
   // rowData is an array of objects with each row in the table as an element
   const rowData = Object.values(data.table[1]);
   const [tableRows, setTableRows] = useState(rowData);
@@ -16,7 +15,7 @@ export default function TableNode({ data }) {
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === data.table[0]) {
+    if (data.edges[i].source === tableName) {
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -27,7 +26,7 @@ export default function TableNode({ data }) {
         />
       );
     }
-    if (data.edges[i].target === data.table[0]) {
+    if (data.edges[i].target === tableName) {
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
@@ -42,10 +41,10 @@ export default function TableNode({ data }) {
   // helper function when adding row to table
   // const addRow = () => {
   //   const currentSchema = { ...schemaStore };
-  //   currentSchema[data.table[0]].newRow = {
+  //   currentSchema[tableName].newRow = {
   //     Name: '',
   //     Value: '',
-  //     TableName: data.table[0],
+  //     TableName: tableName,
   //     References: [
   //       {
   //         PrimaryKeyName: '',
@@ -66,18 +65,18 @@ export default function TableNode({ data }) {
   // };
   // renders rows within table
   return (
-    <div className="table-node transition-colors duration-500" key={data.table[0]}>
+    <div className="table-node transition-colors duration-500" key={tableName}>
       {tableHandles}
       <div>
         <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
-          {data.table[0]}
+          {tableName}
         </label>
       </div>
       <div>
         <button
           className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
           // onClick={addRow}
-          onClick={data.openAddColumnModal}
+          onClick={() => data.openAddColumnModal(tableName)}
         >
           <FaRegPlusSquare size={20} />
         </button>
@@ -132,8 +131,8 @@ export default function TableNode({ data }) {
             {rowData.map((row, index) => (
               <TableNodeRow
                 row={row}
-                key={`${data.table[0]}-row${index}`}
-                id={`${data.table[0]}-row${index}`}
+                key={`${tableName}-row${index}`}
+                id={`${tableName}-row${index}`}
               />
             ))}
           </tbody>

@@ -19,15 +19,19 @@ const DBDisplay = () => {
   );
 
   // Input Modal state and handlers
-  type InputModalState = { isOpen: boolean; mode: 'table' | 'column' };
+  type InputModalState = {
+    isOpen: boolean;
+    mode: 'table' | 'column';
+    tableName?: string;
+  };
   const [inputModalState, setInputModalState] = useState<InputModalState>({
     isOpen: false,
     mode: 'table',
   });
   const openAddTableModal = () =>
     setInputModalState((prevState) => ({ isOpen: true, mode: 'table' }));
-  const openAddColumnModal = () =>
-    setInputModalState((prevState) => ({ isOpen: true, mode: 'column' }));
+  const openAddColumnModal = (tableName: string) =>
+    setInputModalState((prevState) => ({ isOpen: true, mode: 'column', tableName }));
 
   //create references for HTML elements
   const mySideBarId: any = useRef();
@@ -89,6 +93,7 @@ const DBDisplay = () => {
       {inputModalState.isOpen && (
         <InputModal
           mode={inputModalState.mode}
+          tableNameProp={inputModalState.tableName}
           closeInputModal={() =>
             setInputModalState((prevState) => ({ ...prevState, isOpen: false }))
           }

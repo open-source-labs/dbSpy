@@ -6,61 +6,54 @@ import useSchemaStore from '../../store/schemaStore';
 type InputModalProps = {
   mode: 'table' | 'column';
   closeInputModal: () => void;
-};
-
-type TableData = {
-  tableName: string;
-  columns: ColumnData[];
+  tableNameProp?: string;
 };
 
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
 
-export default function InputModal({ mode, closeInputModal }: InputModalProps) {
+export default function InputModal({
+  mode,
+  closeInputModal,
+  tableNameProp,
+}: InputModalProps) {
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
-  const initialTable: TableData = {
-    tableName: 'untitled_table',
-    columns: [
-      {
-        name: 'id',
-        type: 'AUTOINCREMENT',
-        isNullable: false,
-        isPrimary: true,
-        defaultValue: null,
-      },
-      {
-        name: 'created_at',
-        type: 'TIMESTAMP',
-        isNullable: false,
-        isPrimary: false,
-        defaultValue: 'NOW()',
-      },
-    ],
-  };
+  const initialTable: string = 'untitled_table';
+  const initialColumns: ColumnData[] = [
+    {
+      name: 'id',
+      type: 'AUTOINCREMENT',
+      isNullable: false,
+      isPrimary: true,
+      defaultValue: null,
+    },
+    {
+      name: 'created_at',
+      type: 'TIMESTAMP',
+      isNullable: false,
+      isPrimary: false,
+      defaultValue: 'NOW()',
+    },
+  ];
 
   // functions that check validity and add schema to the store
   const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
     (state) => state
   );
 
-  // TODO: set tablename to parent table when in column mode
-  const [tableData, setTableData] = useState(initialTable);
-
-  const newColumn: ColumnData = {
-    name: `column_${tableData.columns.length + 1}`,
-    type: 'VARCHAR(255)',
-    isNullable: false,
-    isPrimary: false,
-    defaultValue: null,
-  };
+  const [tableName, setTableName] = useState<string>(() => {
+    if (!tableNameProp) return initialTable;
+    else return tableNameProp;
+  });
+  const [columnData, setColumnData] = useState<ColumnData[]>(initialColumns);
 
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
-      if (mode === 'table') addTableSchema(tableData.tableName, tableData.columns);
-      else if (mode === 'column') addColumnSchema(tableData.tableName, tableData.columns);
+      if (mode === 'table') addTableSchema(tableName, columnData);
+      else if (mode === 'column') addColumnSchema(tableName, columnData);
       return true;
     } catch (error) {
       window.alert(error);
@@ -69,17 +62,27 @@ export default function InputModal({ mode, closeInputModal }: InputModalProps) {
     }
   };
 
+  const newColumn: ColumnData = {
+    name: `column_${columnData.length + 1}`,
+    type: 'VARCHAR(255)',
+    isNullable: false,
+    isPrimary: false,
+    defaultValue: null,
+  };
+
   const addColumn = () => {
-    setTableData((prevData) => {
-      prevData.columns.push(newColumn);
-      return { ...prevData };
+    console.log('adding column');
+    setColumnData((prevColumns) => {
+      prevColumns.push(newColumn);
+      return [...prevColumns];
     });
   };
 
   const deleteColumn = (index: number) => {
-    setTableData((prevData) => {
-      prevData.columns.splice(index, 1);
-      return { ...prevData };
+    console.log('deleting column');
+    setColumnData((prevColumns) => {
+      prevColumns.splice(index, 1);
+      return [...prevColumns];
     });
   };
 
@@ -88,27 +91,27 @@ export default function InputModal({ mode, closeInputModal }: InputModalProps) {
     property: keyof ColumnData,
     value: string | boolean
   ) => {
-    setTableData((prevData) => {
+    setColumnData((prevColumns) => {
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
         // TODO: LEARN WHY TS IS YELLING
-        prevData.columns[index][property] = value;
-        return { ...prevData };
+        prevColumns[index][property] = value;
+        return [...prevColumns];
       }
       // Disables unchecking pk
-      else if (!value) return { ...prevData };
+      else if (!value) return prevColumns;
       else {
         // If checking new column, uncheck old pk
-        for (const column of prevData.columns) {
+        for (const column of prevColumns) {
           column.isPrimary = false;
         }
-        prevData.columns[index].isPrimary = true;
-        return { ...prevData };
+        prevColumns[index].isPrimary = true;
+        return [...prevColumns];
       }
     });
   };
 
-  const columnInputs = tableData.columns.map((col, index) => (
+  const columnInputs = columnData.map((col, index) => (
     <ColumnInput
       key={`column-${index}`}
       index={index}
@@ -119,7 +122,7 @@ export default function InputModal({ mode, closeInputModal }: InputModalProps) {
       isNullable={col.isNullable}
       isPrimary={col.isPrimary}
       defaultValue={col.defaultValue}
-      columnCount={tableData.columns.length}
+      columnCount={columnData.length}
     />
   ));
 
@@ -135,24 +138,25 @@ export default function InputModal({ mode, closeInputModal }: InputModalProps) {
         className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="table-name">
-          <label
-            htmlFor="table-modal-name"
-            className="  text-slate-900 dark:text-[#f8f4eb]"
-          >
-            Table Name
-          </label>
-          <input
-            id="table-modal-name"
-            value={tableData.tableName}
-            required
-            maxLength={63}
-            onChange={(e) =>
-              setTableData((prevData) => ({
-                ...prevData,
-                tableName: e.target.value.trim(),
-              }))
-            }
-          />
+          {mode === 'table' ? (
+            <>
+              <label
+                htmlFor="table-modal-name"
+                className="  text-slate-900 dark:text-[#f8f4eb]"
+              >
+                Table Name
+              </label>
+              <input
+                id="table-modal-name"
+                value={tableName}
+                required
+                maxLength={63}
+                onChange={(e) => setTableName(e.target.value.trim())}
+              />
+            </>
+          ) : (
+            <h1>{`Table Name: ${tableName}`}</h1>
+          )}
         </div>
         <div className="column-header">
           <h1 className="  text-slate-900 dark:text-[#f8f4eb]">Columns</h1>
