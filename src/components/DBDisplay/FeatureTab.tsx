@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 // Functions imported:
 import parseSql from '../../parse';
@@ -25,6 +25,9 @@ export default function FeatureTab(props: any) {
   const [action, setAction] = useState(new Array());
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   const [queryModalOpened, setQueryModalOpened] = useState(false);
+  const [schemaHistory, setSchemaHistory] = useState<{}[]>([]);
+  const [undo, setUndo] = useState<{}[]>([]);
+  const [redo, setRedo] = useState<{}[]>([]);
   //END: STATE DECLARATION
 
   // TODO: Uncover the history in legacy code
@@ -128,6 +131,24 @@ export default function FeatureTab(props: any) {
   const closeQueryModal = () => {
     setQueryModalOpened(false);
   };
+
+  // Undo/Redo functionality
+  // first, listen for changes to schema store, and add to history array
+  // useEffect(() => {
+  //   setSchemaHistory([...schemaHistory, schemaStore]);
+  //   console.log('useEffect is working! ', schemaHistory)
+  // }, [schemaStore])
+  // dump history into undo, wipe the history, put current state into redo, setstore as undo?
+  const undoHandler =  () => {
+    console.log(undo);
+    setSchemaStore(undo[undo.length - 1]);
+  }
+    const unsubSchema = useSchemaStore.subscribe(
+      (state) => state.schemaStore,
+      (schemaStore, previousschemaStore) => {
+        console.log(schemaStore, previousschemaStore)
+        setUndo([...undo, previousschemaStore]);
+      });
 
   // END: HELPER FUNCTIONS
 
@@ -288,7 +309,7 @@ export default function FeatureTab(props: any) {
               {/* TODO: Add UNDO & REDO feature */}
               <li>
                 <a
-                  onClick={() => alert('Feature coming soon!')}
+                  onClick={undoHandler}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
