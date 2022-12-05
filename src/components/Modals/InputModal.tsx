@@ -4,6 +4,7 @@ import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
 
 type InputModalProps = {
+  mode: 'table' | 'column';
   closeInputModal: () => void;
 };
 
@@ -15,7 +16,7 @@ type TableData = {
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
 
-export default function InputModal({ closeInputModal }: InputModalProps) {
+export default function InputModal({ mode, closeInputModal }: InputModalProps) {
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
@@ -58,7 +59,8 @@ export default function InputModal({ closeInputModal }: InputModalProps) {
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
-      addTableSchema(tableData.tableName, tableData.columns);
+      if (mode === 'table') addTableSchema(tableData.tableName, tableData.columns);
+      else if (mode === 'column') addColumnSchema(tableData.tableName, tableData.columns);
       return true;
     } catch (error) {
       window.alert(error);

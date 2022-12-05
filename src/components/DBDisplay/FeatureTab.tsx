@@ -217,7 +217,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={() => {
-                    props.openInputModal();
+                    props.openAddTableModal();
                     // if schemaStore is empty, initialize
                     if (!Object.keys(schemaStore).length) buildDatabase();
                   }}

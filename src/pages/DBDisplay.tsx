@@ -18,10 +18,16 @@ const DBDisplay = () => {
     (state) => state
   );
 
-  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
-  const openInputModal = () => setIsInputModalOpen(true);
-
-  //END: STATE DECLARATION
+  // Input Modal state and handlers
+  type InputModalState = { isOpen: boolean; mode: 'table' | 'column' };
+  const [inputModalState, setInputModalState] = useState<InputModalState>({
+    isOpen: false,
+    mode: 'table',
+  });
+  const openAddTableModal = () =>
+    setInputModalState((prevState) => ({ isOpen: true, mode: 'table' }));
+  const openAddColumnModal = () =>
+    setInputModalState((prevState) => ({ isOpen: true, mode: 'column' }));
 
   //create references for HTML elements
   const mySideBarId: any = useRef();
@@ -63,7 +69,7 @@ const DBDisplay = () => {
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
-      <FeatureTab handleSidebar={handleSidebar} openInputModal={openInputModal} />
+      <FeatureTab handleSidebar={handleSidebar} openAddTableModal={openAddTableModal} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
@@ -76,12 +82,17 @@ const DBDisplay = () => {
             </p>
           </div>
         ) : (
-          <Flow />
+          <Flow openAddColumnModal={openAddColumnModal} />
         )}
       </div>
       {/* MODALS */}
-      {isInputModalOpen && (
-        <InputModal closeInputModal={() => setIsInputModalOpen(false)} />
+      {inputModalState.isOpen && (
+        <InputModal
+          mode={inputModalState.mode}
+          closeInputModal={() =>
+            setInputModalState((prevState) => ({ ...prevState, isOpen: false }))
+          }
+        />
       )}
     </div>
   );

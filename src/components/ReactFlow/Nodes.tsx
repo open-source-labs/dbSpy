@@ -1,5 +1,5 @@
 //hard-coded xy positioning of each node in the canvas
-export default function createInitialNodes(schemaObject, edges) {
+export default function createInitialNodes(schemaObject, edges, openAddColumnModal) {
   const nodePositions = [
     { x: 0, y: 0 },
     { x: 500, y: 0 },
@@ -27,7 +27,7 @@ export default function createInitialNodes(schemaObject, edges) {
       type: 'table',
       position: nodePositions[index],
       // position: {x: Math.random() * window.innerWidth, y: Math.random() * window.innerWidth},
-      data: { table, edges },
+      data: { table, edges, openAddColumnModal },
     };
   });
   return nodes;

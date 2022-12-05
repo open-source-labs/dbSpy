@@ -77,6 +77,7 @@ export default function TableNode({ data }) {
         <button
           className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
           // onClick={addRow}
+          onClick={data.openAddColumnModal}
         >
           <FaRegPlusSquare size={20} />
         </button>
