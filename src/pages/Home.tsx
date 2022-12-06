@@ -40,7 +40,7 @@ export default function Home() {
           <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight mb-12">Database development <br /><span className="text-blue-600">simplified.</span></h1> 
           <br />
           {user
-            ? <div className="text-3xl font-bold">Welcome back, {user.full_name}</div>
+            ? <div className="text-3xl font-bold">Welcome back, {user.full_name.slice(0, user.full_name.indexOf(' '))}</div>
             : <NavLink to='/signup' className="inline-block px-7 py-3 mb-2 md:mb-0 mr-0 md:mr-2 bg-blue-600 text-[#f8f4eb] font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" data-mdb-ripple="true" data-mdb-ripple-color="light" role="button">Get Started</NavLink>
           }
         </div>

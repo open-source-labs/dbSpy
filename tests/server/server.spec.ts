@@ -9,10 +9,25 @@ describe('Server Health', () => {
   })
 })
 describe('Account Registration', () => {
-  it('returns 200 when called', async () => {
-    const response = await request(server).post('/api/userRegistration').send({name: 'John Doe', password: 'testPassword123'})
+  const testRegistration = {
+    email: 'JohnDoe123@gmail.com', 
+    full_name: 'John Doe', 
+    password: 'testPassword123'
+  }
 
-    expect(response.status).toBe(200);
-  
+  afterAll(() => {
+    // TODO: Add mock database to test in?
+    // Delete the test account from database
   })
+  
+  it('returns 200 when called', async () => {
+    const response = await request(server).post('/api/userRegistration').send(testRegistration);
+    expect(response.status).toBe(200);
+  })
+  it('checks for duplicate emails', async () => {
+    const duplicateRes = await request(server).post('/api/userRegistration').send({email: 'alexandertu95@gmail.com'})
+    expect(duplicateRes.status).toBe(403);
+  })
+  it('')
 })
+

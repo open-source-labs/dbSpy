@@ -1,18 +1,30 @@
 // React & React Router Modules
 import React from 'react';
+import axios from 'axios';
 import { NavLink } from 'react-router-dom';
+import useCredentialsStore from "../store/credentialsStore";
 import { getGoogleAuthUrl } from '../utils/getGoogleUrl'
 
 
 /* "Login" Component - login page for user login */
 export default function Login() {
   //STATE DECLARATION (dbSpy3.0)
+  const {setUser} = useCredentialsStore();
   //END: STATE DECLARATION
 
   //Regular login using JWTs without OAuth  
-  const handleSubmit = (e: React.FormEvent): void => {
+  const handleLogin = (e: React.FormEvent): void => {
     e.preventDefault();
-    console.log('Login Submitted')
+    const userLogin = {
+      email: e.target.email.value,
+      password: e.target.password.value
+    }
+    axios.post('/api/verifyUser', userLogin)
+      .then(res => {
+        console.log(res);
+        setUser(res.data);
+        window.open('http://localhost:8080/', '_self')
+      })
   }
 
   /*
@@ -30,9 +42,9 @@ export default function Login() {
     <div className='grid h-80 place-items-center'>
       <div>
         <h3>Please Log In</h3>
-        <form onSubmit={(e) => handleSubmit(e)}>
+        <form onSubmit={(e) => handleLogin(e)}>
           <input type='email' name='email' placeholder='Email' required></input>
-          <input type='password' name='panpm ssword' placeholder='Password' required></input>
+          <input type='password' name='password' placeholder='Password' required></input>
           <input type='submit'></input>
         </form>
         <span>

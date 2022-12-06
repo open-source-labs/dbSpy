@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import "./styles/index.css"
 import Shared from "./pages/Shared";
+// TODO: Delete? Remove barrier to entry.
 import ProtectedRoute from "./pages/ProtectedRoute";
 import useCredentialsStore from "./store/credentialsStore";
 
@@ -32,9 +33,9 @@ export default function App() {
           <Route path='login' element={<Login />} />
           <Route path='signup' element={<Signup />} />
           <Route path='display' element={
-            <ProtectedRoute user={user}>
+            // <ProtectedRoute user={user}>
               <DBDisplay />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           } />
         </Route>
       </Routes>

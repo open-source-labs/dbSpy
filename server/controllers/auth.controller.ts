@@ -30,6 +30,7 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
             })
         }
 
+        console.log('decoded user', decodedUser)
         //insert or retrieve the user
         const foundUser: any = await findUser(decodedUser.email)
         console.log(client_url, ' client_url');
@@ -42,7 +43,6 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
                 decodedUser.picture
             ])
         }
-
         const newUser = await findUser(decodedUser.email)
 
         const user = await foundUser || newUser
