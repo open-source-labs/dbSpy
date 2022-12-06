@@ -13,8 +13,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
-import createInitialEdges from './Edges';
-import createInitialNodes from './Nodes';
+import createEdges from './createEdges';
+import createNodes from './createNodes';
 
 const nodeTypes = {
   table: TableNode,
@@ -30,13 +30,9 @@ export default function Flow({ openAddColumnModal }) {
 
   function reRender(schemaStore: SchemaStore) {
     if (!Object.keys(schemaStore).length) return;
-    const initialEdges = createInitialEdges(schemaStore);
+    const initialEdges = createEdges(schemaStore);
     setEdges(initialEdges);
-    const initialNodes = createInitialNodes(
-      schemaStore,
-      initialEdges,
-      openAddColumnModal
-    );
+    const initialNodes = createNodes(schemaStore, initialEdges, openAddColumnModal);
     setNodes(initialNodes);
   }
 

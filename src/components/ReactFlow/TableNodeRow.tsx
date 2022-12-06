@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import useFlowStore from '../../store/flowStore';
-import createInitialEdges from './Edges';
-import createInitialNodes from './Nodes';
+import createEdges from './createEdges';
+import createNodes from './createNodes';
 import {
   FaRegEdit,
   FaRegTrashAlt,
@@ -80,9 +80,9 @@ export default function TableNodeRow({ row, id }) {
     //set reference back to defaultRef
     setReference(defaultRef);
     //set nodes/edges
-    const initialEdges = createInitialEdges(currentSchema);
+    const initialEdges = createEdges(currentSchema);
     setEdges(initialEdges);
-    const initialNodes = createInitialNodes(currentSchema, initialEdges);
+    const initialNodes = createNodes(currentSchema, initialEdges);
     setNodes(initialNodes);
     setMode('default');
   };
