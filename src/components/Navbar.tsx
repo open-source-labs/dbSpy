@@ -45,54 +45,6 @@ function Navbar() {
 
   const loadSchema = (): void => {
     console.log('loading schema')
-    // const testSchema = {
-    //   'table': [
-    //     'untitled_tabledgs',
-    //     {
-    //       'id': {
-    //         'Name': 'id',
-    //         'Value': null,
-    //         'TableName': 'untitled_tabledgs',
-    //         'References': [
-    //           {
-    //             'PrimaryKeyName': '',
-    //             'PrimaryKeyTableName': 'untitled_tabledgs',
-    //             'ReferencesPropertyName': '',
-    //             'ReferencesTableName': '',
-    //             'IsDestination': false,
-    //             'constraintName': ''
-    //           }
-    //         ],
-    //         'IsPrimaryKey': true,
-    //         'IsForeignKey': false,
-    //         'field_name': 'id',
-    //         'data_type': 'AUTOINCREMENT',
-    //         'additional_constraints': 'NOT NULL'
-    //       },
-    //       'created_at': {
-    //         'Name': 'created_at',
-    //         'Value': 'NOW()',
-    //         'TableName': 'untitled_tabledgs',
-    //         'References': [
-    //           {
-    //             'PrimaryKeyName': '',
-    //             'PrimaryKeyTableName': 'untitled_tabledgs',
-    //             'ReferencesPropertyName': '',
-    //             'ReferencesTableName': '',
-    //             'IsDestination': false,
-    //             'constraintName': ''
-    //           }
-    //         ],
-    //         'IsPrimaryKey': false,
-    //         'IsForeignKey': false,
-    //         'field_name': 'created_at',
-    //         'data_type': 'TIMESTAMP',
-    //         'additional_constraints': 'NOT NULL'
-    //       }
-    //     }
-    //   ],
-    //   'edges': []
-    // }
     fetch(`/api/retrieveSchema/${user.email}`)
     .then(data => {
       console.log('data', data)
