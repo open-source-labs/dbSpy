@@ -21,7 +21,6 @@ export default function createInitialNodes(schemaObject, edges, openAddColumnMod
   ];
   // renders each table on the React Flow canvas
   const nodes = Object.entries(schemaObject).map((table, index) => {
-    console.log('nodes.tsx', { table, edges });
     return {
       id: table[0],
       type: 'table',

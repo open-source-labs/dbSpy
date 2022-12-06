@@ -31,6 +31,5 @@ export default function createInitialEdges(schemaObject) {
       });
     }
   });
-  console.log('returning edges: ', edges);
   return edges;
 }

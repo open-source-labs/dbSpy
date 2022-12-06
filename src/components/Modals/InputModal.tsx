@@ -65,7 +65,6 @@ export default function InputModal({
     try {
       if (mode === 'table') addTableSchema(tableName, columnData);
       else if (mode === 'column') {
-        console.log('adding column');
         addColumnSchema(tableName, columnData);
       }
 
@@ -86,7 +85,6 @@ export default function InputModal({
   };
 
   const addColumn = () => {
-    console.log('adding column');
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
       return [...prevColumns];
@@ -94,7 +92,6 @@ export default function InputModal({
   };
 
   const deleteColumn = (index: number) => {
-    console.log('deleting column');
     setColumnData((prevColumns) => {
       prevColumns.splice(index, 1);
       return [...prevColumns];

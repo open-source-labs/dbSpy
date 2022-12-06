@@ -37,6 +37,7 @@ export interface SchemaState {
   _checkNameValidity: (...names: string[]) => void;
   _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
   _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
+  _checkColumnDataDuplicates: (ColumnDataArr: ColumnData[]) => void;
 
   // VALIDATION CONSTANTS
   _restrictedMySqlNames: RestrictedNames;
@@ -50,7 +51,7 @@ const useSchemaStore = create<SchemaState>()(
   subscribeWithSelector(
     // devtools middleware allows use of Redux devtool in chrome
     devtools(
-      // store function - get parameter allows helper functions to access state
+      // store function - 'get' parameter is basically a `this` alias when invoked
       (set, get) => ({
         //schemaStore state
         schemaStore: {},
@@ -77,15 +78,13 @@ const useSchemaStore = create<SchemaState>()(
         deleteTableSchema: (tableName) =>
           set((state) => {
             const newState = { ...state };
-            console.log({ newState });
             delete newState.schemaStore[tableName];
-            console.log('newState post-deletion', newState);
             return newState;
           }),
         addColumnSchema: (tableName, columnDataArr) =>
           set((state) => {
+            get()._checkColumnValidity(tableName, columnDataArr);
             // write field_name const
-            console.log({ tableName, columnDataArr });
             const newState = { ...state };
             newState.schemaStore = get()._addColumns(
               newState.schemaStore,
@@ -117,7 +116,7 @@ const useSchemaStore = create<SchemaState>()(
               data_type: columnData.type,
               additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
             };
-            // newStore[tableName][columnData.name] = newCol;
+            // reassigning newStore so subscriptions pick up on the change
             newStore = {
               ...newStore,
               [tableName]: {
@@ -157,7 +156,7 @@ const useSchemaStore = create<SchemaState>()(
 
           // Check against current state
           if (Object.hasOwn(get().schemaStore, tableName))
-            throw new Error(`Schema already contains table named ${tableName}`);
+            throw new Error(`Schema already contains table named "${tableName}"`);
 
           // If columnDataArr is being passed as arg, that means the table is being initialized
           if (columnDataArr) {
@@ -168,37 +167,39 @@ const useSchemaStore = create<SchemaState>()(
                 `Table must have one primary key (currently has ${pkCount})`
               );
 
-            // Check name syntax and for duplicates
-            const nameRegister: { [name: string]: boolean } = {};
-            for (const { name } of columnDataArr) {
-              // Check column name syntax
-              checkNameValidity(name);
-              // Add to name register and throw error if duplicate
-              if (nameRegister[name])
-                throw new Error(`Table contains duplicate names (${name})`);
-              else nameRegister[name] = true;
-            }
+            // Check name for duplicates
+            get()._checkColumnDataDuplicates(columnDataArr);
           }
         },
         _checkColumnValidity(tableName, columnDataArr) {
-          const checkNameValidity = get()._checkNameValidity;
+          console.log({ tableName });
           const currentTable = get().schemaStore[tableName];
 
           for (const column of columnDataArr) {
             // Check column name syntax
-            const nameStatus = checkNameValidity(column.name);
-            if (!nameStatus.isValid) return nameStatus;
+            get()._checkNameValidity(column.name);
 
             // Check against current state
+            console.log({ currentTable });
             if (Object.hasOwn(currentTable, column.name))
-              return {
-                isValid: false,
-                errorMessage: `Table ${tableName} already contains column named ${column.name}`,
-              };
+              throw new Error(
+                `Table "${tableName}" already contains column named "${column.name}"`
+              );
           }
 
-          // All checks passed, column names are valid
-          return { isValid: true };
+          // Check data for duplicate names
+          get()._checkColumnDataDuplicates(columnDataArr);
+        },
+        _checkColumnDataDuplicates(columnDataArr) {
+          const nameRegister: { [name: string]: boolean } = {};
+          for (const { name } of columnDataArr) {
+            // Check column name syntax
+            get()._checkNameValidity(name);
+            // Add to name register and throw error if duplicate
+            if (nameRegister[name])
+              throw new Error(`Table contains duplicate names (${name})`);
+            else nameRegister[name] = true;
+          }
         },
         // TODO: add validity checks for adding foreign keys
         // TODO: add validity checks for editing / deleting tables and columns (can't if part of foreign key)
