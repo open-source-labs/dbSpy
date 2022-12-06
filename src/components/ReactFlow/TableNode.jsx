@@ -38,31 +38,6 @@ export default function TableNode({ data }) {
       );
     }
   }
-  // helper function when adding row to table
-  // const addRow = () => {
-  //   const currentSchema = { ...schemaStore };
-  //   currentSchema[tableName].newRow = {
-  //     Name: '',
-  //     Value: '',
-  //     TableName: tableName,
-  //     References: [
-  //       {
-  //         PrimaryKeyName: '',
-  //         ReferencesPrimaryName: '',
-  //         PrimaryKeyTableName: '',
-  //         ReferencesTableName: '',
-  //         IsDestination: '',
-  //         constrainName: '',
-  //       },
-  //     ],
-  //     IsPrimaryKey: '',
-  //     IsForeignKey: '',
-  //     field_name: 'newRow',
-  //     data_type: '',
-  //     additional_constraints: '',
-  //   };
-  //   setSchemaStore(currentSchema);
-  // };
   // renders rows within table
   return (
     <div className="table-node transition-colors duration-500" key={tableName}>

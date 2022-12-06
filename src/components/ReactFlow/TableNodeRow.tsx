@@ -16,9 +16,7 @@ import {
 
 export default function TableNodeRow({ row, id }) {
   // TODO: can we take reference out of the store? only accessed in this component I believe
-  const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore(
-    (state) => state
-  );
+  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
   const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
 
@@ -97,7 +95,7 @@ export default function TableNodeRow({ row, id }) {
     delete currentSchema[tableRef][rowRef];
     setSchemaStore(currentSchema);
   };
-  
+
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>

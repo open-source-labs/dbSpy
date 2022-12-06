@@ -10,12 +10,12 @@ import { ColumnData, ColumnSchema } from '../Types';
 interface RestrictedNames {
   [name: string]: boolean;
 }
-export interface SchemaStore {
+export type SchemaStore = {
   [TableName: string]: {
     [ColumnName: string]: ColumnSchema;
   };
-}
-export interface SchemaState {
+};
+export type SchemaState = {
   // DATA
   schemaStore: SchemaStore;
   system: 'PostgreSQL' | 'MySQL';
@@ -42,7 +42,7 @@ export interface SchemaState {
   // VALIDATION CONSTANTS
   _restrictedMySqlNames: RestrictedNames;
   _restrictedPgNames: RestrictedNames;
-}
+};
 
 // For Zustand to work nicely with TS, just include store interface as a generic for `create()`
 // see https://www.npmjs.com/package/zustand#typescript-usage
@@ -100,6 +100,7 @@ const useSchemaStore = create<SchemaState>()(
               Value: columnData.defaultValue,
               TableName: tableName,
               // TODO: see if we can get away with not initializing an empty reference
+              // References: [],
               References: [
                 {
                   PrimaryKeyName: '',
@@ -172,7 +173,6 @@ const useSchemaStore = create<SchemaState>()(
           }
         },
         _checkColumnValidity(tableName, columnDataArr) {
-          console.log({ tableName });
           const currentTable = get().schemaStore[tableName];
 
           for (const column of columnDataArr) {
@@ -197,7 +197,7 @@ const useSchemaStore = create<SchemaState>()(
             get()._checkNameValidity(name);
             // Add to name register and throw error if duplicate
             if (nameRegister[name])
-              throw new Error(`Table contains duplicate names (${name})`);
+              throw new Error(`Table must not contain duplicate names (${name})`);
             else nameRegister[name] = true;
           }
         },
