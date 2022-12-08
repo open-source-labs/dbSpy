@@ -10,7 +10,7 @@ const AddReference = () => {
   const { currentTable, currentColumn, setEditRefMode } = useSettingsStore(
     (state) => state
   );
-  const { schemaStore } = useSchemaStore((state) => state);
+  const { schemaStore, addForeignKeySchema } = useSchemaStore((state) => state);
 
   const initialReference: Reference = {
     // For whatever reason, PrimaryKeyName and PrimaryKeyTableName refer to other table
@@ -34,11 +34,17 @@ const AddReference = () => {
   const onSave = (e: any) => {
     e.preventDefault();
     // setReference([formValues]);
-    setEditRefMode(false);
+    try {
+      addForeignKeySchema(formValues);
+      setEditRefMode(false);
+    } catch (err) {
+      window.alert(err);
+      console.error(err);
+    }
   };
   //END: HELPER FUNCTIONS
 
-  const tableOptions = [<option>---</option>];
+  const tableOptions = [<option key="---">---</option>];
   for (const table in schemaStore) {
     if (table !== formValues.ReferencesTableName) {
       tableOptions.push(
@@ -49,7 +55,7 @@ const AddReference = () => {
     }
   }
 
-  const columnOptions = [<option>---</option>];
+  const columnOptions = [<option key="---">---</option>];
   for (const col in schemaStore[formValues.PrimaryKeyTableName]) {
     columnOptions.push(
       <option key={col} value={col}>

@@ -29,10 +29,15 @@ export default function Flow({ openAddColumnModal }) {
   useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
   function reRender(schemaStore: SchemaStore) {
+    console.log('rerendering-------------------------------------------------');
     if (!Object.keys(schemaStore).length) return;
+    console.log('initializing edges');
     const initialEdges = createEdges(schemaStore);
+    console.log('setting edges');
     setEdges(initialEdges);
+    console.log('init nodes');
     const initialNodes = createNodes(schemaStore, initialEdges, openAddColumnModal);
+    console.log('setting nodes');
     setNodes(initialNodes);
   }
 

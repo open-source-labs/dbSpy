@@ -28,34 +28,18 @@ export default function TableNodeColumn({ column, id }) {
   const [columnData, setColumnData] = useState<ColumnSchema>({ ...column });
 
   const onSave = () => {
-    const defaultRef = [
-      {
-        PrimaryKeyName: '',
-        ReferencesPropertyName: '',
-        PrimaryKeyTableName: '',
-        ReferencesTableName: '',
-        IsDestination: '',
-        constrainName: '',
-      },
-    ];
-    //declare prior values
     const currentSchema = { ...schemaStore };
-    currentSchema[columnData.TableName][columnData.field_name] = columnData;
-    currentSchema[columnData.TableName][columnData.field_name].References =
-      columnData.IsForeignKey ? reference : defaultRef;
+    currentSchema[columnData.TableName][columnData.field_name] = {
+      ...columnData,
+      References: currentSchema[columnData.TableName][columnData.field_name].References,
+    };
     // If column name has changed, delete entry with old column name
     if (column.field_name !== columnData.field_name) {
+      console.log('replacing column schema');
       delete currentSchema[column.TableName][column.field_name];
     }
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
-    //set reference back to defaultRef
-    setReference(defaultRef);
-    //set nodes/edges
-    const initialEdges = createEdges(currentSchema);
-    setEdges(initialEdges);
-    const initialNodes = createNodes(currentSchema, initialEdges);
-    setNodes(initialNodes);
     setMode('default');
   };
 
@@ -143,6 +127,13 @@ export default function TableNodeColumn({ column, id }) {
               className="bg-[#f8f4eb] dark:text-black"
               checked={columnData.IsForeignKey}
               onChange={() => {
+                // don't allow if only one table
+                if (Object.keys(schemaStore).length <= 1) {
+                  return window.alert(
+                    'Must have more than one table to create foreign key constraints'
+                  );
+                }
+
                 setColumnData((prevData) => {
                   return {
                     ...prevData,

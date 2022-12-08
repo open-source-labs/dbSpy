@@ -2,10 +2,11 @@
 // State Management for db Schema
 //
 
+import { isDescendantOrSelf } from '@testing-library/user-event/dist/types/utils';
 import { table } from 'console';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { ColumnData, ColumnSchema } from '../Types';
+import { ColumnData, ColumnSchema, Reference } from '../Types';
 
 interface RestrictedNames {
   [name: string]: boolean;
@@ -25,19 +26,18 @@ export type SchemaState = {
   addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
-
-  // Helper to add columns to table in schemaStore
-  _addColumns: (
-    newStore: SchemaStore,
-    tableName: string,
-    columnDataArr: ColumnData[]
-  ) => SchemaStore;
+  addForeignKeySchema: (referenceData: Reference) => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
   _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
   _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
   _checkColumnDataDuplicates: (ColumnDataArr: ColumnData[]) => void;
+  _addColumns: (
+    newStore: SchemaStore,
+    tableName: string,
+    columnDataArr: ColumnData[]
+  ) => SchemaStore;
 
   // VALIDATION CONSTANTS
   _restrictedMySqlNames: RestrictedNames;
@@ -93,34 +93,32 @@ const useSchemaStore = create<SchemaState>()(
             );
             return newState;
           }),
-        _addColumns: (newStore, tableName, columnDataArr) => {
-          for (const columnData of columnDataArr) {
-            const newCol: ColumnSchema = {
-              Name: columnData.name,
-              Value: columnData.defaultValue,
-              TableName: tableName,
-              // TODO: see if we can get away with not initializing an empty reference
-              // References: [],
-              References: [],
-              IsPrimaryKey: columnData.isPrimary,
-              IsForeignKey: false,
-              field_name: columnData.name.replace(/\s/g, '_'),
-              data_type: columnData.type,
-              additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
-            };
-            // reassigning newStore so subscriptions pick up on the change
-            newStore = {
-              ...newStore,
-              [tableName]: {
-                ...newStore[tableName],
-                [columnData.name]: newCol,
-              },
-            };
-          }
-          return newStore;
+
+        addForeignKeySchema(referenceData) {
+          set((state) => {
+            // TODO: ADD VALIDATION
+            // referenceData.PrimaryKeyName = referenceData.ReferencesPropertyName;
+            const originTable = referenceData.ReferencesTableName;
+            const originColumn = referenceData.ReferencesPropertyName;
+            const targetTable = referenceData.PrimaryKeyTableName;
+            const targetColumn = referenceData.PrimaryKeyName;
+            // const targetReferenceData: Reference = {
+            //   ...referenceData,
+            //   ReferencesTableName: targetTable,
+            //   ReferencesPropertyName: targetColumn,
+            //   IsDestination: true,
+            // };
+
+            const newState = { ...state };
+            newState.schemaStore[originTable][originColumn].References = [referenceData];
+            // newState.schemaStore[targetTable][targetColumn].References = [
+            //   targetReferenceData,
+            // ];
+            newState.schemaStore[originTable][originColumn].IsForeignKey = true;
+            newState.schemaStore[targetTable][targetColumn].IsForeignKey = true;
+            return newState;
+          });
         },
-        // TODO: delete setReference after refactoring adding reference functionality
-        // setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
 
         // --------------------- Validity Check Helper Functions -------------------------------------
         // validation functions should be run first before adding or editing schema data
@@ -191,6 +189,39 @@ const useSchemaStore = create<SchemaState>()(
               throw new Error(`Table must not contain duplicate names (${name})`);
             else nameRegister[name] = true;
           }
+        },
+        _addColumns: (newStore, tableName, columnDataArr) => {
+          for (const columnData of columnDataArr) {
+            const newCol: ColumnSchema = {
+              Name: columnData.name,
+              Value: columnData.defaultValue,
+              TableName: tableName,
+              References: [
+                {
+                  PrimaryKeyName: '',
+                  ReferencesPropertyName: '',
+                  PrimaryKeyTableName: '',
+                  ReferencesTableName: '',
+                  IsDestination: false,
+                  constraintName: '',
+                },
+              ],
+              IsPrimaryKey: columnData.isPrimary,
+              IsForeignKey: false,
+              field_name: columnData.name.replace(/\s/g, '_'),
+              data_type: columnData.type,
+              additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
+            };
+            // reassigning newStore so subscriptions pick up on the change
+            newStore = {
+              ...newStore,
+              [tableName]: {
+                ...newStore[tableName],
+                [columnData.name]: newCol,
+              },
+            };
+          }
+          return newStore;
         },
         // TODO: add validity checks for adding foreign keys
         // TODO: add validity checks for editing / deleting tables and columns (can't if part of foreign key)

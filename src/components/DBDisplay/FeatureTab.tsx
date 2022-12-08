@@ -92,6 +92,7 @@ export default function FeatureTab(props: any) {
   };
 
   const clearCanvasTables = () => {
+    console.log('clearing canvas');
     setSchemaStore({});
     setEdges([]);
     setNodes([]);
