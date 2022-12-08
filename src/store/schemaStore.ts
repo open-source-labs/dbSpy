@@ -27,6 +27,7 @@ export type SchemaState = {
   addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
+  deleteColumnSchema: (tableRef: string, rowRef: string) => void;
   addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
@@ -65,10 +66,8 @@ const useSchemaStore = create<SchemaState>()(
         historyCounter: 0,
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
         addHistory: (newState) => {
-          // const history = get().history
-          // const historyCounter = get().historyCounter;
           newState.historyCounter += 1;
-          newState.history[newState.historyCounter] = newState.schemaStore;
+          newState.history[newState.historyCounter] = JSON.parse(JSON.stringify(newState.schemaStore));
           if (newState.history[newState.historyCounter + 1]){
             newState.history = newState.history.slice(0, newState.historyCounter + 1);
             };
@@ -147,6 +146,14 @@ const useSchemaStore = create<SchemaState>()(
           }
             return newStore;
         },
+        deleteColumnSchema: (tableRef, rowRef) =>
+          set((state) => {
+            const newState = JSON.parse(JSON.stringify(state));
+            console.log(newState.schemaStore, tableRef, rowRef);
+            delete newState.schemaStore[tableRef][rowRef];
+            get().addHistory(newState);
+            return newState;
+          }),
           undoHandler: () => {
             set((state) => {
               const newState = {...state}
