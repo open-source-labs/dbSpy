@@ -4,6 +4,7 @@
 
 import { isDescendantOrSelf } from '@testing-library/user-event/dist/types/utils';
 import { table } from 'console';
+import { State } from 'history';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { ColumnData, ColumnSchema, Reference } from '../Types';
@@ -97,25 +98,22 @@ const useSchemaStore = create<SchemaState>()(
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION
-            // referenceData.PrimaryKeyName = referenceData.ReferencesPropertyName;
-            const originTable = referenceData.ReferencesTableName;
-            const originColumn = referenceData.ReferencesPropertyName;
-            const targetTable = referenceData.PrimaryKeyTableName;
-            const targetColumn = referenceData.PrimaryKeyName;
-            // const targetReferenceData: Reference = {
-            //   ...referenceData,
-            //   ReferencesTableName: targetTable,
-            //   ReferencesPropertyName: targetColumn,
-            //   IsDestination: true,
-            // };
-
-            const newState = { ...state };
-            newState.schemaStore[originTable][originColumn].References = [referenceData];
-            // newState.schemaStore[targetTable][targetColumn].References = [
-            //   targetReferenceData,
-            // ];
-            newState.schemaStore[originTable][originColumn].IsForeignKey = true;
-            // newState.schemaStore[targetTable][targetColumn].IsForeignKey = true;
+            const currentTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const currentColumn: string = referenceData.ReferencesPropertyName;
+            const newState = {
+              ...state,
+              schemaStore: {
+                ...state.schemaStore,
+                [currentTable]: {
+                  ...state.schemaStore[currentTable],
+                  [currentColumn]: {
+                    ...state.schemaStore[currentTable][currentColumn],
+                    References: [referenceData],
+                    IsForeignKey: true,
+                  },
+                },
+              },
+            };
             return newState;
           });
         },

@@ -38,10 +38,11 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): N
   const nodes: Node[] = [];
   for (const tableKey in schemaObject) {
     const columnData = schemaObject[tableKey];
+    i = (i + 1) % 17;
     nodes.push({
       id: tableKey,
       type: 'table',
-      position: nodePositions[i++ % 17],
+      position: nodePositions[i],
       // position: {x: Math.random() * window.innerWidth, y: Math.random() * window.innerWidth},
       data: { table: [tableKey, columnData], edges },
     });
