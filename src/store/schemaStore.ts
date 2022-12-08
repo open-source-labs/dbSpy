@@ -101,16 +101,7 @@ const useSchemaStore = create<SchemaState>()(
               TableName: tableName,
               // TODO: see if we can get away with not initializing an empty reference
               // References: [],
-              References: [
-                {
-                  PrimaryKeyName: '',
-                  PrimaryKeyTableName: tableName,
-                  ReferencesPropertyName: '',
-                  ReferencesTableName: '',
-                  IsDestination: false,
-                  constraintName: '',
-                },
-              ],
+              References: [],
               IsPrimaryKey: columnData.isPrimary,
               IsForeignKey: false,
               field_name: columnData.name.replace(/\s/g, '_'),

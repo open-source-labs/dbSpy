@@ -71,7 +71,7 @@ export default function TableNodeColumn({ column, id }) {
   const openAddReferenceModal = () => {
     document.querySelector('#mySideNav').style.width = '400px';
     document.querySelector('#main').style.marginRight = '400px';
-    setEditRefMode(true);
+    setEditRefMode(true, columnData.TableName, columnData.Name);
   };
 
   // console.log('Im in tableNodeColumn, here is column data: ', column);

@@ -51,7 +51,7 @@ export type ColumnData = {
 };
 
 // ColumnSchema and Reference are used by schemaStore
-type Reference = {
+export type Reference = {
   PrimaryKeyName: string;
   PrimaryKeyTableName: string;
   ReferencesPropertyName: string;
