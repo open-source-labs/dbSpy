@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import useFlowStore from '../../store/flowStore';
-import createInitialEdges from './Edges';
-import createInitialNodes from './Nodes';
+import createEdges from './createEdges';
+import createNodes from './createNodes';
 import {
   FaRegEdit,
   FaRegTrashAlt,
@@ -16,9 +16,7 @@ import {
 
 export default function TableNodeRow({ row, id }) {
   // TODO: can we take reference out of the store? only accessed in this component I believe
-  const { schemaStore, setSchemaStore, reference, setReference } = useSchemaStore(
-    (state) => state
-  );
+  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
   const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
 
@@ -82,9 +80,9 @@ export default function TableNodeRow({ row, id }) {
     //set reference back to defaultRef
     setReference(defaultRef);
     //set nodes/edges
-    const initialEdges = createInitialEdges(currentSchema);
+    const initialEdges = createEdges(currentSchema);
     setEdges(initialEdges);
-    const initialNodes = createInitialNodes(currentSchema, initialEdges);
+    const initialNodes = createNodes(currentSchema, initialEdges);
     setNodes(initialNodes);
     setMode('default');
   };
@@ -97,7 +95,7 @@ export default function TableNodeRow({ row, id }) {
     delete currentSchema[tableRef][rowRef];
     setSchemaStore(currentSchema);
   };
-  
+
   // console.log('Im in tableNodeRow, here is row data: ', row);
   return (
     <>

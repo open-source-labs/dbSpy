@@ -16,6 +16,7 @@ type ColumnInputProps = {
   isPrimary: boolean;
   defaultValue: string | null;
   columnCount: number;
+  mode: 'table' | 'column';
 };
 
 function ColumnInput({
@@ -28,6 +29,7 @@ function ColumnInput({
   isPrimary,
   defaultValue,
   columnCount,
+  mode,
 }: ColumnInputProps) {
   const dataTypeOptions = DataTypeArr.map((dataType) => (
     // populate the options for data type
@@ -105,20 +107,22 @@ function ColumnInput({
         />
       </div>
 
-      <div>
-        <label
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-          htmlFor={`column-${index}-primary`}
-        >
-          Primary Key
-        </label>
-        <input
-          type="checkbox"
-          id={`column-${index}-primary`}
-          checked={isPrimary}
-          onChange={() => handleColumnChange(index, 'isPrimary', !isPrimary)}
-        />
-      </div>
+      {mode === 'table' && (
+        <div>
+          <label
+            className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+            htmlFor={`column-${index}-primary`}
+          >
+            Primary Key
+          </label>
+          <input
+            type="checkbox"
+            id={`column-${index}-primary`}
+            checked={isPrimary}
+            onChange={() => handleColumnChange(index, 'isPrimary', !isPrimary)}
+          />
+        </div>
+      )}
 
       {columnCount > 1 && (
         <button

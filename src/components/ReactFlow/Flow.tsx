@@ -1,5 +1,5 @@
 import useFlowStore from '../../store/flowStore';
-import useSchemaStore from '../../store/schemaStore';
+import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React from 'react';
 import { useEffect } from 'react';
 import ReactFlow, {
@@ -13,15 +13,14 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
-import createInitialEdges from './Edges';
-import createInitialNodes from './Nodes';
-import { SchemaObject } from '@/Types';
+import createEdges from './createEdges';
+import createNodes from './createNodes';
 
 const nodeTypes = {
   table: TableNode,
 };
 
-export default function Flow() {
+export default function Flow({ openAddColumnModal }) {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
@@ -29,11 +28,11 @@ export default function Flow() {
   // re-render every time schemaStore updates
   useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
-  function reRender(schemaStore) {
+  function reRender(schemaStore: SchemaStore) {
     if (!Object.keys(schemaStore).length) return;
-    const initialEdges = createInitialEdges(schemaStore);
+    const initialEdges = createEdges(schemaStore);
     setEdges(initialEdges);
-    const initialNodes = createInitialNodes(schemaStore, initialEdges);
+    const initialNodes = createNodes(schemaStore, initialEdges, openAddColumnModal);
     setNodes(initialNodes);
   }
 

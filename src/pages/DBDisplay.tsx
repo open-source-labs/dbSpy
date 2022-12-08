@@ -1,12 +1,13 @@
 // React & React Router & React Query Modules;
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 // Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
-import QueryGenerator from '../components/DBDisplay/QueryGenerator';
+import QueryGenerator from '../components/Modals/InputModal';
+import InputModal from '../components/Modals/InputModal';
 
 import useSettingsStore from '../store/settingsStore';
 import useCredentialsStore from '../store/credentialsStore';
@@ -17,7 +18,20 @@ const DBDisplay = () => {
     (state) => state
   );
 
-  //END: STATE DECLARATION
+  // Input Modal state and handlers
+  type InputModalState = {
+    isOpen: boolean;
+    mode: 'table' | 'column';
+    tableName?: string;
+  };
+  const [inputModalState, setInputModalState] = useState<InputModalState>({
+    isOpen: false,
+    mode: 'table',
+  });
+  const openAddTableModal = () =>
+    setInputModalState((prevState) => ({ isOpen: true, mode: 'table' }));
+  const openAddColumnModal = (tableName: string) =>
+    setInputModalState((prevState) => ({ isOpen: true, mode: 'column', tableName }));
 
   //create references for HTML elements
   const mySideBarId: any = useRef();
@@ -59,7 +73,7 @@ const DBDisplay = () => {
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
-      <FeatureTab handleSidebar={handleSidebar} />
+      <FeatureTab handleSidebar={handleSidebar} openAddTableModal={openAddTableModal} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
@@ -72,9 +86,19 @@ const DBDisplay = () => {
             </p>
           </div>
         ) : (
-          <Flow />
+          <Flow openAddColumnModal={openAddColumnModal} />
         )}
       </div>
+      {/* MODALS */}
+      {inputModalState.isOpen && (
+        <InputModal
+          mode={inputModalState.mode}
+          tableNameProp={inputModalState.tableName}
+          closeInputModal={() =>
+            setInputModalState((prevState) => ({ ...prevState, isOpen: false }))
+          }
+        />
+      )}
     </div>
   );
 };
