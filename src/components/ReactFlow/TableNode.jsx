@@ -6,38 +6,71 @@ import useSchemaStore from '../../store/schemaStore';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 export default function TableNode({ data }) {
+  console.log('data', data)
   // state of schema object
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   // rowData is an array of objects with each row in the table as an element
   const rowData = Object.values(data.table[1]);
+  console.log('rowData', rowData)
+
+  rowData.findIndex(obj => obj.x === "a" && obj.y === 1);
+
+
   const [tableRows, setTableRows] = useState(rowData);
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === data.table[0]) {
+      console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
+      //make handle placement dynamic, we need to know the row of our source
+      const rowNumberSource = rowData.findIndex(obj => obj.Name === data.edges[i].sourceHandle) + 1;
+      console.log('rowNumberSource', rowNumberSource)
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
-          style={{ bottom: 9, top: 'auto' }}
+          // style={{ bottom: 9, top: 'auto' }}
+          style={{ background: 'transparent', bottom: 'auto', top: 72 + rowNumberSource * 21 }}
+          // style={{ bottom: y, top: 'auto' }}
         />
       );
     }
     if (data.edges[i].target === data.table[0]) {
+      //make handle placement dynamic, we need to know the row of our target
+      const rowNumberTarget = rowData.findIndex(obj => obj.Name === data.edges[i].targetHandle) + 1;
+      console.log('rowNumberTarget', rowNumberTarget)
+      console.log('data.edges[i].targetHandle', data.edges[i].targetHandle);
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
-          style={{ bottom: 'auto', top: 113 }}
+          style={{ 
+            background: 'transparent', 
+            bottom: 'auto', 
+            top: 72 + rowNumberTarget*21}}
+          // style={{ bottom: 'auto', top: y }}
         />
       );
     }
   }
+
+  // let targetTableName;
+  // for (let i = 0; i < data.edges.length; i++) {
+  //   if (data.edges[i].target === data.table[0]) {
+  //     let targetTableName = data.table[0];
+  //     rowData.map((row, index) => {
+      
+  //     })
+  //   }
+  // }
+  // console.log('targetTableName', targetTableName)
+
+
   // helper function when adding row to table
   const addRow = () => {
     const currentSchema = { ...schemaStore };

@@ -8,6 +8,7 @@ export default function createInitialEdges(schemaObject) {
     allRows.push(...Object.values(table));
   }
   allRows.forEach((row) => {
+    console.log('row', row)
     if (row.IsForeignKey) {
       edges.push({
         id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
@@ -31,6 +32,6 @@ export default function createInitialEdges(schemaObject) {
       });
     }
   });
-  console.log('returning edges: ', edges);
+  // console.log('returning edges: ', edges);
   return edges;
 }
