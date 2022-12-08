@@ -13,46 +13,19 @@ import {
   FaRegCheckSquare,
   FaRegWindowClose,
 } from 'react-icons/fa';
+import DataTypeOptions from '../Modals/DataTypeOptions';
+import { ColumnSchema } from '@/Types';
 
-export default function TableNodeRow({ row, id }) {
+export default function TableNodeColumn({ column, id }) {
   // TODO: can we take reference out of the store? only accessed in this component I believe
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
   const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
 
-  // Rows can be in one of three modes: default, edit, or delete
+  // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
 
-  const [rowData, setRowData] = useState({ ...row });
-  /* rowData shape:
-    {
-      Name: string,
-      Value: any,
-      TableName: string,
-      References: [
-        {
-          PrimaryKeyName: string,
-          ReferencesPropertyName: string,
-          PrimaryKeyTableName: string,
-          ReferencesTableName: string,
-          IsDestination: boolean,
-          constrainName: string
-        }
-      ],
-      IsPrimaryKey: boolean,
-      IsForeignKey: boolean,
-      field_name: string,
-      data_type: string,
-      additional_constraints: string
-    }
-  */
-  // TODO: change to formData state
-  // const selectedRow = useRef();
-  // const field_name = useRef();
-  // const data_type = useRef();
-  // const additional_constraints = useRef();
-  // const IsPrimaryKey = useRef();
-  // const IsForeignKey = useRef();
+  const [columnData, setColumnData] = useState<ColumnSchema>({ ...column });
 
   const onSave = () => {
     const defaultRef = [
@@ -67,13 +40,12 @@ export default function TableNodeRow({ row, id }) {
     ];
     //declare prior values
     const currentSchema = { ...schemaStore };
-    currentSchema[rowData.TableName][rowData.field_name] = rowData;
-    currentSchema[rowData.TableName][rowData.field_name].References = rowData.IsForeignKey
-      ? reference
-      : defaultRef;
-    // If row name has changed, delete entry with old row name
-    if (row.field_name !== rowData.field_name) {
-      delete currentSchema[row.TableName][row.field_name];
+    currentSchema[columnData.TableName][columnData.field_name] = columnData;
+    currentSchema[columnData.TableName][columnData.field_name].References =
+      columnData.IsForeignKey ? reference : defaultRef;
+    // If column name has changed, delete entry with old column name
+    if (column.field_name !== columnData.field_name) {
+      delete currentSchema[column.TableName][column.field_name];
     }
     //set new values to the schemaStore
     setSchemaStore(currentSchema);
@@ -89,25 +61,31 @@ export default function TableNodeRow({ row, id }) {
 
   const onDelete = () => {
     //declare prior values
-    const tableRef = rowData.TableName;
-    const rowRef = rowData.field_name;
+    const tableRef = columnData.TableName;
+    const columnRef = columnData.field_name;
     const currentSchema = { ...schemaStore };
-    delete currentSchema[tableRef][rowRef];
+    delete currentSchema[tableRef][columnRef];
     setSchemaStore(currentSchema);
   };
 
-  // console.log('Im in tableNodeRow, here is row data: ', row);
+  const openAddReferenceModal = () => {
+    document.querySelector('#mySideNav').style.width = '400px';
+    document.querySelector('#main').style.marginRight = '400px';
+    setEditRefMode(true);
+  };
+
+  // console.log('Im in tableNodeColumn, here is column data: ', column);
   return (
     <>
       {/* TODO: SEE ABOUT DELETING KEY ATTRIBUTE AND ID ATTRIBUTES */}
-      <tr key={row.field_name} id={row.field_name} className="dark:text-[#f8f4eb] ">
+      <tr key={column.field_name} id={column.field_name} className="dark:text-[#f8f4eb] ">
         <td className="dark:text-[#f8f4eb]" id={`${id}-field_name`}>
           {mode === 'edit' ? (
             <input
               className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
-              value={rowData.field_name}
+              value={columnData.field_name}
               onChange={(e) =>
-                setRowData((prevData) => ({
+                setColumnData((prevData) => ({
                   ...prevData,
                   Name: e.target.value,
                   field_name: e.target.value.replaceAll(/\s/g, '_'),
@@ -115,108 +93,68 @@ export default function TableNodeRow({ row, id }) {
               }
             ></input>
           ) : (
-            rowData.field_name
+            columnData.field_name
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-data_type`}>
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
-              value={rowData.data_type}
+              value={columnData.data_type}
               onChange={(e) =>
-                setRowData((prevData) => ({ ...prevData, data_type: e.target.value }))
+                setColumnData((prevData) => ({ ...prevData, data_type: e.target.value }))
               }
             >
-              <option value="binary">binary</option>
-              <option value="blob">blob</option>
-              <option value="boolean">boolean</option>
-              <option value="date">date</option>
-              <option value="datetime">datetime</option>
-              <option value="decimal">decimal</option>
-              <option value="float">float</option>
-              <option value="integer">integer</option>
-              <option value="serial">serial</option>
-              <option value="text">text</option>
-              <option value="time">time</option>
-              <option value="timestamp">timestamp</option>
-              <option value="varchar">varchar</option>
+              <DataTypeOptions />
             </select>
           ) : (
-            rowData.data_type
+            columnData.data_type
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-additional_constraints`}>
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
-              value={rowData.additional_constraints}
+              value={columnData.additional_constraints}
               onChange={(e) =>
-                setRowData((prevData) => ({
+                setColumnData((prevData) => ({
                   ...prevData,
                   additional_constraints: e.target.value,
                 }))
               }
             >
+              {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
               <option value="NA">NA</option>
               <option value="NOT NULL">NOT NULL</option>
               <option value="PRIMARY">PRIMARY</option>
               <option value="UNIQUE">UNIQUE</option>
             </select>
           ) : (
-            rowData.additional_constraints
+            columnData.additional_constraints
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {mode === 'edit' ? (
-            <select
-              className="bg-[#f8f4eb] dark:text-black"
-              value={rowData.IsPrimaryKey}
-              onChange={(e) =>
-                setRowData((prevData) => ({ ...prevData, IsPrimaryKey: e.target.value }))
-              }
-            >
-              <option value={true}>true</option>
-              <option value={false}>false</option>
-            </select>
-          ) : (
-            rowData.IsPrimaryKey.toString()
-          )}
+          {columnData.IsPrimaryKey.toString()}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {mode === 'edit' ? (
-            <select
-              onChange={(e) => {
-                setRowData((prevData) => ({ ...prevData, IsForeignKey: e.target.value }));
-
-                // console.log('ONCHANGE TO TRUE', e.target.value);
-                const defaultRef = [
-                  {
-                    PrimaryKeyName: '',
-                    ReferencesPropertyName: '',
-                    PrimaryKeyTableName: '',
-                    ReferencesTableName: '',
-                    IsDestination: '',
-                    constrainName: '',
-                  },
-                ];
-                if (e.target.value === true) {
-                  //expose Add Reference modal
-                  document.querySelector('#mySideNav').style.width = '400px';
-                  document.querySelector('#main').style.marginRight = '400px';
-                  setEditRefMode(true);
-                  // TODO: clean up the reference procedure
-                  if (rowData.References.length === 0) setReference(defaultRef);
-                  else setReference([rowData.References[0]]);
-                }
-              }}
+            <input
+              type="checkbox"
               className="bg-[#f8f4eb] dark:text-black"
-              value={rowData.IsForeignKey}
-            >
-              <option value={true}>true</option>
-              <option value={false}>false</option>
-            </select>
+              checked={columnData.IsForeignKey}
+              onChange={() => {
+                setColumnData((prevData) => {
+                  return {
+                    ...prevData,
+                    IsForeignKey: !prevData.IsForeignKey,
+                  };
+                });
+                // if box is now checked (state hasn't updated yet), open fk modal
+                if (!columnData.IsForeignKey) openAddReferenceModal();
+              }}
+            />
           ) : (
-            rowData.IsForeignKey.toString()
+            columnData.IsForeignKey.toString()
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
@@ -254,7 +192,7 @@ export default function TableNodeRow({ row, id }) {
             <button
               id={`${id}-cancelBtn`}
               onClick={() => {
-                setRowData({ ...row });
+                setColumnData({ ...column });
                 setMode('default');
               }}
             >
