@@ -7,8 +7,8 @@ import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
-import createInitialEdges from '../ReactFlow/Edges';
-import createInitialNodes from '../ReactFlow/Nodes';
+import createEdges from '../ReactFlow/createEdges';
+import createNodes from '../ReactFlow/createNodes';
 
 // const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
 
@@ -66,9 +66,9 @@ const Sidebar = (props: any) => {
       .catch((err) => console.log('getSchema error', err));
     //update schemaStore
     setSchemaStore(dbSchema);
-    const initialEdges = createInitialEdges(dbSchema);
+    const initialEdges = createEdges(dbSchema);
     setEdges(initialEdges);
-    const initialNodes = createInitialNodes(dbSchema, initialEdges);
+    const initialNodes = createNodes(dbSchema, initialEdges);
     setNodes(initialNodes);
     setWelcome(false);
     setConnectPressed(false);
