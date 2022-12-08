@@ -24,13 +24,13 @@ export default function Flow() {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
-
+  const { schemaStore } = useSchemaStore((state) => state);
   // re-render every time schemaStore updates
-  useSchemaStore.subscribe((state) => state.schemaStore, reRender);
+  // useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
   function reRender(schemaStore: SchemaStore) {
     console.log('rerendering-------------------------------------------------');
-    if (!Object.keys(schemaStore).length) return;
+    if (!schemaStore || !Object.keys(schemaStore).length) return;
     console.log('initializing edges');
     const initialEdges = createEdges(schemaStore);
     console.log('setting initial edges', initialEdges);
@@ -39,7 +39,12 @@ export default function Flow() {
     const initialNodes = createNodes(schemaStore, initialEdges);
     console.log('setting nodes');
     setNodes(initialNodes);
+    console.log('nodes set');
   }
+
+  useEffect(() => {
+    reRender(schemaStore);
+  }, [schemaStore]);
 
   // renders React Flow canvas
   return (

@@ -33,11 +33,9 @@ const AddReference = () => {
   //HELPER FUNCTIONS
   const onSave = (e: any) => {
     e.preventDefault();
-    // setReference([formValues]);
+
     try {
-      addForeignKeySchema({
-        ...formValues,
-      });
+      addForeignKeySchema(formValues);
       setEditRefMode(false);
     } catch (err) {
       window.alert(err);

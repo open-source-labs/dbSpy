@@ -11,6 +11,10 @@ import InputModal from '../components/Modals/InputModal';
 
 import useSettingsStore from '../store/settingsStore';
 import useCredentialsStore from '../store/credentialsStore';
+import useFlowStore from '../store/flowStore';
+import useSchemaStore, { SchemaStore } from '../store/schemaStore';
+import createEdges from '../components/ReactFlow/createEdges';
+import createNodes from '../components/ReactFlow/createNodes';
 import axios from 'axios';
 
 const DBDisplay = () => {
@@ -54,6 +58,9 @@ const DBDisplay = () => {
     if (sidebarDisplayState) closeNav();
     else openNav();
   }
+
+  const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
+    useFlowStore((state) => state);
 
   return (
     <div
