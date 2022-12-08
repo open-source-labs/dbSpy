@@ -3,8 +3,8 @@ import React, { useState, useRef } from 'react';
 
 // Functions imported:
 import parseSql from '../../parse';
-import createInitialEdges from '../ReactFlow/Edges';
-import createInitialNodes from '../ReactFlow/Nodes';
+import createEdges from '../ReactFlow/createEdges';
+import createNodes from '../ReactFlow/createNodes';
 
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
@@ -12,7 +12,6 @@ import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 
 // Components imported:
-import InputModal from '../Modals/InputModal';
 import QueryModal from './QueryModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
@@ -22,12 +21,8 @@ export default function FeatureTab(props: any) {
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { setWelcome } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
-  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   //END: STATE DECLARATION
-
-  // TODO: Uncover the history in legacy code
-  // const [history, setHistory] = useState([]);
 
   //create references for HTML elements
   const confirmModal: any = useRef();
@@ -42,23 +37,6 @@ export default function FeatureTab(props: any) {
     confirmModal.current.style.display = 'none';
     if (response) action[0]();
   };
-
-  // TODO: delete these after styling new table modal
-  //create references for HTML elements
-  // const tableNameInput: any = useRef();
-  // const addTableModal: any = useRef();
-  /* When the user clicks, open the modal */
-  // const openAddTableModal = () => {
-  //   addTableModal.current.style.display = 'block';
-  //   addTableModal.current.style.zIndex = '100';
-  //   if (!schemaStore) buildDatabase();
-  // };
-  /* When the user clicks 'yes' or 'no', close it */
-  // const closeAddTableModal = (response: boolean) => {
-  //   addTableModal.current.style.display = 'none';
-  //   if (response) addTable(tableNameInput.current.value);
-  //   tableNameInput.current.value = '';
-  // };
 
   // HELPER FUNCTIONS
 
@@ -98,9 +76,9 @@ export default function FeatureTab(props: any) {
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData: any = parseSql(event.target.result);
         setSchemaStore(parsedData);
-        const initialEdges = createInitialEdges(parsedData);
+        const initialEdges = createEdges(parsedData);
         setEdges(initialEdges);
-        const initialNodes = createInitialNodes(parsedData, initialEdges);
+        const initialNodes = createNodes(parsedData, initialEdges);
         setNodes(initialNodes);
         setWelcome(false);
       };
@@ -239,7 +217,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={() => {
-                    setIsInputModalOpen(true);
+                    props.openAddTableModal();
                     // if schemaStore is empty, initialize
                     if (!Object.keys(schemaStore).length) buildDatabase();
                   }}
@@ -366,9 +344,6 @@ export default function FeatureTab(props: any) {
           </div>
         </div>
 
-        {isInputModalOpen && (
-          <InputModal closeInputModal={() => setIsInputModalOpen(false)} />
-        )}
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}

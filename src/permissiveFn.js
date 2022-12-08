@@ -2,6 +2,7 @@
 1. Discuss addition of references array for fk insertion
 2. DIscuss how we might want to handle request to change datatype
 
+TODO: CONDITIONALLY ASSIGN RESTRICTED COLUMN NAMES
 
 For PostgreSQL
 
@@ -103,7 +104,6 @@ export default function permissiveColumnCheck(
   tableName,
   TableBeforeChange
 ) {
-
   //get current table involved with change.
   const impactedTable = TableBeforeChange[tableName];
 
@@ -113,7 +113,7 @@ export default function permissiveColumnCheck(
   const err = {}; //error response handler
 
   //check Col Name Change Before vs. After
-  
+
   if (ColAfterChange.isNew) {
     const UQueryNewCol =
       'ALTER TABLE ' +
@@ -125,15 +125,12 @@ export default function permissiveColumnCheck(
       ';';
     querySet.push({ type: 'single', query: UQueryNewCol });
   } else if (ColAfterChange.column !== ColBeforeChange.column) {
-    
     //trim column name for whitespaces
     ColAfterChange.column = ColAfterChange.column.trim();
 
     // first check if the column name is empty
     if (ColAfterChange.column == null || ColAfterChange == undefined)
-      return [
-        { status: 'failed', errorMsg: 'Must not have empty column name' },
-      ];
+      return [{ status: 'failed', errorMsg: 'Must not have empty column name' }];
 
     //validate Name against restricted Column Names
     if (restrictedColNames[ColAfterChange.column.toUpperCase()]) {
@@ -180,8 +177,9 @@ export default function permissiveColumnCheck(
       tableName +
       ' ALTER COLUMN ' +
       ColAfterChange.column +
-      ' ' + ColAfterChange.type;
-      querySet.push({ type: 'single', query: typeQuery});
+      ' ' +
+      ColAfterChange.type;
+    querySet.push({ type: 'single', query: typeQuery });
   }
 
   //check constraint col for changes. This should be an obj of objs, so we will code both
@@ -190,9 +188,7 @@ export default function permissiveColumnCheck(
     if (ColAfterChange.constraint !== ColBeforeChange.constraint) {
       const oldConstObj = {};
       for (const constraints in objConstraints) {
-        if (
-          ColBeforeChange.constraint.toUpperCase().indexOf(constraints) !== -1
-        )
+        if (ColBeforeChange.constraint.toUpperCase().indexOf(constraints) !== -1)
           oldConstObj[constraints] = true;
       }
 
@@ -201,9 +197,7 @@ export default function permissiveColumnCheck(
       newConstObj.constraint = {};
 
       for (const constraints in objConstraints) {
-        if (
-          ColAfterChange.constraint.toUpperCase().indexOf(constraints) !== -1
-        ) {
+        if (ColAfterChange.constraint.toUpperCase().indexOf(constraints) !== -1) {
           if (oldConstObj[constraints] !== true)
             newConstObj.constraint[constraints] = { action: 'add' };
         }
@@ -215,16 +209,15 @@ export default function permissiveColumnCheck(
       }
 
       for (const constr in newConstObj.constraint) {
-
         if (newConstObj.constraint[constr]) {
           if (newConstObj.constraint[constr].action == 'add') {
             if (constr.toUpperCase() == 'UNIQUE') {
               const Query1 =
-                'ALTER TABLE \'' +
+                "ALTER TABLE '" +
                 tableName +
-                '\' ADD UNIQUE (\'' +
+                "' ADD UNIQUE ('" +
                 ColAfterChange.column +
-                '\' );';
+                "' );";
 
               querySet.push({ type: 'single', query: Query1 });
             }
@@ -244,15 +237,15 @@ export default function permissiveColumnCheck(
           if (newConstObj.constraint[constr].action == 'remove') {
             if (constr.toUpperCase() == 'UNIQUE') {
               const UQuery1 =
-                'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' +
+                "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
                 tableName.split('.')[0] +
-                '\' AND table_constraints.table_name=\'' +
+                "' AND table_constraints.table_name='" +
                 tableName.split('.')[1] +
-                '\' AND constraint_type=\'' +
+                "' AND constraint_type='" +
                 'UNIQUE' +
-                '\' AND key_column_usage.column_name= \'' +
+                "' AND key_column_usage.column_name= '" +
                 ColAfterChange.column +
-                '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$';
+                "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
               querySet.push({ type: 'single', query: UQuery1 });
             }
 
@@ -277,7 +270,6 @@ export default function permissiveColumnCheck(
     if (ColAfterChange.pk === 'true') {
       for (const columns in impactedTable) {
         if (impactedTable[columns].IsPrimaryKey == 'true') {
-
           return [
             {
               status: 'failed',
@@ -311,10 +303,9 @@ export default function permissiveColumnCheck(
         ColAfterChange.column +
         ');';
       querySet.push({ type: 'single', query: queryPrimary });
-
     } else if (ColAfterChange.pk === 'false' && ColBeforeChange.pk === true) {
       for (let i = 0; i < ColBeforeChange.reference.length; i++) {
-        if (ColBeforeChange.reference[i].IsDestination == true) {          
+        if (ColBeforeChange.reference[i].IsDestination == true) {
           return [
             {
               status: 'failed',
@@ -327,19 +318,18 @@ export default function permissiveColumnCheck(
       objChangeSet.pk = { action: 'remove' };
 
       const UQuery1 =
-        'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' +
+        "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
         tableName.split('.')[0] +
-        '\' AND table_constraints.table_name=\'' +
+        "' AND table_constraints.table_name='" +
         tableName.split('.')[1] +
-        '\' AND constraint_type=\'PRIMARY KEY\' AND key_column_usage.column_name= \'' +
+        "' AND constraint_type='PRIMARY KEY' AND key_column_usage.column_name= '" +
         ColAfterChange.column +
-        '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$';
+        "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
       querySet.push({ type: 'single', query: UQuery1 });
     }
   }
   if (ColAfterChange.fk !== ColBeforeChange.fk.toString()) {
-    if (ColAfterChange.fk == 'true' ) {
-      
+    if (ColAfterChange.fk == 'true') {
       const queryForeign =
         'ALTER TABLE ' +
         ColAfterChange.references.ReferencesTableName +
@@ -360,25 +350,21 @@ export default function permissiveColumnCheck(
       objChangeSet.fk = { action: 'remove' };
 
       const UQuery1 =
-        'DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   \'' +
+        "DO $$ DECLARE row record; BEGIN FOR row IN SELECT table_constraints.constraint_name, table_constraints.table_name FROM information_schema.table_constraints INNER JOIN information_schema.key_column_usage ON key_column_usage.table_name = information_schema.table_constraints.table_name WHERE table_constraints.table_schema =   '" +
         tableName.split('.')[0] +
-        '\' AND table_constraints.table_name=\'' +
+        "' AND table_constraints.table_name='" +
         tableName.split('.')[1] +
-        '\' AND constraint_type=\'FOREIGN KEY\' AND key_column_usage.column_name= \'' +
+        "' AND constraint_type='FOREIGN KEY' AND key_column_usage.column_name= '" +
         ColAfterChange.column +
-        '\' LOOP EXECUTE \'ALTER TABLE \' || row.table_name || \' DROP CONSTRAINT \' || row.constraint_name; END LOOP; END;$$';
-     
+        "' LOOP EXECUTE 'ALTER TABLE ' || row.table_name || ' DROP CONSTRAINT ' || row.constraint_name; END LOOP; END;$$";
+
       querySet.push({ type: 'single', query: UQuery1 });
     }
   }
   return querySet;
 }
 
-export function permissiveTableCheck(
-  tableName,
-  TableBeforeChange,
-  TableAfterChange
-) {
+export function permissiveTableCheck(tableName, TableBeforeChange, TableAfterChange) {
   //trim column name for whitespaces
   tableName = tableName.trim();
   // first check if the column name is empty
@@ -396,7 +382,7 @@ export function permissiveTableCheck(
     ];
   }
 
-  //regex 
+  //regex
   const regex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
   const found = tableName.match(regex);
   if (found === null) {
@@ -409,13 +395,11 @@ export function permissiveTableCheck(
   }
 
   //check if table name is already existing
- 
+
   for (let i = 0; i < Object.keys(TableBeforeChange).length; i++) {
     const name = Object.keys(TableBeforeChange)[i];
     if ('public.' + tableName === name) {
-      return [
-        { status: 'failed', errorMsg: 'Cannot have duplicate table name' },
-      ];
+      return [{ status: 'failed', errorMsg: 'Cannot have duplicate table name' }];
     }
   }
 
@@ -426,27 +410,36 @@ export function permissiveTableCheck(
   return querySet;
 }
 
-export function permissiveColumnDropCheck(
-  ColToDrop,
-  tableName
-) {
-
+export function permissiveColumnDropCheck(ColToDrop, tableName) {
   const querySet = [];
 
   if (ColToDrop.reference.length > 0 && ColToDrop.reference[0].IsDestination === true) {
-    querySet.push(({status: 'failed', errorMsg: `Postgres restriction. Column "${ColToDrop.column}" cannot be dropped due to dependencies`}));
+    querySet.push({
+      status: 'failed',
+      errorMsg: `Postgres restriction. Column "${ColToDrop.column}" cannot be dropped due to dependencies`,
+    });
     return querySet;
   }
 
-  const QueryDropColumn = 'ALTER TABLE ' + tableName + ' DROP COLUMN ' + ColToDrop.column + ';';
+  const QueryDropColumn =
+    'ALTER TABLE ' + tableName + ' DROP COLUMN ' + ColToDrop.column + ';';
   querySet.push({ type: 'single', query: QueryDropColumn });
 
   if (ColToDrop.pk === true && ColToDrop.fk === true) {
-    querySet.push({ status: 'failed', errorMsg: `You are about to drop a primary key & foreign key column, in "${tableName}".\nIt may lose the relationship with other tables.` });
+    querySet.push({
+      status: 'failed',
+      errorMsg: `You are about to drop a primary key & foreign key column, in "${tableName}".\nIt may lose the relationship with other tables.`,
+    });
   } else if (ColToDrop.pk === true) {
-    querySet.push({ status: 'failed', errorMsg: `You are about to drop a primary key column, in "${tableName}".\nIt may lose the relationship with other tables.` });
+    querySet.push({
+      status: 'failed',
+      errorMsg: `You are about to drop a primary key column, in "${tableName}".\nIt may lose the relationship with other tables.`,
+    });
   } else if (ColToDrop.fk === true) {
-    querySet.push({ status: 'failed', errorMsg: `You are about to drop a foreign key column, in "${tableName}".\nIt may lose the relationship with other tables.` });
+    querySet.push({
+      status: 'failed',
+      errorMsg: `You are about to drop a foreign key column, in "${tableName}".\nIt may lose the relationship with other tables.`,
+    });
   }
 
   return querySet;
