@@ -2,13 +2,12 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeRow from './TableNodeRow';
+import InputModal from '../Modals/InputModal';
 import useSchemaStore from '../../store/schemaStore';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 export default function TableNode({ data }) {
-  console.log('data', data)
-  // state of schema object
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+  const tableName = data.table[0];
   // rowData is an array of objects with each row in the table as an element
   const rowData = Object.values(data.table[1]);
   console.log('rowData', rowData)
@@ -21,7 +20,7 @@ export default function TableNode({ data }) {
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === data.table[0]) {
+    if (data.edges[i].source === tableName) {
       console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
       //make handle placement dynamic, we need to know the row of our source
       const rowNumberSource = rowData.findIndex(obj => obj.Name === data.edges[i].sourceHandle) + 1;
@@ -38,7 +37,7 @@ export default function TableNode({ data }) {
         />
       );
     }
-    if (data.edges[i].target === data.table[0]) {
+    if (data.edges[i].target === tableName) {
       //make handle placement dynamic, we need to know the row of our target
       const rowNumberTarget = rowData.findIndex(obj => obj.Name === data.edges[i].targetHandle) + 1;
       console.log('rowNumberTarget', rowNumberTarget)
@@ -58,57 +57,20 @@ export default function TableNode({ data }) {
       );
     }
   }
-
-  // let targetTableName;
-  // for (let i = 0; i < data.edges.length; i++) {
-  //   if (data.edges[i].target === data.table[0]) {
-  //     let targetTableName = data.table[0];
-  //     rowData.map((row, index) => {
-      
-  //     })
-  //   }
-  // }
-  // console.log('targetTableName', targetTableName)
-
-
-  // helper function when adding row to table
-  const addRow = () => {
-    const currentSchema = { ...schemaStore };
-    currentSchema[data.table[0]].newRow = {
-      Name: '',
-      Value: '',
-      TableName: data.table[0],
-      References: [
-        {
-          PrimaryKeyName: '',
-          ReferencesPrimaryName: '',
-          PrimaryKeyTableName: '',
-          ReferencesTableName: '',
-          IsDestination: '',
-          constrainName: '',
-        },
-      ],
-      IsPrimaryKey: '',
-      IsForeignKey: '',
-      field_name: 'newRow',
-      data_type: '',
-      additional_constraints: '',
-    };
-    setSchemaStore(currentSchema);
-  };
   // renders rows within table
   return (
-    <div className="table-node transition-colors duration-500" key={data.table[0]}>
+    <div className="table-node transition-colors duration-500" key={tableName}>
       {tableHandles}
       <div>
         <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
-          {data.table[0]}
+          {tableName}
         </label>
       </div>
       <div>
         <button
           className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-          onClick={addRow}
+          // onClick={addRow}
+          onClick={() => data.openAddColumnModal(tableName)}
         >
           <FaRegPlusSquare size={20} />
         </button>
@@ -163,8 +125,8 @@ export default function TableNode({ data }) {
             {rowData.map((row, index) => (
               <TableNodeRow
                 row={row}
-                key={`${data.table[0]}-row${index}`}
-                id={`${data.table[0]}-row${index}`}
+                key={`${tableName}-row${index}`}
+                id={`${tableName}-row${index}`}
               />
             ))}
           </tbody>
@@ -172,5 +134,4 @@ export default function TableNode({ data }) {
       </div>
     </div>
   );
-};
-
+}
