@@ -31,7 +31,6 @@ export type SchemaState = {
   addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
-
   // Helper to add columns to table in schemaStore
   _addColumns: (
     newStore: SchemaStore,
