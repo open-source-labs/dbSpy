@@ -2,15 +2,15 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeColumn from './TableNodeColumn';
-import InputModal from '../Modals/InputModal';
-import useSchemaStore from '../../store/schemaStore';
 import { FaRegPlusSquare } from 'react-icons/fa';
+import useSettingsStore from '../../store/settingsStore';
 
 export default function TableNode({ data }) {
   const tableName = data.table[0];
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);
   const [tableColumns, setTableColumns] = useState(columnData);
+  const { setInputModalState } = useSettingsStore((state) => state);
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
@@ -51,7 +51,7 @@ export default function TableNode({ data }) {
         <button
           className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
           // onClick={addColumn}
-          onClick={() => data.openAddColumnModal(tableName)}
+          onClick={() => setInputModalState(true, 'column', tableName)}
         >
           <FaRegPlusSquare size={20} />
         </button>

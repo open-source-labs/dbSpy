@@ -20,7 +20,7 @@ const nodeTypes = {
   table: TableNode,
 };
 
-export default function Flow({ openAddColumnModal }) {
+export default function Flow() {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
@@ -33,10 +33,10 @@ export default function Flow({ openAddColumnModal }) {
     if (!Object.keys(schemaStore).length) return;
     console.log('initializing edges');
     const initialEdges = createEdges(schemaStore);
-    console.log('setting edges');
+    console.log('setting initial edges', initialEdges);
     setEdges(initialEdges);
     console.log('init nodes');
-    const initialNodes = createNodes(schemaStore, initialEdges, openAddColumnModal);
+    const initialNodes = createNodes(schemaStore, initialEdges);
     console.log('setting nodes');
     setNodes(initialNodes);
   }

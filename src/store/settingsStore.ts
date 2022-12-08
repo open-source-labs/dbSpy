@@ -17,9 +17,10 @@ let settingsStore = (
   welcome: true,
   setWelcome: (input: any) => set((state: any) => ({ ...state, welcome: input })),
 
-  editRefMode: false,
   currentTable: '',
   currentColumn: '',
+
+  editRefMode: false,
   setEditRefMode: (isEditRefMode: boolean, table: string = '', col: string = '') =>
     set((state: any) => ({
       ...state,
@@ -27,6 +28,15 @@ let settingsStore = (
       currentTable: table,
       currentColumn: col,
     })),
+
+  inputModalState: { isOpen: false, mode: '' },
+  setInputModalState: (isOpen: boolean, mode: string = '', currentTable: string = '') => {
+    set((state) => ({
+      ...state,
+      currentTable,
+      inputModalState: { isOpen, mode },
+    }));
+  },
 });
 
 // settingsStore = devtools(settingsStore);

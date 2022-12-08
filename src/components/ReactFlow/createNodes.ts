@@ -9,17 +9,11 @@ type Node = {
   data: {
     table: TableTuple;
     edges: Edge[];
-    openAddColumnModal: () => void;
   };
 };
-
 type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnSchema }];
 //hard-coded xy positioning of each node in the canvas
-export default function createNodes(
-  schemaObject: SchemaStore,
-  edges: Edge[],
-  openAddColumnModal: () => void
-): Node[] {
+export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): Node[] {
   let i = 0;
   const nodePositions = [
     { x: 0, y: 0 },
@@ -49,7 +43,7 @@ export default function createNodes(
       type: 'table',
       position: nodePositions[i++ % 17],
       // position: {x: Math.random() * window.innerWidth, y: Math.random() * window.innerWidth},
-      data: { table: [tableKey, columnData], edges, openAddColumnModal },
+      data: { table: [tableKey, columnData], edges },
     });
   }
   return nodes;

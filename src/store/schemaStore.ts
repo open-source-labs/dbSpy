@@ -115,7 +115,7 @@ const useSchemaStore = create<SchemaState>()(
             //   targetReferenceData,
             // ];
             newState.schemaStore[originTable][originColumn].IsForeignKey = true;
-            newState.schemaStore[targetTable][targetColumn].IsForeignKey = true;
+            // newState.schemaStore[targetTable][targetColumn].IsForeignKey = true;
             return newState;
           });
         },
