@@ -367,6 +367,7 @@ interface SchemaState {
   addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
+  addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
   _checkNameValidity: (...names: string[]) => void;
@@ -389,6 +390,15 @@ const useSchemaStore = create<SchemaState>()(
         history: [{}],
         historyCounter: 0,
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
+        addHistory: (newState) => {
+          // const history = get().history
+          // const historyCounter = get().historyCounter;
+          newState.historyCounter += 1;
+          newState.history[newState.historyCounter] = newState.schemaStore;
+          if (newState.history[newState.historyCounter + 1]){
+            newState.history = newState.history.slice(0, newState.historyCounter + 1);
+            };
+          },
         addTableSchema: (tableName, columnDataArr) =>
           set((state) => {
             // Check data validity first. If invalid, error is thrown
@@ -424,11 +434,7 @@ const useSchemaStore = create<SchemaState>()(
               };
               newState.schemaStore[tableName][columnData.name] = newCol;
             }
-            newState.historyCounter += 1;
-            newState.history[newState.historyCounter] = newState.schemaStore;
-            if (newState.history[newState.historyCounter + 1]){
-              newState.history = newState.history.slice(0, newState.historyCounter + 1);
-            }
+            get().addHistory(newState);
             return newState;
           }),
         deleteTableSchema: (tableName) =>
