@@ -9,7 +9,7 @@ import Navbar from '../../src/components/Navbar';
 import Signup from '../../src/pages/Signup';
 import DBDisplay from '../../src/pages/DBDisplay';
 
-describe("placeholder", () => {
+xdescribe("placeholder", () => {
   // Simple unit test tests
   it('Renders navbar', () => {
     render(<Navbar />, { wrapper: BrowserRouter });

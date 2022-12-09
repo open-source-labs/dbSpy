@@ -19,7 +19,6 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
         // get the id and access token w/ the code
         const { id_token, access_token } = await getGoogleAuthToken({ code })
 
-
         //get user with tokens
         const decodedUser = jwt.decode(id_token) as JwtPayload;
         console.log(decodedUser, ' decodedUser');
@@ -29,11 +28,10 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
                 // res.redirect('localhost:8080/')
                 return res.status(403).send("Unable to authorize, google account is not verified.")
             })
-
         }
 
+        console.log('decoded user', decodedUser)
         //insert or retrieve the user
-        console.log('before foundUser assignment ')
         const foundUser: any = await findUser(decodedUser.email)
         console.log(client_url, ' client_url');
         // // if we did not find the user, create one
@@ -45,7 +43,6 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
                 decodedUser.picture
             ])
         }
-
         const newUser = await findUser(decodedUser.email)
 
         const user = await foundUser || newUser
@@ -56,15 +53,16 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
         const accessToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '1d' })
         // create a session
-        // //refresh token expires in 1 day
+        // refresh token expires in 1 day
         // const refreshToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '5h' })
 
 
         req.session.user = accessToken;
-
+        
         log.info('Login successful, redirecting...')
-
+        
         const queryStr = 'true'
+        
         console.log(client_url)
         res.redirect(301, `${client_url}/?success=` + queryStr)
 

@@ -20,7 +20,9 @@ export default function TableNodeColumn({
   id: string;
 }) {
   // TODO: can we take reference out of the store? only accessed in this component I believe
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+  const { schemaStore, setSchemaStore, deleteColumnSchema } = useSchemaStore(
+    (state) => state
+  );
   const { setEditRefMode } = useSettingsStore((state) => state);
 
   // Columns can be in one of three modes: default, edit, or delete
@@ -48,10 +50,8 @@ export default function TableNodeColumn({
   const onDelete = () => {
     //declare prior values
     const tableRef = columnData.TableName;
-    const columnRef = columnData.field_name;
-    const currentSchema = { ...schemaStore };
-    delete currentSchema[tableRef][columnRef];
-    setSchemaStore(currentSchema);
+    const colRef = columnData.field_name;
+    deleteColumnSchema(tableRef, colRef);
   };
 
   const openAddReferenceModal = () => {

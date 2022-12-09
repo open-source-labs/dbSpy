@@ -18,12 +18,18 @@ export type SchemaState = {
   // DATA
   schemaStore: SchemaStore;
   system: 'PostgreSQL' | 'MySQL';
+  history: SchemaStore[];
+  historyCounter: number;
 
   // DATA SETTERS
   setSchemaStore: (schema: SchemaStore) => void;
   addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
+  deleteColumnSchema: (tableRef: string, rowRef: string) => void;
+  _addHistory: (newState: any) => void;
+  undoHandler: () => void;
+  redoHandler: () => void;
   addForeignKeySchema: (referenceData: Reference) => void;
 
   // VALIDATION HELPER METHODS
@@ -54,7 +60,18 @@ const useSchemaStore = create<SchemaState>()(
         //schemaStore state
         schemaStore: {},
         system: 'PostgreSQL',
+        history: [{}],
+        historyCounter: 0,
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
+        _addHistory: (newState) => {
+          newState.historyCounter += 1;
+          newState.history[newState.historyCounter] = JSON.parse(
+            JSON.stringify(newState.schemaStore)
+          );
+          if (newState.history[newState.historyCounter + 1]) {
+            newState.history = newState.history.slice(0, newState.historyCounter + 1);
+          }
+        },
         addTableSchema: (tableName, columnDataArr) =>
           set((state) => {
             // Check data validity first. If invalid, error is thrown
@@ -71,12 +88,14 @@ const useSchemaStore = create<SchemaState>()(
               tableName,
               columnDataArr
             );
+            get()._addHistory(newState);
             return newState;
           }),
         deleteTableSchema: (tableName) =>
           set((state) => {
             const newState = { ...state };
             delete newState.schemaStore[tableName];
+            get()._addHistory(newState);
             return newState;
           }),
         addColumnSchema: (tableName, columnDataArr) =>
@@ -89,6 +108,7 @@ const useSchemaStore = create<SchemaState>()(
               tableName,
               columnDataArr
             );
+            get()._addHistory(newState);
             return newState;
           }),
 
@@ -114,6 +134,48 @@ const useSchemaStore = create<SchemaState>()(
             return newState;
           });
         },
+        deleteColumnSchema: (tableRef, rowRef) =>
+          set((state) => {
+            const newState = JSON.parse(JSON.stringify(state));
+            console.log(newState.schemaStore, tableRef, rowRef);
+            delete newState.schemaStore[tableRef][rowRef];
+            get()._addHistory(newState);
+            return newState;
+          }),
+        undoHandler: () => {
+          set((state) => {
+            const newState = { ...state };
+            console.log(
+              'in undoHandler... here`s history: ',
+              newState.history,
+              newState.historyCounter
+            );
+            if (newState.historyCounter === 1) newState.historyCounter -= 1;
+            if (newState.history.length === 0 || newState.historyCounter === 0) {
+              newState.schemaStore = {};
+              return newState;
+            }
+            newState.historyCounter -= 1;
+            newState.schemaStore = newState.history[newState.historyCounter];
+            return newState;
+          });
+        },
+        redoHandler: () => {
+          set((state) => {
+            const newState = { ...state };
+            console.log(
+              'in redoHandler... here`s history: ',
+              newState.history,
+              newState.historyCounter
+            );
+            if (newState.historyCounter >= newState.history.length - 1) return newState;
+            newState.historyCounter += 1;
+            newState.schemaStore = newState.history[newState.historyCounter];
+            return newState;
+          });
+        },
+        // TODO: delete setReference after refactoring adding reference functionality
+        // setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
 
         // --------------------- Validity Check Helper Functions -------------------------------------
         // validation functions should be run first before adding or editing schema data
