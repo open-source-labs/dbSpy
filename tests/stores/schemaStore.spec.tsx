@@ -4,7 +4,7 @@ import { SchemaState, SchemaStore } from '../../src/store/schemaStore';
 
 describe('unit testing schemaStore', () => {
   describe('schemaState shape', () => {
-    it('should match the snapshot', () => {
+    it('matches the snapshot', () => {
       const schemaState = renderHook(useSchemaStore).result.current as SchemaState;
       expect(schemaState).toMatchSnapshot();
     });
