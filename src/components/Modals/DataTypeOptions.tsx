@@ -2,7 +2,7 @@ import React from 'react';
 import { SQLDataType } from '@/Types';
 
 const dataTypeArr: SQLDataType[] = [
-  'AUTOINCREMENT',
+  'AUTO_INCREMENT',
   'SERIAL',
   'SMALLSERIAL',
   'BIGSERIAL',

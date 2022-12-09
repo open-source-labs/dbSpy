@@ -24,7 +24,7 @@ export default function InputModal({
   const initialColumns: ColumnData[] = [
     {
       name: 'id',
-      type: 'AUTOINCREMENT',
+      type: 'AUTO_INCREMENT',
       isNullable: false,
       isPrimary: true,
       defaultValue: null,
