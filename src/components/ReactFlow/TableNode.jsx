@@ -12,34 +12,33 @@ export default function TableNode({ data }) {
   const rowData = Object.values(data.table[1]);
   console.log('rowData', rowData)
 
-  rowData.findIndex(obj => obj.x === "a" && obj.y === 1);
-
-
   const [tableRows, setTableRows] = useState(rowData);
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
-      console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
       //make handle placement dynamic, we need to know the row of our source
-      const rowNumberSource = rowData.findIndex(obj => obj.Name === data.edges[i].sourceHandle) + 1;
+     let rowNumberSource = rowData.findIndex(obj => obj.Name === data.edges[i].sourceHandle) + 1;
+      if (rowNumberSource === 0) rowNumberSource = 1;
       console.log('rowNumberSource', rowNumberSource)
+      console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
-          // style={{ bottom: 9, top: 'auto' }}
-          style={{ background: 'transparent', bottom: 'auto', top: 72 + rowNumberSource * 21 }}
-          // style={{ bottom: y, top: 'auto' }}
+          style={{ background: 'transparent', 
+                   top: 96 + rowNumberSource * 21, 
+                   bottom: 'auto'}}
         />
       );
     }
     if (data.edges[i].target === tableName) {
       //make handle placement dynamic, we need to know the row of our target
-      const rowNumberTarget = rowData.findIndex(obj => obj.Name === data.edges[i].targetHandle) + 1;
+      let rowNumberTarget = rowData.findIndex(obj => obj.Name === data.edges[i].targetHandle) + 1;
+      if (rowNumberTarget === 0) rowNumberTarget = 1;
       console.log('rowNumberTarget', rowNumberTarget)
       console.log('data.edges[i].targetHandle', data.edges[i].targetHandle);
       tableHandles.push(
@@ -50,9 +49,8 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{ 
             background: 'transparent', 
-            bottom: 'auto', 
-            top: 72 + rowNumberTarget*21}}
-          // style={{ bottom: 'auto', top: y }}
+            top: 96 + rowNumberTarget * 21, 
+            bottom: 'auto'}}
         />
       );
     }

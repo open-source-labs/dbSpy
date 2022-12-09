@@ -36,14 +36,14 @@ export default function createEdges(schemaObject: SchemaStore) {
           label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
           style: {
             strokeWidth: 2,
-            stroke: '#FF0072',
+            stroke: '#085c84',
           },
           markerEnd: {
             type: 'arrowclosed',
             orient: 'auto',
             width: 20,
             height: 20,
-            color: '#FF0072',
+            color: '#085c84',
           },
         });
       }
