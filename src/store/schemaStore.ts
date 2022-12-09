@@ -28,7 +28,7 @@ export type SchemaState = {
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteColumnSchema: (tableRef: string, rowRef: string) => void;
-  addHistory: (newState: any) => void;
+  _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
 
@@ -65,7 +65,7 @@ const useSchemaStore = create<SchemaState>()(
         history: [{}],
         historyCounter: 0,
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
-        addHistory: (newState) => {
+        _addHistory: (newState) => {
           newState.historyCounter += 1;
           newState.history[newState.historyCounter] = JSON.parse(JSON.stringify(newState.schemaStore));
           if (newState.history[newState.historyCounter + 1]){
@@ -88,14 +88,14 @@ const useSchemaStore = create<SchemaState>()(
               tableName,
               columnDataArr
             );
-            get().addHistory(newState);
+            get()._addHistory(newState);
             return newState;
           }),
         deleteTableSchema: (tableName) =>
           set((state) => {
             const newState = { ...state };
             delete newState.schemaStore[tableName];
-            get().addHistory(newState);
+            get()._addHistory(newState);
             return newState;
           }),
         addColumnSchema: (tableName, columnDataArr) =>
@@ -108,7 +108,7 @@ const useSchemaStore = create<SchemaState>()(
               tableName,
               columnDataArr
             );
-            get().addHistory(newState);
+            get()._addHistory(newState);
             return newState;
           }),
         _addColumns: (newStore, tableName, columnDataArr) => {
@@ -151,7 +151,7 @@ const useSchemaStore = create<SchemaState>()(
             const newState = JSON.parse(JSON.stringify(state));
             console.log(newState.schemaStore, tableRef, rowRef);
             delete newState.schemaStore[tableRef][rowRef];
-            get().addHistory(newState);
+            get()._addHistory(newState);
             return newState;
           }),
           undoHandler: () => {
