@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
-import DataTypeArr from '../../utils/DataTypeArr';
+import DataTypeOptions from './DataTypeOptions';
 
 type ColumnInputProps = {
   index: number;
@@ -31,13 +31,6 @@ function ColumnInput({
   columnCount,
   mode,
 }: ColumnInputProps) {
-  const dataTypeOptions = DataTypeArr.map((dataType) => (
-    // populate the options for data type
-    // `selected` attribute will default select the type that matches props.type
-    <option key={dataType} value={dataType}>
-      {dataType}
-    </option>
-  ));
   return (
     <div className="column-input">
       <div>
@@ -71,7 +64,7 @@ function ColumnInput({
           defaultValue={type}
           onChange={(e) => handleColumnChange(index, 'type', e.target.value)}
         >
-          {dataTypeOptions}
+          <DataTypeOptions />
         </select>
       </div>
 

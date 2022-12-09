@@ -1,6 +1,7 @@
+import React from 'react';
 import { SQLDataType } from '@/Types';
 
-const DataTypeArr: SQLDataType[] = [
+const dataTypeArr: SQLDataType[] = [
   'AUTOINCREMENT',
   'SERIAL',
   'SMALLSERIAL',
@@ -72,4 +73,13 @@ const DataTypeArr: SQLDataType[] = [
   'LTREE',
 ];
 
-export default DataTypeArr;
+export default function DataTypeOptions() {
+  const optionsArr = dataTypeArr.map((dataType) => (
+    // populate the options for data type
+    // `selected` attribute will default select the type that matches props.type
+    <option key={dataType} value={dataType}>
+      {dataType}
+    </option>
+  ));
+  return <>{optionsArr}</>;
+}

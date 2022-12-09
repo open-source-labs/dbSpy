@@ -7,16 +7,12 @@ import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
-import createEdges from '../ReactFlow/createEdges';
-import createNodes from '../ReactFlow/createNodes';
-
 // const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
 
 const Sidebar = (props: any) => {
   //STATE DECLARATION (dbSpy3.0)
   const setDbCredentials = useCredentialsStore((state) => state.setDbCredentials);
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
-  const { setEdges, setNodes } = useFlowStore((state) => state);
   const { setWelcome } = useSettingsStore((state) => state);
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
@@ -66,10 +62,6 @@ const Sidebar = (props: any) => {
       .catch((err) => console.log('getSchema error', err));
     //update schemaStore
     setSchemaStore(dbSchema);
-    const initialEdges = createEdges(dbSchema);
-    setEdges(initialEdges);
-    const initialNodes = createNodes(dbSchema, initialEdges);
-    setNodes(initialNodes);
     setWelcome(false);
     setConnectPressed(false);
     props.closeNav();

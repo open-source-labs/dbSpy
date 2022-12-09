@@ -11,12 +11,21 @@ import InputModal from '../components/Modals/InputModal';
 
 import useSettingsStore from '../store/settingsStore';
 import useCredentialsStore from '../store/credentialsStore';
+import useFlowStore from '../store/flowStore';
+import useSchemaStore, { SchemaStore } from '../store/schemaStore';
+import createEdges from '../components/ReactFlow/createEdges';
+import createNodes from '../components/ReactFlow/createNodes';
 import axios from 'axios';
 
 const DBDisplay = () => {
-  const { sidebarDisplayState, welcome, editRefMode } = useSettingsStore(
-    (state) => state
-  );
+  const {
+    sidebarDisplayState,
+    welcome,
+    editRefMode,
+    inputModalState,
+    setInputModalState,
+    currentTable,
+  } = useSettingsStore((state) => state);
 
   // Input Modal state and handlers
   type InputModalState = {
@@ -24,14 +33,9 @@ const DBDisplay = () => {
     mode: 'table' | 'column';
     tableName?: string;
   };
-  const [inputModalState, setInputModalState] = useState<InputModalState>({
-    isOpen: false,
-    mode: 'table',
-  });
-  const openAddTableModal = () =>
-    setInputModalState((prevState) => ({ isOpen: true, mode: 'table' }));
+  const openAddTableModal = () => setInputModalState(true, 'table');
   const openAddColumnModal = (tableName: string) =>
-    setInputModalState((prevState) => ({ isOpen: true, mode: 'column', tableName }));
+    setInputModalState(true, 'column', tableName);
 
   //create references for HTML elements
   const mySideBarId: any = useRef();
@@ -54,6 +58,9 @@ const DBDisplay = () => {
     if (sidebarDisplayState) closeNav();
     else openNav();
   }
+
+  const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
+    useFlowStore((state) => state);
 
   return (
     <div
@@ -86,17 +93,15 @@ const DBDisplay = () => {
             </p>
           </div>
         ) : (
-          <Flow openAddColumnModal={openAddColumnModal} />
+          <Flow />
         )}
       </div>
       {/* MODALS */}
       {inputModalState.isOpen && (
         <InputModal
           mode={inputModalState.mode}
-          tableNameProp={inputModalState.tableName}
-          closeInputModal={() =>
-            setInputModalState((prevState) => ({ ...prevState, isOpen: false }))
-          }
+          tableNameProp={currentTable}
+          closeInputModal={() => setInputModalState(false)}
         />
       )}
     </div>

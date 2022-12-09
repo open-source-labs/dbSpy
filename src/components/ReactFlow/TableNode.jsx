@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
-import TableNodeRow from './TableNodeRow';
-import InputModal from '../Modals/InputModal';
-import useSchemaStore from '../../store/schemaStore';
+import TableNodeColumn from './TableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
+import useSettingsStore from '../../store/settingsStore';
 
 export default function TableNode({ data }) {
   const tableName = data.table[0];
-  // rowData is an array of objects with each row in the table as an element
-  const rowData = Object.values(data.table[1]);
-  const [tableRows, setTableRows] = useState(rowData);
+  // columnData is an array of objects with each column in the table as an element
+  const columnData = Object.values(data.table[1]);
+  const [tableColumns, setTableColumns] = useState(columnData);
+  const { setInputModalState } = useSettingsStore((state) => state);
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
@@ -38,7 +38,7 @@ export default function TableNode({ data }) {
       );
     }
   }
-  // renders rows within table
+  // renders columns within table
   return (
     <div className="table-node transition-colors duration-500" key={tableName}>
       {tableHandles}
@@ -50,8 +50,8 @@ export default function TableNode({ data }) {
       <div>
         <button
           className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-          // onClick={addRow}
-          onClick={() => data.openAddColumnModal(tableName)}
+          // onClick={addColumn}
+          onClick={() => setInputModalState(true, 'column', tableName)}
         >
           <FaRegPlusSquare size={20} />
         </button>
@@ -59,7 +59,7 @@ export default function TableNode({ data }) {
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
         <table className="transition-colors duration-500 dark:text-[#fbf3de]">
           <thead>
-            <tr className="head-row">
+            <tr className="head-column">
               <th
                 scope="col"
                 className="transition-colors duration-500 dark:text-[#fbf3de]"
@@ -93,21 +93,12 @@ export default function TableNode({ data }) {
             </tr>
           </thead>
           <tbody>
-            <tr className="empty-row">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            {/* generates dynamic rows */}
-            {rowData.map((row, index) => (
-              <TableNodeRow
-                row={row}
-                key={`${tableName}-row${index}`}
-                id={`${tableName}-row${index}`}
+            {/* generates dynamic columns */}
+            {columnData.map((column, index) => (
+              <TableNodeColumn
+                column={column}
+                key={`${tableName}-column${index}`}
+                id={`${tableName}-column${index}`}
               />
             ))}
           </tbody>

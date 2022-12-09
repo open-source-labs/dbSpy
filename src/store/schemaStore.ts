@@ -2,10 +2,9 @@
 // State Management for db Schema
 //
 
-import { table } from 'console';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { ColumnData, ColumnSchema } from '../Types';
+import { ColumnData, ColumnSchema, Reference } from '../Types';
 
 interface RestrictedNames {
   [name: string]: boolean;
@@ -31,18 +30,18 @@ export type SchemaState = {
   _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
-  // Helper to add columns to table in schemaStore
-  _addColumns: (
-    newStore: SchemaStore,
-    tableName: string,
-    columnDataArr: ColumnData[]
-  ) => SchemaStore;
+  addForeignKeySchema: (referenceData: Reference) => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
   _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
   _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
   _checkColumnDataDuplicates: (ColumnDataArr: ColumnData[]) => void;
+  _addColumns: (
+    newStore: SchemaStore,
+    tableName: string,
+    columnDataArr: ColumnData[]
+  ) => SchemaStore;
 
   // VALIDATION CONSTANTS
   _restrictedMySqlNames: RestrictedNames;
@@ -66,11 +65,13 @@ const useSchemaStore = create<SchemaState>()(
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
         _addHistory: (newState) => {
           newState.historyCounter += 1;
-          newState.history[newState.historyCounter] = JSON.parse(JSON.stringify(newState.schemaStore));
-          if (newState.history[newState.historyCounter + 1]){
+          newState.history[newState.historyCounter] = JSON.parse(
+            JSON.stringify(newState.schemaStore)
+          );
+          if (newState.history[newState.historyCounter + 1]) {
             newState.history = newState.history.slice(0, newState.historyCounter + 1);
-            };
-          },
+          }
+        },
         addTableSchema: (tableName, columnDataArr) =>
           set((state) => {
             // Check data validity first. If invalid, error is thrown
@@ -110,40 +111,28 @@ const useSchemaStore = create<SchemaState>()(
             get()._addHistory(newState);
             return newState;
           }),
-        _addColumns: (newStore, tableName, columnDataArr) => {
-          for (const columnData of columnDataArr) {
-            const newCol: ColumnSchema = {
-              Name: columnData.name,
-              Value: columnData.defaultValue,
-              TableName: tableName,
-              // TODO: see if we can get away with not initializing an empty reference
-              // References: [],
-              References: [
-                {
-                  PrimaryKeyName: '',
-                  PrimaryKeyTableName: tableName,
-                  ReferencesPropertyName: '',
-                  ReferencesTableName: '',
-                  IsDestination: false,
-                  constraintName: '',
+
+        addForeignKeySchema(referenceData) {
+          set((state) => {
+            // TODO: ADD VALIDATION
+            const currentTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const currentColumn: string = referenceData.ReferencesPropertyName;
+            const newState = {
+              ...state,
+              schemaStore: {
+                ...state.schemaStore,
+                [currentTable]: {
+                  ...state.schemaStore[currentTable],
+                  [currentColumn]: {
+                    ...state.schemaStore[currentTable][currentColumn],
+                    References: [referenceData],
+                    IsForeignKey: true,
+                  },
                 },
-              ],
-              IsPrimaryKey: columnData.isPrimary,
-              IsForeignKey: false,
-              field_name: columnData.name.replace(/\s/g, '_'),
-              data_type: columnData.type,
-              additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
-            };
-            // reassigning newStore so subscriptions pick up on the change
-            newStore = {
-              ...newStore,
-              [tableName]: {
-                ...newStore[tableName],
-                [columnData.name]: newCol,
               },
             };
-          }
-            return newStore;
+            return newState;
+          });
         },
         deleteColumnSchema: (tableRef, rowRef) =>
           set((state) => {
@@ -153,30 +142,38 @@ const useSchemaStore = create<SchemaState>()(
             get()._addHistory(newState);
             return newState;
           }),
-          undoHandler: () => {
-            set((state) => {
-              const newState = {...state}
-              console.log('in undoHandler... here`s history: ', newState.history, newState.historyCounter);
-              if (newState.historyCounter === 1) newState.historyCounter -= 1;
-              if(newState.history.length === 0 || newState.historyCounter === 0) {
-                newState.schemaStore = {}
-                return newState;
-              }
-              newState.historyCounter -= 1;
-              newState.schemaStore = newState.history[newState.historyCounter];
+        undoHandler: () => {
+          set((state) => {
+            const newState = { ...state };
+            console.log(
+              'in undoHandler... here`s history: ',
+              newState.history,
+              newState.historyCounter
+            );
+            if (newState.historyCounter === 1) newState.historyCounter -= 1;
+            if (newState.history.length === 0 || newState.historyCounter === 0) {
+              newState.schemaStore = {};
               return newState;
-            })
-          },
-          redoHandler:  () => {
-            set((state) => {
-              const newState = {...state}
-              console.log('in redoHandler... here`s history: ', newState.history, newState.historyCounter);
-              if (newState.historyCounter >= newState.history.length - 1) return newState;
-              newState.historyCounter += 1;
-              newState.schemaStore = newState.history[newState.historyCounter];
-              return newState;
-            })
-          },
+            }
+            newState.historyCounter -= 1;
+            newState.schemaStore = newState.history[newState.historyCounter];
+            return newState;
+          });
+        },
+        redoHandler: () => {
+          set((state) => {
+            const newState = { ...state };
+            console.log(
+              'in redoHandler... here`s history: ',
+              newState.history,
+              newState.historyCounter
+            );
+            if (newState.historyCounter >= newState.history.length - 1) return newState;
+            newState.historyCounter += 1;
+            newState.schemaStore = newState.history[newState.historyCounter];
+            return newState;
+          });
+        },
         // TODO: delete setReference after refactoring adding reference functionality
         // setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),
 
@@ -249,6 +246,39 @@ const useSchemaStore = create<SchemaState>()(
               throw new Error(`Table must not contain duplicate names (${name})`);
             else nameRegister[name] = true;
           }
+        },
+        _addColumns: (newStore, tableName, columnDataArr) => {
+          for (const columnData of columnDataArr) {
+            const newCol: ColumnSchema = {
+              Name: columnData.name,
+              Value: columnData.defaultValue,
+              TableName: tableName,
+              References: [
+                {
+                  PrimaryKeyName: '',
+                  ReferencesPropertyName: '',
+                  PrimaryKeyTableName: '',
+                  ReferencesTableName: '',
+                  IsDestination: false,
+                  constraintName: '',
+                },
+              ],
+              IsPrimaryKey: columnData.isPrimary,
+              IsForeignKey: false,
+              field_name: columnData.name.replace(/\s/g, '_'),
+              data_type: columnData.type,
+              additional_constraints: columnData.isNullable ? 'NULL' : 'NOT NULL',
+            };
+            // reassigning newStore so subscriptions pick up on the change
+            newStore = {
+              ...newStore,
+              [tableName]: {
+                ...newStore[tableName],
+                [columnData.name]: newCol,
+              },
+            };
+          }
+          return newStore;
         },
         // TODO: add validity checks for adding foreign keys
         // TODO: add validity checks for editing / deleting tables and columns (can't if part of foreign key)
@@ -602,4 +632,3 @@ const useSchemaStore = create<SchemaState>()(
 );
 
 export default useSchemaStore;
-
