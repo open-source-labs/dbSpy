@@ -90,7 +90,7 @@ export default {
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
     "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/mocks/fileMock.js"
+    "\\.(css|less)$": "<rootDir>/mocks/fileMock.js"
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -103,7 +103,7 @@ export default {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  // preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -148,7 +148,7 @@ export default {
 
   // The test environment that will be used for testing
   testEnvironment: "jsdom",
-  
+
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
@@ -176,7 +176,9 @@ export default {
   // testRunner: "jest-circus/runner",
 
   // A map from regular expressions to paths to transformers
-  // transform: undefined,
+  // transform: {
+  //   '^.+\\.ts?$': 'ts-jest',
+  // },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
