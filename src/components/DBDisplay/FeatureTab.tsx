@@ -1,5 +1,6 @@
 // React & React Router & React Query Modules
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
 
 // Functions imported:
 import parseSql from '../../parse';
@@ -10,6 +11,7 @@ import createNodes from '../ReactFlow/createNodes';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
+import useCredentialsStore from '../../store/credentialsStore';
 
 // Components imported:
 import QueryModal from './QueryModal';
@@ -19,6 +21,7 @@ export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+  const { user, setUser } = useCredentialsStore((state: any) => state);
   const { setWelcome } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
@@ -107,6 +110,45 @@ export default function FeatureTab(props: any) {
     setQueryModalOpened(false);
   };
 
+  // Temp
+  const saveSchema = (): void => {
+    // TODO: Sign in to upload/save
+    if (!user) alert('Sign in first')
+    else {
+      const postBody = {
+        email: user.email,
+        schema: JSON.stringify(schemaStore)
+      }
+      axios.post('/api/saveSchema', postBody)
+        .catch(err => console.log('err', err))
+    }
+  }
+
+  const loadSchema = (): void => {
+    // TODO: Sign in to upload/save
+    if (!user) alert('Sign in first')
+    else {
+      fetch(`/api/retrieveSchema/${user.email}`)
+        .then(data => {
+          setWelcome(false)
+          return data.json()
+        })
+        .then(res => {
+          res === '{}' || res === null
+            ? alert('No database stored!')
+            : setSchemaStore(JSON.parse(res))
+        })
+        .catch(err => console.log('err retrieve', err))
+    }
+  }
+
+  // Clears session + reset store
+  const signoutSession = async () => {
+    await fetch(`http://localhost:8080/api/logout`)
+    window.open('http://localhost:8080/', '_self')
+    setSchemaStore({});
+    setUser(null);
+  }
   // END: HELPER FUNCTIONS
 
   return (
@@ -311,8 +353,77 @@ export default function FeatureTab(props: any) {
             </ul>
             <br />
             <div className="historyBlock">
-              <p className="text-slate-900 dark:text-[#f8f4eb]">History</p>
+              <p className="text-slate-900 dark:text-[#f8f4eb]">Account</p>
               <hr />
+              <ul className="space-y-2">
+                <li>
+                  <a
+                    onClick={() => saveSchema()}
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                      />
+                      <polyline points="17 21 17 13 7 13 7 21" />  <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    <span className="ml-3 flex-1 whitespace-nowrap">Save Database</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() => loadSchema()}
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span className="ml-3 flex-1 whitespace-nowrap">Load Database</span>
+                  </a>
+                </li>
+                {user ?
+                  <li>
+                    <a
+                      onClick={() => signoutSession()}
+                      className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white">
+                        <path stroke="none" d="M0 0h24v24H0z" />
+                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                        <path d="M7 12h14l-3 -3m0 6l3 -3" />
+                      </svg>
+                      <span className="ml-3 flex-1 whitespace-nowrap">Sign Out</span>
+                    </a>
+                  </li> : null}
+              </ul>
             </div>
           </div>
         </aside>
