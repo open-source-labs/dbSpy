@@ -1,11 +1,7 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import useFlowStore from '../../store/flowStore';
-import createEdges from './createEdges';
-import createNodes from './createNodes';
 import {
   FaRegEdit,
   FaRegTrashAlt,
@@ -14,13 +10,18 @@ import {
   FaRegWindowClose,
 } from 'react-icons/fa';
 import DataTypeOptions from '../Modals/DataTypeOptions';
-import { ColumnSchema } from '@/Types';
+import { ColumnSchema, SQLDataType } from '@/Types';
 
-export default function TableNodeColumn({ column, id }) {
+export default function TableNodeColumn({
+  column,
+  id,
+}: {
+  column: ColumnSchema;
+  id: string;
+}) {
   // TODO: can we take reference out of the store? only accessed in this component I believe
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
-  const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
-  const { editRefMode, setEditRefMode } = useSettingsStore((state) => state);
+  const { setEditRefMode } = useSettingsStore((state) => state);
 
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
@@ -31,6 +32,7 @@ export default function TableNodeColumn({ column, id }) {
     const currentSchema = { ...schemaStore };
     currentSchema[columnData.TableName][columnData.field_name] = {
       ...columnData,
+      // References was updated by AddReference modal, this avoids that change being overwritten
       References: currentSchema[columnData.TableName][columnData.field_name].References,
     };
     // If column name has changed, delete entry with old column name
@@ -86,7 +88,10 @@ export default function TableNodeColumn({ column, id }) {
               className="bg-[#f8f4eb] dark:text-black"
               value={columnData.data_type}
               onChange={(e) =>
-                setColumnData((prevData) => ({ ...prevData, data_type: e.target.value }))
+                setColumnData((prevData) => ({
+                  ...prevData,
+                  data_type: e.target.value as SQLDataType,
+                }))
               }
             >
               <DataTypeOptions />

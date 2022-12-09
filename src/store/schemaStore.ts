@@ -2,9 +2,6 @@
 // State Management for db Schema
 //
 
-import { isDescendantOrSelf } from '@testing-library/user-event/dist/types/utils';
-import { table } from 'console';
-import { State } from 'history';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { ColumnData, ColumnSchema, Reference } from '../Types';

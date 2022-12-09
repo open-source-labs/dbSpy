@@ -2,14 +2,7 @@ import useFlowStore from '../../store/flowStore';
 import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React from 'react';
 import { useEffect } from 'react';
-import ReactFlow, {
-  Controls,
-  ControlButton,
-  Background,
-  applyEdgeChanges,
-  applyNodeChanges,
-  addEdge,
-} from 'reactflow';
+import ReactFlow, { Controls, ControlButton, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
@@ -29,7 +22,7 @@ export default function Flow() {
   // useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
   function reRender(schemaStore: SchemaStore) {
-    console.log('rerendering-------------------------------------------------');
+    console.log('rerendering reactflow-------------------------------------------------');
     if (!schemaStore || !Object.keys(schemaStore).length) return;
     console.log('initializing edges');
     const initialEdges = createEdges(schemaStore);
