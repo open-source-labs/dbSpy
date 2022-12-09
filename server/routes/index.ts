@@ -1,6 +1,6 @@
-import { Express, Request, Response, NextFunction, Router } from 'express';
+import { Express, Request, Response, NextFunction } from 'express';
 import { handleGoogleAuth } from '../controllers/auth.controller';
-import { retrieveSchema, saveSchema, tableManipulation, userRegistration, verifyUser } from '../controllers/user.controller';
+import { retrieveSchema, userRegistration, verifyUser } from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
 import mysqlRouter from './mysql.router';
 import session from 'express-session';
@@ -48,11 +48,6 @@ const routes = async (app: Express) => {
   app.use('/api/sql/postgres', postgresRouter);
 
   app.use('/api/sql/mysql', mysqlRouter);
-
-  // TODO: Delete before launch, just using for misc. postman queries
-  app.get('/api/readTables', tableManipulation)
-
-  app.post('/api/saveSchema', saveSchema);
 
   app.get('/api/retrieveSchema/:email', retrieveSchema);
 

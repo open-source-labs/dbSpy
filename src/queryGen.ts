@@ -25,7 +25,7 @@
 //    }
 // row.TableName - row.field_name - IsPrimaryKey
 
-import { SchemaObject, Column } from "./components/DBDisplay/Types";
+import { SchemaObject, ColumnSchema } from "./Types";
 
 export default function queryGen(schemaObj: SchemaObject) {
   const createTableQs : Array<string> = [];
@@ -38,14 +38,14 @@ export default function queryGen(schemaObj: SchemaObject) {
     // go through columns in key (table)
     for (const column in table){
       // grabbing column items...
-      const { TableName, data_type, References, IsPrimaryKey, IsForeignKey, field_name, additional_constraints }: Column = table[column];
+      const { TableName, data_type, References, IsPrimaryKey, IsForeignKey, field_name, additional_constraints }: ColumnSchema = table[column];
       // append column configs to create-table string: '[name] [type] [constraints {NOT NULL, UNIQUE, PK, FK, etc}], /n'
       // currently, constraints only ever contains a single string - would be great for the app to allow for more
       // does data_type need handling?
       let constraintList: string = `${additional_constraints}`;
       // handle primary key string:
-      console.log(IsPrimaryKey === 'true');
-      if (IsPrimaryKey === 'true' ){
+      console.log(IsPrimaryKey === true);
+      if (IsPrimaryKey === true ){
         console.log(constraintList, "line 76");
         constraintList += (' PRIMARY KEY');
       }
@@ -57,8 +57,8 @@ export default function queryGen(schemaObj: SchemaObject) {
       // access stuff on Reference to tell us what's up
       const ref = References[0]
       // `ALTER TABLE ${TableName} ADD CONSTRAINT fk${References{constrainName}} FOREIGN KEY (${field_name}) REFERENCES ${References{ReferencesTableName}}(${References{ReferencesPropertyName}})`
-      if (IsForeignKey === 'true'){
-        const alterTableString: string = `ALTER TABLE ${TableName} ADD CONSTRAINT fk_${ref['constrainName']} FOREIGN KEY (${field_name}) REFERENCES ${ref['ReferencesTableName']}(${ref['ReferencesPropertyName']}) ON UPDATE SET NULL ON DELETE SET NULL `
+      if (IsForeignKey === true){
+        const alterTableString: string = `ALTER TABLE ${TableName} ADD CONSTRAINT ${ref['constraintName']} FOREIGN KEY (${field_name}) REFERENCES ${ref['ReferencesTableName']}(${ref['ReferencesPropertyName']}) ON UPDATE SET NULL ON DELETE SET NULL `
         alterTableQs.push(alterTableString);
       }
     }

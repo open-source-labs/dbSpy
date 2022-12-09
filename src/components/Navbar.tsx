@@ -7,7 +7,6 @@ import default_pfp from "../assets/default_pfp.svg";
 
 const linkbtn = "mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
 
-
 function Navbar() {
   //STATE DECLARATION (dbSpy3.0)
   const [theme, setTheme] = useState('Dark');
@@ -21,7 +20,7 @@ function Navbar() {
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   }
-  
+
   return (
     <>
       <nav className="flex items-center justify-between flex-wrap bg-sky-800 p-6 fixed top-0 w-full">
