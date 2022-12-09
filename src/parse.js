@@ -185,7 +185,7 @@ function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
   currentTableModel.Properties.push(propertyModel);
 }
 
-function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
+function parseMySQLForeignKey(name, currentTableModel, constraintName = null) {
   name = name.replace(/\"/g, '');
 
   let foreignKeyName = name
@@ -235,7 +235,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
     true
   );
 
-  foreignKeyOriginModel.constrainName = constrainName;
+  foreignKeyOriginModel.constraintName = constraintName;
 
   // Add ForeignKey Origin
   foreignKeyList.push(foreignKeyOriginModel);
@@ -252,7 +252,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
     false
   );
 
-  foreignKeyDestinationModel.constrainName = constrainName;
+  foreignKeyDestinationModel.constraintName = constraintName;
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
 }
@@ -328,9 +328,9 @@ function parseTableName(name) {
 function parseAlterTable(tableName, constraint) {
   // const tableName = tmp.match(/(?<=ALTER\sTABLE\s)([a-zA-Z_]+)(?=\sADD\sCONSTRAINT)/)[0];
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
-  const constrainName = constraint.match(regexConstraint);
+  const constraintName = constraint.match(regexConstraint);
 
-  // if (constrainName !== null) console.log('constraintName', constrainName[0]);
+  // if (constraintName !== null) console.log('constraintName', constraintName[0]);
 
   tableName = tableName.trim();
   let currentTableModel;
@@ -350,7 +350,7 @@ function parseAlterTable(tableName, constraint) {
     parseMySQLForeignKey(
       name,
       currentTableModel,
-      constrainName !== null ? constrainName[0] : null
+      constraintName !== null ? constraintName[0] : null
     );
   } else if (constraint.indexOf('PRIMARY KEY') !== -1) {
     // console.log('Alter constraint:', constraint)

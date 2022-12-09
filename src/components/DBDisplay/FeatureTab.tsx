@@ -1,6 +1,8 @@
 // React & React Router & React Query Modules
+
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
+
 
 // Functions imported:
 import parseSql from '../../parse';
@@ -9,6 +11,7 @@ import createNodes from '../ReactFlow/createNodes';
 
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
+import { SchemaObject } from './Types';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
@@ -20,8 +23,10 @@ import QueryModal from './QueryModal';
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
-  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
+
+  const { schemaStore, setSchemaStore, undoHandler, redoHandler, historyCounter } = useSchemaStore((state) => state);
   const { user, setUser } = useCredentialsStore((state: any) => state);
+
   const { setWelcome } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
@@ -101,7 +106,6 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
-  const queryModal = useRef<null | HTMLParagraphElement>(null);
   const openQueryModal = () => {
     setQueryModalOpened(true);
   };
@@ -109,6 +113,7 @@ export default function FeatureTab(props: any) {
   const closeQueryModal = () => {
     setQueryModalOpened(false);
   };
+
 
   // Temp
   const saveSchema = (): void => {
@@ -149,6 +154,16 @@ export default function FeatureTab(props: any) {
     setSchemaStore({});
     setUser(null);
   }
+
+  // Undo/Redo functionality
+  const undoClick = () => { // commented logic for undoing at history[0] because there's a button for clearing canvas anyway
+    // if (historyCounter <= 1){
+    //   clearCanvasTables();
+    // }
+    undoHandler(); // from schemaStore
+  }
+
+
   // END: HELPER FUNCTIONS
 
   return (
@@ -308,7 +323,7 @@ export default function FeatureTab(props: any) {
               {/* TODO: Add UNDO & REDO feature */}
               <li>
                 <a
-                  onClick={() => alert('Feature coming soon!')}
+                  onClick={undoClick}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
@@ -330,7 +345,7 @@ export default function FeatureTab(props: any) {
               </li>
               <li>
                 <a
-                  onClick={() => alert('Feature coming soon!')}
+                  onClick={redoHandler}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
