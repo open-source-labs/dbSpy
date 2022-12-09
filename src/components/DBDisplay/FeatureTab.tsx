@@ -6,8 +6,6 @@ import axios from 'axios';
 
 // Functions imported:
 import parseSql from '../../parse';
-import createEdges from '../ReactFlow/createEdges';
-import createNodes from '../ReactFlow/createNodes';
 
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
@@ -84,10 +82,6 @@ export default function FeatureTab(props: any) {
         //Parse the .sql file into a data structure that is same as "fetchedData" and store it into a variable named "parsedData"
         const parsedData: any = parseSql(event.target.result);
         setSchemaStore(parsedData);
-        const initialEdges = createEdges(parsedData);
-        setEdges(initialEdges);
-        const initialNodes = createNodes(parsedData, initialEdges);
-        setNodes(initialNodes);
         setWelcome(false);
       };
     };
@@ -100,6 +94,7 @@ export default function FeatureTab(props: any) {
   };
 
   const clearCanvasTables = () => {
+    console.log('clearing canvas');
     setSchemaStore({});
     setEdges([]);
     setNodes([]);

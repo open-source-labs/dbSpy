@@ -9,18 +9,11 @@ type Node = {
   data: {
     table: TableTuple;
     edges: Edge[];
-    openAddColumnModal: () => void;
   };
 };
-
 type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnSchema }];
 //hard-coded xy positioning of each node in the canvas
-export default function createNodes(
-  schemaObject: SchemaStore,
-  edges: Edge[],
-  openAddColumnModal: () => void
-): Node[] {
-  let i = 0;
+export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): Node[] {
   const nodePositions = [
     { x: 1000, y: 400 },
     { x: 1000, y: 0 },
@@ -36,14 +29,18 @@ export default function createNodes(
   ];
   // renders each table on the React Flow canvas
   const nodes: Node[] = [];
+  let i = 0;
   for (const tableKey in schemaObject) {
     const columnData = schemaObject[tableKey];
     nodes.push({
       id: tableKey,
       type: 'table',
-      position: nodePositions[i++ % 17],
-      data: { table: [tableKey, columnData], edges, openAddColumnModal },
+
+      position: nodePositions[i],
+      // position: {x: Math.random() * window.innerWidth, y: Math.random() * window.innerWidth},
+      data: { table: [tableKey, columnData], edges },
     });
+    i = (i + 1) % 17;
   }
   return nodes;
 }
