@@ -1,4 +1,4 @@
-export const getGoogleAuthUrl = () => {
+const getGoogleAuthUrl = () => {
     const base = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     const options = {
@@ -14,4 +14,10 @@ export const getGoogleAuthUrl = () => {
     }
     const queryStr = new URLSearchParams(options)
     return `${base}?${queryStr.toString()}`
+}
+
+export const handleOAuthLogin = () => {
+  const url = getGoogleAuthUrl();
+  const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+  window.open(url, '_self', strWindowFeatures);
 }

@@ -1,16 +1,16 @@
 // React & React Router Modules
 import axios from 'axios';
-import React from 'react';
-import { getGoogleAuthUrl } from '../utils/getGoogleUrl'
+import React, { useState } from 'react';
+import { handleOAuthLogin } from '../utils/getGoogleUrl'
 import { NavLink, useNavigate } from 'react-router-dom';
 
 /* "Signup" Component - signup page for user creation */
 export default function Signup() {
+  const [emailErr, setEmailErr] = useState(false)
   const navigate = useNavigate();
   //Regular login using JWTs without OAuth  
   const registerAccount = async (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Registration Submitted')
+    e.preventDefault();
     // TODO: What's the proper type? HTLMFormElement ? HTMLInputElement?
     let formValues = e.target as any;
     const email = formValues[0].value;
@@ -19,14 +19,11 @@ export default function Signup() {
     const userAcc = { full_name, email, password };
     await axios.post('/api/userRegistration', userAcc)
       .then(() => navigate('/login'))
-  }
-
-  // TODO: Duplicate and WET in Login.tsx
-  const handleOAuthLogin = async () => {
-    // TODO: Double check await necessity
-    const url = await getGoogleAuthUrl();
-    const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
-    window.open(url, '_self', strWindowFeatures);
+      .catch(err => {
+        const emailInput = document.querySelector('#email') as HTMLElement;
+        setEmailErr(true);
+        emailInput.focus();
+      })
   }
 
   return (
@@ -44,7 +41,8 @@ export default function Signup() {
               </label>
             </div>
             <div className="md:w-2/3">
-              <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500" type='email' id='email' name='email' placeholder="example@email.com" required></input>
+              <input className={"bg-gray-200 appearance-none border-gray-200 border-2 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white " + (!emailErr ? "focus:border-indigo-500" : "focus:border-red-700")} type='email' id='email' name='email' placeholder="example@email.com" required></input>
+              {emailErr ? <div className="absolute md:text-right ml-3 text-xs text-red-700">Email address is already in use</div> : null}
             </div>
           </div>
           <div className="md:flex md:items-center mb-6">
@@ -77,19 +75,21 @@ export default function Signup() {
               <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500" type="password" name='password' id='password' placeholder="******************" required></input>
             </div>
           </div>
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/3"></div>
-            <div className="md:w-2/3">
+          <div className="md:flex justify-center">
               <button className="shadow bg-sky-700 hover:bg-indigo-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                 Sign Up
               </button>
-            </div>
           </div>
         </form>
+        <div className="inline-flex justify-between items-center w-full">
+          <hr className="my-8 w-32 h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
+          <span className="absolute left-1/2 px-3 font-medium text-gray-900 -translate-x-1/2 dark:text-white dark:bg-slate-700">or</span>
+          <hr className="my-8 w-32 h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
+        </div>
       </div>
-      <button className='bg-red-600 hover:bg-red-700 text-stone-100 font-bold py-2 px-4 rounded inline-flex items-center' onClick={handleOAuthLogin}>
-        <svg className="h-6 w-6 mr-2 text-white" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M17.788 5.108A9 9 0 1021 12h-8" /></svg>
-        <span>Login with Google</span>
+      <button className='bg-red-600 hover:bg-red-700 text-stone-100 py-1 px-4 inline-flex items-center' onClick={handleOAuthLogin}>
+        <svg className="h-4 w-4 mr-2 text-white" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M17.788 5.108A9 9 0 1021 12h-8" /></svg>
+        <span>Sign up with Google</span>
       </button>
     </div>
   );

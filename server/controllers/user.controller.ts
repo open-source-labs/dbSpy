@@ -6,8 +6,8 @@ const saltRounds = 10;
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Find user via Email
 export const findUser = async (email: string, password?: string) => {
-  console.log('user.controller: Firing findUser')
   const connection = mysql.createConnection(process.env.DATABASE_URL!);
   const queryStr = 'SELECT * FROM users WHERE email = ?'
   return new Promise((resolve, reject) => {
@@ -20,6 +20,7 @@ export const findUser = async (email: string, password?: string) => {
 
 }
 
+// Creating user via Google OAuth
 export const createUser = async (user: string[]) => {
   const connection = mysql.createConnection(process.env.DATABASE_URL!);
   const queryStr = 'INSERT IGNORE INTO users (sub, full_name, email, picture) VALUES (?, ?, ?, ?)';
@@ -33,8 +34,8 @@ export const createUser = async (user: string[]) => {
   })
 }
 
+// Register w/o OAuth
 export const userRegistration: RequestHandler = async (req, res, next) => {
-  console.log('firing user registration', req.body);
   const connection = mysql.createConnection(process.env.DATABASE_URL!);
   const foundUser = await findUser(req.body.email)
   if (!foundUser) {
@@ -49,7 +50,6 @@ export const userRegistration: RequestHandler = async (req, res, next) => {
           return next(err);
         } else {
           console.log(`${email} succesfully registered!`);
-          console.log('Data response,', data);
           return res.redirect(200, `/`);
         }
       })
@@ -59,7 +59,6 @@ export const userRegistration: RequestHandler = async (req, res, next) => {
 }
 
 export const verifyUser: RequestHandler = async (req, res, next) => {
-  console.log('verify user fired')
   const foundUser = await findUser(req.body.email) as Array<{ password: string }>;
   if (foundUser) {
     const hashedPW = foundUser[0].password
@@ -67,8 +66,6 @@ export const verifyUser: RequestHandler = async (req, res, next) => {
       log.info('Email Address exists inside OAuth');
       return res.redirect(403, '/login');
     }
-    console.log(hashedPW)
-    console.log(req.body.password)
     bcrypt.compare(req.body.password, hashedPW)
       .then(match => {
         if (!match) {
@@ -88,13 +85,10 @@ export const verifyUser: RequestHandler = async (req, res, next) => {
 
 // Save currentSchema into database
 export const saveSchema: RequestHandler = async (req, res, next) => {
-  console.log('Firing saveSchema')
   const connection = mysql.createConnection(process.env.DATABASE_URL!);
-  console.log(req.body.schema)
   const updateColQuery = `UPDATE users SET pg_schema = '${req.body.schema}' WHERE email = '${req.body.email}';`
   connection.query(updateColQuery, (err, data) => {
-    if (err) return next(err)
-    console.log(req.body.email + ' schema saved');
+    if (err) return next(err);
     log.info('Updated', data);
     return res.status(200)
   })
@@ -102,27 +96,11 @@ export const saveSchema: RequestHandler = async (req, res, next) => {
 
 // Retrive saved schema
 export const retrieveSchema: RequestHandler = async (req, res, next) => {
-  console.log('Retrieve schema fired');
   const connection = mysql.createConnection(process.env.DATABASE_URL!);
   const updateColQuery = `SELECT pg_schema FROM users WHERE email = '${req.params.email}';`
   connection.query(updateColQuery, (err, data) => {
     if (err) return next(err)
-    console.log(req.body.email + ' schema retrieved');
-    const schema = data as Array<{pg_schema: string}>;
-    console.log('Schema', schema[0].pg_schema);
+    const schema = data as Array<{ pg_schema: string }>;
     return res.status(200).json(schema[0].pg_schema)
   })
 }
-
-export const tableManipulation = async () => {
-  const connection = mysql.createConnection(process.env.DATABASE_URL!);
-  const queryStr = `SELECT * FROM users;`;
-  const addQueryStr = `ALTER TABLE users ADD COLUMN pg_schema varchar(5000);`
-  return new Promise((resolve, reject) => {
-    connection.query(queryStr, (err, rows) => {
-      if (err) return reject(err)
-      console.log(rows)
-    })
-  })
-}
-
