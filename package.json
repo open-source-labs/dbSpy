@@ -15,7 +15,7 @@
     "preview": "vite preview",
     "test": "jest --verbose",
     "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'",
-    "watch": "jest --watch *.[jt]sx?$"
+    "watch": "jest --watch"
   },
   "author": "Steven Geiger, Michael Costello, Alexander Tu, Yufa Li",
   "license": "MIT",
