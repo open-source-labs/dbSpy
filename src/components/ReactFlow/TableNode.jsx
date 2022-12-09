@@ -7,33 +7,55 @@ import useSettingsStore from '../../store/settingsStore';
 
 export default function TableNode({ data }) {
   const tableName = data.table[0];
+
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);
   const [tableColumns, setTableColumns] = useState(columnData);
   const { setInputModalState } = useSettingsStore((state) => state);
+
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
+      //make handle placement dynamic, we need to know the column of our source
+      let columnNumberSource =
+        columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
+      if (columnNumberSource === 0) columnNumberSource = 1;
+      console.log('columnNumberSource', columnNumberSource);
+      console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
-          style={{ bottom: 9, top: 'auto' }}
+          style={{
+            background: 'transparent',
+            top: 96 + columnNumberSource * 21,
+            bottom: 'auto',
+          }}
         />
       );
     }
     if (data.edges[i].target === tableName) {
+      //make handle placement dynamic, we need to know the column of our target
+      let columnNumberTarget =
+        columnData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+      if (columnNumberTarget === 0) columnNumberTarget = 1;
+      console.log('columnNumberTarget', columnNumberTarget);
+      console.log('data.edges[i].targetHandle', data.edges[i].targetHandle);
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
-          style={{ bottom: 'auto', top: 113 }}
+          style={{
+            background: 'transparent',
+            top: 96 + columnNumberTarget * 21,
+            bottom: 'auto',
+          }}
         />
       );
     }

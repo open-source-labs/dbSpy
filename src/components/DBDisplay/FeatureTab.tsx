@@ -109,7 +109,6 @@ export default function FeatureTab(props: any) {
     setQueryModalOpened(false);
   };
 
-
   // Temp
   const saveSchema = (): void => {
     // TODO: Sign in to upload/save

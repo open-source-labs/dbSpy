@@ -47,7 +47,7 @@ export interface SchemaObject {
 }
 
 export type SQLDataType =
-  | 'AUTOINCREMENT'
+  | 'AUTO_INCREMENT'
   | 'SERIAL'
   | 'SMALLSERIAL'
   | 'BIGSERIAL'
