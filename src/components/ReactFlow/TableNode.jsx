@@ -18,10 +18,11 @@ export default function TableNode({ data }) {
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
-      //make handle placement dynamic, we need to know the row of our source
-     let rowNumberSource = rowData.findIndex(obj => obj.Name === data.edges[i].sourceHandle) + 1;
-      if (rowNumberSource === 0) rowNumberSource = 1;
-      console.log('rowNumberSource', rowNumberSource)
+      //make handle placement dynamic, we need to know the column of our source
+      let columnNumberSource =
+        columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
+      if (columnNumberSource === 0) columnNumberSource = 1;
+      console.log('columnNumberSource', columnNumberSource);
       console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
       tableHandles.push(
         <Handle
@@ -29,17 +30,20 @@ export default function TableNode({ data }) {
           type="source"
           position={Position.Right}
           id={data.edges[i].sourceHandle}
-          style={{ background: 'transparent', 
-                   top: 96 + rowNumberSource * 21, 
-                   bottom: 'auto'}}
+          style={{
+            background: 'transparent',
+            top: 96 + columnNumberSource * 21,
+            bottom: 'auto',
+          }}
         />
       );
     }
     if (data.edges[i].target === tableName) {
-      //make handle placement dynamic, we need to know the row of our target
-      let rowNumberTarget = rowData.findIndex(obj => obj.Name === data.edges[i].targetHandle) + 1;
-      if (rowNumberTarget === 0) rowNumberTarget = 1;
-      console.log('rowNumberTarget', rowNumberTarget)
+      //make handle placement dynamic, we need to know the column of our target
+      let columnNumberTarget =
+        columnData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+      if (columnNumberTarget === 0) columnNumberTarget = 1;
+      console.log('columnNumberTarget', columnNumberTarget);
       console.log('data.edges[i].targetHandle', data.edges[i].targetHandle);
       tableHandles.push(
         <Handle
@@ -47,10 +51,11 @@ export default function TableNode({ data }) {
           type="target"
           position={Position.Left}
           id={data.edges[i].targetHandle}
-          style={{ 
-            background: 'transparent', 
-            top: 96 + rowNumberTarget * 21, 
-            bottom: 'auto'}}
+          style={{
+            background: 'transparent',
+            top: 96 + columnNumberTarget * 21,
+            bottom: 'auto',
+          }}
         />
       );
     }
