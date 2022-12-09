@@ -100,7 +100,7 @@ export const retrieveSchema: RequestHandler = async (req, res, next) => {
   const updateColQuery = `SELECT pg_schema FROM users WHERE email = '${req.params.email}';`
   connection.query(updateColQuery, (err, data) => {
     if (err) return next(err)
-    const schema = data as Array<{pg_schema: string}>;
+    const schema = data as Array<{ pg_schema: string }>;
     return res.status(200).json(schema[0].pg_schema)
   })
 }
