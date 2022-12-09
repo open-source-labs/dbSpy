@@ -5,10 +5,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
 import { getGoogleAuthUrl } from '../utils/getGoogleUrl'
 
-
 /* "Login" Component - login page for user login */
 export default function Login() {
-  console.log(window.location.href)
   //STATE DECLARATION (dbSpy3.0)
   const { setUser } = useCredentialsStore();
   const navigate = useNavigate();
@@ -37,10 +35,10 @@ export default function Login() {
   "google" - a function that gets invoked when Google login button is clicked;
   Opens up the page that asks for authorization for server to receive access token from Google;
   */
-  const handleOAuthLogin = async () => {
-    // TODO: Double check await necessity
-    const url = await getGoogleAuthUrl();
+  const handleOAuthLogin = () => {
+    const url = getGoogleAuthUrl();
     const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+    // TODO: Make sure this doesn't mess up state
     window.open(url, '_self', strWindowFeatures);
   }
 
