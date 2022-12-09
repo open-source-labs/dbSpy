@@ -38,7 +38,7 @@ export default function queryGen(schemaObj: SchemaObject) {
     // go through columns in key (table)
     for (const column in table){
       // grabbing column items...
-      const { TableName, data_type, References, IsPrimaryKey, IsForeignKey, field_name, additional_constraints }: ColumnSchema = table[column];
+      const { TableName, data_type, References, IsPrimaryKey, IsForeignKey, field_name, additional_constraints, Value }: ColumnSchema = table[column];
       // append column configs to create-table string: '[name] [type] [constraints {NOT NULL, UNIQUE, PK, FK, etc}], /n'
       // currently, constraints only ever contains a single string - would be great for the app to allow for more
       // does data_type need handling?
@@ -46,8 +46,11 @@ export default function queryGen(schemaObj: SchemaObject) {
       // handle primary key string:
       console.log(IsPrimaryKey === true);
       if (IsPrimaryKey === true ){
-        console.log(constraintList, "line 76");
         constraintList += (' PRIMARY KEY');
+      }
+      // handle default values:
+      if (Value !== null){
+        constraintList += (` default ${Value}`);
       }
       const columnString: string = `"${field_name}" ${data_type} ${constraintList}, `
       createTableString += (columnString);
