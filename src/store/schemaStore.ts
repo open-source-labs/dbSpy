@@ -115,18 +115,39 @@ const useSchemaStore = create<SchemaState>()(
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION
-            const currentTable: keyof SchemaStore = referenceData.ReferencesTableName;
-            const currentColumn: string = referenceData.ReferencesPropertyName;
+            const originTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const originColumn: string = referenceData.ReferencesPropertyName;
+            const destinationTable: keyof SchemaStore = referenceData.PrimaryKeyTableName;
+            const destinationColumn: string = referenceData.PrimaryKeyName;
+
             const newState = {
               ...state,
               schemaStore: {
                 ...state.schemaStore,
-                [currentTable]: {
-                  ...state.schemaStore[currentTable],
-                  [currentColumn]: {
-                    ...state.schemaStore[currentTable][currentColumn],
-                    References: [referenceData],
+                [originTable]: {
+                  ...state.schemaStore[originTable],
+                  [originColumn]: {
+                    ...state.schemaStore[originTable][originColumn],
+                    References: [
+                      {
+                        ...referenceData,
+                        IsDestination: false,
+                        PrimaryKeyName: originColumn,
+                      },
+                    ],
                     IsForeignKey: true,
+                  },
+                },
+                [destinationTable]: {
+                  ...state.schemaStore[destinationTable],
+                  [destinationColumn]: {
+                    ...state.schemaStore[destinationTable][destinationColumn],
+                    References: [
+                      {
+                        ...referenceData,
+                        IsDestination: true,
+                      },
+                    ],
                   },
                 },
               },
