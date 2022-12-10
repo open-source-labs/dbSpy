@@ -7,6 +7,7 @@ import useSettingsStore from '../../store/settingsStore';
 
 export default function TableNode({ data }) {
   const tableName = data.table[0];
+  console.log('tableName', tableName)
 
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);
@@ -18,12 +19,13 @@ export default function TableNode({ data }) {
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
+      console.log('Source.tableName', data.edges[i].source)
       //make handle placement dynamic, we need to know the column of our source
       let columnNumberSource =
         columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
       if (columnNumberSource === 0) columnNumberSource = 1;
-      console.log('columnNumberSource', columnNumberSource);
-      console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
+      // console.log('columnNumberSource', columnNumberSource);
+      // console.log('data.edges[i].sourceHandle', data.edges[i].sourceHandle);
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -32,19 +34,20 @@ export default function TableNode({ data }) {
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 96 + columnNumberSource * 21,
-            bottom: 'auto',
+            top: 77 + columnNumberSource * 21,
+            // bottom: 'auto',
           }}
         />
       );
     }
     if (data.edges[i].target === tableName) {
+      console.log('target.tableName', data.edges[i].target)
       //make handle placement dynamic, we need to know the column of our target
       let columnNumberTarget =
         columnData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
       if (columnNumberTarget === 0) columnNumberTarget = 1;
-      console.log('columnNumberTarget', columnNumberTarget);
-      console.log('data.edges[i].targetHandle', data.edges[i].targetHandle);
+      // console.log('columnNumberTarget', columnNumberTarget);
+      // console.log('data.edges[i].targetHandle', data.edges[i].targetHandle);
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
@@ -53,8 +56,8 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 96 + columnNumberTarget * 21,
-            bottom: 'auto',
+            top: 77 + columnNumberTarget * 21,
+            // bottom: 'auto',
           }}
         />
       );
