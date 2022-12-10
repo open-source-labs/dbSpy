@@ -3,39 +3,6 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
-// export interface TableProps {
-//   tableInfo: {
-//     [key: string]: {
-//       IsForeignKey: boolean;
-//       IsPrimaryKey: boolean;
-//       Name: string;
-//       References: Array<object>;
-//       TableName: string;
-//       Value: string | number;
-//       additional_constraints: string | null;
-//       data_type: string;
-//       field_name: string;
-//     };
-//   };
-//   tableId?: string | undefined;
-//   setId?: any;
-//   id: string;
-//   setFetchedData: (fetchedData: CanvasProps /* originally any */) => void;
-//   setSqlOpen: (sqlOpen: boolean) => void;
-//   fetchedData: CanvasProps /* originally any */;
-//   sqlOpen: boolean;
-// }
-
-// export interface RowProps {
-//   id: string;
-//   column: string;
-//   constraint: string;
-//   fk: boolean;
-//   pk: boolean;
-//   type: string;
-//   reference: {}[];
-// }
-
 // ---------------------------------------------------------------------
 // ZUSTAND STORE AND FRONT-END TYPES
 
@@ -149,7 +116,6 @@ export type SQLDataType =
   | 'GEOGRAPHY'
   | 'CUBE'
   | 'LTREE';
-
 
 //from canvas.tsx
 
