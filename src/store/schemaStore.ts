@@ -31,6 +31,7 @@ export type SchemaState = {
   undoHandler: () => void;
   redoHandler: () => void;
   addForeignKeySchema: (referenceData: Reference) => void;
+  setSystem: (system: 'PostgreSQL' | 'MySQL') => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
@@ -62,6 +63,7 @@ const useSchemaStore = create<SchemaState>()(
         system: 'PostgreSQL',
         history: [{}],
         historyCounter: 0,
+        setSystem: (system) => set((state) => ({ ...state, system })),
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
         _addHistory: (newState) => {
           newState.historyCounter += 1;
@@ -152,6 +154,7 @@ const useSchemaStore = create<SchemaState>()(
                 },
               },
             };
+            get()._addHistory(newState);
             return newState;
           });
         },
@@ -274,16 +277,7 @@ const useSchemaStore = create<SchemaState>()(
               Name: columnData.name,
               Value: columnData.defaultValue,
               TableName: tableName,
-              References: [
-                {
-                  PrimaryKeyName: '',
-                  ReferencesPropertyName: '',
-                  PrimaryKeyTableName: '',
-                  ReferencesTableName: '',
-                  IsDestination: false,
-                  constraintName: '',
-                },
-              ],
+              References: [],
               IsPrimaryKey: columnData.isPrimary,
               IsForeignKey: false,
               field_name: columnData.name.replace(/\s/g, '_'),
