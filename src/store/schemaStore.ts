@@ -31,6 +31,7 @@ export type SchemaState = {
   undoHandler: () => void;
   redoHandler: () => void;
   addForeignKeySchema: (referenceData: Reference) => void;
+  setSystem: (system: 'PostgreSQL' | 'MySQL') => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
@@ -62,6 +63,7 @@ const useSchemaStore = create<SchemaState>()(
         system: 'PostgreSQL',
         history: [{}],
         historyCounter: 0,
+        setSystem: (system) => set((state) => ({ ...state, system })),
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
         _addHistory: (newState) => {
           newState.historyCounter += 1;
@@ -115,22 +117,44 @@ const useSchemaStore = create<SchemaState>()(
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION
-            const currentTable: keyof SchemaStore = referenceData.ReferencesTableName;
-            const currentColumn: string = referenceData.ReferencesPropertyName;
+            const originTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const originColumn: string = referenceData.ReferencesPropertyName;
+            const destinationTable: keyof SchemaStore = referenceData.PrimaryKeyTableName;
+            const destinationColumn: string = referenceData.PrimaryKeyName;
+
             const newState = {
               ...state,
               schemaStore: {
                 ...state.schemaStore,
-                [currentTable]: {
-                  ...state.schemaStore[currentTable],
-                  [currentColumn]: {
-                    ...state.schemaStore[currentTable][currentColumn],
-                    References: [referenceData],
+                [originTable]: {
+                  ...state.schemaStore[originTable],
+                  [originColumn]: {
+                    ...state.schemaStore[originTable][originColumn],
+                    References: [
+                      {
+                        ...referenceData,
+                        IsDestination: false,
+                        PrimaryKeyName: originColumn,
+                      },
+                    ],
                     IsForeignKey: true,
+                  },
+                },
+                [destinationTable]: {
+                  ...state.schemaStore[destinationTable],
+                  [destinationColumn]: {
+                    ...state.schemaStore[destinationTable][destinationColumn],
+                    References: [
+                      {
+                        ...referenceData,
+                        IsDestination: true,
+                      },
+                    ],
                   },
                 },
               },
             };
+            get()._addHistory(newState);
             return newState;
           });
         },
@@ -253,16 +277,7 @@ const useSchemaStore = create<SchemaState>()(
               Name: columnData.name,
               Value: columnData.defaultValue,
               TableName: tableName,
-              References: [
-                {
-                  PrimaryKeyName: '',
-                  ReferencesPropertyName: '',
-                  PrimaryKeyTableName: '',
-                  ReferencesTableName: '',
-                  IsDestination: false,
-                  constraintName: '',
-                },
-              ],
+              References: [],
               IsPrimaryKey: columnData.isPrimary,
               IsForeignKey: false,
               field_name: columnData.name.replace(/\s/g, '_'),
