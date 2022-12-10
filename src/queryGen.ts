@@ -12,7 +12,7 @@
 //                PrimaryKeyTableName: string,
 //                ReferencesTableName: string,
 //                IsDestination: boolean,
-//                constrainName: string
+//                constraintName: string
 //              }
 //            ],
 //            IsPrimaryKey: boolean,
@@ -56,7 +56,7 @@ export default function queryGen(schemaObj: SchemaObject) {
       // if constraint pertains to a foreign key reference, build alterTableQ
       // access stuff on Reference to tell us what's up
       const ref = References[0]
-      // `ALTER TABLE ${TableName} ADD CONSTRAINT fk${References{constrainName}} FOREIGN KEY (${field_name}) REFERENCES ${References{ReferencesTableName}}(${References{ReferencesPropertyName}})`
+      // `ALTER TABLE ${TableName} ADD CONSTRAINT fk${References{constraintName}} FOREIGN KEY (${field_name}) REFERENCES ${References{ReferencesTableName}}(${References{ReferencesPropertyName}})`
       if (IsForeignKey === true){
         const alterTableString: string = `ALTER TABLE ${TableName} ADD CONSTRAINT ${ref['constraintName']} FOREIGN KEY (${field_name}) REFERENCES ${ref['ReferencesTableName']}(${ref['ReferencesPropertyName']}) ON UPDATE SET NULL ON DELETE SET NULL `
         alterTableQs.push(alterTableString);

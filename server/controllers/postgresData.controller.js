@@ -5,7 +5,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
 
-const parseSql = require('../../src/parse.js');
+const parseSql = require('../../src/parse');
 
 /**
  * Postgres Dump Query

@@ -5,7 +5,7 @@ interface Reference {
   PrimaryKeyTableName: string,
   ReferencesTableName: string,
   IsDestination: boolean,
-  constrainName: string
+  constraintName: string
 }
 
 interface Column {
@@ -40,7 +40,7 @@ const schema: SchemaObject = {
         PrimaryKeyTableName: "",
         ReferencesTableName: "",
         IsDestination: false,
-        constrainName: ""
+        constraintName: ""
       }],
       IsPrimaryKey: 'true',
       IsForeignKey: 'false',
@@ -58,7 +58,7 @@ const schema: SchemaObject = {
         PrimaryKeyTableName: "",
         ReferencesTableName: "",
         IsDestination: false,
-        constrainName: ""
+        constraintName: ""
       }],
       IsPrimaryKey: 'false',
       IsForeignKey: 'true',

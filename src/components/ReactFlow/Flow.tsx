@@ -21,6 +21,10 @@ export default function Flow() {
   // re-render every time schemaStore updates
   // useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
+  useEffect(() => {
+    reRender(schemaStore);
+  }, [schemaStore]);
+
   function reRender(schemaStore: SchemaStore) {
     console.log('rerendering reactflow-------------------------------------------------');
     if (!schemaStore || !Object.keys(schemaStore).length) return;
@@ -35,9 +39,9 @@ export default function Flow() {
     console.log('nodes set');
   }
 
-  useEffect(() => {
-    reRender(schemaStore);
-  }, [schemaStore]);
+  // useEffect(() => {
+  //   reRender(schemaStore);
+  // }, [schemaStore]);
 
   // renders React Flow canvas
   return (
