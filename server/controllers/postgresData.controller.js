@@ -5,7 +5,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { Pool } = require('pg');
 
-const parseSql = require('../../src/parse.js');
+const parseSql = require('../../src/parse');
 
 /**
  * Postgres Dump Query
@@ -21,14 +21,21 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   const command = [];
   const currentDateTime = new Date();
   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  const filename = path.join(
-    __dirname,
-    `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`
-  );
+  // const filename = path.join(
+  //   __dirname,
+  //   `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`
+  // );
+  // command.push(
+  //   `pg_dump -s postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${filename}`
+  // );
+  const dbDump = path.join(__dirname, `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.dump`);
+  const dbSqlText = path.join(__dirname, `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`);
   command.push(
-    `pg_dump -s postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${filename}`
+    `pg_dump -s -Fc -Z 9 postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${dbDump}`
+    ,`pg_restore -f ${dbSqlText} ${dbDump} `
   );
-  command.push(filename);
+  command.push(dbDump);
+  command.push(dbSqlText);
   return command;
 }
 
@@ -39,7 +46,11 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
  */
 const writeSchema = async (command) => {
   try {
-    const { stdout, stderr } = await exec(command[0]);
+    console.log('firing command 0')
+    await exec(command[0])
+    console.log('firing command 1')
+    const { stdout, stderr } = await exec(command[1]);
+    console.log('command 1 output', stdout)
     return stdout;
   } catch (error) {
     console.error(`error in WS: ${error.message}`);
@@ -62,9 +73,9 @@ export const getSchema = (req, res, next) => {
   const { hostname, password, port, username, database_name } = req.body;
 
   const command = postgresDumpQuery(hostname, password, port, username, database_name);
-
+  
   writeSchema(command).then((resq) => {
-    fs.readFile(command[1], 'utf8', (error, data) => {
+    fs.readFile(command[3], 'utf8', (error, data) => {
       if (error) {
         console.error(`error- in FS: ${error.message}`);
         return next({
@@ -72,7 +83,8 @@ export const getSchema = (req, res, next) => {
           err: error,
         });
       }
-
+      console.log('reading file:', 'command[3]')
+      console.log('file:', data)
       result = parseSql.default(data);
       res.locals.data = result;
       next();

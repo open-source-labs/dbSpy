@@ -6,8 +6,8 @@ import { SchemaObject } from '../../Types'
 export default function QueryModal ({closeQueryModal} : {closeQueryModal : () => void}) {
 
   // read from schemaStore, then run queryGen 
-  const { schemaStore } = useSchemaStore((state) => state);
-  const queryObj = queryGen(schemaStore as unknown as SchemaObject);
+  const { schemaStore, system } = useSchemaStore((state) => state);
+  const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
 
 
   // handleclose from FeatureTab to toggle this modal off
