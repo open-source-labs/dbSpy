@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddReference matches the snapshot 1`] = `
+<div
+  class="bg-[#fbf3de] dark:bg-slate-700"
+  id="addReference"
+>
+  <label
+    class="dark:text-[#f8f4eb]"
+  >
+    <h3>
+      Foreign Key References
+    </h3>
+  </label>
+  <br />
+  <span
+    class="form-item"
+  >
+    <p
+      class="dark:text-white"
+    >
+      Table: 
+      <strong>
+        table1
+      </strong>
+    </p>
+  </span>
+  <br />
+  <span
+    class="form-item"
+  >
+    <p
+      class="dark:text-white"
+    >
+      Column: 
+      <strong>
+        column1
+      </strong>
+    </p>
+  </span>
+  <br />
+  <span
+    class="form-item"
+  >
+    <label
+      class="dark:text-white"
+      for="db_type"
+    >
+      FK Table
+    </label>
+    <select
+      class="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+      id="ptablename"
+      name="ptablename"
+    >
+      <option>
+        ---
+      </option>
+      <option
+        value="table2"
+      >
+        table2
+      </option>
+      <option
+        value="addForeignKeySchema"
+      >
+        addForeignKeySchema
+      </option>
+    </select>
+  </span>
+  <br />
+  <span
+    class="form-item"
+  >
+    <label
+      class="dark:text-white"
+      for="db_type"
+    >
+      Constraint Name
+    </label>
+    <input
+      class="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+      id="constraintname"
+      name="constraintname"
+      type="text"
+      value="table1_fk2"
+    />
+  </span>
+  <br />
+  <span
+    class="add-ref-btn"
+  >
+    <button
+      class="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
+      id="save"
+    >
+      Save
+    </button>
+    <button
+      class="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
+      id="cancel"
+    >
+      Cancel
+    </button>
+  </span>
+  <br />
+</div>
+`;
