@@ -5,8 +5,6 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
-
-
 const displayStore = (set: (arg0: (state: any) => any) => any) => ({
   //displayStore state
   displayStore: null,
@@ -19,7 +17,7 @@ const displayStore = (set: (arg0: (state: any) => any) => any) => ({
 // displayStore = persist(displayStore);
 // const useDisplayStore = create(displayStore);
 
-const useDisplayStore = create(persist(devtools(displayStore)))
+const useDisplayStore = create(persist(devtools(displayStore)));
 
 export default useDisplayStore;
 
@@ -37,7 +35,7 @@ export default useDisplayStore;
 //                PrimaryKeyTableName: string,
 //                ReferencesTableName: string,
 //                IsDestination: boolean,
-//                constrainName: string
+//                constraintName: string
 //              }
 //            ],
 //            IsPrimaryKey: boolean,

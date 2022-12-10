@@ -1,5 +1,5 @@
 import fs from 'fs';
-import log from '../logger'
+import log from '../logger';
 import path from 'path';
 import { promisify } from 'util';
 const exec = promisify(require('child_process').exec);
@@ -24,7 +24,7 @@ const mySQLdataController = {};
 export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
-  log.info("Connecting to mySQL database...")
+  log.info('Connecting to mySQL database...');
   try {
     const result = await mysqldump({
       connection: {
@@ -34,10 +34,10 @@ export const getSchema = async (req, res, next) => {
         password: req.body.password,
         database: req.body.database_name,
         // Add SSL certification to avoid security issue.
-          ssl: {
-        key: fs.readFileSync('./.cert/key.pem').toString(),
-        cert: fs.readFileSync('./.cert/cert.pem').toString(),
-       }
+        ssl: {
+          key: fs.readFileSync('./.cert/key.pem').toString(),
+          cert: fs.readFileSync('./.cert/cert.pem').toString(),
+        },
       },
       dumpToFile: '../db_schemas',
     });
@@ -83,7 +83,7 @@ export const objSchema = (req, res, next) => {
     this.ReferencesPropertyName = null; //key name at current table
     this.ReferencesTableName = null; //current table name
     this.IsDestination = false;
-    this.constrainName = null; //constraint from SQL query
+    this.constraintName = null; //constraint from SQL query
   }
 
   //append tables and table properties to results
@@ -132,7 +132,7 @@ export const objSchema = (req, res, next) => {
         foreignKeyReferences[fKey].ReferencesTableName = table.name;
         foreignKeyReferences[fKey].PrimaryKeyName = primaryKey;
         foreignKeyReferences[fKey].PrimaryKeyTableName = primaryTable;
-        foreignKeyReferences[fKey].constrainName = constraint;
+        foreignKeyReferences[fKey].constraintName = constraint;
 
         //find additional foreign keys and references
         return foreignKeys(string);

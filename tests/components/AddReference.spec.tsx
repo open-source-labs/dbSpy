@@ -17,7 +17,7 @@ jest.mock('../../src/store/schemaStore', () => ({
           References: [{}],
         },
       },
-      addForeignKeySchema: jest.fn(),
+      addForeignKeySchema: () => null,
     },
   }),
 }));

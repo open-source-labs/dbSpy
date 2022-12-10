@@ -11,7 +11,7 @@ interface Reference {
   PrimaryKeyTableName: string;
   ReferencesTableName: string;
   IsDestination: boolean;
-  constrainName: string;
+  constraintName: string;
 }
 
 interface Column {
@@ -47,7 +47,7 @@ const schema: SchemaObject = {
           PrimaryKeyTableName: '',
           ReferencesTableName: '',
           IsDestination: false,
-          constrainName: '',
+          constraintName: '',
         },
       ],
       IsPrimaryKey: false,
@@ -127,7 +127,7 @@ describe('Query Exports', () => {
             PrimaryKeyTableName,
             ReferencesTableName,
             IsDestination,
-            constrainName,
+            constraintName,
           } = References;
           expect(columnQuery).toBeInTheDocument;
         }
