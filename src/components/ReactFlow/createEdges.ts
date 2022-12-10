@@ -26,9 +26,6 @@ export default function createEdges(schemaObject: SchemaStore) {
     for (const rowKey in table) {
       const row = table[rowKey];
       if (row.IsForeignKey) {
-        console.log('row', row)
-      };
-      if (row.IsForeignKey) {
         edges.push({
           id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
           source: row.References[0].ReferencesTableName,

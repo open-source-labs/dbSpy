@@ -194,7 +194,7 @@ function parseSQLServerForeignKey(name, currentTableModel, propertyType) {
   currentTableModel.Properties.push(propertyModel);
 }
 
-function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
+function parseMySQLForeignKey(name, currentTableModel, constraintName = null) {
   name = name.replace(/\"/g, '');
 
   let foreignKeyName = name
@@ -255,7 +255,7 @@ function parseMySQLForeignKey(name, currentTableModel, constrainName = null) {
     false
   );
 
-  foreignKeyDestinationModel.constrainName = constrainName;
+  foreignKeyDestinationModel.constraintName = constraintName;
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
 }
@@ -298,7 +298,7 @@ function processForeignKey() {
               PrimaryKeyTableName: foreignKeyModel.PrimaryKeyTableName,
               ReferencesTableName: foreignKeyModel.ReferencesTableName,
               IsDestination: true,
-              constrainName: foreignKeyModel.constrainName,
+              constraintName: foreignKeyModel.constraintName,
             });
           }
         });
@@ -344,7 +344,7 @@ function parseTableName(name) {
 
 function parseAlterTable(tableName, constraint) {
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
-  const constrainName = constraint.match(regexConstraint);
+  const constraintName = constraint.match(regexConstraint);
 
   tableName = tableName.trim();
   let currentTableModel;
@@ -362,7 +362,7 @@ function parseAlterTable(tableName, constraint) {
     parseMySQLForeignKey(
       name,
       currentTableModel,
-      constrainName !== null ? constrainName[0] : null
+      constraintName !== null ? constraintName[0] : null
     );
   } else if (constraint.indexOf('PRIMARY KEY') !== -1) {
     const name = constraint.substring(

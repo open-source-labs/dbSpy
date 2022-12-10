@@ -23,7 +23,7 @@ export interface StoreProps {
           PrimaryKeyTableName: string;
           ReferencesTableName: string;
           IsDestination: boolean;
-          constrainName: string;
+          constraintName: string;
         }
 ,
       IsPrimaryKey: boolean;

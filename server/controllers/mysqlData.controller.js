@@ -83,7 +83,7 @@ export const objSchema = (req, res, next) => {
     this.ReferencesPropertyName = null; //key name at current table
     this.ReferencesTableName = null; //current table name
     this.IsDestination = false;
-    this.constrainName = null; //constraint from SQL query
+    this.constraintName = null; //constraint from SQL query
   }
 
   //append tables and table properties to results
@@ -132,7 +132,7 @@ export const objSchema = (req, res, next) => {
         foreignKeyReferences[fKey].ReferencesTableName = table.name;
         foreignKeyReferences[fKey].PrimaryKeyName = primaryKey;
         foreignKeyReferences[fKey].PrimaryKeyTableName = primaryTable;
-        foreignKeyReferences[fKey].constrainName = constraint;
+        foreignKeyReferences[fKey].constraintName = constraint;
 
         //find additional foreign keys and references
         return foreignKeys(string);
