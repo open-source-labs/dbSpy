@@ -1,10 +1,10 @@
 {
   "name": "dbspy",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "The BEST database visualizer, baby!",
   "main": "server/server.ts",
   "engines": {
-    "npm": "6.x",
+    "npm": "8.x",
     "node": "16.x"
   },
   "scripts": {
@@ -41,6 +41,7 @@
     "html-to-image": "^1.10.8",
     "ioredis": "^5.2.3",
     "jsonwebtoken": "^8.5.1",
+    "mkcert": "^1.5.1",
     "mysql-client": "^0.3.0",
     "mysql2": "^2.3.3",
     "mysqldump": "^3.2.0",
@@ -60,6 +61,7 @@
     "redis": "^4.3.1",
     "sql-formatter": "^11.0.2",
     "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
     "zustand": "^4.1.2"
   },
   "devDependencies": {
@@ -122,7 +124,6 @@
     "supertest": "^6.3.1",
     "tailwindcss": "^3.1.8",
     "ts-loader": "^9.3.1",
-    "ts-node": "^10.9.1",
     "typescript": "^4.8.4",
     "vite": "^3.1.8",
     "vite-plugin-environment": "^1.1.3",
