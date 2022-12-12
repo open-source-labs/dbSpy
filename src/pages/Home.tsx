@@ -19,7 +19,7 @@ export default function Home() {
   /* Retrieve user data from server*/
   useEffect(() => {
     const getUserData = async () => {
-        const response = await axios(`http://localhost:8080/api/me`, {
+        const response = await axios(`/api/me`, {
           withCredentials: true
         })
       // console.log(user);

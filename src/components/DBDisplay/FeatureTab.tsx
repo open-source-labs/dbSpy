@@ -143,8 +143,8 @@ export default function FeatureTab(props: any) {
 
   // Clears session + reset store
   const signoutSession = async () => {
-    await fetch(`http://localhost:8080/api/logout`)
-    window.open('http://localhost:8080/', '_self')
+    await fetch(`/api/logout`)
+    window.open('/', '_self')
     setSchemaStore({});
     setUser(null);
   }
