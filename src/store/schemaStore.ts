@@ -267,7 +267,9 @@ const useSchemaStore = create<SchemaState>()(
             get()._checkNameValidity(name);
             // Add to name register and throw error if duplicate
             if (nameRegister[name])
-              throw new Error(`Table must not contain duplicate names (${name})`);
+              throw new Error(
+                `Table must not contain duplicate column names (cause: ${name})`
+              );
             else nameRegister[name] = true;
           }
         },
