@@ -37,7 +37,7 @@ export type SchemaState = {
   _checkNameValidity: (...names: string[]) => void;
   _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
   _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
-  _checkColumnDataDuplicates: (ColumnDataArr: ColumnData[]) => void;
+  _checkColumnNamesAndDupes: (ColumnDataArr: ColumnData[]) => void;
   _addColumns: (
     newStore: SchemaStore,
     tableName: string,
@@ -239,16 +239,13 @@ const useSchemaStore = create<SchemaState>()(
               );
 
             // Check name for duplicates
-            get()._checkColumnDataDuplicates(columnDataArr);
+            get()._checkColumnNamesAndDupes(columnDataArr);
           }
         },
         _checkColumnValidity(tableName, columnDataArr) {
           const currentTable = get().schemaStore[tableName];
 
           for (const column of columnDataArr) {
-            // Check column name syntax
-            get()._checkNameValidity(column.name);
-
             // Check against current state
             console.log({ currentTable });
             if (Object.hasOwn(currentTable, column.name))
@@ -258,9 +255,9 @@ const useSchemaStore = create<SchemaState>()(
           }
 
           // Check data for duplicate names
-          get()._checkColumnDataDuplicates(columnDataArr);
+          get()._checkColumnNamesAndDupes(columnDataArr);
         },
-        _checkColumnDataDuplicates(columnDataArr) {
+        _checkColumnNamesAndDupes(columnDataArr) {
           const nameRegister: { [name: string]: boolean } = {};
           for (const { name } of columnDataArr) {
             // Check column name syntax
