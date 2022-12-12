@@ -4,6 +4,7 @@ import { SchemaState, SchemaStore } from '../../src/store/schemaStore';
 import { ColumnData, Reference } from '@/Types';
 
 describe('unit testing schemaStore', () => {
+  // Following tests are tightly coupled because the Zustand store does not reset between tests
   let result: any;
   beforeEach(() => {
     result = renderHook(useSchemaStore).result;
@@ -156,9 +157,15 @@ describe('unit testing schemaStore', () => {
       );
     });
 
-    it.todo(
-      'throws error for table names not containing only letters, numbers, and underscores'
-    );
+    it('throws error for table names not containing only letters, numbers, and underscores', () => {
+      const { addTableSchema } = result.current as SchemaState;
+      expect(() => addTableSchema('name with spaces', placeholderCol)).toThrowError(
+        'Name must only contain letters, numbers, and underscores (cause: "name with spaces")'
+      );
+      expect(() => addTableSchema('name-with-symbols', placeholderCol)).toThrowError(
+        'Name must only contain letters, numbers, and underscores (cause: "name-with-symbols")'
+      );
+    });
 
     it.todo('throws error for table names already in schemaStore');
 
