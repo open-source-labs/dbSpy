@@ -161,7 +161,6 @@ const useSchemaStore = create<SchemaState>()(
         deleteColumnSchema: (tableRef, rowRef) =>
           set((state) => {
             const newState = JSON.parse(JSON.stringify(state));
-            console.log(newState.schemaStore, tableRef, rowRef);
             delete newState.schemaStore[tableRef][rowRef];
             get()._addHistory(newState);
             return newState;
@@ -169,11 +168,6 @@ const useSchemaStore = create<SchemaState>()(
         undoHandler: () => {
           set((state) => {
             const newState = { ...state };
-            console.log(
-              'in undoHandler... here`s history: ',
-              newState.history,
-              newState.historyCounter
-            );
             if (newState.historyCounter === 1) newState.historyCounter -= 1;
             if (newState.history.length === 0 || newState.historyCounter === 0) {
               newState.schemaStore = {};
@@ -187,11 +181,6 @@ const useSchemaStore = create<SchemaState>()(
         redoHandler: () => {
           set((state) => {
             const newState = { ...state };
-            console.log(
-              'in redoHandler... here`s history: ',
-              newState.history,
-              newState.historyCounter
-            );
             if (newState.historyCounter >= newState.history.length - 1) return newState;
             newState.historyCounter += 1;
             newState.schemaStore = newState.history[newState.historyCounter];
@@ -247,7 +236,6 @@ const useSchemaStore = create<SchemaState>()(
 
           for (const column of columnDataArr) {
             // Check against current state
-            console.log({ currentTable });
             if (Object.hasOwn(currentTable, column.name))
               throw new Error(
                 `Table "${tableName}" already contains column named "${column.name}"`
