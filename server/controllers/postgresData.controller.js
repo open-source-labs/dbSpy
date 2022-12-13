@@ -3,8 +3,6 @@ import log from '../logger/index';
 const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { Pool } = require('pg');
-
 const parseSql = require('../../src/parse');
 
 /**
@@ -21,13 +19,6 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   const command = [];
   const currentDateTime = new Date();
   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  // const filename = path.join(
-  //   __dirname,
-  //   `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`
-  // );
-  // command.push(
-  //   `pg_dump -s postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${filename}`
-  // );
   const dbDump = path.join(__dirname, `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.dump`);
   const dbSqlText = path.join(__dirname, `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`);
   command.push(
@@ -46,11 +37,8 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
  */
 const writeSchema = async (command) => {
   try {
-    console.log('firing command 0')
     await exec(command[0])
-    console.log('firing command 1')
     const { stdout, stderr } = await exec(command[1]);
-    console.log('command 1 output', stdout)
     return stdout;
   } catch (error) {
     console.error(`error in WS: ${error.message}`);
@@ -59,11 +47,7 @@ const writeSchema = async (command) => {
 };
 
 /**
- * getSchema
- * Option 1 - Production:
  * Take user input, request db_dump from database, parse resulting db dump, pass parsed data to next middleware.
- *
- * Option2 - Dev: Use .sql file provided in db_schema and parse, pass parsed data to next middleware.
  */
 export const getSchema = (req, res, next) => {
   log.info('Server received Postgres database URI.');
@@ -90,85 +74,4 @@ export const getSchema = (req, res, next) => {
       next();
     });
   });
-};
-
-
-export const handleQueries = async (req, res, next) => {
-  /* Assumption, being passed an array of queries in req.body
-  grab PG_URI from user when they connect to DB
-
-  Loop through array of queries and add them to a query string, if return query, add their outputs to the query string instead
-
-  Execute the resulting query string as a transaction */
-
-  /**
-   * Handshake block
-   */
-  // Production values
-  const { uri, queries } = req.body;
-  const PG_URI = uri;
-
-  /**
-   * Function definition and initialization block
-   */
-  const pool = new Pool({
-    connectionString: PG_URI,
-  });
-
-  const execQueries = (text, params, callback) => {
-    return pool.query(text, params, callback);
-  };
-
-  const transactionQuery = async (queryString) => {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      for (let i = 0; i < arrQS.length - 1; i++) {
-        await client.query(arrQS[i]);
-      }
-      await client.query('COMMIT');
-    } catch (err) {
-      console.log({ err }, '<err\n\n');
-      console.log('--Invalid query detected in handleQueries\n--Transaction declined');
-      await client.query('ROLLBACK');
-      throw err;
-    } finally {
-      client.release();
-    }
-  };
-
-  /**
-   * Build out query string
-   * Iterates through queries and conditionally adds either the query or the output of the query to queryStr
-   */
-  let queryStr = '';
-  for (let i = 0; i < queries.length; i++) {
-    if (queries[i].type === 'returnQuery') {
-      // execute & whatever returns, we concat to queryStr
-      const newQuery = await execQueries(queries[i].query);
-      queryStr = queryStr.concat(newQuery);
-    } else queryStr = queryStr.concat(queries[i].query);
-  }
-
-  /**
-   * Transaction implementation
-   * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do. CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
-   */
-  res.locals.success = false;
-
-  const arrQS = queryStr.split(';');
-  for (let i = 0; i < arrQS.length; i++) {
-    arrQS[i] += ';';
-  }
-  transactionQuery(arrQS)
-    .then(() => {
-      res.locals.success = true;
-      return next();
-    })
-    .catch((err) => {
-      next({
-        log: 'Error in handleQueries middleware',
-        message: { err: err },
-      });
-    });
 };
