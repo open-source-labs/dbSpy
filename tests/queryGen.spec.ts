@@ -30,8 +30,8 @@ import { SchemaObject, Table,  } from "@/Types";
 // }
 
 const schema: SchemaObject = {
-  'testTable': {
-    'testTable': {
+  testTable: {
+    testTable: {
       Name: 'testColumn',
       Value: '10',
       TableName: 'testTable',
@@ -49,7 +49,7 @@ const schema: SchemaObject = {
       data_type: 'BIGINT',
       additional_constraints: ""
     },
-    'testTable2': {
+    testTable2: {
       Name: 'testColumn2',
       Value: '11',
       TableName: 'testTable2',
@@ -76,14 +76,14 @@ describe('QueryGen...', () => {
   console.log(output);
   it('should output an object of arrays containing a create table query', () => {
     expect(output.create[0]).toContain('CREATE TABLE "public"."testTable"');
-  })
+  });
   it('should output column details create table queries', () => {
     expect(output.create[0]).toContain('"uhhh" BIGINT');
   })
   it('should add PRIMARY KEY constraint', () => {
     expect(output.create[0]).toContain('PRIMARY KEY');
-  })
+  });
   it('should add alter table query when foreign key exists', () => {
     expect(output.alter[0]).toContain('ALTER TABLE');
-  })
-})
+  });
+});

@@ -31,12 +31,14 @@ export type SchemaState = {
   undoHandler: () => void;
   redoHandler: () => void;
   addForeignKeySchema: (referenceData: Reference) => void;
+  setSystem: (system: 'PostgreSQL' | 'MySQL') => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
   _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
   _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
-  _checkColumnDataDuplicates: (ColumnDataArr: ColumnData[]) => void;
+  _checkColumnNamesAndDupes: (ColumnDataArr: ColumnData[]) => void;
+  _countPrimaries: (ColumnDataArr: ColumnData[]) => number;
   _addColumns: (
     newStore: SchemaStore,
     tableName: string,
@@ -62,6 +64,7 @@ const useSchemaStore = create<SchemaState>()(
         system: 'PostgreSQL',
         history: [{}],
         historyCounter: 0,
+        setSystem: (system) => set((state) => ({ ...state, system })),
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
         _addHistory: (newState) => {
           newState.historyCounter += 1;
@@ -115,29 +118,50 @@ const useSchemaStore = create<SchemaState>()(
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION
-            const currentTable: keyof SchemaStore = referenceData.ReferencesTableName;
-            const currentColumn: string = referenceData.ReferencesPropertyName;
+            const originTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const originColumn: string = referenceData.ReferencesPropertyName;
+            const destinationTable: keyof SchemaStore = referenceData.PrimaryKeyTableName;
+            const destinationColumn: string = referenceData.PrimaryKeyName;
+
             const newState = {
               ...state,
               schemaStore: {
                 ...state.schemaStore,
-                [currentTable]: {
-                  ...state.schemaStore[currentTable],
-                  [currentColumn]: {
-                    ...state.schemaStore[currentTable][currentColumn],
-                    References: [referenceData],
+                [originTable]: {
+                  ...state.schemaStore[originTable],
+                  [originColumn]: {
+                    ...state.schemaStore[originTable][originColumn],
+                    References: [
+                      {
+                        ...referenceData,
+                        IsDestination: false,
+                        PrimaryKeyName: originColumn,
+                      },
+                    ],
                     IsForeignKey: true,
+                  },
+                },
+                [destinationTable]: {
+                  ...state.schemaStore[destinationTable],
+                  [destinationColumn]: {
+                    ...state.schemaStore[destinationTable][destinationColumn],
+                    References: [
+                      {
+                        ...referenceData,
+                        IsDestination: true,
+                      },
+                    ],
                   },
                 },
               },
             };
+            get()._addHistory(newState);
             return newState;
           });
         },
         deleteColumnSchema: (tableRef, rowRef) =>
           set((state) => {
             const newState = JSON.parse(JSON.stringify(state));
-            console.log(newState.schemaStore, tableRef, rowRef);
             delete newState.schemaStore[tableRef][rowRef];
             get()._addHistory(newState);
             return newState;
@@ -145,11 +169,6 @@ const useSchemaStore = create<SchemaState>()(
         undoHandler: () => {
           set((state) => {
             const newState = { ...state };
-            console.log(
-              'in undoHandler... here`s history: ',
-              newState.history,
-              newState.historyCounter
-            );
             if (newState.historyCounter === 1) newState.historyCounter -= 1;
             if (newState.history.length === 0 || newState.historyCounter === 0) {
               newState.schemaStore = {};
@@ -163,11 +182,6 @@ const useSchemaStore = create<SchemaState>()(
         redoHandler: () => {
           set((state) => {
             const newState = { ...state };
-            console.log(
-              'in redoHandler... here`s history: ',
-              newState.history,
-              newState.historyCounter
-            );
             if (newState.historyCounter >= newState.history.length - 1) return newState;
             newState.historyCounter += 1;
             newState.schemaStore = newState.history[newState.historyCounter];
@@ -179,6 +193,67 @@ const useSchemaStore = create<SchemaState>()(
 
         // --------------------- Validity Check Helper Functions -------------------------------------
         // validation functions should be run first before adding or editing schema data
+        _checkTableValidity(tableName, columnDataArr) {
+          // Check table name syntax
+          const checkNameValidity = get()._checkNameValidity;
+          checkNameValidity(tableName);
+
+          // Check against current state
+          if (Object.hasOwn(get().schemaStore, tableName))
+            throw new Error(`Schema already contains table named "${tableName}"`);
+
+          // If columnDataArr is being passed as arg, that means the table is being initialized
+          if (columnDataArr) {
+            const pkCount = get()._countPrimaries(columnDataArr);
+            if (pkCount !== 1)
+              throw new Error(
+                `Table must have one primary key (currently has ${pkCount})`
+              );
+
+            // Check name for duplicates
+            get()._checkColumnNamesAndDupes(columnDataArr);
+          }
+        },
+        _checkColumnValidity(tableName, columnDataArr) {
+          const currentTable = get().schemaStore[tableName];
+
+          for (const column of columnDataArr) {
+            // Check for duplicates against current state
+            if (Object.hasOwn(currentTable, column.name))
+              throw new Error(
+                `Table "${tableName}" already contains column named "${column.name}"`
+              );
+          }
+
+          let existingPks: number = 0;
+          for (const colKey in currentTable) {
+            if (currentTable[colKey].IsPrimaryKey) existingPks++;
+          }
+          const newPks = get()._countPrimaries(columnDataArr);
+          if (existingPks + newPks !== 1)
+            throw new Error(
+              `Table must have one primary key (currently has ${existingPks + newPks})`
+            );
+
+          // Check data for duplicate names
+          get()._checkColumnNamesAndDupes(columnDataArr);
+        },
+        _countPrimaries(columnDataArr) {
+          return columnDataArr.filter((column) => column.isPrimary).length;
+        },
+        _checkColumnNamesAndDupes(columnDataArr) {
+          const nameRegister: { [name: string]: boolean } = {};
+          for (const { name } of columnDataArr) {
+            // Check column name syntax
+            get()._checkNameValidity(name);
+            // Add to name register and throw error if duplicate
+            if (nameRegister[name])
+              throw new Error(
+                `Table must not contain duplicate column names (cause: "${name}")`
+              );
+            else nameRegister[name] = true;
+          }
+        },
         _checkNameValidity(name) {
           const system = get().system;
           const restrictedNames =
@@ -196,73 +271,13 @@ const useSchemaStore = create<SchemaState>()(
               `Name must only contain letters, numbers, and underscores (cause: "${name}")`
             );
         },
-        _checkTableValidity(tableName, columnDataArr) {
-          // Check table name syntax
-          const checkNameValidity = get()._checkNameValidity;
-          checkNameValidity(tableName);
-
-          // Check against current state
-          if (Object.hasOwn(get().schemaStore, tableName))
-            throw new Error(`Schema already contains table named "${tableName}"`);
-
-          // If columnDataArr is being passed as arg, that means the table is being initialized
-          if (columnDataArr) {
-            // Check table has *one* primary key
-            const pkCount = columnDataArr.filter((column) => column.isPrimary).length;
-            if (pkCount !== 1)
-              throw new Error(
-                `Table must have one primary key (currently has ${pkCount})`
-              );
-
-            // Check name for duplicates
-            get()._checkColumnDataDuplicates(columnDataArr);
-          }
-        },
-        _checkColumnValidity(tableName, columnDataArr) {
-          const currentTable = get().schemaStore[tableName];
-
-          for (const column of columnDataArr) {
-            // Check column name syntax
-            get()._checkNameValidity(column.name);
-
-            // Check against current state
-            console.log({ currentTable });
-            if (Object.hasOwn(currentTable, column.name))
-              throw new Error(
-                `Table "${tableName}" already contains column named "${column.name}"`
-              );
-          }
-
-          // Check data for duplicate names
-          get()._checkColumnDataDuplicates(columnDataArr);
-        },
-        _checkColumnDataDuplicates(columnDataArr) {
-          const nameRegister: { [name: string]: boolean } = {};
-          for (const { name } of columnDataArr) {
-            // Check column name syntax
-            get()._checkNameValidity(name);
-            // Add to name register and throw error if duplicate
-            if (nameRegister[name])
-              throw new Error(`Table must not contain duplicate names (${name})`);
-            else nameRegister[name] = true;
-          }
-        },
         _addColumns: (newStore, tableName, columnDataArr) => {
           for (const columnData of columnDataArr) {
             const newCol: ColumnSchema = {
               Name: columnData.name,
               Value: columnData.defaultValue,
               TableName: tableName,
-              References: [
-                {
-                  PrimaryKeyName: '',
-                  ReferencesPropertyName: '',
-                  PrimaryKeyTableName: '',
-                  ReferencesTableName: '',
-                  IsDestination: false,
-                  constraintName: '',
-                },
-              ],
+              References: [],
               IsPrimaryKey: columnData.isPrimary,
               IsForeignKey: false,
               field_name: columnData.name.replace(/\s/g, '_'),
