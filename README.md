@@ -28,7 +28,7 @@
 
 3. **Database File Upload:** Upload a database's SQL file
 
-4. **Improved ER Diagrams:** Visualize the entity relationship diagram of a database
+4. **Improved ER Diagrams:** Visualize the entity relationship diagram of a database with dynamic handle placement 
 
 5. **Visualizing Individual Table Connections** Relationships of individual tables are now easily identified when clicking on a table.
 
