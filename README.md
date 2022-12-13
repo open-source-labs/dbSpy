@@ -28,36 +28,34 @@
 
 3. **Database File Upload:** Upload a database's SQL file
 
-4. **ER Diagrams:** Visualize the entity relationship diagram of a database
+4. **Improved ER Diagrams:** Visualize the entity relationship diagram of a database with dynamic handle placement 
 
 5. **Visualizing Individual Table Connections** Relationships of individual tables are now easily identified when clicking on a table.
 
 6. **Schema Modification:** Modify a database's schema
 
-7. **Database Building:** Create a new database from scratch using entity relationship diagrams
+7. **Database Building with Restrictions:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
 
 8. **Screenshot:** Take a screenshot of the canvas with all your tables
 
-9. **Dark Mode** Additional visual setting to provide a more comfortable viewing experience in low-light environements
+9. **Database UNDO/REDO:** Provides a history of edits for easier backtracking (undo/redo)
+
+10. **Query Generator:** Query generator generates executable SQL queries 
+
+11. **Login and Logoff:** Login options with user and password or via google OAuth 
+
+12. **Dark Mode** Additional visual setting to provide a more comfortable viewing experience in low-light environements
 ![dbSpyTheme](https://user-images.githubusercontent.com/101940529/198836752-9727c0b4-4a8f-459b-be39-81922be15fd3.gif)
 
 ## Future Enhancements
 
-1. **SQL Query Generator:** Generate an executable SQL query with every modification to your schema
-
-2. **Time Travel:** Provides a history of edits for easier backtracking
-
-3. **Exporting Queries:** Allows updated changes of queries to be saved as a SQL file for client imports to their database
-
-4. **Log Modeling:** Provides a tool for admins to pull, view, modify, and export log settings from an existing database
-
-5. **Database Integrity Assurance** Database Logic Check is performed as the client edits the database to ensure the integrity of the database
+1. **Log Modeling:** Provides a tool for admins to pull, view, modify, and export log settings from an existing database
 
 ---
 
 ### Use Cases
 
-- Connecting to an existing database
+- Connecting to an existing remote PostgreSQL and MySQL database
   - Renders an ER diagram of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can execute a transaction containing the changes, such that they are reflected in the existing database.
 - Uploading your database's SQL file
   - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
@@ -72,6 +70,7 @@
 
 - Fork and clone this repo
 - Add a .env file to the root directory
+- Add a db_schemas folder in server directory
 - Go to the Google Cloud Platform Console
 - Set up OAuth 2.0 credentials as laid out in <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a>
 - Populate the .env file with the newly created code below:
@@ -112,6 +111,18 @@ $ npm run dev
 - Make changes with comments
 - Add appropriate tests and ensure they pass
 - Commit your changes and make a pull request
+
+- To connect with the SQL database, we must create and configure SSL certificates. 
+Step: 1
+Install mkcert tool - macOS; you can see the mkcert repo for details
+npm install -g mkcert
+
+Step: 2
+At the project root directory run the following command (We wrote a script for you so you can simply run cert to run the following commend)
+mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'
+
+- Run tests
+
 
 ---
 
@@ -213,6 +224,10 @@ Navigating the canvas
 - Kevin Wang • [LinkedIn](https://www.linkedin.com/in/kevin-w-b841b13/) • [Github](https://github.com/kwang929)
 - Kris Magat • [LinkedIn](https://www.linkedin.com/in/kmag/) • [Github](https://github.com/KrisMagat)
 - Santiago Gil Maya • [LinkedIn](https://www.linkedin.com/in/santiago-gil-929721121/) • [Github](https://github.com/santiago-gil)
+- Alexander Tu  • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
+- Michael Costello  • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
+- Steven Geiger • [LinkedIn](https://www.linkedin.com/in/sgeiger9/) • [Github](https://github.com/geistnine)
+- Yufa Li • [LinkedIn](https://www.linkedin.com/in/yufa-li/) • [Github](https://github.com/01001101CK)
 
 ---
 
