@@ -13,20 +13,17 @@ import connectRedis from 'connect-redis'
 import dotenv from 'dotenv'
 dotenv.config();
 import Redis from 'ioredis'
-import cors from 'cors'
 import { getCurrentUser } from '../service/session.service'
+import path from 'path';
 
-// TODO: DEV_CLIENT_ENDPOINT doesn't exist etc.
+
 const client_url = process.env.NODE_ENV === 'development' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
-
 
 const routes = async (app: Express) => {
   // setup UpStash client and Redis store 
   const RedisStore = connectRedis(session);
 
   const client = new Redis(`rediss://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}:${process.env.REDIS_PORT}`)
-
-  app.use(cors())
 
   // set session cookie
   app.use(session({
@@ -68,6 +65,10 @@ const routes = async (app: Express) => {
       }
     });
   })
+
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/assets/index.html'));
+  });
 
   // Global Error Handler
   app.use((err: ErrorEvent, req: Request, res: Response, next: NextFunction) => {

@@ -1,5 +1,8 @@
-import pino from 'pino'
-import dayjs from 'dayjs'
+/**
+ * Creates colored alert via log.info()
+ **/
+import pino from 'pino';
+import dayjs from 'dayjs';
 
 const transport = pino.transport({
     target: 'pino-pretty',
@@ -7,10 +10,8 @@ const transport = pino.transport({
 })
 
 const log = pino({
-    base: {
-        pid: false
-    },
+    base: { pid: false },
     timestamp: () => `,"time":"${dayjs().format()}"`
 }, transport);
 
-export default log
+export default log;

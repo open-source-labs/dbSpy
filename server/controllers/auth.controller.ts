@@ -48,11 +48,9 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
         // expires in 1 day
         const obj = { user: user[0], session: 'session' }
 
-        const accessToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '1d' })
         // create a session
         // refresh token expires in 1 day
-        // const refreshToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '5h' })
-
+        const accessToken = jwt.sign(obj, process.env.TOKEN_KEY as string, { algorithm: 'HS256', expiresIn: '1d' })
 
         req.session.user = accessToken;
         

@@ -34,15 +34,3 @@ export interface StoreProps {
     }
 }
 }
-
-//logStore type
-export interface logProps {
-  []: {
-    Name: string;
-    Setting: string;
-    Source: string;
-    SourceFile: string;
-    Context: string;
-  }
-}
-

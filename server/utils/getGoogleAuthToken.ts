@@ -4,13 +4,6 @@ import qs from 'qs'
 import log from '../logger/index'
 dotenv.config()
 
-interface GoogleTokenData {
-    access_token: string,
-    expires_in: Number,
-    refresh_token: string,
-    scope: string,
-}
-
 export const getGoogleAuthToken: any = async ({ code }: { code: string }) => {
     const url = 'https://oauth2.googleapis.com/token'
 

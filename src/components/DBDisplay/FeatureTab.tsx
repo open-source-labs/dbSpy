@@ -143,20 +143,11 @@ export default function FeatureTab(props: any) {
 
   // Clears session + reset store
   const signoutSession = async () => {
-    await fetch(`http://localhost:8080/api/logout`)
-    window.open('http://localhost:8080/', '_self')
+    await fetch(`/api/logout`)
+    window.open('/', '_self')
     setSchemaStore({});
     setUser(null);
   }
-
-  // Undo/Redo functionality
-  const undoClick = () => { // commented logic for undoing at history[0] because there's a button for clearing canvas anyway
-    // if (historyCounter <= 1){
-    //   clearCanvasTables();
-    // }
-    undoHandler(); // from schemaStore
-  }
-
 
   // END: HELPER FUNCTIONS
 
@@ -317,7 +308,7 @@ export default function FeatureTab(props: any) {
               {/* TODO: Add UNDO & REDO feature */}
               <li>
                 <a
-                  onClick={undoClick}
+                  onClick={undoHandler}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
