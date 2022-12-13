@@ -103,7 +103,7 @@ $ npm run dev
 
 - To connect with the SQL database, we must create and configure SSL certificates. 
 
-  1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
+1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
 ```bash
 npm install -g mkcert
 ```
