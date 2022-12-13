@@ -38,6 +38,7 @@ export type SchemaState = {
   _checkTableValidity: (tableName: string, columnDataArr?: ColumnData[]) => void;
   _checkColumnValidity: (tableName: string, columnDataArr: ColumnData[]) => void;
   _checkColumnNamesAndDupes: (ColumnDataArr: ColumnData[]) => void;
+  _countPrimaries: (ColumnDataArr: ColumnData[]) => number;
   _addColumns: (
     newStore: SchemaStore,
     tableName: string,
@@ -192,6 +193,64 @@ const useSchemaStore = create<SchemaState>()(
 
         // --------------------- Validity Check Helper Functions -------------------------------------
         // validation functions should be run first before adding or editing schema data
+        _checkTableValidity(tableName, columnDataArr) {
+          // Check table name syntax
+          const checkNameValidity = get()._checkNameValidity;
+          checkNameValidity(tableName);
+
+          // Check against current state
+          if (Object.hasOwn(get().schemaStore, tableName))
+            throw new Error(`Schema already contains table named "${tableName}"`);
+
+          // If columnDataArr is being passed as arg, that means the table is being initialized
+          if (columnDataArr) {
+            const pkCount = get()._countPrimaries(columnDataArr);
+            if (pkCount > 1)
+              throw new Error(
+                `Table must have one primary key (currently has ${pkCount})`
+              );
+
+            // Check name for duplicates
+            get()._checkColumnNamesAndDupes(columnDataArr);
+          }
+        },
+        _checkColumnValidity(tableName, columnDataArr) {
+          const currentTable = get().schemaStore[tableName];
+
+          let existingPks: number = 0;
+          for (const column of columnDataArr) {
+            // Check for duplicates against current state
+            if (Object.hasOwn(currentTable, column.name))
+              throw new Error(
+                `Table "${tableName}" already contains column named "${column.name}"`
+              );
+            if (column.isPrimary) existingPks++;
+          }
+          const newPks = get()._countPrimaries(columnDataArr);
+          if (existingPks + newPks > 1)
+            throw new Error(
+              `Table must have one primary key (currently has ${existingPks + newPks})`
+            );
+
+          // Check data for duplicate names
+          get()._checkColumnNamesAndDupes(columnDataArr);
+        },
+        _countPrimaries(columnDataArr) {
+          return columnDataArr.filter((column) => column.isPrimary).length;
+        },
+        _checkColumnNamesAndDupes(columnDataArr) {
+          const nameRegister: { [name: string]: boolean } = {};
+          for (const { name } of columnDataArr) {
+            // Check column name syntax
+            get()._checkNameValidity(name);
+            // Add to name register and throw error if duplicate
+            if (nameRegister[name])
+              throw new Error(
+                `Table must not contain duplicate column names (cause: "${name}")`
+              );
+            else nameRegister[name] = true;
+          }
+        },
         _checkNameValidity(name) {
           const system = get().system;
           const restrictedNames =
@@ -208,55 +267,6 @@ const useSchemaStore = create<SchemaState>()(
             throw new Error(
               `Name must only contain letters, numbers, and underscores (cause: "${name}")`
             );
-        },
-        _checkTableValidity(tableName, columnDataArr) {
-          // Check table name syntax
-          const checkNameValidity = get()._checkNameValidity;
-          checkNameValidity(tableName);
-
-          // Check against current state
-          if (Object.hasOwn(get().schemaStore, tableName))
-            throw new Error(`Schema already contains table named "${tableName}"`);
-
-          // If columnDataArr is being passed as arg, that means the table is being initialized
-          if (columnDataArr) {
-            // Check table has *one* primary key
-            const pkCount = columnDataArr.filter((column) => column.isPrimary).length;
-            if (pkCount !== 1)
-              throw new Error(
-                `Table must have one primary key (currently has ${pkCount})`
-              );
-
-            // Check name for duplicates
-            get()._checkColumnNamesAndDupes(columnDataArr);
-          }
-        },
-        _checkColumnValidity(tableName, columnDataArr) {
-          const currentTable = get().schemaStore[tableName];
-
-          for (const column of columnDataArr) {
-            // Check against current state
-            if (Object.hasOwn(currentTable, column.name))
-              throw new Error(
-                `Table "${tableName}" already contains column named "${column.name}"`
-              );
-          }
-
-          // Check data for duplicate names
-          get()._checkColumnNamesAndDupes(columnDataArr);
-        },
-        _checkColumnNamesAndDupes(columnDataArr) {
-          const nameRegister: { [name: string]: boolean } = {};
-          for (const { name } of columnDataArr) {
-            // Check column name syntax
-            get()._checkNameValidity(name);
-            // Add to name register and throw error if duplicate
-            if (nameRegister[name])
-              throw new Error(
-                `Table must not contain duplicate column names (cause: "${name}")`
-              );
-            else nameRegister[name] = true;
-          }
         },
         _addColumns: (newStore, tableName, columnDataArr) => {
           for (const columnData of columnDataArr) {
