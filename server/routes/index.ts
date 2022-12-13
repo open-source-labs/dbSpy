@@ -65,6 +65,10 @@ const routes = async (app: Express) => {
     });
   })
 
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/assets/index.html'));
+  });
+
   // Global Error Handler
   app.use((err: ErrorEvent, req: Request, res: Response, next: NextFunction) => {
     const defaultErr = {
