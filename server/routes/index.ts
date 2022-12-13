@@ -14,6 +14,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 import Redis from 'ioredis'
 import { getCurrentUser } from '../service/session.service'
+import path from 'path';
 
 
 const client_url = process.env.NODE_ENV === 'development' ? process.env.DEV_CLIENT_ENDPOINT : process.env.CLIENT_ENDPOINT
