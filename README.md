@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://makeapullrequest.com">![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)</a>
-<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-1.0.1-blue)</a>
+<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-4.0.0-blue)</a>
 ![GitHub Stars](https://img.shields.io/github/stars/oslabs-beta/JAKT?color=%23fb7182)
 ![MIT License](https://img.shields.io/badge/license-MIT-yellow)
 
@@ -9,49 +9,12 @@
 
 <div align="center">
   
-![logo2x](https://user-images.githubusercontent.com/101940529/198836631-31a657f7-feaa-4247-8abc-cedb86540e21.png)
+![logo](https://user-images.githubusercontent.com/101940529/198836631-31a657f7-feaa-4247-8abc-cedb86540e21.png)
 
 </div>
 
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
-<p>dbSpy is an open-source data modeling tool to facilitate relational database development.</p>
-
-<!-- dbSpy is an open-source visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration -->
-
----
-
-### Key Features
-
-1. **Database Connection:** Connect to a SQL database
-
-2. **Compatible SQL Database:** Current dbSpy is compatible with PostgreSQL and MySQL database
-
-3. **Database File Upload:** Upload a database's SQL file
-
-4. **Improved ER Diagrams:** Visualize the entity relationship diagram of a database with dynamic handle placement 
-
-5. **Visualizing Individual Table Connections** Relationships of individual tables are now easily identified when clicking on a table.
-
-6. **Schema Modification:** Modify a database's schema
-
-7. **Database Building with Restrictions:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
-
-8. **Screenshot:** Take a screenshot of the canvas with all your tables
-
-9. **Database UNDO/REDO:** Provides a history of edits for easier backtracking (undo/redo)
-
-10. **Query Generator:** Query generator generates executable SQL queries 
-
-11. **Login and Logoff:** Login options with user and password or via google OAuth 
-
-12. **Dark Mode** Additional visual setting to provide a more comfortable viewing experience in low-light environements
-![dbSpyTheme](https://user-images.githubusercontent.com/101940529/198836752-9727c0b4-4a8f-459b-be39-81922be15fd3.gif)
-
-## Future Enhancements
-
-1. **Log Modeling:** Provides a tool for admins to pull, view, modify, and export log settings from an existing database
-
----
+<p align="center">An open-source data modeling tool to facilitate relational database development</p>
 
 ### Use Cases
 
@@ -59,10 +22,36 @@
   - Renders an ER diagram of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can execute a transaction containing the changes, such that they are reflected in the existing database.
 - Uploading your database's SQL file
   - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
-- Seamlessly visualize relational database
+- Seamlessly visualize relational databases
   - After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
-- Starting an ER diagram from scratch
+- Creating a database + ER diagram from scratch
   - Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
+
+---
+
+### Key Features
+
+1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
+
+2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement 
+
+3. **Table Relationship Visuals** Relationships of individual tables are easily identified when clicking on a table.
+
+4. **Schema Modification:** Easily modify a database's schema through a simple UI
+
+5. **Guided Database Building:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
+
+6. **Database Undo/Redo:** Provides a history of edits for easier backtracking
+
+7. **Query Generator:** Query generator generates executable SQL queries
+
+8. **User Sessions:** Sign up/Log in securely with either Google OAuth or JWTs/Bcrypt
+
+9. **Save/Load:** Store and reload recent database sessions through your user account
+
+10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
+
+![dbSpyTheme](https://user-images.githubusercontent.com/101940529/198836752-9727c0b4-4a8f-459b-be39-81922be15fd3.gif)
 
 ---
 
@@ -91,13 +80,13 @@ ENVIRONMENT = "development"
 TOKEN_KEY = [any string]
 ```
 
-- Install the dependencies:
+- Run the following below:
 
 ```bash
 $ npm install
 ```
 
-- Execute the following command to populate your mySql database with the user table.
+- Execute the following command to populate your mySql database with a users table:
 ```bash
 $ npm run seed
 ```
@@ -108,32 +97,27 @@ $ npm run seed
 $ npm run dev
 ```
 
-- Make changes with comments
-- Add appropriate tests and ensure they pass
-- Commit your changes and make a pull request
+---
+
+### Connecting with remote MySQL
 
 - To connect with the SQL database, we must create and configure SSL certificates. 
-Step: 1
-Install mkcert tool - macOS; you can see the mkcert repo for details
+
+  1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
+```bash
 npm install -g mkcert
-
-Step: 2
-At the project root directory run the following command (We wrote a script for you so you can simply run cert to run the following commend)
-mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'
-
-- Run tests
-
+```
+  2. Run the following script
+```bash
+npm run cert
+```
 
 ---
 
-### How to Use
+# How to Use
 
-How To Start
+### Connecting to an existing database
 
-1. Sign up or login with Google Auth to begin.
-2. You will be redirected to the display page where you can connect, upload, or build a mySQL or Postgres database.
-
-Connecting to an existing database
 ![Screenshot 2022-10-29 093105](https://user-images.githubusercontent.com/101940529/198837154-072d2d90-3f81-4fed-ab17-8301f1387b5c.png)
 
 1. Click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
@@ -143,50 +127,42 @@ Connecting to an existing database
 
 ![dbSpy_connectToDB](https://github.com/open-source-labs/dbSpy/blob/main/src/assets/ScreenshotDemo.png?raw=true)
 
-Uploading your database's SQL file
+### Uploading your database's SQL file
 
 1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a dialog box for you to select the SQL file you wish to upload.
 2. Once the file uploads, the canvas will render and generate the tables and their relationships.
 
-Starting an ER diagram from scratch
+### Starting an ER diagram from scratch
 
 1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will render the canvas for you to create your database schema.
 2. Click on "Add Table" to name the first table and start building your database.
 
-Adding a new row to a table
+## Adding row(s) to a table
 
 1. To add a new row in a table, click on the add icon on the top right of the table node. This will render a new row in the table in edit mode.
 ![Screenshot 2022-10-29 093211](https://user-images.githubusercontent.com/101940529/198837146-e81a858a-a7aa-41d8-9396-e4db38776fa5.png)
 
-Editing an existing row in a table
+### Editing an existing row in a table
 
 1. Click on the edit icon of the specific row that you want to edit.
 2. You can make changes to row fields based on the selections provided.
 3. Click on the save icon to keep your changes.
 4. Click on the cancel icon to cancel your changes.
 
-Adding a foreign key reference to a row
+### Adding a foreign key reference to a row
 
 1. While editing a row, if setting Foreign Key (FK) to "true", the Foreign Key Reference sidebar will appear on the right side of the screen.
-2. In the Foreign Key Reference sidebar, enter the following:
-   - Primary Key Name - the name of the Primary Key of the table that the Foreign Key is referencing
-   - Reference Key Name - the name of this Foreign Key
-   - Primary Table Name - the name of the Primary Key's table
-   - Reference Table Name - the name of this Foreign Key's table
-   - IsDestination - should be set to "false"
-   - Constraint Name - enter constraint information OR null
+2. In the Foreign Key Reference sidebar, use the displayed dropdowns to create references between tables.
 3. Click save or cancel to proceed.
 4. Click on the save icon to keep your changes or click on the cancel icon to cancel your changes.
-5. If changes are saved, an alert will appear that reads "click EDIT then SAVE on the target table row."
-6. Following the alert prompt will render the connection and connection label between the two tables.
 
-Deleting an existing row in a table
+## Deleting an existing row in a table
 
 1. Click on the delete icon of the specific row that you want to delete.
 2. Click on the confirm icon to delete the row.
 3. Click on the cancel icon to cancel the deletion.
 
-Navigating the canvas
+### Navigating the canvas
 
 1. Located on the bottom left corner of the canvas, you will find the canvas control panel.
    - Zoom On [+] - this button zooms into the canvas.
@@ -197,15 +173,11 @@ Navigating the canvas
 
 ---
 
-### Request a feature
+### Future contributions and requests
 
-- Submit an appropriately tagged GitHub issue
-
----
-
-### How to contribute
-
-- Click on [Contributions](Contributors.md) for more details.
+- If you'd like to contribute, please find a list of possible contributions [here](Contributors.md)
+- If you have any requests, please submit an appropriately tagged GitHub issue
+- PRs are welcome otherwise
 
 ---
 
@@ -233,4 +205,4 @@ Navigating the canvas
 
 ### License
 
-- dbSpy is developed under the MIT license.
+dbSpy is developed under the MIT license. See more un
