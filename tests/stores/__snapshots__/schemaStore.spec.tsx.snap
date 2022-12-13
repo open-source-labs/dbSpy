@@ -4,10 +4,11 @@ exports[`unit testing schemaStore schemaState shape matches the snapshot 1`] = `
 {
   "_addColumns": [Function],
   "_addHistory": [Function],
-  "_checkColumnDataDuplicates": [Function],
+  "_checkColumnNamesAndDupes": [Function],
   "_checkColumnValidity": [Function],
   "_checkNameValidity": [Function],
   "_checkTableValidity": [Function],
+  "_countPrimaries": [Function],
   "_restrictedMySqlNames": {
     "ACCESSIBLE": true,
     "ADD": true,
