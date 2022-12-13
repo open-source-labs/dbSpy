@@ -205,7 +205,7 @@ const useSchemaStore = create<SchemaState>()(
           // If columnDataArr is being passed as arg, that means the table is being initialized
           if (columnDataArr) {
             const pkCount = get()._countPrimaries(columnDataArr);
-            if (pkCount > 1)
+            if (pkCount !== 1)
               throw new Error(
                 `Table must have one primary key (currently has ${pkCount})`
               );
@@ -217,17 +217,20 @@ const useSchemaStore = create<SchemaState>()(
         _checkColumnValidity(tableName, columnDataArr) {
           const currentTable = get().schemaStore[tableName];
 
-          let existingPks: number = 0;
           for (const column of columnDataArr) {
             // Check for duplicates against current state
             if (Object.hasOwn(currentTable, column.name))
               throw new Error(
                 `Table "${tableName}" already contains column named "${column.name}"`
               );
-            if (column.isPrimary) existingPks++;
+          }
+
+          let existingPks: number = 0;
+          for (const colKey in currentTable) {
+            if (currentTable[colKey].IsPrimaryKey) existingPks++;
           }
           const newPks = get()._countPrimaries(columnDataArr);
-          if (existingPks + newPks > 1)
+          if (existingPks + newPks !== 1)
             throw new Error(
               `Table must have one primary key (currently has ${existingPks + newPks})`
             );
