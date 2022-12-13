@@ -1,33 +1,5 @@
 import queryGen from "../src/queryGen";
 import { SchemaObject, Table,  } from "@/Types";
-// interface Reference {
-//   PrimaryKeyName: string,
-//   ReferencesPropertyName: string,
-//   PrimaryKeyTableName: string,
-//   ReferencesTableName: string,
-//   IsDestination: boolean,
-//   constrainName: string
-// }
-
-// interface Column {
-//   Name: string,
-//   Value: any,
-//   TableName: string,
-//   References: [Reference],
-//   IsPrimaryKey: string,
-//   IsForeignKey: string,
-//   field_name: string,
-//   data_type: string,
-//   additional_constraints: string
-// }
-
-// interface Table {
-//   [key: string]: Column;
-// }
-
-// interface SchemaObject {
-//   [key: string]: Table;
-// }
 
 const schema: SchemaObject = {
   testTable: {
