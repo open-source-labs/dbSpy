@@ -16,5 +16,5 @@ Below is a list of features and improvements to which you can contribute. If you
 
 Known bugs/issues
 
-- Table connection (hanle) does not automatically render after a foreign key is added and the column data is saved. 
+- Table connection (handle) does not automatically render after a foreign key is added and the column data is saved. 
 
