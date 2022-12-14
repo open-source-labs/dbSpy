@@ -56,7 +56,7 @@ const Sidebar = (props: any) => {
     //change between which getSchema from MySQL to postgres based on db_type
     const dbSchema = await axios
       .post(`api/sql/${values.db_type}/getSchema`, values, {
-        baseURL: 'http://localhost:3000',
+        baseURL: '/',
       })
       .then((res) => res.data)
       .catch((err) => console.log('getSchema error', err));
