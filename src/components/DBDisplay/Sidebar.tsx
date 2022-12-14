@@ -215,7 +215,10 @@ const Sidebar = (props: any) => {
                 fillRule="evenodd"
               />
             </svg>
-            <p>Loading...</p>
+            <div>
+              <p>Loading...</p>
+              <p>Please wait, this could take a minute</p>
+            </div>
           </div>
         </div>
       )}
