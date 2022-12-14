@@ -51,8 +51,7 @@
 
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-![dbSpyTheme](https://user-images.githubusercontent.com/101940529/198836752-9727c0b4-4a8f-459b-be39-81922be15fd3.gif)
-
+<img src="images/Darkmode.png">
 ---
 
 ### Getting started
@@ -118,14 +117,14 @@ npm run cert
 
 ### Connecting to an existing database
 
-![Screenshot 2022-10-29 093105](https://user-images.githubusercontent.com/101940529/198837154-072d2d90-3f81-4fed-ab17-8301f1387b5c.png)
+<img src="images/Existing%20Databse.png">
 
 1. Click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
 2. Select the database type from the dropdown.
 3. Input your database URI information OR database connection credentials and click on "Connect".
 4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
 
-![dbSpy_connectToDB](https://github.com/open-source-labs/dbSpy/blob/main/src/assets/ScreenshotDemo.png?raw=true)
+<img src="images/Canvas%20renders.png">
 
 ### Uploading your database's SQL file
 
@@ -140,7 +139,7 @@ npm run cert
 ## Adding column(s) to a table
 
 1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column in the table in edit mode.
-![Screenshot 2022-10-29 093211](https://user-images.githubusercontent.com/101940529/198837146-e81a858a-a7aa-41d8-9396-e4db38776fa5.png)
+<img src="images/Create%20tables.png">
 
 ### Editing an existing column in a table
 
