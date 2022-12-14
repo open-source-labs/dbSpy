@@ -137,15 +137,15 @@ npm run cert
 1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will render the canvas for you to create your database schema.
 2. Click on "Add Table" to name the first table and start building your database.
 
-## Adding row(s) to a table
+## Adding column(s) to a table
 
-1. To add a new row in a table, click on the add icon on the top right of the table node. This will render a new row in the table in edit mode.
+1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column in the table in edit mode.
 ![Screenshot 2022-10-29 093211](https://user-images.githubusercontent.com/101940529/198837146-e81a858a-a7aa-41d8-9396-e4db38776fa5.png)
 
-### Editing an existing row in a table
+### Editing an existing column in a table
 
-1. Click on the edit icon of the specific row that you want to edit.
-2. You can make changes to row fields based on the selections provided.
+1. Click on the edit icon of the specific column that you want to edit.
+2. You can make changes to column fields based on the selections provided.
 3. Click on the save icon to keep your changes.
 4. Click on the cancel icon to cancel your changes.
 
@@ -156,10 +156,10 @@ npm run cert
 3. Click save or cancel to proceed.
 4. Click on the save icon to keep your changes or click on the cancel icon to cancel your changes.
 
-## Deleting an existing row in a table
+## Deleting an existing column in a table
 
-1. Click on the delete icon of the specific row that you want to delete.
-2. Click on the confirm icon to delete the row.
+1. Click on the delete icon of the specific column that you want to delete.
+2. Click on the confirm icon to delete the column.
 3. Click on the cancel icon to cancel the deletion.
 
 ### Navigating the canvas
