@@ -37,6 +37,7 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
  */
 const writeSchema = async (command) => {
   try {
+    await exec(`psql --version`);
     await exec(command[0])
     const { stdout, stderr } = await exec(command[1]);
     return stdout;
@@ -67,10 +68,10 @@ export const getSchema = (req, res, next) => {
           err: error,
         });
       }
-      console.log('reading file:', 'command[3]')
-      console.log('file:', data)
       result = parseSql.default(data);
       res.locals.data = result;
+      // Delete database files 
+      exec(`unlink ${command[2]} && unlink ${command[3]}`);
       next();
     });
   });
