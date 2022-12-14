@@ -167,7 +167,7 @@ npm run cert
    - Zoom On [+] - this button zooms into the canvas.
    - Zoom Out [-] - this button zooms out of the canvas.
    - Fit View [[]] - this button zooms to fit all the tables in focus.
-   - Toggle Interactivity [lock] - this button toggles on and off all table and row interactivity.
+   - Toggle Interactivity [lock] - this button toggles on and off all table and column interactivity.
    - Screenshot [camera] - this button saves a .png file of the current canvas view.
 
 ---
