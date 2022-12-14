@@ -148,9 +148,9 @@ npm run cert
 3. Click on the save icon to keep your changes.
 4. Click on the cancel icon to cancel your changes.
 
-### Adding a foreign key reference to a row
+### Adding a foreign key reference to a column
 
-1. While editing a row, if setting Foreign Key (FK) to "true", the Foreign Key Reference sidebar will appear on the right side of the screen.
+1. While editing a column, if setting Foreign Key (FK) to "true", the Foreign Key Reference sidebar will appear on the right side of the screen.
 2. In the Foreign Key Reference sidebar, use the displayed dropdowns to create references between tables.
 3. Click save or cancel to proceed.
 4. Click on the save icon to keep your changes or click on the cancel icon to cancel your changes.
