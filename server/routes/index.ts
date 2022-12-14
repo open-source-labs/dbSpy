@@ -1,5 +1,5 @@
 import { Express, Request, Response, NextFunction } from 'express';
-import { handleGoogleAuth } from '../controllers/auth.controller';
+import { handleGoogleAuth, getGoogleAuthUrl } from '../controllers/auth.controller';
 import {
   retrieveSchema,
   saveSchema,
@@ -52,6 +52,8 @@ const routes = async (app: Express) => {
   app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
 
   app.get('/api/oauth/google', handleGoogleAuth);
+
+  app.get('/api/googleAuthUrl', getGoogleAuthUrl);
 
   app.use('/api/sql/postgres', postgresRouter);
 
