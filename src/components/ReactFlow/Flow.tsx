@@ -26,17 +26,11 @@ export default function Flow() {
   }, [schemaStore]);
 
   function reRender(schemaStore: SchemaStore) {
-    console.log('rerendering reactflow-------------------------------------------------');
     if (!schemaStore || !Object.keys(schemaStore).length) return;
-    console.log('initializing edges');
     const initialEdges = createEdges(schemaStore);
-    console.log('setting initial edges', initialEdges);
     setEdges(initialEdges);
-    console.log('init nodes');
     const initialNodes = createNodes(schemaStore, initialEdges);
-    console.log('setting nodes');
     setNodes(initialNodes);
-    console.log('nodes set');
   }
 
   // useEffect(() => {

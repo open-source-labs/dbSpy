@@ -66,10 +66,10 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
     const queryStr = 'true';
 
-    console.log(client_url);
+    log.info(client_url);
     res.redirect(301, `${client_url}/?success=` + queryStr);
   } catch (error) {
-    log.error(error, 'User authorization failed');
+    log.info(error, 'User authorization failed');
     return res.redirect(301, `${client_url}/login`);
   }
 };

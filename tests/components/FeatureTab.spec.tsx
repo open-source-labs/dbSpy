@@ -4,5 +4,5 @@ import userEvent from '@testing-library/user-event'
 import FeatureTab from '../../src/components/DBDisplay/FeatureTab';
 
 describe('Add Table Button', () => {
-  it('should render table modal on click', )
+  it.todo('should render table modal on click')
 })

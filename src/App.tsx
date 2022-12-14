@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import DBDisplay from "./pages/DBDisplay";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import "./styles/index.css"
 import Shared from "./pages/Shared";
-// TODO: Delete? Remove barrier to entry.
-import ProtectedRoute from "./pages/ProtectedRoute";
 import useCredentialsStore from "./store/credentialsStore";
+import "./styles/index.css"
 
 export default function App() {
   //STATE DECLARATION (dbSpy3.0)

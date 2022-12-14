@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import DBDisplay from "../../src/pages/DBDisplay";
 
-describe('QueryGenerator...', () => {
+xdescribe('QueryGenerator...', () => {
   // render DBDisplay before each test
   
   describe('Table Architecture', () => {
@@ -23,14 +23,14 @@ describe('QueryGenerator...', () => {
       proceedBtn = document.querySelector('#closeAddTable-true') as Element;
     });
 
-    it('should add a create table query', async () => {
+    xit('should add a create table query', async () => {
       // process for adding a table
       await userEvent.click(anchor);
       await userEvent.type(tableNameInput, `test0`);
       await userEvent.click(proceedBtn);
       expect(screen.getByText('create table "public"."test0" ();')).toBeInTheDocument;
     });
-    it('should add multiple create table queries', async () => {
+    xit('should add multiple create table queries', async () => {
       for (let i = 0; i < 3; i++){
         await userEvent.click(anchor);
         await userEvent.type(tableNameInput, `multi-test${i}`);

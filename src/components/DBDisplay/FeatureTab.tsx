@@ -1,21 +1,19 @@
 // React & React Router & React Query Modules
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
-
 
 // Functions imported:
 import parseSql from '../../parse';
 
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
-import { SchemaObject } from './Types';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
 
 // Components imported:
-import QueryModal from './QueryModal';
+import QueryModal from '../Modals/QueryModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -94,7 +92,6 @@ export default function FeatureTab(props: any) {
   };
 
   const clearCanvasTables = () => {
-    console.log('clearing canvas');
     setSchemaStore({});
     setEdges([]);
     setNodes([]);
@@ -111,7 +108,6 @@ export default function FeatureTab(props: any) {
 
   // Temp
   const saveSchema = (): void => {
-    // TODO: Sign in to upload/save
     if (!user) alert('Sign in first')
     else {
       const postBody = {
@@ -119,12 +115,11 @@ export default function FeatureTab(props: any) {
         schema: JSON.stringify(schemaStore)
       }
       axios.post('/api/saveSchema', postBody)
-        .catch(err => console.log('err', err))
+        .catch(err => console.error('err', err))
     }
   }
 
   const loadSchema = (): void => {
-    // TODO: Sign in to upload/save
     if (!user) alert('Sign in first')
     else {
       fetch(`/api/retrieveSchema/${user.email}`)
@@ -137,7 +132,7 @@ export default function FeatureTab(props: any) {
             ? alert('No database stored!')
             : setSchemaStore(JSON.parse(res))
         })
-        .catch(err => console.log('err retrieve', err))
+        .catch(err => console.error('err retrieve', err))
     }
   }
 

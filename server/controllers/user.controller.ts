@@ -46,10 +46,10 @@ export const userRegistration: RequestHandler = async (req, res, next) => {
       const values = [full_name, email, hashedPW];
       connection.query(queryStr, values, (err, data) => {
         if (err) {
-          console.log('Error during user registration');
+          log.info('Error during user registration');
           return next(err);
         } else {
-          console.log(`${email} succesfully registered!`);
+          log.info(`${email} succesfully registered!`);
           return res.redirect(200, `/`);
         }
       })

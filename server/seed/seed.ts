@@ -1,6 +1,7 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv'
 dotenv.config()
+import log from '../logger/index'
 
 // Connect to SQL db and create users table
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found');
@@ -18,7 +19,7 @@ const loadData = () => {
         pg_schema TEXT
         )`;
     try { connection.query(createUserTable) } 
-    catch (err) { console.log(err) }
+    catch (err) { log.info(err) }
 }
 
 loadData();

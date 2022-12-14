@@ -5,7 +5,6 @@ import axios from 'axios';
 // Components Imported;
 import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
-import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 // const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
 
@@ -59,7 +58,7 @@ const Sidebar = (props: any) => {
         baseURL: '/',
       })
       .then((res) => res.data)
-      .catch((err) => console.log('getSchema error', err));
+      .catch((err) => console.error('getSchema error', err));
     //update schemaStore
     setSchemaStore(dbSchema);
     setWelcome(false);

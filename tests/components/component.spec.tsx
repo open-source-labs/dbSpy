@@ -9,7 +9,7 @@ import Navbar from '../../src/components/Navbar';
 import Signup from '../../src/pages/Signup';
 import DBDisplay from '../../src/pages/DBDisplay';
 
-xdescribe("placeholder", () => {
+describe("placeholder", () => {
   // Simple unit test tests
   it('Renders navbar', () => {
     render(<Navbar />, { wrapper: BrowserRouter });
@@ -25,10 +25,6 @@ xdescribe("placeholder", () => {
     expect(mockFn).toBeCalledTimes(0);
     await userEvent.click(btnTest);
     expect(mockFn).toBeCalled;
-  })
-  it('Renders signup', () => {
-    render(<Signup />);
-    expect(screen.getByText('Sign Up with Google')).toBeInTheDocument;
   })
 });
 
@@ -73,9 +69,6 @@ describe('DB Display Interface', () => {
     const createTableModal = document.querySelector('.addTableModal') as Element;
     const styles = getComputedStyle(createTableModal) as CSSStyleDeclaration;
     expect(styles.display).toBe('none');
-    console.log('Create Table Modal', createTableModal);
-    console.log('GetComputedStyles', styles.getPropertyValue('display'));
-    // expect(createTableModal).toHaveStyle('display: none');
 
     const anchor = document.querySelector('#addTable');
     // Click add table - shows up 'Enter your table name.""
@@ -83,7 +76,6 @@ describe('DB Display Interface', () => {
     expect(styles.display).toBe('block');
 
     const closeTableButton = document.querySelector('#closeAddTable') as Element;
-    // console.log(closeTableButton);
     userEvent.click(closeTableButton);
     expect(styles.display).toBe('none');
 
@@ -93,7 +85,7 @@ describe('DB Display Interface', () => {
     // if (createTableModal) expect(createTableModal).toHaveStyle('display: block');
   })
 
-  it('Adding table confirmation should create new flow node', async () => {
+  xit('Adding table confirmation should create new flow node', async () => {
     // open addTable then submit a table name
     const tableNameInput = document.querySelector('#tableNameInput') as Element;
     const anchor = document.querySelector('#addTable') as Element;
@@ -116,7 +108,7 @@ describe('DB Display Interface', () => {
     
   })
   // Table from above exists still so starting at length 1
-  it('Should add multiple tables when multiple tables are added', async () => {
+  xit('Should add multiple tables when multiple tables are added', async () => {
     const anchor = document.querySelector('#addTable') as Element;
     const proceedBtn = document.querySelector('#closeAddTable-true') as Element;
     const tableNameInput = document.querySelector('#tableNameInput') as Element;
@@ -128,7 +120,7 @@ describe('DB Display Interface', () => {
     }
     expect(document.getElementsByClassName('react-flow__node-table').length).toBe(4);
   })
-  it('Should not add duplicate named tables', async () => {
+  xit('Should not add duplicate named tables', async () => {
     const anchor = document.querySelector('#addTable') as Element;
     const proceedBtn = document.querySelector('#closeAddTable-true') as Element;
     const tableNameInput = document.querySelector('#tableNameInput') as Element;
@@ -140,7 +132,7 @@ describe('DB Display Interface', () => {
     expect(document.getElementsByClassName('react-flow__node-table').length).toBe(4);
   })
   // TDD: Failing as expected.
-  it('Should not add a table when no name is provided', async () => {
+  xit('Should not add a table when no name is provided', async () => {
     const anchor = document.querySelector('#addTable') as Element;
     const proceedBtn = document.querySelector('#closeAddTable-true') as Element;
     await userEvent.click(anchor);
@@ -149,7 +141,7 @@ describe('DB Display Interface', () => {
   })
 });
 
-describe('Table Row Generation', () => {
+xdescribe('Table Row Generation', () => {
   beforeEach(() => {
     render(<DBDisplay />);
     global.ResizeObserver = jest.fn().mockImplementation(() => ({
@@ -171,19 +163,17 @@ describe('Table Row Generation', () => {
     // expect(document.getElementsByClassName('react-flow__node-table').length).toBe(6);
     // has tr with class empty row, length of tbody children is 1
     const table = document.querySelector(`div[data-id="test-table"]`) as Element;
-    // console.log('table:', table);
     const tableRows = table.querySelectorAll('tbody tr');
-    // console.log('tablerows:', tableRows);
     
     // tableRows -> <tr>
     expect(tableRows).toHaveLength(1);
   })
-  xit('Add a single row', () => {
+  it('Add a single row', () => {
     expect('test').toBe('exist');
     // Expect row node length === 2
     // Have inputted id exist inside of that row
   }) 
-  xit('Add multiple rows', () => {
+  it('Add multiple rows', () => {
     expect('test').toBe('exist');
     // Expect row node length === 4 or etc
     // Have inputted id(s) exist inside of that row

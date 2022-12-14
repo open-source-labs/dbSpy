@@ -20,7 +20,7 @@ describe('Account Registration', () => {
     // Delete the test account from database
   })
   
-  it('returns 200 when called', async () => {
+  xit('returns 200 when called', async () => {
     const response = await request(server).post('/api/userRegistration').send(testRegistration);
     expect(response.status).toBe(200);
   })
@@ -28,6 +28,5 @@ describe('Account Registration', () => {
     const duplicateRes = await request(server).post('/api/userRegistration').send({email: 'alexandertu95@gmail.com'})
     expect(duplicateRes.status).toBe(403);
   })
-  it('')
 })
 

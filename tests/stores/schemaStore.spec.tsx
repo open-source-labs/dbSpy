@@ -139,14 +139,14 @@ describe('unit testing schemaStore', () => {
     });
 
     it('throws error for table names using MySQL syntax', () => {
-      setSystem('MySQL');
+      act(() => setSystem('MySQL'));
       expect(() => addTableSchema('ACCESSIBLE', placeholderCol)).toThrowError(
         'Table and column names must not be MySQL syntax (cause: "ACCESSIBLE")'
       );
     });
 
     it('throws error for table names using PostgreSQL syntax', () => {
-      setSystem('PostgreSQL');
+      act(() => setSystem('PostgreSQL'));
       expect(() => addTableSchema('ALL', placeholderCol)).toThrowError(
         'Table and column names must not be PostgreSQL syntax (cause: "ALL")'
       );

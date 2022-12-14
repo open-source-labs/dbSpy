@@ -19,7 +19,6 @@ export default function TableNodeColumn({
   column: ColumnSchema;
   id: string;
 }) {
-  // TODO: can we take reference out of the store? only accessed in this component I believe
   const { schemaStore, setSchemaStore, deleteColumnSchema } = useSchemaStore(
     (state) => state
   );
@@ -39,7 +38,6 @@ export default function TableNodeColumn({
     };
     // If column name has changed, delete entry with old column name
     if (column.field_name !== columnData.field_name) {
-      console.log('replacing column schema');
       delete currentSchema[column.TableName][column.field_name];
     }
     //set new values to the schemaStore
@@ -60,7 +58,6 @@ export default function TableNodeColumn({
     setEditRefMode(true, columnData.TableName, columnData.Name);
   };
 
-  // console.log('Im in tableNodeColumn, here is column data: ', column);
   return (
     <>
       {/* TODO: SEE ABOUT DELETING KEY ATTRIBUTE AND ID ATTRIBUTES */}
