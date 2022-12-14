@@ -15,7 +15,7 @@
 
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
-<p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具</p>
+<p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具。</p>
 
 ### Use Cases
 
