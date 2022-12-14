@@ -3,6 +3,7 @@
 .vscode/
 # dependencies
 node_modules/
+server/db_schemas
 
 coverage/
 
@@ -20,3 +21,5 @@ package-lock.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+.cert/
+.*/
