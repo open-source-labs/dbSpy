@@ -56,12 +56,13 @@
 ---
 
 ### Getting started
-
+You will need your own mySQL and redis databases for backend functions, and Google Cloud project for OAuth.
 - Fork and clone this repo
-- Add a .env file to the root directory
 - Add a db_schemas folder in server directory
+- Add a .env file to the root directory
 - Go to the Google Cloud Platform Console
-- Set up OAuth 2.0 credentials as laid out in <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a>
+- Set up OAuth 2.0 credentials as laid out in <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a>. Make sure 
+  your authorized redirect URI in the credentials you create matches the GOOGLE_AUTH_CALLBACK variable below.
 - Populate the .env file with the newly created code below:
 
 ```bash
@@ -69,6 +70,7 @@ GOOGLE_AUTH_CALLBACK = ''
 DATABASE_URL = [mysql url for storing user data]
 DEV_SERVER_ENDPOINT = 'http://localhost:3000'
 DEV_CLIENT_ENDPOINT = 'http://localhost:8080'
+CLIENT_ENDPOINT = 'http://localhost:3000'
 GOOGLE_AUTH_CALLBACK = 'http://localhost:3000/api/oauth/google'
 GOOGLE_AUTH_CLIENT_ID = [google auth client id]
 GOOGLE_AUTH_CLIENT_SECRET = [google auth client secret]
@@ -205,4 +207,4 @@ npm run cert
 
 ### License
 
-dbSpy is developed under the MIT license. See more about [dbSpy4.0 updates here](https://github.com/oslabs-beta/dbSpy/releases/tag/v4.0.0).
+dbSpy is developed under the MIT license. See more about dbSpy4.0 updates [here](https://github.com/oslabs-beta/dbSpy/releases/tag/v4.0.0).

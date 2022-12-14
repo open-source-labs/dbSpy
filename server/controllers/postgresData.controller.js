@@ -67,10 +67,10 @@ export const getSchema = (req, res, next) => {
           err: error,
         });
       }
-      console.log('reading file:', 'command[3]')
-      console.log('file:', data)
       result = parseSql.default(data);
       res.locals.data = result;
+      // Delete database files 
+      exec(`unlink ${command[2]} && unlink ${command[3]}`);
       next();
     });
   });

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import log from '../logger';
+import log from '../logger/index';
 const mysqldump = require('mysqldump');
 import dotenv from 'dotenv';
 dotenv.config();
@@ -39,7 +39,7 @@ export const getSchema = async (req, res, next) => {
     const { tables } = result;
     next();
   } catch (error) {
-    console.log(error.message);
+    log.info(error.message);
     next({ message: 'Error with getSchema middleware' });
   }
 };

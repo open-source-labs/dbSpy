@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import DataTypeOptions from './DataTypeOptions';
 

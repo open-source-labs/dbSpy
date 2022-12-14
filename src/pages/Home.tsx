@@ -22,12 +22,10 @@ export default function Home() {
         const response = await axios(`/api/me`, {
           withCredentials: true
         })
-      // console.log(user);
       setUser(response.data)
       return response.data
     }
     getUserData();
-    // TODO: Look into next line more. Necessary?
     window.history.replaceState({}, document.title, "/");
   },[])
   
@@ -58,7 +56,7 @@ export default function Home() {
           <div className="px-6 py-12 md:px-12">
             <h2 className="text-3xl font-bold mb-6 dark:text-[#f8f4eb]">Key Features</h2>
             <p className="text-gray-500 mb-6 dark:text-[#f8f4eb]">
-            dbSpy is an open-source tool to facilitate relational database development.<br /> Visualize, modify, and build your database, all in one place.
+            dbSpy is an <a className="text-blue-600" href="https://github.com/open-source-labs/dbSpy">open-source tool</a> to facilitate relational database development.<br /> Visualize, modify, and build your database, all in one place.
             </p>
 
             <div className="grid md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-x-6">

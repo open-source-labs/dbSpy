@@ -37,7 +37,6 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): N
       type: 'table',
 
       position: nodePositions[i],
-      // position: {x: Math.random() * window.innerWidth, y: Math.random() * window.innerWidth},
       data: { table: [tableKey, columnData], edges },
     });
     i = (i + 1) % 17;

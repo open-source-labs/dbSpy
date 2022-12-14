@@ -45,7 +45,6 @@ const schema: SchemaObject = {
 describe('QueryGen...', () => {
   // CREATE TABLE "test" ( "testrow" serial NOT NULL PRIMARY KEY );
   const output: {create: string[], alter: string[]} = queryGen(schema);
-  console.log(output);
   it('should output an object of arrays containing a create table query', () => {
     expect(output.create[0]).toContain('CREATE TABLE "public"."testTable"');
   });

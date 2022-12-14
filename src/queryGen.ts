@@ -53,7 +53,6 @@ export default function queryGen(schemaObj: SchemaObject, system: string) {
       // does data_type need handling?
       let constraintList: string = `${additional_constraints}`;
       // handle primary key string:
-      console.log(IsPrimaryKey === true);
       if (IsPrimaryKey === true) {
         constraintList += ' PRIMARY KEY';
       }

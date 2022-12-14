@@ -66,10 +66,10 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
     const queryStr = 'true';
 
-    console.log(client_url);
+    log.info(client_url);
     res.redirect(301, `${client_url}/?success=` + queryStr);
   } catch (error) {
-    log.error(error, 'User authorization failed');
+    log.info(error, 'User authorization failed');
     return res.redirect(301, `${client_url}/login`);
   }
 };
@@ -79,7 +79,7 @@ export const getGoogleAuthUrl: RequestHandler = (req, res) => {
 
   const options = {
     redirect_uri: process.env.GOOGLE_AUTH_CALLBACK as string,
-    client_id: '373965291205-utb8ih1hoeuf1g90okil5ju43tfdl3vs.apps.googleusercontent.com',
+    client_id: process.env.GOOGLE_AUTH_CLIENT_ID as string,
     access_type: 'offline',
     response_type: 'code',
     prompt: 'consent',

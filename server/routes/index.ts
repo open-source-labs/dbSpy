@@ -20,6 +20,7 @@ dotenv.config();
 import Redis from 'ioredis';
 import { getCurrentUser } from '../service/session.service';
 import path from 'path';
+import log from '../logger/index'
 
 const client_url =
   process.env.NODE_ENV === 'development'
@@ -71,9 +72,9 @@ const routes = async (app: Express) => {
 
   app.use('/api/logout', (req: Request, res: Response) => {
     req.session.destroy((err) => {
-      if (err) console.log('Error destroying session:', err);
+      if (err) log.info('Error destroying session:', err);
       else {
-        console.log('Succesfully destroyed session');
+        log.info('Succesfully destroyed session');
         return res.redirect(`/`);
       }
     });
