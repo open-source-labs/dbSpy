@@ -2,7 +2,7 @@ const getGoogleAuthUrl = () => {
   const base = 'https://accounts.google.com/o/oauth2/v2/auth';
 
   const options = {
-    redirect_uri: '/',
+    redirect_uri: 'http://dbspy-env-1.eba-jf24jfwb.us-west-2.elasticbeanstalk.com/',
     client_id: '373965291205-utb8ih1hoeuf1g90okil5ju43tfdl3vs.apps.googleusercontent.com',
     access_type: 'offline',
     response_type: 'code',
