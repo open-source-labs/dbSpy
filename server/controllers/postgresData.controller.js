@@ -37,8 +37,6 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
  */
 const writeSchema = async (command) => {
   try {
-    await exec(`psql --version`);
-    await exec(`pg_dump --version`);
     await exec(command[0])
     const { stdout, stderr } = await exec(command[1]);
     return stdout;
