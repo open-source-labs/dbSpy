@@ -5,6 +5,8 @@
 node_modules/
 server/db_schemas
 
+coverage/
+
 # output from webpack
 dist/
 
@@ -19,3 +21,5 @@ package-lock.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+.cert/
+.*/

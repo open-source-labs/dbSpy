@@ -1,29 +1,27 @@
 import { defineConfig } from 'vite';
 import dns from 'dns';
 import react from '@vitejs/plugin-react';
-import EnvironmentPlugin from 'vite-plugin-environment'
-import { resolve } from 'path'
+const fs = require('fs');
+import { resolve } from 'path';
 
 dns.setDefaultResultOrder('verbatim');
-
 export default defineConfig({
   server: {
     port: 8080,
+    host: true,
     proxy: {
       '/api/': {
         target: 'http://localhost:3000/',
         changeOrigin: true,
-        secure: false
+        secure: false,
       }
     },
   },
   build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html')
-      }
-    },
     outDir: 'dist',
+    rollupOptions: {
+      input: resolve(__dirname, 'index.html'),
+    },
     commonjsOptions: {
       esmExternals: true,
     },
@@ -32,6 +30,5 @@ export default defineConfig({
     react({
       include: '**/*.{jsx,tsx}',
     }),
-    EnvironmentPlugin('all')
   ],
 });

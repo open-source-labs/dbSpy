@@ -1,9 +1,5 @@
 import fs from 'fs';
-import path from 'path';
-import { promisify } from 'util';
-const exec = promisify(require('child_process').exec);
-import mySQL from 'mysql2';
-// import mysqldump from 'mysqldump';
+import log from '../logger/index';
 const mysqldump = require('mysqldump');
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,6 +18,7 @@ const mySQLdataController = {};
 export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
+  log.info('Connecting to mySQL database...');
   try {
     const result = await mysqldump({
       connection: {
@@ -30,6 +27,11 @@ export const getSchema = async (req, res, next) => {
         user: req.body.username,
         password: req.body.password,
         database: req.body.database_name,
+        // Add SSL certification to avoid security issue.
+        ssl: {
+          key: fs.readFileSync('./.cert/key.pem').toString(),
+          cert: fs.readFileSync('./.cert/cert.pem').toString(),
+        },
       },
       dumpToFile: '../db_schemas',
     });
@@ -37,7 +39,7 @@ export const getSchema = async (req, res, next) => {
     const { tables } = result;
     next();
   } catch (error) {
-    console.log(error.message);
+    log.info(error.message);
     next({ message: 'Error with getSchema middleware' });
   }
 };
@@ -75,7 +77,7 @@ export const objSchema = (req, res, next) => {
     this.ReferencesPropertyName = null; //key name at current table
     this.ReferencesTableName = null; //current table name
     this.IsDestination = false;
-    this.constrainName = null; //constraint from SQL query
+    this.constraintName = null; //constraint from SQL query
   }
 
   //append tables and table properties to results
@@ -124,7 +126,7 @@ export const objSchema = (req, res, next) => {
         foreignKeyReferences[fKey].ReferencesTableName = table.name;
         foreignKeyReferences[fKey].PrimaryKeyName = primaryKey;
         foreignKeyReferences[fKey].PrimaryKeyTableName = primaryTable;
-        foreignKeyReferences[fKey].constrainName = constraint;
+        foreignKeyReferences[fKey].constraintName = constraint;
 
         //find additional foreign keys and references
         return foreignKeys(string);
@@ -168,118 +170,5 @@ export const objSchema = (req, res, next) => {
   res.locals.data = results;
   return next();
 };
-
-// mySQLdataController.getAllSchemas = (req, res) => {};
-
-// mySQLdataController.openSchema = (req, res, next) => {
-//   fs.readFile(
-//     '/Users/phoenix/Documents/GitHub/osp/JAKT/server/db_schemas/vjcmcautvjcmcaut1657127402.sql',
-//     'utf8',
-//     (error, data) => {
-//       if (error) {
-//         console.error(`error- in FS: ${error.message}`);
-//         return next({
-//           msg: 'Error reading database schema file',
-//           err: error,
-//         });
-//       }
-//       let result = parseSql(data);
-//       next();
-//     }
-//   );
-// };
-
-// mySQLdataController.postSchema = (req, res) => {};
-
-// mySQLdataController.handleQueries = async (req, res, next) => {
-//   /* Assumption, being passed an array of queries in req.body
-//   //Note: Have to configure front-end for mySqlCredentials
-
-//   Loop through array of queries and add them to a query string, if return query, add their outputs to the query string instead
-
-//   Execute the resulting query string as a transaction */
-
-//   /**
-//    * Handshake block
-//    */
-//   // Production values
-//   const { mySqlCredentials, queries } = req.body;
-//   const { hostname, port, username, password, databaseName } = mySqlCredentials;
-
-//   /**
-//    * Function definition and initialization block
-//    */
-//   const pool = mysql.createPool({
-//     host: hostname,
-//     port: port,
-//     user: username,
-//     password: password,
-//     database: databaseName,
-//   });
-
-//   const execQueries = (text, params, callback) => {
-//     return pool.query(text, params, callback);
-//   };
-
-//   //NOTE: STILL NEED TO UPDATE THIS FUNCTION TO MYSQL SYNTAX
-//   const transactionQuery = async (queryString) => {
-//     const client = await pool.connect();
-//     try {
-//       await client.query('BEGIN');
-//       for (let i = 0; i < arrQS.length - 1; i++) {
-//         await client.query(arrQS[i]);
-//       }
-//       await client.query('COMMIT');
-//     } catch (err) {
-//       console.log({ err }, '<err\n\n');
-//       console.log(
-//         '--Invalid query detected in handleQueries\n--Transaction declined'
-//       );
-//       await client.query('ROLLBACK');
-//       throw err;
-//     } finally {
-//       client.release();
-//     }
-//   };
-
-//   /**
-//    * Build out query string
-//    * Iterates through queries and conditionally adds either the query or the output of the query to queryStr
-//    */
-//   let queryStr = '';
-//   for (let i = 0; i < queries.length; i++) {
-//     if (queries[i].type === 'returnQuery') {
-//       // execute & whatever returns, we concat to queryStr
-//       const newQuery = await execQueries(queries[i].query);
-//       queryStr = queryStr.concat(newQuery);
-//     } else queryStr = queryStr.concat(queries[i].query);
-//   }
-
-//   /**
-//    * Transaction implementation
-//    * Wraps the query string in BEGIN and COMMIT to ensure that the queries are either all execute, or none do.
-//    * CANNOT JUST WRAP THE QUERY IN BEGIN AND COMMIT AS PER node-postgres documentation.
-//    */
-//   res.locals.success = false;
-
-//   const arrQS = queryStr.split(';');
-//   for (let i = 0; i < arrQS.length; i++) {
-//     arrQS[i] += ';';
-//   }
-//   transactionQuery(arrQS)
-//     .then(() => {
-//       res.locals.success = true;
-//       return next();
-//     })
-//     .catch((err) => {
-//       next({
-//         log: 'Error in handleQueries middleware',
-//         message: { err: err },
-//       });
-//     });
-// };
-
-// mySQLdataController.saveSchema = (req, res) => {};
-// mySQLdataController.deleteSchema = (req, res) => {};
 
 export default mySQLdataController;

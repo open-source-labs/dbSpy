@@ -37,8 +37,6 @@ export interface RowProps {
   reference: {}[];
 }
 
-//from canvas.tsx
-
 export interface CanvasProps {
   fetchedData: {
     [key: string]: {

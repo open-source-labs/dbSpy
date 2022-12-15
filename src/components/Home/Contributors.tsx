@@ -14,6 +14,10 @@ import AR from '../../assets/contributors/ar.jpg';
 import AA from '../../assets/contributors/aa.jpg';
 import SG from '../../assets/contributors/sg.jpg';
 import KW from '../../assets/contributors/kw.jpg';
+import alexTu from '../../assets/contributors/alex_tu.jpg';
+import michaelCostello from '../../assets/contributors/michael_costello.jpeg';
+import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
+import yufaLi from '../../assets/contributors/yufa_li.jpeg';
 
 
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
@@ -50,6 +54,10 @@ const profileList: profileInfo[] = [
   {imgUrl: AA, name: 'Anthony Al-Rifai', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/anthony-al-rifai-31677a100/', githubUrl: 'https://github.com/AnthonyAl-Rifai'},
   {imgUrl: SG, name: 'Santiago Gil Maya', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/santiago-gil-929721121//', githubUrl: 'https://github.com/santiago-gil'},
   {imgUrl: KW, name: 'Kevin Wang', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/kevin-w-b841b13/', githubUrl: 'https://github.com/kwang929'},
+  {imgUrl: alexTu, name: 'Alexander Tu', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/atu816/', githubUrl: 'https://github.com/atu816'},
+  {imgUrl: michaelCostello, name: 'Michael Costello', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/mcostello-swe/', githubUrl: 'https://github.com/neighbor-peace'},
+  {imgUrl: stevenGeiger, name: 'Steven Geiger', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/sgeiger9/', githubUrl: 'https://github.com/geistnine'},
+  {imgUrl: yufaLi, name: 'Yufa Li', title: 'Software Engineer', linkedInUrl: 'https://www.linkedin.com/in/yufa-li/', githubUrl: 'https://github.com/01001101CK'}
 ];
 
 

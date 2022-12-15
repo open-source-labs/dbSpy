@@ -3,19 +3,24 @@
 //
 
 import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 
-let queryStore = (set: (arg0: { (state: any): any; (state: any): any; (state: any): any; }) => any) => ({
-    queryStore: new Map(),
-    setQueryStore: (queries: any) => set((state: any) => ({ ...state, queryStore: queries })),
-    queryList: new Array(),
-    setQueryList: (list: any) => set((state: any) => ({ ...state, queryList: list })),
-    queryInd: 0,
-    setQueryInd: (newInd: any) => set((state: any) => ({ ...state, queryInd: newInd })),
+let queryStore = (
+  set: (arg0: { (state: any): any; (state: any): any; (state: any): any }) => any
+) => ({
+  queries: [],
+  // setQueryStore can potentially be used for undo / redo functionality later
+  setQueryStore: (queries: string[]) => set((state: any) => ({ ...state, queries })),
+  writeAddTableQuery: (tableName: string) =>
+    set((state: any) => {
+      const newQuery: string = `create table "public"."${tableName}" ();`;
+      return {
+        ...state,
+        queries: [...state.queries, newQuery],
+      };
+    }),
 });
 
-const useQueryStore = create(devtools(queryStore))
+const useQueryStore = create(devtools(queryStore));
 
 export default useQueryStore;
-
-//queryStore is not in use. This can be used for SQL query generation functionality.
