@@ -207,4 +207,4 @@ npm run cert
 
 ### License
 
-dbSpy is developed under the MIT license. See more about dbSpy4.0 updates [here](https://github.com/oslabs-beta/dbSpy/releases/tag/v4.0.0).
+dbSpy is developed under the MIT license. 
