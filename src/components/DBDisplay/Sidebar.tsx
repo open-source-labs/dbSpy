@@ -54,9 +54,7 @@ const Sidebar = (props: any) => {
 
     //change between which getSchema from MySQL to postgres based on db_type
     const dbSchema = await axios
-      .post(`api/sql/${values.db_type}/getSchema`, values, {
-        baseURL: '/',
-      })
+      .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => res.data)
       .catch((err) => console.error('getSchema error', err));
     //update schemaStore

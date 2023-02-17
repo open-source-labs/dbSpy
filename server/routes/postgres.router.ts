@@ -4,7 +4,7 @@ import { getSchema } from '../controllers/postgresData.controller';
 const postgresRouter = Router();
 
 // Retrieve Postgres schema from remote db
-postgresRouter.post('/getSchema', getSchema, (req, res) => {
+postgresRouter.get('/schema', getSchema, (req, res) => {
   return res.status(200).json(res.locals.data);
 });
 

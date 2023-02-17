@@ -19,11 +19,17 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
   const command = [];
   const currentDateTime = new Date();
   const resultInSeconds = parseInt(currentDateTime.getTime() / 1000);
-  const dbDump = path.join(__dirname, `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.dump`);
-  const dbSqlText = path.join(__dirname, `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`);
+  const dbDump = path.join(
+    __dirname,
+    `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.dump`
+  );
+  const dbSqlText = path.join(
+    __dirname,
+    `../db_schemas/${username}${databaseName}${resultInSeconds.toString()}.sql`
+  );
   command.push(
-    `pg_dump -s -Fc -Z 9 postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${dbDump}`
-    ,`pg_restore -f ${dbSqlText} ${dbDump} `
+    `pg_dump -s -Fc -Z 9 postgres://${username}:${password}@${hostname}:${port}/${databaseName} > ${dbDump}`,
+    `pg_restore -f ${dbSqlText} ${dbDump} `
   );
   command.push(dbDump);
   command.push(dbSqlText);
@@ -37,7 +43,7 @@ function postgresDumpQuery(hostname, password, port, username, databaseName) {
  */
 const writeSchema = async (command) => {
   try {
-    await exec(command[0])
+    await exec(command[0]);
     const { stdout, stderr } = await exec(command[1]);
     return stdout;
   } catch (error) {
@@ -53,12 +59,11 @@ export const getSchema = (req, res, next) => {
   log.info('Server received Postgres database URI.');
   // // Option 1 - Production
   let result = null;
-  //using destructuring for concise code, commented out lines
-  const { hostname, password, port, username, database_name } = req.body;
+  const { hostname, password, port, username, database_name } = req.query;
 
   const command = postgresDumpQuery(hostname, password, port, username, database_name);
-  
-  writeSchema(command).then((resq) => {
+
+  writeSchema(command).then((req) => {
     fs.readFile(command[3], 'utf8', (error, data) => {
       if (error) {
         console.error(`error- in FS: ${error.message}`);
@@ -69,7 +74,7 @@ export const getSchema = (req, res, next) => {
       }
       result = parseSql.default(data);
       res.locals.data = result;
-      // Delete database files 
+      // Delete database files
       exec(`unlink ${command[2]} && unlink ${command[3]}`);
       next();
     });
