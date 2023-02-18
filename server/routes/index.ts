@@ -63,6 +63,8 @@ const routes = async (app: Express) => {
       message: 'An error occurred. This is the global error handler.',
     };
     const errorObj = Object.assign({}, defaultErr, err);
+    log.error(errorObj.message);
+    log.error(errorObj.log);
     return res.status(errorObj.status).json(errorObj.message);
   });
 };
