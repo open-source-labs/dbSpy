@@ -96,7 +96,7 @@ describe('/api/sql/mysql', () => {
 
   describe('/schema', () => {
     describe('GET', () => {
-      it('responds with 200 and content-type X', async () => {
+      it('responds with 200, content-type JSON, and correct body', async () => {
         const response = await request(server)
           .get(`/api/sql/mysql/schema`)
           .query(mysqlDB);
