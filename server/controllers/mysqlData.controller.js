@@ -19,14 +19,15 @@ export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
   log.info('Connecting to mySQL database...');
+  const { hostname, password, port, username, database_name } = req.query;
   try {
     const result = await mysqldump({
       connection: {
-        host: req.body.hostname,
-        port: req.body.port,
-        user: req.body.username,
-        password: req.body.password,
-        database: req.body.database_name,
+        host: hostname,
+        password,
+        port,
+        user: username,
+        database: database_name,
         // Add SSL certification to avoid security issue.
         ssl: {
           key: fs.readFileSync('./.cert/key.pem').toString(),
