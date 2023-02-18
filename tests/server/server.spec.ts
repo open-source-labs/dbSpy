@@ -77,7 +77,7 @@ describe('/api/sql/postgres', () => {
         //   }
         // }
         expect(response.body).toEqual(swapiSchema);
-      }, 180000);
+      });
     });
   });
 });
