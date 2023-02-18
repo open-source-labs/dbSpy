@@ -1,8 +1,25 @@
 import { RequestHandler } from 'express';
 import { Client } from 'pg';
-import parsePgResult from '../utils/parsePgResult';
+import { SchemaStore } from '../../src/store/schemaStore';
+import { SQLDataType } from '@/Types';
 import log from '../logger/index';
 
+type ColumnSchema = {
+  table_name: string;
+  column_name: string;
+  data_type: string;
+  is_nullable: 'YES' | 'NO';
+};
+type PgSchema = ColumnSchema[];
+type Key = {
+  constraint_name: string;
+  table_name: string;
+  column_name: string;
+  constraint_type: string;
+  foreign_table_name: string;
+  foreign_column_name: string;
+};
+type PgKeys = Key[];
 /**
  * Take user input, request schema from database, parse resulting schema, pass parsed data to next middleware.
  */
@@ -58,9 +75,20 @@ export const getSchema: RequestHandler = async (req, res, next) => {
     log.info('Connected to Postgres database');
 
     const result = await Promise.all([client.query(schemaQuery), client.query(keyQuery)]);
-    const [pgSchema, pgKeys] = result;
+    const [schemaResult, keyResult] = result;
 
-    res.locals.data = parsePgResult(pgSchema.rows, pgKeys.rows);
+    // append 'public.' to each table name b/c they were pulled from the public schema
+    const pgKeys: PgKeys = keyResult.rows.map((constraint) => ({
+      ...constraint,
+      table_name: `public.${constraint.table_name}`,
+      foreign_table_name: `public.${constraint.foreign_table_name}`,
+    }));
+    const pgSchema: PgSchema = schemaResult.rows.map((column) => ({
+      ...column,
+      table_name: `public.${column.table_name}`,
+    }));
+
+    res.locals.data = parsePgResult(pgSchema, pgKeys);
     return next();
   } catch (err) {
     return next({
@@ -69,3 +97,63 @@ export const getSchema: RequestHandler = async (req, res, next) => {
     });
   }
 };
+
+/*
+ * Formats results for frontend schema store
+ */
+function parsePgResult(pgSchema: PgSchema, pgKeys: PgKeys): SchemaStore {
+  const schemaStore: SchemaStore = {};
+
+  for (let { table_name, column_name, data_type, is_nullable } of pgSchema) {
+    // init property in schemaStore then populate it
+    if (!(table_name in schemaStore)) {
+      schemaStore[table_name] = {};
+    }
+    schemaStore[table_name][column_name] = {
+      Name: column_name,
+      Value: null,
+      TableName: table_name,
+      References: [],
+      IsPrimaryKey: false,
+      IsForeignKey: false,
+      field_name: column_name,
+      data_type:
+        data_type === 'character varying'
+          ? 'VARCHAR(255)'
+          : (data_type.toUpperCase() as SQLDataType),
+      additional_constraints: is_nullable === 'NO' ? 'NOT NULL' : null,
+    };
+  }
+
+  // add fk and pk data to schemaStore
+  for (const {
+    constraint_name,
+    table_name,
+    column_name,
+    constraint_type,
+    foreign_table_name,
+    foreign_column_name,
+  } of pgKeys) {
+    const column = schemaStore[table_name][column_name];
+
+    if (constraint_type === 'PRIMARY KEY') {
+      column.IsPrimaryKey = true;
+    } else {
+      const foreignColumn = schemaStore[foreign_table_name][foreign_column_name];
+      // flip IsForeignKey for column
+      column.IsForeignKey = true;
+      // push to column's references
+      // Changes to the format of References will require refactoring many legacy processes
+      column.References.push({
+        PrimaryKeyName: column_name,
+        PrimaryKeyTableName: foreign_table_name,
+        ReferencesPropertyName: column_name,
+        ReferencesTableName: table_name,
+        IsDestination: false,
+        constraintName: constraint_name,
+      });
+    }
+  }
+
+  return schemaStore;
+}
