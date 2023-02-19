@@ -19,32 +19,37 @@ describe('Foreign Keys', () => {
       });
   });
 
-  it('adds a foreign key if clicks zoom buttons', () => {
-    // zoom in
-    cy.get('button.react-flow__controls-zoomin').click();
-    // edit table_1:column_1 to be a foreign key that references table_2:column_2
+  it('adds a foreign key if user drags table, drags backdrop, and changes zoom', () => {
     //click 'edit column' button
     cy.get(
       `div[data-testid=rf__node-table_1] tr#column_1 button[data-testid=edit-column]`
     ).click();
-    // zoom out
-    cy.get('button.react-flow__controls-zoomout').click();
-    // check fk checkbox
-    cy.get(`div[data-testid=rf__node-table_1] tr#column_1 input[type=checkbox]`).check();
-    // fill out modal form
-    cy.get('select[name=ptablename]').select('table_2');
     // zoom out 3x
     cy.get('button.react-flow__controls-zoomout').click();
     cy.get('button.react-flow__controls-zoomout').click();
     cy.get('button.react-flow__controls-zoomout').click();
+    // drag table
+    cy.dragElement('[data-testid=rf__node-table_1', 10, 200, 0, -100);
+    // drag backdrop
+    cy.dragElement('.react-flow__pane', 10, 10, 100, 300);
+    // check fk checkbox
+    cy.get(`div[data-testid=rf__node-table_1] tr#column_1 input[type=checkbox]`).check();
+    // fill out modal form
+    cy.get('select[name=ptablename]').select('table_2');
     // fill out modal form
     cy.get('select[name=pkeyname]').select('column_2');
     // submit modal form
     cy.get('button#save').click();
+    // drag backdrop
+    cy.dragElement('.react-flow__pane', 10, 10, 100, 300);
+    // drag table
+    cy.dragElement('[data-testid=rf__node-table_1', 10, 200, 50, -200);
     // zoom in
     cy.get('button.react-flow__controls-zoomin').click();
     // save column
     cy.get('button#table_1-column2-saveBtn').click();
+    // drag table
+    cy.dragElement('[data-testid=rf__node-table_1', 10, 200, 0, -100);
     // assert fk arrow is displayed
     cy.get('g[data-testid=rf__edge-table_1-to-table_2]')
       .should('be.visible')
@@ -56,8 +61,4 @@ describe('Foreign Keys', () => {
         );
       });
   });
-
-  it('adds a foreign key if user scroll zooms');
-  it('adds a foreign key if user drags tables');
-  it('adds a foreign key if user drags the backdrop');
 });

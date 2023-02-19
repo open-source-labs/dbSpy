@@ -34,3 +34,23 @@ Cypress.Commands.add('createFk', (fkTable, fkColumn, refTable, refColumn) => {
   // submit form
   cy.get('button#table_1-column2-saveBtn').click();
 });
+
+Cypress.Commands.add('dragElement', (selector, x, y, dx, dy) => {
+  // drag backdrop
+  cy.get(selector)
+    .trigger('mousedown', x, y, {
+      button: 0,
+      force: true,
+      eventConstructor: 'MouseEvent',
+    })
+    .trigger('mousemove', dx, dy, {
+      button: 0,
+      force: true,
+      eventConstructor: 'MouseEvent',
+    })
+    .trigger('mouseup', dx, dy, {
+      button: 0,
+      force: true,
+      eventConstructor: 'MouseEvent',
+    });
+});

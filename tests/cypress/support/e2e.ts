@@ -39,6 +39,17 @@ declare global {
         refTable: string,
         refColumn: string
       ): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Custom command to drag an element.
+       * @example cy.dragElement('.react-flow__pane', 10, 10, 300, 300)
+       */
+      dragElement(
+        selector: string,
+        x: number,
+        y: number,
+        dx: number,
+        dy: number
+      ): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
