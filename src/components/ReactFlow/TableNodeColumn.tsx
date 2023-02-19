@@ -40,7 +40,6 @@ export default function TableNodeColumn({
     if (column.field_name !== columnData.field_name) {
       delete currentSchema[column.TableName][column.field_name];
     }
-    //set new values to the schemaStore
     setSchemaStore(currentSchema);
     setMode('default');
   };
