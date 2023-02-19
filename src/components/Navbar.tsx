@@ -29,7 +29,7 @@ function Navbar() {
           <NavLink to="/" className={linkbtn}>
             Home
           </NavLink>
-          <NavLink to="/display" data-testid="displayButton" className={linkbtn}>
+          <NavLink to="/display" data-testid="navbar-display" className={linkbtn}>
             Display
           </NavLink>
           <button className="text-blue-200 hover:text-[#f8f4eb]" onClick={toggleClass}>
