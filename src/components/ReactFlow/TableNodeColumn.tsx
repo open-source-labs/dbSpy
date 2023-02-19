@@ -175,6 +175,7 @@ export default function TableNodeColumn({
               id={`${id}-editBtn`}
               onClick={() => setMode('edit')}
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+              data-testid="edit-column"
             >
               <FaRegEdit size={17} />
             </button>
