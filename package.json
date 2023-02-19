@@ -17,7 +17,7 @@
     "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem localhost",
     "linuxCert": "rm -rf .cert && mkdir -p .cert && cd .cert && mkcert create-ca && mkcert create-cert --key key.pem --cert cert.pem",
     "watch": "jest --watch",
-    "e2e": "cypress open"
+    "e2e": "cypress open --project ./tests"
   },
   "author": "Steven Geiger, Michael Costello, Alexander Tu, Yufa Li",
   "license": "MIT",
@@ -101,7 +101,7 @@
     "concurrently": "^7.2.2",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "cypress": "^12.5.1",
+    "cypress": "^12.6.0",
     "eslint": "^8.25.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
