@@ -36,6 +36,8 @@ jobs:
         PG_TEST_URL: ${{secrets.PG_TEST_URL}}
         PG_TEST_USERNAME: ${{secrets.PG_TEST_USERNAME}}
         PG_TEST_PW: ${{secrets.PG_TEST_PW}}
+        SECRET_TEST: ${{secrets.SECRET_TEST}}
+    - run: echo $SECRET_TEST
     - run: npm ci
     - run: npm run build --if-present
     - run: npm start
