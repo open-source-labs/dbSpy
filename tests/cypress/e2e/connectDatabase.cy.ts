@@ -10,8 +10,7 @@ describe('Connect Database', () => {
     cy.get('form button').click();
     // assert
     cy.get('div[data-testid="rf__node-public.films"]')
-      // cy.get('div[data-testid=rf__node-public.pilots]')
       .should('be.visible')
-      .and('contain', 'public.pilots');
+      .and('contain', 'public.films');
   });
 });

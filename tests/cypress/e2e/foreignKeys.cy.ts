@@ -5,7 +5,6 @@ describe('Foreign Keys', () => {
   });
 
   it('adds a foreign key', () => {
-    cy.viewport(1197, 1197);
     // edit table_1:column_1 to be a foreign key that references table_2:column_2
     cy.createFk('table_1', 'column_1', 'table_2', 'column_2');
     // assert fk arrow is displayed
@@ -37,7 +36,7 @@ describe('Foreign Keys', () => {
       });
   });
 
-  xit('adds a foreign key if user drags table, drags backdrop, and changes zoom', () => {
+  it('adds a foreign key if user drags table, drags backdrop, and changes zoom', () => {
     //click 'edit column' button
     cy.get(
       `div[data-testid=rf__node-table_1] tr#column_1 button[data-testid=edit-column]`
