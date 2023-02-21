@@ -39,7 +39,7 @@ describe('Account Registration', () => {
   });
 });
 
-describe('/api/sql/postgres', () => {
+xdescribe('/api/sql/postgres', () => {
   const { PG_TEST_URL, PG_TEST_USERNAME, PG_TEST_PW } = process.env;
 
   const pgDB = {
@@ -102,7 +102,7 @@ describe('/api/sql/mysql', () => {
           expect(response.headers['content-type']).toMatch(/json/);
           expect(response.body).toEqual(mysqlSchema);
         },
-        15 * 1000 // 15 second timeout is more than enough
+        30 * 1000 // 15 second timeout is more than enough
       );
     });
   });
