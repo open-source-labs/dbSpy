@@ -30,8 +30,8 @@ export const getSchema = async (req, res, next) => {
         database: database_name,
         // Add SSL certification to avoid security issue.
         ssl: {
-          key: fs.readFileSync('./.cert/key.pem').toString(),
-          cert: fs.readFileSync('./.cert/cert.pem').toString(),
+          key: process.env.SSH_KEY || fs.readFileSync('./.cert/key.pem').toString(),
+          cert: process.env.SSH_CERT || fs.readFileSync('./.cert/cert.pem').toString(),
         },
       },
       dumpToFile: '../db_schemas',
