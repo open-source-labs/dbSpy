@@ -1,7 +1,7 @@
 {
   "name": "dbspy",
   "version": "4.0.0",
-  "description": "The BEST database visualizer, baby!",
+  "description": "The open source dev tool to logically model and build MySQL and PostgreSQL databases",
   "main": "server/server.ts",
   "engines": {
     "npm": "8.x",
