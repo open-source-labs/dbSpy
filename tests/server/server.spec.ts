@@ -54,6 +54,12 @@ describe('/api/sql/postgres', () => {
 
   describe('/schema', () => {
     describe('GET', () => {
+      it('has access to environment variables', () => {
+        expect(PG_TEST_URL).toBeDefined();
+        expect(PG_TEST_USERNAME).toBeDefined();
+        expect(PG_TEST_PW).toBeDefined();
+      });
+
       it('responds with 200, content-type json, and correct body', async () => {
         const response = await request(server)
           .get(`/api/sql/postgres/schema`)
@@ -80,6 +86,12 @@ describe('/api/sql/mysql', () => {
 
   describe('/schema', () => {
     describe('GET', () => {
+      it('has access to environment variables', () => {
+        expect(MYSQL_TEST_URL).toBeDefined();
+        expect(MYSQL_TEST_USERNAME).toBeDefined();
+        expect(MYSQL_TEST_PW).toBeDefined();
+      });
+
       it(
         'responds with 200, content-type JSON, and correct body',
         async () => {
