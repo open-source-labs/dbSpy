@@ -29,10 +29,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: echo $SECRET_TEST | sed -e 's/\(.\)/\1 /g'
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm run linux-cert
+    - name: Make ssh files
+      env: 
+        SSH_KEY: ${{secrets.SSH_KEY}}
+        SSH_CERT: ${{secrets.SSH_CERT}}
+      run: mkdir -p ./.cert && echo -e "${SSH_KEY//_/\\n}" > ./.cert/key.pem && chmod og-rwx ./.cert/key.pem && echo -e "${SSH_CERT//_/\\n}" > ./.cert/cert.pem && chmod og-rwx ./.cert/cert.pem
     - run: npm start
     - name: Run test suites
       env:
@@ -42,6 +45,4 @@ jobs:
         PG_TEST_URL: ${{secrets.PG_TEST_URL}}
         PG_TEST_USERNAME: ${{secrets.PG_TEST_USERNAME}}
         PG_TEST_PW: ${{secrets.PG_TEST_PW}}
-        SSH_KEY: ${{secrets.SSH_KEY}}
-        SSH_CERT: ${{secrets.SSH_CERT}}
       run: npm test
