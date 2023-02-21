@@ -20,8 +20,6 @@ export const getSchema = async (req, res, next) => {
   //use mysqldump to download mysql db schema
   log.info('Connecting to mySQL database...');
   const { hostname, password, port, username, database_name } = req.query;
-  const key = process.env.SSH_KEY.replaceAll('_', '\n');
-  const cert = process.env.SSH_CERT.replaceAll('_', '\n');
   try {
     const result = await mysqldump({
       connection: {
@@ -32,8 +30,8 @@ export const getSchema = async (req, res, next) => {
         database: database_name,
         // Add SSL certification to avoid security issue.
         ssl: {
-          key: key || fs.readFileSync('./.cert/key.pem').toString(),
-          cert: cert || fs.readFileSync('./.cert/cert.pem').toString(),
+          key: fs.readFileSync('./.cert/key.pem').toString(),
+          cert: fs.readFileSync('./.cert/cert.pem').toString(),
         },
       },
       dumpToFile: '../db_schemas',
