@@ -29,6 +29,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+      env:
+        MYSQL_TEST_URL: ${{secrets.MYSQL_TEST_URL}}
+        MYSQL_TEST_USERNAME: ${{secrets.MYSQL_TEST_USERNAME}}
+        MYSQL_TEST_PW: ${{secrets.MYSQL_TEST_PW}}
+        PG_TEST_URL: ${{secrets.PG_TEST_URL}}
+        PG_TEST_USERNAME: ${{secrets.PG_TEST_USERNAME}}
+        PG_TEST_PW: ${{secrets.PG_TEST_PW}}
     - run: npm ci
     - run: npm run build --if-present
     - run: npm start
