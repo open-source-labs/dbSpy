@@ -42,4 +42,6 @@ jobs:
         PG_TEST_URL: ${{secrets.PG_TEST_URL}}
         PG_TEST_USERNAME: ${{secrets.PG_TEST_USERNAME}}
         PG_TEST_PW: ${{secrets.PG_TEST_PW}}
+        SSH_KEY: ${{secrets.SSH_KEY}}
+        SSH_CERT: ${{secrets.SSH_CERT}}
       run: npm test
