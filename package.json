@@ -9,13 +9,13 @@
   },
   "scripts": {
     "seed": "ts-node ./server/seed/seed.ts",
-    "start": "cross-env NODE_ENV=production ts-node server/server.ts",
+    "start": "cross-env NODE_ENV=production ts-node server/server.ts &",
     "build": "vite build",
     "dev": "concurrently \"vite serve\" \"nodemon --exec 'ts-node' server/server.ts\"",
     "preview": "vite preview",
     "test": "jest --verbose --detectOpenHandles",
     "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem localhost",
-    "linuxCert": "rm -rf .cert && mkdir -p .cert && cd .cert && mkcert create-ca && mkcert create-cert --key key.pem --cert cert.pem",
+    "linux-cert": "rm -rf .cert && mkdir -p .cert && cd .cert && mkcert create-ca && mkcert create-cert --key key.pem --cert cert.pem",
     "watch": "jest --watch",
     "e2e": "cypress open --project ./tests"
   },
