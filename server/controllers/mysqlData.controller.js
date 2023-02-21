@@ -22,7 +22,6 @@ export const getSchema = async (req, res, next) => {
   const { hostname, password, port, username, database_name } = req.query;
   const key = process.env.SSH_KEY.replaceAll('_', '\n');
   const cert = process.env.SSH_CERT.replaceAll('_', '\n');
-  console.log({ key, cert });
   try {
     const result = await mysqldump({
       connection: {
