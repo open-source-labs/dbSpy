@@ -39,16 +39,6 @@ describe('Account Registration', () => {
   });
 });
 
-/**
- * Integration tests for remote SQL databases
- *
- * Goals:
- * - Connect to remote database endpoint
- * - Check response status code
- * - Check type of response if applicable
- * - Console.log response, copy paste as expected body data
- */
-
 describe('/api/sql/postgres', () => {
   const { PG_TEST_URL, PG_TEST_USERNAME, PG_TEST_PW } = process.env;
 
@@ -70,12 +60,6 @@ describe('/api/sql/postgres', () => {
           .query(pgDB);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toMatch(/json/);
-        // for (const tableKey in response.body) {
-        //   const table = response.body[tableKey];
-        //   for (const column in table) {
-        //     console.log({ tableKey, column }, table[column].References);
-        //   }
-        // }
         expect(response.body).toEqual(swapiSchema);
       });
     });
@@ -96,14 +80,18 @@ describe('/api/sql/mysql', () => {
 
   describe('/schema', () => {
     describe('GET', () => {
-      it('responds with 200, content-type JSON, and correct body', async () => {
-        const response = await request(server)
-          .get(`/api/sql/mysql/schema`)
-          .query(mysqlDB);
-        expect(response.status).toEqual(200);
-        expect(response.headers['content-type']).toMatch(/json/);
-        expect(response.body).toEqual(mysqlSchema);
-      });
+      it(
+        'responds with 200, content-type JSON, and correct body',
+        async () => {
+          const response = await request(server)
+            .get(`/api/sql/mysql/schema`)
+            .query(mysqlDB);
+          expect(response.status).toEqual(200);
+          expect(response.headers['content-type']).toMatch(/json/);
+          expect(response.body).toEqual(mysqlSchema);
+        },
+        15 * 1000 // 15 second timeout is more than enough
+      );
     });
   });
 });
