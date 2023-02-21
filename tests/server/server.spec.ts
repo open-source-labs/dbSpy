@@ -13,7 +13,8 @@ describe('Server Health', () => {
     expect(response.statusCode).toBe(200);
   });
 });
-describe('Account Registration', () => {
+
+xdescribe('Account Registration', () => {
   const testRegistration = {
     email: 'JohnDoe123@gmail.com',
     full_name: 'John Doe',
@@ -25,13 +26,13 @@ describe('Account Registration', () => {
     // Delete the test account from database
   });
 
-  xit('returns 200 when called', async () => {
+  it('returns 200 when called', async () => {
     const response = await request(server)
       .post('/api/userRegistration')
       .send(testRegistration);
     expect(response.status).toBe(200);
   });
-  xit('checks for duplicate emails', async () => {
+  it('checks for duplicate emails', async () => {
     const duplicateRes = await request(server)
       .post('/api/userRegistration')
       .send({ email: 'alexandertu95@gmail.com' });
@@ -39,7 +40,7 @@ describe('Account Registration', () => {
   });
 });
 
-xdescribe('/api/sql/postgres', () => {
+describe('/api/sql/postgres', () => {
   const { PG_TEST_URL, PG_TEST_USERNAME, PG_TEST_PW } = process.env;
 
   const pgDB = {
@@ -102,7 +103,7 @@ describe('/api/sql/mysql', () => {
           expect(response.headers['content-type']).toMatch(/json/);
           expect(response.body).toEqual(mysqlSchema);
         },
-        30 * 1000 // 15 second timeout is more than enough
+        15 * 1000 // 15 second timeout is more than enough
       );
     });
   });
