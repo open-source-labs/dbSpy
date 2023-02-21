@@ -9,7 +9,7 @@ dotenv.config();
 // Find user via Email
 export const findUser = async (email: string, password?: string) => {
   log.info('Finding user (helper function)');
-  const connection = mysql.createConnection(process.env.DATABASE_URL!);
+  const connection = mysql.createConnection(process.env.USER_DB_URL!);
   const queryStr = 'SELECT * FROM users WHERE email = ?';
   return new Promise((resolve, reject) => {
     connection.query(queryStr, [email], (err, rows) => {
@@ -23,7 +23,7 @@ export const findUser = async (email: string, password?: string) => {
 // Creating user via Google OAuth
 export const createUser = async (user: string[]) => {
   log.info('Creating user (helper function)');
-  const connection = mysql.createConnection(process.env.DATABASE_URL!);
+  const connection = mysql.createConnection(process.env.USER_DB_URL!);
   const queryStr =
     'INSERT IGNORE INTO users (sub, full_name, email, picture) VALUES (?, ?, ?, ?)';
   const values = user;
@@ -39,7 +39,7 @@ export const createUser = async (user: string[]) => {
 // Register w/o OAuth
 export const userRegistration: RequestHandler = async (req, res, next) => {
   log.info('Registering user (middleware)');
-  const connection = mysql.createConnection(process.env.DATABASE_URL!);
+  const connection = mysql.createConnection(process.env.USER_DB_URL!);
   const foundUser = await findUser(req.body.email);
   if (!foundUser) {
     const { full_name, email, password } = req.body;
@@ -88,7 +88,7 @@ export const verifyUser: RequestHandler = async (req, res, next) => {
 // Save currentSchema into database
 export const saveSchema: RequestHandler = async (req, res, next) => {
   log.info(`Saving user's schema (middleware)`);
-  const connection = mysql.createConnection(process.env.DATABASE_URL!);
+  const connection = mysql.createConnection(process.env.USER_DB_URL!);
   const updateColQuery = `UPDATE users SET pg_schema = '${req.body.schema}' WHERE email = '${req.body.email}';`;
   connection.query(updateColQuery, (err, data) => {
     if (err) return next(err);
@@ -100,7 +100,7 @@ export const saveSchema: RequestHandler = async (req, res, next) => {
 // Retrive saved schema
 export const retrieveSchema: RequestHandler = async (req, res, next) => {
   log.info(`Retrieving saved user's saved schema (middleware)`);
-  const connection = mysql.createConnection(process.env.DATABASE_URL!);
+  const connection = mysql.createConnection(process.env.USER_DB_URL!);
   const updateColQuery = `SELECT pg_schema FROM users WHERE email = '${req.params.email}';`;
   connection.query(updateColQuery, (err, data) => {
     if (err) return next(err);

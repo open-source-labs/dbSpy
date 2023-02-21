@@ -4,8 +4,8 @@ dotenv.config()
 import log from '../logger/index'
 
 // Connect to SQL db and create users table
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found');
-const connection = mysql.createConnection(process.env.DATABASE_URL);
+if (!process.env.USER_DB_URL) throw new Error('USER_DB_URL not found');
+const connection = mysql.createConnection(process.env.USER_DB_URL);
 
 const loadData = () => {
     const createUserTable = `

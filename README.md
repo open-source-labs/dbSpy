@@ -34,7 +34,7 @@
 
 1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
 
-2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement 
+2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement
 
 3. **Table Relationship Visuals** Relationships of individual tables are easily identified when clicking on a table.
 
@@ -52,22 +52,23 @@
 
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-<img src="images/Darkmode.png">
----
+## <img src="images/Darkmode.png">
 
 ### Getting started
+
 You will need your own mySQL and redis databases for backend functions, and Google Cloud project for OAuth.
+
 - Fork and clone this repo
 - Add a db_schemas folder in server directory
 - Add a .env file to the root directory
 - Go to the Google Cloud Platform Console
-- Set up OAuth 2.0 credentials as laid out in <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a>. Make sure 
+- Set up OAuth 2.0 credentials as laid out in <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a>. Make sure
   your authorized redirect URI in the credentials you create matches the GOOGLE_AUTH_CALLBACK variable below.
 - Populate the .env file with the newly created code below:
 
 ```bash
 GOOGLE_AUTH_CALLBACK = ''
-DATABASE_URL = [mysql url for storing user data]
+USER_DB_URL = [mysql url for storing user data]
 DEV_SERVER_ENDPOINT = 'http://localhost:3000'
 DEV_CLIENT_ENDPOINT = 'http://localhost:8080'
 CLIENT_ENDPOINT = 'http://localhost:3000'
@@ -89,6 +90,7 @@ $ npm install
 ```
 
 - Execute the following command to populate your mySql database with a users table:
+
 ```bash
 $ npm run seed
 ```
@@ -103,13 +105,16 @@ $ npm run dev
 
 ### Connecting with remote MySQL
 
-- To connect with the SQL database, we must create and configure SSL certificates. 
+- To connect with the SQL database, we must create and configure SSL certificates.
 
 1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
+
 ```bash
 npm install -g mkcert
 ```
-  2. Run the following script
+
+2. Run the following script
+
 ```bash
 npm run cert
 ```
@@ -142,7 +147,7 @@ npm run cert
 ## Adding column(s) to a table
 
 1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column in the table in edit mode.
-<img src="images/Create%20tables.png">
+   <img src="images/Create%20tables.png">
 
 ### Editing an existing column in a table
 
@@ -198,8 +203,8 @@ npm run cert
 - Kevin Wang • [LinkedIn](https://www.linkedin.com/in/kevin-w-b841b13/) • [Github](https://github.com/kwang929)
 - Kris Magat • [LinkedIn](https://www.linkedin.com/in/kmag/) • [Github](https://github.com/KrisMagat)
 - Santiago Gil Maya • [LinkedIn](https://www.linkedin.com/in/santiago-gil-929721121/) • [Github](https://github.com/santiago-gil)
-- Alexander Tu  • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
-- Michael Costello  • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
+- Alexander Tu • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
+- Michael Costello • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
 - Steven Geiger • [LinkedIn](https://www.linkedin.com/in/sgeiger9/) • [Github](https://github.com/geistnine)
 - Yufa Li • [LinkedIn](https://www.linkedin.com/in/yufa-li/) • [Github](https://github.com/01001101CK)
 
@@ -207,4 +212,4 @@ npm run cert
 
 ### License
 
-dbSpy is developed under the MIT license. 
+dbSpy is developed under the MIT license.
