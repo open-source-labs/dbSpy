@@ -49,4 +49,5 @@ jobs:
         TEST_USER_PW: ${{secrets.TEST_USER_PW}}
         USER_DB_USER: ${{secrets.USER_DB_USER}}
         USER_DB_PW: ${{secrets.USER_DB_PW}}
+        USER_DB_URL: ${{secrets.USER_DB_URL}}
       run: npm test
