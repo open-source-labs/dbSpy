@@ -47,4 +47,6 @@ jobs:
         PG_TEST_PW: ${{secrets.PG_TEST_PW}}
         TEST_USER_EMAIL: ${{secrets.TEST_USER_EMAIL}}
         TEST_USER_PW: ${{secrets.TEST_USER_PW}}
+        USER_DB_USER: ${{secrets.USER_DB_USER}}
+        USER_DB_PW: ${{secrets.USER_DB_PW}}
       run: npm test
