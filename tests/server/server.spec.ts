@@ -9,12 +9,32 @@ import exp from 'constants';
 dotenv.config();
 const chance = new Chance();
 const server = 'http://localhost:3000';
-const { TEST_USER_EMAIL, TEST_USER_PW } = process.env;
+const {
+  TEST_USER_EMAIL,
+  TEST_USER_PW,
+  PG_TEST_URL,
+  PG_TEST_USERNAME,
+  PG_TEST_PW,
+  MYSQL_TEST_URL,
+  MYSQL_TEST_USERNAME,
+  MYSQL_TEST_PW,
+} = process.env;
 
 describe('Server Health', () => {
-  it('server is running as expected', async () => {
+  it('is running as expected', async () => {
     const response = await request(server).get('/api/healthcheck');
     expect(response.statusCode).toBe(200);
+  });
+
+  it('has access to environment variables', () => {
+    expect(PG_TEST_URL).toBeDefined();
+    expect(PG_TEST_USERNAME).toBeDefined();
+    expect(PG_TEST_PW).toBeDefined();
+    expect(MYSQL_TEST_URL).toBeDefined();
+    expect(MYSQL_TEST_USERNAME).toBeDefined();
+    expect(MYSQL_TEST_PW).toBeDefined();
+    expect(TEST_USER_EMAIL).toBeDefined();
+    expect(TEST_USER_PW).toBeDefined();
   });
 });
 
@@ -128,8 +148,6 @@ describe('/api/retrieveSchema', () => {
 });
 
 describe('/api/sql/postgres/schema', () => {
-  const { PG_TEST_URL, PG_TEST_USERNAME, PG_TEST_PW } = process.env;
-
   const pgDB = {
     db_type: 'postgres',
     database_link: PG_TEST_URL,
@@ -140,12 +158,6 @@ describe('/api/sql/postgres/schema', () => {
     database_name: 'xkpuafao',
   }; // SWAPI
 
-  it('has access to environment variables', () => {
-    expect(PG_TEST_URL).toBeDefined();
-    expect(PG_TEST_USERNAME).toBeDefined();
-    expect(PG_TEST_PW).toBeDefined();
-  });
-
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).get(`/api/sql/postgres/schema`).query(pgDB);
     expect(response.status).toBe(200);
@@ -155,7 +167,6 @@ describe('/api/sql/postgres/schema', () => {
 });
 
 describe('/api/sql/mysql/schema', () => {
-  const { MYSQL_TEST_URL, MYSQL_TEST_USERNAME, MYSQL_TEST_PW } = process.env;
   const mysqlDB = {
     db_type: 'mysql',
     database_link: MYSQL_TEST_URL,
@@ -165,12 +176,6 @@ describe('/api/sql/mysql/schema', () => {
     port: '3306',
     database_name: 'dbspytest',
   }; // Test DB
-
-  it('has access to environment variables', () => {
-    expect(MYSQL_TEST_URL).toBeDefined();
-    expect(MYSQL_TEST_USERNAME).toBeDefined();
-    expect(MYSQL_TEST_PW).toBeDefined();
-  });
 
   it(
     'responds with 200, content-type JSON, and correct body',
