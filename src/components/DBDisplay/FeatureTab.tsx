@@ -119,20 +119,16 @@ export default function FeatureTab(props: any) {
     }
   };
 
-  const loadSchema = (): void => {
-    if (!user) alert('Sign in first');
-    else {
-      fetch(`/api/retrieveSchema/${user.email}`)
-        .then((data) => {
-          setWelcome(false);
-          return data.json();
-        })
-        .then((res) => {
-          res === '{}' || res === null
-            ? alert('No database stored!')
-            : setSchemaStore(JSON.parse(res));
-        })
-        .catch((err) => console.error('err retrieve', err));
+  const loadSchema = async () => {
+    try {
+      console.log({ user });
+      if (!user) return alert('Sign in first');
+      const data = await fetch(`/api/retrieveSchema/${user.email}`);
+      if (data.status === 204) return alert('No database stored!');
+      const schemaString = await data.json();
+      return setSchemaStore(JSON.parse(schemaString));
+    } catch (err) {
+      console.error('err retrieve', err);
     }
   };
 
