@@ -1,4 +1,4 @@
-export default {
+export const swapiSchema = {
   'public.films': {
     _id: {
       Name: '_id',
@@ -918,3 +918,5 @@ export default {
     },
   },
 };
+
+export const swapiString = JSON.stringify(swapiSchema);

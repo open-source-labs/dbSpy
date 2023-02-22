@@ -1,6 +1,6 @@
 //// Run your application first to test server
 import request from 'supertest';
-import swapiSchema from './utils/swapiSchema';
+import { swapiSchema, swapiString } from './utils/swapiSchema';
 import mysqlSchema from './utils/mysqlSchema';
 import dotenv from 'dotenv';
 import Chance from 'chance';
@@ -112,12 +112,10 @@ describe('/api/verifyUser', () => {
 
 describe('/api/saveSchema', () => {
   it('responds with 200', async () => {
-    const response = await request(server)
-      .post('/api/saveSchema')
-      .send({
-        email: TEST_USER_EMAIL,
-        schema: JSON.stringify(swapiSchema),
-      });
+    const response = await request(server).post('/api/saveSchema').send({
+      email: TEST_USER_EMAIL,
+      schema: swapiString,
+    });
     expect(response.status).toBe(200);
   });
 
@@ -136,7 +134,7 @@ describe('/api/retrieveSchema', () => {
     const response = await request(server).get(`/api/retrieveSchema/${TEST_USER_EMAIL}`);
     expect(response.status).toBe(200);
     expect(response.header['content-type']).toMatch(/json/);
-    expect(JSON.parse(response.body)).toEqual(swapiSchema);
+    expect(response.body).toEqual(swapiString);
   });
 
   it('responds with 204 if user has no saved schema', async () => {

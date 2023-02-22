@@ -5,15 +5,15 @@ import log from '../logger';
 
 dotenv.config();
 
-const { USER_DB_HOST, USER_DB_USER, USER_DB_PW, USER_DB_NAME } = process.env;
+const { USER_DB_USER, USER_DB_PW } = process.env;
 
 const pool = mysql
   .createPool({
     connectionLimit: 10,
-    host: USER_DB_HOST,
+    host: 'us-west.connect.psdb.cloud',
     user: USER_DB_USER,
     password: USER_DB_PW,
-    database: USER_DB_NAME,
+    database: 'dbspy_4',
     ssl: {
       key: fs.readFileSync('./.cert/key.pem').toString(),
       cert: fs.readFileSync('./.cert/cert.pem').toString(),
