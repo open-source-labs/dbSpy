@@ -15,7 +15,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       matrix:
         node-version: [16.x, 18.x]
@@ -55,3 +54,5 @@ jobs:
         with:
           name: server-log
           path: ./serverLog.txt
+        continue-on-error: true
+
