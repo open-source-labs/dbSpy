@@ -53,8 +53,8 @@ describe('/api/userRegistration', () => {
         .send(testRegistration);
       expect(response.status).toBe(200);
     },
-    10 * 1000
-  ); // takes a bit longer for first pool connection
+    20 * 1000
+  ); // first pool connection takes a bit longer
 
   it('responds with 403 and error message for duplicate emails', async () => {
     const response = await request(server)
