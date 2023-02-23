@@ -35,9 +35,7 @@ jobs:
           SSH_KEY: ${{secrets.SSH_KEY}}
           SSH_CERT: ${{secrets.SSH_CERT}}
         run: mkdir -p ./.cert && echo -e "${SSH_KEY//_/\\n}" > ./.cert/key.pem && chmod og-rwx ./.cert/key.pem && echo -e "${SSH_CERT//_/\\n}" > ./.cert/cert.pem && chmod og-rwx ./.cert/cert.pem
-      - name: Start server
-        run: npm start
-        background: true
+      - run: npm start
       - name: Run test suites
         env:
           MYSQL_TEST_URL: ${{secrets.MYSQL_TEST_URL}}
