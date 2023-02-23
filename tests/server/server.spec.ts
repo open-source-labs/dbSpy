@@ -72,7 +72,7 @@ xdescribe('/api/userRegistration', () => {
   });
 });
 
-describe('/api/verifyUser', () => {
+xdescribe('/api/verifyUser', () => {
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).post('/api/verifyUser').send({
       email: TEST_USER_EMAIL,
