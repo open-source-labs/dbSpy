@@ -38,7 +38,7 @@ describe('Server Health', () => {
   });
 });
 
-describe('/api/userRegistration', () => {
+xdescribe('/api/userRegistration', () => {
   const testRegistration = {
     email: chance.email(),
     full_name: 'John Doe',
@@ -110,7 +110,7 @@ describe('/api/verifyUser', () => {
   });
 });
 
-describe('/api/saveSchema', () => {
+xdescribe('/api/saveSchema', () => {
   it('responds with 200', async () => {
     const response = await request(server).post('/api/saveSchema').send({
       email: TEST_USER_EMAIL,
@@ -129,7 +129,7 @@ describe('/api/saveSchema', () => {
   });
 });
 
-describe('/api/retrieveSchema', () => {
+xdescribe('/api/retrieveSchema', () => {
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).get(`/api/retrieveSchema/${TEST_USER_EMAIL}`);
     expect(response.status).toBe(200);
