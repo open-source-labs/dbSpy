@@ -20,6 +20,9 @@ package-lock.json
 .env
 cypress.env.json
 
+# Log
+serverLog.txt
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

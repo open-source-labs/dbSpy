@@ -5,13 +5,22 @@ import pino from 'pino';
 import dayjs from 'dayjs';
 
 const transport = pino.transport({
-    target: 'pino-pretty',
-    options: { colorize: true }
-})
+  targets: [
+    { level: 'info', target: 'pino-pretty', options: { colorize: true } },
+    {
+      level: 'trace',
+      target: 'pino/file',
+      options: { destination: './serverLog.txt' },
+    },
+  ],
+});
 
-const log = pino({
+const log = pino(
+  {
     base: { pid: false },
-    timestamp: () => `,"time":"${dayjs().format()}"`
-}, transport);
+    timestamp: () => `,"time":"${dayjs().format()}"`,
+  },
+  transport
+);
 
 export default log;
