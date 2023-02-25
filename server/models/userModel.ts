@@ -11,6 +11,8 @@ const SSL_CERT = process.env.SSL_CERT as string;
 
 console.log('typeof SSL_KEY', typeof SSL_KEY);
 console.log('typeof SSL_CERT', typeof SSL_CERT);
+console.log('typeof USER_DB_USER', typeof USER_DB_USER);
+console.log('typeof USER_DB_PW', typeof USER_DB_PW);
 
 const pool = mysql
   .createPool({
