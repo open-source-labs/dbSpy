@@ -5,15 +5,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { USER_DB_USER, USER_DB_PW } = process.env;
-
 const SSL_KEY = process.env.SSL_KEY as string;
 const SSL_CERT = process.env.SSL_CERT as string;
-
-console.log('userModel.ts');
-console.log('typeof SSL_KEY', typeof SSL_KEY);
-console.log('typeof SSL_CERT', typeof SSL_CERT);
-console.log('typeof USER_DB_USER', typeof USER_DB_USER);
-console.log('typeof USER_DB_PW', typeof USER_DB_PW);
 
 const pool = mysql
   .createPool({

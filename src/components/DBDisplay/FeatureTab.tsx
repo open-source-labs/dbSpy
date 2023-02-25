@@ -121,7 +121,6 @@ export default function FeatureTab(props: any) {
 
   const loadSchema = async () => {
     try {
-      console.log({ user });
       if (!user) return alert('Sign in first');
       const data = await fetch(`/api/retrieveSchema/${user.email}`);
       if (data.status === 204) return alert('No database stored!');
