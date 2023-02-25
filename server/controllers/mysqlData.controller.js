@@ -1,11 +1,12 @@
 import fs from 'fs';
 import log from '../logger/index';
 const mysqldump = require('mysqldump');
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
 
 const mySQLdataController = {};
 
+console.log('mysqlData.controller');
 console.log('typeof SSL_KEY', typeof process.env.SSL_KEY);
 console.log('typeof SSL_CERT', typeof process.env.SSL_CERT);
 
