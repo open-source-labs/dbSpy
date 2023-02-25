@@ -5,16 +5,10 @@ import pino from 'pino';
 import dayjs from 'dayjs';
 
 const transport = pino.transport({
-  targets: [
-    { level: 'info', target: 'pino-pretty', options: { colorize: true } },
-    {
-      level: 'trace',
-      target: 'pino/file',
-      options: { destination: './serverLog.txt' },
-    },
-  ],
+  target: 'pino-pretty',
+  options: { colorize: true },
 });
-// TODO: REMOVE WRITING TO LOG FILE
+
 const log = pino(
   {
     base: { pid: false },
