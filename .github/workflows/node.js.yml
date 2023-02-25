@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - 'main'
-      #       4.1 included temporarily to test out github workflow
+      # TODO: 4.1 included temporarily to test out github workflow
       - '4.1'
   pull_request:
     branches: ['main']
@@ -15,6 +15,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # TODO: REMOVE CONTINUE-ON-ERROR
     continue-on-error: true
     strategy:
       matrix:
@@ -57,4 +58,3 @@ jobs:
         with:
           name: server-log
           path: ./serverLog.txt
-

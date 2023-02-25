@@ -14,7 +14,7 @@ const transport = pino.transport({
     },
   ],
 });
-
+// TODO: REMOVE WRITING TO LOG FILE
 const log = pino(
   {
     base: { pid: false },

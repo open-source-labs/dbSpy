@@ -15,8 +15,8 @@ const pool = mysql
     password: USER_DB_PW,
     database: 'dbspy_4',
     ssl: {
-      key: fs.readFileSync('./.cert/key.pem').toString(),
-      cert: fs.readFileSync('./.cert/cert.pem').toString(),
+      key: Buffer.from(process.env.SSL_KEY as string, 'base64').toString('ascii'),
+      cert: Buffer.from(process.env.SSL_CERT as string, 'base64').toString('ascii'),
     },
   })
   .promise(); // wrap with promise API
