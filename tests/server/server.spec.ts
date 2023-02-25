@@ -45,16 +45,12 @@ describe('/api/userRegistration', () => {
     password: 'ValidPassword123',
   };
 
-  it(
-    'responds with 200 for successful registration',
-    async () => {
-      const response = await request(server)
-        .post('/api/userRegistration')
-        .send(testRegistration);
-      expect(response.status).toBe(200);
-    },
-    20 * 1000
-  ); // first pool connection takes a bit longer
+  it('responds with 200 for successful registration', async () => {
+    const response = await request(server)
+      .post('/api/userRegistration')
+      .send(testRegistration);
+    expect(response.status).toBe(200);
+  });
 
   it('responds with 403 and error message for duplicate emails', async () => {
     const response = await request(server)

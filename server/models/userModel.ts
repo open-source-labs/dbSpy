@@ -1,11 +1,16 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-import fs from 'fs';
 import log from '../logger';
 
 dotenv.config();
 
 const { USER_DB_USER, USER_DB_PW } = process.env;
+
+const SSL_KEY = process.env.SSL_KEY as string;
+const SSL_CERT = process.env.SSL_CERT as string;
+
+console.log('typeof SSL_KEY', typeof SSL_KEY);
+console.log('typeof SSL_CERT', typeof SSL_CERT);
 
 const pool = mysql
   .createPool({
@@ -15,8 +20,8 @@ const pool = mysql
     password: USER_DB_PW,
     database: 'dbspy_4',
     ssl: {
-      key: Buffer.from(process.env.SSL_KEY as string, 'base64').toString('ascii'),
-      cert: Buffer.from(process.env.SSL_CERT as string, 'base64').toString('ascii'),
+      key: Buffer.from(SSL_KEY, 'base64').toString('ascii'),
+      cert: Buffer.from(SSL_CERT, 'base64').toString('ascii'),
     },
   })
   .promise(); // wrap with promise API
