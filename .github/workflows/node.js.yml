@@ -27,6 +27,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+      - name: Start server
+        env:
+          USER_DB_USER: ${{secrets.USER_DB_USER}}
+          USER_DB_PW: ${{secrets.USER_DB_PW}}
+          USER_DB_URL: ${{secrets.USER_DB_URL}}
+        run: npm start
+      - name: Run test suites
         env:
           MYSQL_TEST_URL: ${{secrets.MYSQL_TEST_URL}}
           MYSQL_TEST_USERNAME: ${{secrets.MYSQL_TEST_USERNAME}}
@@ -36,15 +45,7 @@ jobs:
           PG_TEST_PW: ${{secrets.PG_TEST_PW}}
           TEST_USER_EMAIL: ${{secrets.TEST_USER_EMAIL}}
           TEST_USER_PW: ${{secrets.TEST_USER_PW}}
-          USER_DB_USER: ${{secrets.USER_DB_USER}}
-          USER_DB_PW: ${{secrets.USER_DB_PW}}
-          USER_DB_URL: ${{secrets.USER_DB_URL}}
-          SSL_KEY: ${{secrets.SSL_KEY}}
-          SSL_CERT: ${{secrets.SSL_CERT}}
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm start
-      - run: npm test
+        run: npm test
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
