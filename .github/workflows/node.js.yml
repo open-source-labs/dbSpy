@@ -51,6 +51,8 @@ jobs:
           USER_DB_USER: ${{secrets.USER_DB_USER}}
           USER_DB_PW: ${{secrets.USER_DB_PW}}
           USER_DB_URL: ${{secrets.USER_DB_URL}}
+          SSL_KEY: ${{secrets.SSL_KEY}}
+          SSL_CERT: ${{secrets.SSL_CERT}}
         run: npm test
       - name: Archive production artifacts
         continue-on-error: true
