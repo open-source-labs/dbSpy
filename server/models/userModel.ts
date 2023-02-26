@@ -1,4 +1,5 @@
 import mysql from 'mysql2';
+import fs from 'fs';
 import log from '../logger';
 
 const dotenv = require('dotenv');
@@ -16,8 +17,12 @@ const pool = mysql
     password: USER_DB_PW,
     database: 'dbspy_4',
     ssl: {
-      key: Buffer.from(SSL_KEY, 'base64').toString('ascii'),
-      cert: Buffer.from(SSL_CERT, 'base64').toString('ascii'),
+      key:
+        fs.readFileSync('./.cert/key.pem').toString() ||
+        Buffer.from(SSL_KEY, 'base64').toString('ascii'),
+      cert:
+        fs.readFileSync('./.cert/cert.pem').toString() ||
+        Buffer.from(SSL_CERT, 'base64').toString('ascii'),
     },
   })
   .promise(); // wrap with promise API
