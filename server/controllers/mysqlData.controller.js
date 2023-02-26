@@ -5,6 +5,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const mySQLdataController = {};
+const SSL_KEY =
+  Buffer.from(process.env.SSL_KEY, 'base64').toString('ascii') ||
+  fs.readFileSync('./.cert/key.pem').toString();
+const SSL_CERT =
+  Buffer.from(process.env.SSL_CERT, 'base64').toString('ascii') ||
+  fs.readFileSync('./.cert/cert.pem').toString();
 
 /**
  * mySQLdataController.getSchema
@@ -28,14 +34,9 @@ export const getSchema = async (req, res, next) => {
         port,
         user: username,
         database: database_name,
-        // Add SSL certification to avoid security issue.
         ssl: {
-          key:
-            fs.readFileSync('./.cert/key.pem').toString() ||
-            Buffer.from(process.env.SSL_KEY, 'base64').toString('ascii'),
-          cert:
-            fs.readFileSync('./.cert/cert.pem').toString() ||
-            Buffer.from(process.env.SSL_CERT, 'base64').toString('ascii'),
+          key: SSL_KEY,
+          cert: SSL_CERT,
         },
       },
       dumpToFile: '../db_schemas',
