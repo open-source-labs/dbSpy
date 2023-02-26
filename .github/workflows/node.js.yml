@@ -5,10 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches:
-      - 'main'
-      # TODO: 4.1 included temporarily to test out github workflow
-      - '4.1'
+    branches: ['main']
   pull_request:
     branches: ['main']
 
@@ -36,7 +33,7 @@ jobs:
           USER_DB_URL: ${{secrets.USER_DB_URL}}
           SSL_KEY: ${{secrets.SSL_KEY}}
           SSL_CERT: ${{secrets.SSL_CERT}}
-        run: npm start
+        run: npm run start:test
       - name: Run test suites
         env:
           MYSQL_TEST_URL: ${{secrets.MYSQL_TEST_URL}}
