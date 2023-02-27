@@ -7,11 +7,13 @@ dotenv.config();
 
 const { USER_DB_USER, USER_DB_PW } = process.env;
 const SSL_KEY =
-  Buffer.from(process.env.SSL_KEY as string, 'base64').toString('ascii') ||
-  fs.readFileSync('./.cert/key.pem').toString();
+  typeof process.env.SSL_KEY === 'string'
+    ? Buffer.from(process.env.SSL_KEY, 'base64').toString('ascii')
+    : fs.readFileSync('./.cert/key.pem').toString();
 const SSL_CERT =
-  Buffer.from(process.env.SSL_CERT as string, 'base64').toString('ascii') ||
-  fs.readFileSync('./.cert/cert.pem').toString();
+  typeof process.env.SSL_CERT === 'string'
+    ? Buffer.from(process.env.SSL_CERT, 'base64').toString('ascii')
+    : fs.readFileSync('./.cert/cert.pem').toString();
 
 const pool = mysql
   .createPool({
