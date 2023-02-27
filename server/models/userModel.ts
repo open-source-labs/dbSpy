@@ -6,6 +6,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { USER_DB_USER, USER_DB_PW } = process.env;
+
+// SSL data stored as environment variable for GitHub Actions access
+// Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables
 const SSL_KEY =
   typeof process.env.SSL_KEY === 'string'
     ? Buffer.from(process.env.SSL_KEY, 'base64').toString('ascii')
