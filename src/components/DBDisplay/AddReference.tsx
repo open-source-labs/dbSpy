@@ -35,8 +35,21 @@ const AddReference = () => {
     e.preventDefault();
 
     try {
+      /**React Flow hack.
+       * Problem: Viewports larger than 1197x1197px prevent edges from rendering
+       * Hacky Solution: Minify RF. Send resize-func to task queue so RF only returns to normal once edge rendering is complete
+       * Process is fast enough to not be noticeable to user
+       */
+      document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
       addForeignKeySchema(formValues);
       setEditRefMode(false);
+      setTimeout(
+        () =>
+          document
+            .querySelector('.flow')
+            ?.setAttribute('style', 'height: 80%; width: 95%;'),
+        0
+      );
     } catch (err) {
       window.alert(err);
       console.error(err);

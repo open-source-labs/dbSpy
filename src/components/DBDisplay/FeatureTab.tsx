@@ -20,7 +20,8 @@ export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
 
-  const { schemaStore, setSchemaStore, undoHandler, redoHandler, historyCounter } = useSchemaStore((state) => state);
+  const { schemaStore, setSchemaStore, undoHandler, redoHandler, historyCounter } =
+    useSchemaStore((state) => state);
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
   const { setWelcome } = useSettingsStore((state) => state);
@@ -108,41 +109,35 @@ export default function FeatureTab(props: any) {
 
   // Temp
   const saveSchema = (): void => {
-    if (!user) alert('Sign in first')
+    if (!user) alert('Sign in first');
     else {
       const postBody = {
         email: user.email,
-        schema: JSON.stringify(schemaStore)
-      }
-      axios.post('/api/saveSchema', postBody)
-        .catch(err => console.error('err', err))
+        schema: JSON.stringify(schemaStore),
+      };
+      axios.post('/api/saveSchema', postBody).catch((err) => console.error('err', err));
     }
-  }
+  };
 
-  const loadSchema = (): void => {
-    if (!user) alert('Sign in first')
-    else {
-      fetch(`/api/retrieveSchema/${user.email}`)
-        .then(data => {
-          setWelcome(false)
-          return data.json()
-        })
-        .then(res => {
-          res === '{}' || res === null
-            ? alert('No database stored!')
-            : setSchemaStore(JSON.parse(res))
-        })
-        .catch(err => console.error('err retrieve', err))
+  const loadSchema = async () => {
+    try {
+      if (!user) return alert('Sign in first');
+      const data = await fetch(`/api/retrieveSchema/${user.email}`);
+      if (data.status === 204) return alert('No database stored!');
+      const schemaString = await data.json();
+      return setSchemaStore(JSON.parse(schemaString));
+    } catch (err) {
+      console.error('err retrieve', err);
     }
-  }
+  };
 
   // Clears session + reset store
   const signoutSession = async () => {
-    await fetch(`/api/logout`)
-    window.open('/', '_self')
+    await fetch(`/api/logout`);
+    window.open('/', '_self');
     setSchemaStore({});
     setUser(null);
-  }
+  };
 
   // END: HELPER FUNCTIONS
 
@@ -162,6 +157,7 @@ export default function FeatureTab(props: any) {
                 <a
                   onClick={connectDb}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  data-testid="connect-database"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -369,7 +365,8 @@ export default function FeatureTab(props: any) {
                         strokeLinejoin="round"
                         d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
                       />
-                      <polyline points="17 21 17 13 7 13 7 21" />  <polyline points="7 3 7 8 15 8" />
+                      <polyline points="17 21 17 13 7 13 7 21" />{' '}
+                      <polyline points="7 3 7 8 15 8" />
                     </svg>
                     <span className="ml-3 flex-1 whitespace-nowrap">Save Database</span>
                   </a>
@@ -398,7 +395,7 @@ export default function FeatureTab(props: any) {
                     <span className="ml-3 flex-1 whitespace-nowrap">Load Database</span>
                   </a>
                 </li>
-                {user ?
+                {user ? (
                   <li>
                     <a
                       onClick={() => signoutSession()}
@@ -410,14 +407,16 @@ export default function FeatureTab(props: any) {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white">
+                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                      >
                         <path stroke="none" d="M0 0h24v24H0z" />
                         <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
                         <path d="M7 12h14l-3 -3m0 6l3 -3" />
                       </svg>
                       <span className="ml-3 flex-1 whitespace-nowrap">Sign Out</span>
                     </a>
-                  </li> : null}
+                  </li>
+                ) : null}
               </ul>
             </div>
           </div>

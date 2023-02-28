@@ -36,7 +36,7 @@ export type ColumnSchema = {
   IsForeignKey: boolean;
   field_name: string;
   data_type: SQLDataType;
-  additional_constraints: string;
+  additional_constraints: 'NULL' | 'NOT NULL' | null;
 };
 export interface Table {
   [key: string]: ColumnSchema;

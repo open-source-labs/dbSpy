@@ -14,42 +14,13 @@ declare module 'express-session' {
     user: string;
   }
 }
-import connectRedis from 'connect-redis';
 import dotenv from 'dotenv';
 dotenv.config();
-import Redis from 'ioredis';
 import { getCurrentUser } from '../service/session.service';
 import path from 'path';
-import log from '../logger/index'
-
-const client_url =
-  process.env.NODE_ENV === 'development'
-    ? process.env.DEV_CLIENT_ENDPOINT
-    : process.env.CLIENT_ENDPOINT;
+import log from '../logger/index';
 
 const routes = async (app: Express) => {
-  // setup UpStash client and Redis store
-  const RedisStore = connectRedis(session);
-
-  const client = new Redis(
-    `rediss://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}:${process.env.REDIS_PORT}`
-  );
-
-  // set session cookie
-  app.use(
-    session({
-      store: new RedisStore({ client }),
-      secret: process.env.REDIS_SECRET as string,
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        secure: process.env.ENVIRONMENT === 'production' ? true : 'auto',
-        maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'lax',
-      },
-    })
-  );
-
   app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
 
   app.get('/api/oauth/google', handleGoogleAuth);
@@ -92,6 +63,8 @@ const routes = async (app: Express) => {
       message: 'An error occurred. This is the global error handler.',
     };
     const errorObj = Object.assign({}, defaultErr, err);
+    log.error(errorObj.message);
+    log.error(errorObj.log);
     return res.status(errorObj.status).json(errorObj.message);
   });
 };

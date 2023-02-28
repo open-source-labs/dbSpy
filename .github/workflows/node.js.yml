@@ -5,30 +5,43 @@ name: Node.js CI
 
 on:
   push:
-    branches:
-      - "main"
-#       4.1 included temporarily to test out github workflow
-      - "4.1"
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+      - name: Start server
+        env:
+          USER_DB_USER: ${{secrets.USER_DB_USER}}
+          USER_DB_PW: ${{secrets.USER_DB_PW}}
+          USER_DB_URL: ${{secrets.USER_DB_URL}}
+          SSL_KEY: ${{secrets.SSL_KEY}}
+          SSL_CERT: ${{secrets.SSL_CERT}}
+        run: npm run start:test
+      - name: Run test suites
+        env:
+          MYSQL_TEST_URL: ${{secrets.MYSQL_TEST_URL}}
+          MYSQL_TEST_USERNAME: ${{secrets.MYSQL_TEST_USERNAME}}
+          MYSQL_TEST_PW: ${{secrets.MYSQL_TEST_PW}}
+          PG_TEST_URL: ${{secrets.PG_TEST_URL}}
+          PG_TEST_USERNAME: ${{secrets.PG_TEST_USERNAME}}
+          PG_TEST_PW: ${{secrets.PG_TEST_PW}}
+          TEST_USER_EMAIL: ${{secrets.TEST_USER_EMAIL}}
+          TEST_USER_PW: ${{secrets.TEST_USER_PW}}
+        run: npm test

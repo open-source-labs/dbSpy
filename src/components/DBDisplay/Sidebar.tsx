@@ -54,9 +54,7 @@ const Sidebar = (props: any) => {
 
     //change between which getSchema from MySQL to postgres based on db_type
     const dbSchema = await axios
-      .post(`api/sql/${values.db_type}/getSchema`, values, {
-        baseURL: '/',
-      })
+      .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => res.data)
       .catch((err) => console.error('getSchema error', err));
     //update schemaStore
@@ -75,7 +73,7 @@ const Sidebar = (props: any) => {
   const [formValues, setFormValues] = useState({ db_type: 'postgres' });
 
   return (
-    <div id="dbconnect" className="bg-[#fbf3de] dark:bg-slate-700">
+    <form id="dbconnect" className="bg-[#fbf3de] dark:bg-slate-700">
       <label className="dark:text-[#f8f4eb]">
         <h3>Connect to Database</h3>
       </label>
@@ -221,7 +219,7 @@ const Sidebar = (props: any) => {
           </div>
         </div>
       )}
-    </div>
+    </form>
   );
 };
 

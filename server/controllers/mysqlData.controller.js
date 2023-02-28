@@ -1,10 +1,21 @@
 import fs from 'fs';
 import log from '../logger/index';
 const mysqldump = require('mysqldump');
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
 
 const mySQLdataController = {};
+
+// SSL data stored as environment variable for GitHub Actions access
+// Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables
+const SSL_KEY =
+  typeof process.env.SSL_KEY === 'string'
+    ? Buffer.from(process.env.SSL_KEY, 'base64').toString('ascii')
+    : fs.readFileSync('./.cert/key.pem').toString();
+const SSL_CERT =
+  typeof process.env.SSL_CERT === 'string'
+    ? Buffer.from(process.env.SSL_CERT, 'base64').toString('ascii')
+    : fs.readFileSync('./.cert/cert.pem').toString();
 
 /**
  * mySQLdataController.getSchema
@@ -19,18 +30,18 @@ export const getSchema = async (req, res, next) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
   log.info('Connecting to mySQL database...');
+  const { hostname, password, port, username, database_name } = req.query;
   try {
     const result = await mysqldump({
       connection: {
-        host: req.body.hostname,
-        port: req.body.port,
-        user: req.body.username,
-        password: req.body.password,
-        database: req.body.database_name,
-        // Add SSL certification to avoid security issue.
+        host: hostname,
+        password,
+        port,
+        user: username,
+        database: database_name,
         ssl: {
-          key: fs.readFileSync('./.cert/key.pem').toString(),
-          cert: fs.readFileSync('./.cert/cert.pem').toString(),
+          key: SSL_KEY,
+          cert: SSL_CERT,
         },
       },
       dumpToFile: '../db_schemas',

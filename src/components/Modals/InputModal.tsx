@@ -179,6 +179,7 @@ export default function InputModal({
             type="button"
             className="  text-slate-900 dark:text-[#f8f4eb]"
             onClick={addColumn}
+            data-testid="add-table-add-column"
           >
             Add Column
           </button>
@@ -189,10 +190,14 @@ export default function InputModal({
             type="button"
             className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
             onClick={closeInputModal}
+            data-testid="modal-cancel"
           >
             Cancel
           </button>
-          <button className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]">
+          <button
+            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+            data-testid="modal-submit"
+          >
             {mode === 'table' ? 'Create Table' : 'Submit'}
           </button>
         </div>

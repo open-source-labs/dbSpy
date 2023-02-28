@@ -34,7 +34,7 @@
 
 1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
 
-2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement 
+2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement
 
 3. **Table Relationship Visuals** Relationships of individual tables are easily identified when clicking on a table.
 
@@ -52,34 +52,37 @@
 
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-<img src="images/Darkmode.png">
----
+## <img src="images/Darkmode.png">
 
 ### Getting started
-You will need your own mySQL and redis databases for backend functions, and Google Cloud project for OAuth.
+
+You will need your own MySQL database for backend functions.
+
 - Fork and clone this repo
 - Add a db_schemas folder in server directory
-- Add a .env file to the root directory
-- Go to the Google Cloud Platform Console
-- Set up OAuth 2.0 credentials as laid out in <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a>. Make sure 
-  your authorized redirect URI in the credentials you create matches the GOOGLE_AUTH_CALLBACK variable below.
-- Populate the .env file with the newly created code below:
+- Add a .env file to the root directory with the information below:
 
 ```bash
-GOOGLE_AUTH_CALLBACK = ''
-DATABASE_URL = [mysql url for storing user data]
-DEV_SERVER_ENDPOINT = 'http://localhost:3000'
-DEV_CLIENT_ENDPOINT = 'http://localhost:8080'
-CLIENT_ENDPOINT = 'http://localhost:3000'
-GOOGLE_AUTH_CALLBACK = 'http://localhost:3000/api/oauth/google'
-GOOGLE_AUTH_CLIENT_ID = [google auth client id]
-GOOGLE_AUTH_CLIENT_SECRET = [google auth client secret]
-REDIS_URL = [redis url]
-REDIS_PORT = [redis port]
-REDIS_PASSWORD = [redis password]
-REDIS_SECRET = [redis secret]
-ENVIRONMENT = "development"
-TOKEN_KEY = [any string]
+# production environment variables
+USER_DB_URL = <MySQL url for storing user data>
+USER_DB_USER = <user string from USER_DB_URL>
+USER_DB_PW = <password string from USER_DB_URL>
+TOKEN_KEY = <any string>
+
+# testing environment variables
+## encoded SSL data required for GitHub Actions
+SSL_KEY = <base64 encoded SSL key (see SSL Configuration)>
+SSL_CERT = <base64 encoded SSL cert>
+## MySQL and Postgres databases to test remote connection functionality
+MYSQL_TEST_URL = <MySQL url for a test database>
+MYSQL_TEST_USERNAME = <user string from MYSQL_TEST_URL>
+MYSQL_TEST_PW = <password string from MYSQL_TEST_URL>
+PG_TEST_URL = <PostgreSQL url for a test database>
+PG_TEST_USERNAME = <user string from PG_TEST_URL>
+PG_TEST_PW = <password string from PG_TEST_URL>
+## test user with saved schema to test save/load functionality
+TEST_USER_EMAIL = <email string>
+TEST_USER_PW = <password string>
 ```
 
 - Run the following below:
@@ -89,6 +92,7 @@ $ npm install
 ```
 
 - Execute the following command to populate your mySql database with a users table:
+
 ```bash
 $ npm run seed
 ```
@@ -101,17 +105,36 @@ $ npm run dev
 
 ---
 
-### Connecting with remote MySQL
+### SSL Configuration
 
-- To connect with the SQL database, we must create and configure SSL certificates. 
+To connect with the SQL database, we must create and configure SSL certificates.
+
+### Mac
 
 1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
+
 ```bash
 npm install -g mkcert
 ```
-  2. Run the following script
+
+2. Run the following script
+
 ```bash
 npm run cert
+```
+
+### Linux
+
+1. Check mkcert is up to date (v1.5.1 as of publishing)
+
+```bash
+mkcert --version
+```
+
+2. Run the following script
+
+```bash
+npm run cert:linux
 ```
 
 ---
@@ -142,7 +165,7 @@ npm run cert
 ## Adding column(s) to a table
 
 1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column in the table in edit mode.
-<img src="images/Create%20tables.png">
+   <img src="images/Create%20tables.png">
 
 ### Editing an existing column in a table
 
@@ -185,6 +208,10 @@ npm run cert
 
 ### Credits/Contributors
 
+- Alexander Tu • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
+- Michael Costello • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
+- Steven Geiger • [LinkedIn](https://www.linkedin.com/in/sgeiger9/) • [Github](https://github.com/geistnine)
+- Yufa Li • [LinkedIn](https://www.linkedin.com/in/yufa-li/) • [Github](https://github.com/01001101CK)
 - Angel Giron • [LinkedIn](https://www.linkedin.com/in/acgiron/) • [Github](https://github.com/g94angel)
 - John Paul Adigwu • [LinkedIn](https://www.linkedin.com/in/johnpaul-adigwu/) • [Github](https://github.com/engineerous)
 - Kevin Park-Lee • [LinkedIn](https://www.linkedin.com/in/kevin38424/) • [Github](https://github.com/kevin38424)
@@ -198,13 +225,9 @@ npm run cert
 - Kevin Wang • [LinkedIn](https://www.linkedin.com/in/kevin-w-b841b13/) • [Github](https://github.com/kwang929)
 - Kris Magat • [LinkedIn](https://www.linkedin.com/in/kmag/) • [Github](https://github.com/KrisMagat)
 - Santiago Gil Maya • [LinkedIn](https://www.linkedin.com/in/santiago-gil-929721121/) • [Github](https://github.com/santiago-gil)
-- Alexander Tu  • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
-- Michael Costello  • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
-- Steven Geiger • [LinkedIn](https://www.linkedin.com/in/sgeiger9/) • [Github](https://github.com/geistnine)
-- Yufa Li • [LinkedIn](https://www.linkedin.com/in/yufa-li/) • [Github](https://github.com/01001101CK)
 
 ---
 
 ### License
 
-dbSpy is developed under the MIT license. 
+dbSpy is developed under the MIT license.

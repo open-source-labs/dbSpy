@@ -16,7 +16,13 @@ package-lock.json
 #EBStalk
 .elasticbeanstalk/
 
+# Environment Variables
 .env
+cypress.env.json
+
+# Log
+serverLog.txt
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
