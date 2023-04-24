@@ -1,3 +1,12 @@
+
+
+
+export type DefaultErr = {
+  log: string,
+  status: number,
+  message: string,
+};
+
 export type Props = {
   isActive: boolean;
   setIsActive: (active: boolean) => void;
@@ -46,7 +55,7 @@ export interface SchemaObject {
   [key: string]: Table;
 }
 
-export type SQLDataType =
+export type SQLDataType = 
   | 'AUTO_INCREMENT'
   | 'SERIAL'
   | 'SMALLSERIAL'
@@ -115,7 +124,7 @@ export type SQLDataType =
   | 'GEOMETRY'
   | 'GEOGRAPHY'
   | 'CUBE'
-  | 'LTREE';
+  | 'LTREE'
 
 //from canvas.tsx
 

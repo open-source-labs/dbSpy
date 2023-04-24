@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import log from '../logger/index';
 const mysqldump = require('mysqldump');
@@ -26,7 +27,7 @@ const SSL_CERT =
  * @param {string} databaseName - A required string with the database name
  **/
 
-export const getSchema = async (req, res, next) => {
+export const getSchema = async (req: Request, res: Response, next: NextFunction) => {
   // // Option 1 - Production
   //use mysqldump to download mysql db schema
   log.info('Connecting to mySQL database...');
@@ -47,10 +48,10 @@ export const getSchema = async (req, res, next) => {
       dumpToFile: '../db_schemas',
     });
     res.locals.data = result;
-    const { tables } = result;
+    //const { tables } = result;
     next();
-  } catch (error) {
-    log.info(error.message);
+  } catch (error: unknown) {
+    log.info((error as Error).message);
     next({ message: 'Error with getSchema middleware' });
   }
 };
@@ -60,39 +61,47 @@ export const getSchema = async (req, res, next) => {
  * Iterates through data tables received from mySQL server
  * Builds object to be returned to front-end
  */
-export const objSchema = (req, res, next) => {
+export const objSchema = (_req: Request, res: Response, next: NextFunction) => {
   const db = res.locals.data;
   const { tables } = db;
   const results = {};
 
   //create Table class
-  function TableModel(name) {}
+  class TableModel {
+    [key: string]: any;
+    constructor(public name: string) {}
+}
 
   //create Properties class
-  function PropertyModel(name) {
-    this.Name = name;
-    this.Value = null;
-    this.data_type = 'varchar';
-    this.TableName = null;
-    this.References = [];
-    this.IsPrimaryKey = false;
-    this.IsForeignKey = false;
-    this.additional_constraints = 'NA';
-    this.field_name = name;
-  }
+  class PropertyModel {
+    Name: string;
+    Value: any = null;
+    data_type: string = 'varchar';
+    TableName: string | null = null;
+    References: string[] = [];
+    IsPrimaryKey: boolean = false;
+    IsForeignKey: boolean = false;
+    additional_constraints: string = 'NA';
+    field_name: string;
 
+    constructor(name: string) {
+      this.Name = name;
+      this.field_name = name;
+    }
+  }
+  
   // create foreign key class
-  function ForeignKeyModel() {
-    this.PrimaryKeyName = null; //key name at referenced table
-    this.PrimaryKeyTableName = null; //  referenced table name
-    this.ReferencesPropertyName = null; //key name at current table
-    this.ReferencesTableName = null; //current table name
-    this.IsDestination = false;
-    this.constraintName = null; //constraint from SQL query
+  class ForeignKeyModel {
+    PrimaryKeyName: string | null = null; //key name at referenced table
+    PrimaryKeyTableName: string | null = null; //  referenced table name
+    ReferencesPropertyName: string | null = null; //key name at current table
+    ReferencesTableName: string | null = null;//current table name
+    IsDestination: boolean = false;
+    constraintName: string | null = null; //constraint from SQL query
   }
 
   //append tables and table properties to results
-  tables.forEach((table) => {
+  tables.forEach((table: any) => {
     //check if table or view
     if (!table.isView) {
       //get unique keys
@@ -100,19 +109,20 @@ export const objSchema = (req, res, next) => {
       uKeys = uKeys.slice(uKeys.indexOf('(') + 1, uKeys.indexOf(')'));
       if (uKeys.includes(',')) uKeys = uKeys.split(', ');
       else uKeys = [uKeys];
-      const uniqueKeys = uKeys.map((key) => key.slice(1, -1));
+      const uniqueKeys = uKeys.map((key: string) => key.slice(1, -1));
 
       //get primary keys
       let pKeys = table.schema.slice(table.schema.indexOf('PRIMARY KEY'));
       pKeys = pKeys.slice(pKeys.indexOf('(') + 1, pKeys.indexOf(')'));
       if (pKeys.includes(',')) pKeys = pKeys.split(', ');
       else pKeys = [pKeys];
-      const primaryKeys = pKeys.map((key) => key.slice(1, -1));
+      const primaryKeys = pKeys.map((key: string) => key.slice(1, -1));
 
       //create foreign key and reference object (foreign key: references)
-      const foreignKeyReferences = {};
+      const foreignKeyReferences: any = {};
       //declare foreign keys/references helper function
-      const foreignKeys = (string = '') => {
+      type ForeignKeysFn = (string: string) => void;
+      const foreignKeys: ForeignKeysFn = function(string = '') {
         if (string === '') return;
         let constraint = null;
         //find constraint name
@@ -146,10 +156,11 @@ export const objSchema = (req, res, next) => {
       foreignKeys(table.schema);
 
       //create and assign new table to results object
-      results[table.name] = new TableModel(table.name);
+      //const results: { [key: string]: TableModel } = {}; ---> We Don't need this? -Stephen
+
 
       //create new table properties
-      table.columnsOrdered.forEach((propName) => {
+      table.columnsOrdered.forEach((propName: string) => {
         const newProp = new PropertyModel(propName);
         //assign table name
         newProp.TableName = table.name;
@@ -160,7 +171,7 @@ export const objSchema = (req, res, next) => {
         //assign additional_constraints (primary, unique or not null)
         if (primaryKeys.includes(newProp.Name))
           newProp.additional_constraints = 'PRIMARY KEY';
-        else if (uniqueKeys.includes(newProp.name))
+        else if (uniqueKeys.includes(newProp.Name))
           newProp.additional_constraints = 'UNIQUE';
         else if (!table.columns[propName].nullable)
           newProp.additional_constraints = 'NOT NULL';
@@ -173,6 +184,10 @@ export const objSchema = (req, res, next) => {
         }
 
         //assign new property to table
+        const results: {[key: string]: TableModel & {[key: string]: PropertyModel}} = {};
+        if (!results[table.name]) {
+          results[table.name] = new TableModel(table.name);
+        }
         results[table.name][newProp.Name] = newProp;
       });
     }

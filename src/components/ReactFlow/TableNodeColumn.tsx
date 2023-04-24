@@ -52,8 +52,8 @@ export default function TableNodeColumn({
   };
 
   const openAddReferenceModal = () => {
-    document.querySelector('#mySideNav').style.width = '400px';
-    document.querySelector('#main').style.marginRight = '400px';
+    // document.querySelector('#mySideNav').style.width = '400px';
+    // document.querySelector('#main').style.marginRight = '400px';
     setEditRefMode(true, columnData.TableName, columnData.Name);
   };
 
@@ -100,13 +100,13 @@ export default function TableNodeColumn({
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
-              value={columnData.additional_constraints}
-              onChange={(e) =>
-                setColumnData((prevData) => ({
-                  ...prevData,
-                  additional_constraints: e.target.value,
-                }))
-              }
+              // value={columnData.additional_constraints}
+              // onChange={(e) =>
+              //   setColumnData((prevData) => ({
+              //     ...prevData,
+              //     additional_constraints: e.target.value,
+              //   }))
+              // }
             >
               {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
               <option value="NA">NA</option>

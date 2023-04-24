@@ -31,8 +31,8 @@ const pool = mysql
     },
   })
   .promise(); // wrap with promise API
-
-pool.on('connection', (connection) => {
+//connect used to be a var in the function below but it didn't do anything -Stephen
+pool.on('connection', () => {
   log.info(`MySQL pool connection established`);
 });
 

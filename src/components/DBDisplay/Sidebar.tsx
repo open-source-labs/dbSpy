@@ -16,7 +16,10 @@ const Sidebar = (props: any) => {
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
-  const [selected, setSelected] = useState('postgres');
+  const [_selected, setSelected] = useState('postgres');
+
+    //form state hooks
+    const [formValues, setFormValues] = useState({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
@@ -56,7 +59,7 @@ const Sidebar = (props: any) => {
     const dbSchema = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => res.data)
-      .catch((err) => console.error('getSchema error', err));
+      .catch((err: ErrorEvent) => console.error('getSchema error', err));
     //update schemaStore
     setSchemaStore(dbSchema);
     setWelcome(false);
@@ -69,8 +72,7 @@ const Sidebar = (props: any) => {
   };
   //END: HELPER FUNCTIONS
 
-  //form state hooks
-  const [formValues, setFormValues] = useState({ db_type: 'postgres' });
+
 
   return (
     <form id="dbconnect" className="bg-[#fbf3de] dark:bg-slate-700">
