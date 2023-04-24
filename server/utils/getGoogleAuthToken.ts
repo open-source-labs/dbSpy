@@ -5,7 +5,7 @@ import log from '../logger/index'
 dotenv.config()
 
 export const getGoogleAuthToken: any = async ({ code }: { code: string }) => {
-    const url = 'https://oauth2.googleapis.com/token'
+    const url: string = 'https://oauth2.googleapis.com/token';
 
     const options = {
         code,
@@ -13,7 +13,7 @@ export const getGoogleAuthToken: any = async ({ code }: { code: string }) => {
         client_secret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
         redirect_uri: process.env.GOOGLE_AUTH_CALLBACK,
         grant_type: 'authorization_code'
-    }
+    };
 
     try {
         const response = await axios.post(url, qs.stringify(options), {
@@ -22,8 +22,8 @@ export const getGoogleAuthToken: any = async ({ code }: { code: string }) => {
         log.info('getGoogleAuthToken: Retrieved id_token')
         return response.data;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         log.info(`Error: ${error}. Failed to get googleAuthToken`)
-        throw new Error(error.message)
+        throw new Error((error as Error).message)
     }
 }

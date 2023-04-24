@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { Client } from 'pg';
 import { SchemaStore } from '../../src/store/schemaStore';
 import { SQLDataType } from '@/Types';
@@ -23,15 +23,15 @@ type PgKeys = Key[];
 /**
  * Take user input, request schema from database, parse resulting schema, pass parsed data to next middleware.
  */
-export const getSchema: RequestHandler = async (req, res, next) => {
+export const getSchema: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   log.info('Server received Postgres database URI.');
 
-  const schemaQuery = `SELECT table_name, column_name, data_type, is_nullable
+  const schemaQuery: string = `SELECT table_name, column_name, data_type, is_nullable
     FROM information_schema.columns
     WHERE table_schema = 'public' AND table_name != 'pg_stat_statements'
     ORDER BY table_name, ordinal_position;`;
 
-  const keyQuery = `SELECT 
+  const keyQuery: string = `SELECT 
       tc.constraint_name,
       tc.table_name, 
       kcu.column_name, 
@@ -90,14 +90,14 @@ export const getSchema: RequestHandler = async (req, res, next) => {
 
     res.locals.data = parsePgResult(pgSchema, pgKeys);
     return next();
-  } catch (err) {
+  } catch (error: unknown) {
     return next({
       message: 'Error querying database',
-      log: err,
+      log: error,
     });
   }
 };
-
+//--------------------------------------------------------------------------------------
 /*
  * Formats results for frontend schema store
  */
@@ -132,14 +132,14 @@ function parsePgResult(pgSchema: PgSchema, pgKeys: PgKeys): SchemaStore {
     column_name,
     constraint_type,
     foreign_table_name,
-    foreign_column_name,
+    //foreign_column_name, COMMENT THIS OUT AS IT DID NOTHING - Stephen
   } of pgKeys) {
     const column = schemaStore[table_name][column_name];
 
     if (constraint_type === 'PRIMARY KEY') {
       column.IsPrimaryKey = true;
     } else {
-      const foreignColumn = schemaStore[foreign_table_name][foreign_column_name];
+      //const foreignColumn = schemaStore[foreign_table_name][foreign_column_name]; COMMENT THIS OUT AS IT DID NOTHING - Stephen
       // flip IsForeignKey for column
       column.IsForeignKey = true;
       // push to column's references

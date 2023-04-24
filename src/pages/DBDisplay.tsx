@@ -10,7 +10,7 @@ import InputModal from '../components/Modals/InputModal';
 
 import useSettingsStore from '../store/settingsStore';
 
-const DBDisplay = () => {
+const DBDisplay: React.FC = () => {
   const {
     sidebarDisplayState,
     welcome,

@@ -8,7 +8,7 @@ import {
 } from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
 import mysqlRouter from './mysql.router';
-import session from 'express-session';
+import session from 'express-session'; // 
 declare module 'express-session' {
   interface SessionData {
     user: string;
@@ -20,8 +20,12 @@ import { getCurrentUser } from '../service/session.service';
 import path from 'path';
 import log from '../logger/index';
 
+import type { DefaultErr } from '../../src/Types';
+
+
 const routes = async (app: Express) => {
-  app.get('/api/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
+
+  app.get('/api/healthcheck', (_req: Request, res: Response) => res.sendStatus(200));
 
   app.get('/api/oauth/google', handleGoogleAuth);
 
@@ -41,27 +45,29 @@ const routes = async (app: Express) => {
 
   app.use('/api/me', getCurrentUser);
 
-  app.use('/api/logout', (req: Request, res: Response) => {
-    req.session.destroy((err) => {
+  app.use('/api/logout', (req, res) => {
+    req.session.destroy((err: ErrorEvent) => {
       if (err) log.info('Error destroying session:', err);
       else {
-        log.info('Succesfully destroyed session');
+        log.info('Successfully destroyed session');
         return res.redirect(`/`);
       }
     });
   });
 
-  app.get('/*', (req, res) => {
+  app.get('/*', (_req, res) => {
     res.sendFile(path.join(__dirname, '../../dist/index.html'));
   });
 
   // Global Error Handler
-  app.use((err: ErrorEvent, req: Request, res: Response, next: NextFunction) => {
-    const defaultErr = {
+  app.use((err: ErrorEvent, _req: Request, res: Response, _next: NextFunction) => {
+
+    const defaultErr: DefaultErr = {
       log: 'Express error handler caught unknown middleware error',
       status: 500,
       message: 'An error occurred. This is the global error handler.',
     };
+    
     const errorObj = Object.assign({}, defaultErr, err);
     log.error(errorObj.message);
     log.error(errorObj.log);
