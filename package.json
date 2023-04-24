@@ -64,6 +64,7 @@
     "sql-formatter": "^11.0.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
+    "typeorm": "^0.3.15",
     "zustand": "^4.1.2"
   },
   "devDependencies": {
