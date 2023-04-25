@@ -3,6 +3,51 @@ import { Client } from 'pg';
 import { SchemaStore } from '../../src/store/schemaStore';
 import { SQLDataType } from '@/Types';
 import log from '../logger/index';
+import dotenv from 'dotenv'
+import { DataSource } from 'typeorm';
+import { UserPost } from '../entities/user.entity'
+dotenv.config();
+
+
+//----------------------------------------------------------------------------
+export const PostgresDataSource = new DataSource({
+  type: "postgres",
+  host: process.env.USER_DB_URL_POSTGRES,
+  port: 5432,
+  username: process.env.USER_DB_USER_POSTGRES,
+  password: process.env.USER_DB_PW_POSTGRES,
+  synchronize: true,
+  logging: true,
+  entities: [ UserPost ],
+});
+
+export const postgresQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+      await PostgresDataSource.initialize();
+      console.log('Data Source has been initialized');
+      const userInfo = PostgresDataSource.getRepository(UserPost);
+      //console.log('userInfo.target: ', userInfo);
+      const tables = await userInfo.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
+      console.log('tables: ', tables);
+      const data = [];
+      for (const table of tables) {
+        const tableName = table.tablename;
+        data.push(await userInfo.query(`SELECT * FROM ${tableName}`));
+        console.log(`Data from ${tableName}:`, data);
+      }
+      console.log('this is data in the controller after query: ', data)
+      res.locals.data = data
+      return next();
+  } catch (err) {
+    console.log('Error during Data Source: ', err);
+  }
+}
+
+//postgresQuery();
+//----------------------------------------------------------------------------
+
+
+
 
 type ColumnSchema = {
   table_name: string;

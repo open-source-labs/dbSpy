@@ -5,7 +5,7 @@ import log from '../logger';
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { USER_DB_USER, USER_DB_PW } = process.env;
+const { USER_DB_USER, USER_DB_PW, USER_DB_URL } = process.env;
 
 // SSL data stored as environment variable for GitHub Actions access
 // Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables
@@ -21,10 +21,10 @@ const SSL_CERT =
 const pool = mysql
   .createPool({
     connectionLimit: 10,
-    host: 'us-west.connect.psdb.cloud',
+    host: USER_DB_URL,
     user: USER_DB_USER,
     password: USER_DB_PW,
-    database: 'dbspy_4',
+    database: 'dbSpy',
     ssl: {
       key: SSL_KEY,
       cert: SSL_CERT,
