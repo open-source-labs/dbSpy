@@ -1,4 +1,4 @@
-import { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import { handleGoogleAuth, getGoogleAuthUrl } from '../controllers/auth.controller';
 import {
   retrieveSchema,
@@ -21,7 +21,12 @@ import path from 'path';
 import log from '../logger/index';
 
 import type { DefaultErr } from '../../src/Types';
+// import { DataSource } from 'typeorm'
+// import { Users } from '../entities/user.entity'
 
+const app = express()
+
+app.use('/api/sql/postgres', postgresRouter);
 
 const routes = async (app: Express) => {
 

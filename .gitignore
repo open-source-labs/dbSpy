@@ -1,31 +1,6 @@
-# General
-.DS_Store
+.idea/
 .vscode/
-# dependencies
 node_modules/
-server/db_schemas
-
-coverage/
-
-# output from webpack
-dist/
-
-# package-lock
-package-lock.json
-
-#EBStalk
-.elasticbeanstalk/
-
-# Environment Variables
-.env
-cypress.env.json
-
-# Log
-serverLog.txt
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-.cert/
-.*/
+build/
+tmp/
+temp/
