@@ -5,7 +5,7 @@ import routes from './routes'
 import path from 'path';
 import cors from 'cors';
 import { DataSource } from 'typeorm';
-import { Users, UserPost } from './entities/user.entity'
+import { User, UserPost } from './entities/user.entity'
 dotenv.config();
 
 const port = process.env.PORT || 3000;
@@ -20,14 +20,14 @@ export const MysqlDataSource = new DataSource({
     username: process.env.USER_DB_USER_MYSQL,
     password: process.env.USER_DB_PW_MYSQL,
     database: 'dbSpy',
-    entities: [ Users ],
+    entities: [ User ],
 });
 
 const mysqlQuery = async () => {
     try {
       await MysqlDataSource.initialize();
       console.log('Data Source has been initialized');
-      const userInfo = MysqlDataSource.getRepository(Users)
+      const userInfo = MysqlDataSource.getRepository(User)
       const users = await userInfo.find();
       console.log('users: ', users);
     } catch (err) {
