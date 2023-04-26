@@ -30,40 +30,127 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
         const data = [];
         const schema = [];
 
+        //DATA FOR FOREIGN KEY INFORMATION 
+        const foreignKeyQuery = `
+          SELECT 
+            kcu.table_schema || '.' || kcu.table_name AS table_with_foreign_key, 
+            kcu.column_name AS foreign_key_column, 
+            rel_tco.table_schema || '.' || rel_tco.table_name AS referenced_table, 
+            rco.update_rule, 
+            rco.delete_rule 
+          FROM 
+            information_schema.table_constraints tco 
+            JOIN information_schema.key_column_usage kcu ON tco.constraint_name = kcu.constraint_name 
+            JOIN information_schema.referential_constraints rco ON tco.constraint_name = rco.constraint_name 
+            JOIN information_schema.table_constraints rel_tco ON rco.unique_constraint_name = rel_tco.constraint_name 
+          WHERE 
+            tco.constraint_type = 'FOREIGN KEY';`;
+        const foreignKeys = await PostgresDataSource.query(foreignKeyQuery);
+
+        // LOOP
       for (const table of tables) {
         // DATA
+        // loop through the different tables, query all the information, push it on to the data array
         let tableName = table.tablename;
         data.push(await PostgresDataSource.query(`SELECT * FROM ${tableName}`));
+
         // SCHEMAS
+        // Have to pull from different innate sources like information_schema and join them together
         const info = await PostgresDataSource.query(`
-          SELECT column_name, data_type
-          FROM information_schema.columns
-          WHERE table_name = '${tableName}'
-        `);
-        schema.push(info);
-      }
+          SELECT 
+            c.column_name, 
+            c.data_type, 
+            c.character_maximum_length,
+            c.is_nullable,
+            c.column_default,
+            CASE WHEN c.column_default LIKE 'nextval%' THEN 'YES' ELSE 'NO' END as is_autoincrement,
+            CASE WHEN c.column_default IS NOT NULL THEN 'DEFAULT' ELSE '' END ||
+                CASE WHEN c.is_nullable = 'NO' THEN ' NOT NULL' ELSE '' END ||
+                CASE WHEN tc.constraint_type = 'PRIMARY KEY' THEN ' PRIMARY KEY' ELSE '' END ||
+                CASE WHEN tc.constraint_type = 'FOREIGN KEY' THEN ' FOREIGN KEY REFERENCES ' || 
+                    ccu.table_name || '(' || ccu.column_name || ')' ELSE '' END
+                as additional_constraints
+          FROM 
+            information_schema.columns c
+            LEFT OUTER JOIN information_schema.key_column_usage kcu
+              ON c.table_catalog = kcu.table_catalog
+              AND c.table_schema = kcu.table_schema
+              AND c.table_name = kcu.table_name
+              AND c.column_name = kcu.column_name
+            LEFT OUTER JOIN information_schema.table_constraints tc
+              ON kcu.constraint_catalog = tc.constraint_catalog
+              AND kcu.constraint_schema = tc.constraint_schema
+              AND kcu.constraint_name = tc.constraint_name
+            LEFT OUTER JOIN information_schema.constraint_column_usage ccu
+              ON tc.constraint_catalog = ccu.constraint_catalog
+              AND tc.constraint_schema = ccu.constraint_schema
+              AND tc.constraint_name = ccu.constraint_name
+          WHERE 
+            c.table_name = '${tableName}'
+          ORDER BY 
+            c.ordinal_position;
+          `);
+        //push info on to the schema array each loop
+          schema.push(info);
+        };
 
-      //Data for foreign keys
-      const foreignKeyQuery = `
-      SELECT 
-        kcu.table_schema || '.' || kcu.table_name AS table_with_foreign_key, 
-        kcu.column_name AS foreign_key_column, 
-        rel_tco.table_schema || '.' || rel_tco.table_name AS referenced_table, 
-        rco.update_rule, 
-        rco.delete_rule 
-      FROM 
-        information_schema.table_constraints tco 
-        JOIN information_schema.key_column_usage kcu ON tco.constraint_name = kcu.constraint_name 
-        JOIN information_schema.referential_constraints rco ON tco.constraint_name = rco.constraint_name 
-        JOIN information_schema.table_constraints rel_tco ON rco.unique_constraint_name = rel_tco.constraint_name 
-      WHERE 
-        tco.constraint_type = 'FOREIGN KEY';`;
-      const foreignKeys = await PostgresDataSource.query(foreignKeyQuery);
+      // CONSTRUCTION OF A OBJECT THAT CONFORMS TO WHAT THE FRONT END USUALLY GETS
+      // WHY DID I THINK RECONSTRUCTING THE BACKEND WAS A GOOD IDEA?
+      // IT'LL BE SIMPLER I SAID, MUCH EASIER I SAID. PAST ME IS A FOOL!
 
-      res.locals.data = data
-      res.locals.tables = tables
-      res.locals.schema = schema
-      res.locals.foreignKeys = foreignKeys
+      const publicTableName: any = {};
+
+      schema.forEach((tableColumns, index) => {
+        const tableName = tables[index].tablename;
+        const tableObject: any = {};
+      
+        tableColumns.forEach((column: any) => {
+          const columnName = column.column_name;
+          const dataType = column.data_type;
+      
+          const columnObject: any = {
+            IsForeignKey: false,
+            IsPrimaryKey: columnName === 'id',
+            Name: columnName,
+            References: [],
+            TableName: `public.${tableName}`,
+            Value: null,
+            data_type: dataType,
+            field_name: columnName,
+          };
+
+          if (column.additional_constraints) {
+            columnObject.additional_constraints = column.additional_constraints;
+          }
+      
+          // check if the current column is a foreign key column
+          const foreignKey = foreignKeys.find(
+            (fk: any) =>
+              fk.table_with_foreign_key === `public.${tableName}` &&
+              fk.foreign_key_column === columnName
+          );
+      
+          if (foreignKey) {
+            columnObject.IsForeignKey = true;
+            columnObject.References = [
+              {
+                table: foreignKey.referenced_table,
+                column: 'id',
+                onUpdate: foreignKey.update_rule,
+                onDelete: foreignKey.delete_rule,
+              },
+            ];
+          }
+      
+          tableObject[columnName] = columnObject;
+        });
+      
+        publicTableName[`public.${tableName}`] = tableObject;
+      });
+      
+
+      res.locals.schema = publicTableName;
+      res.locals.data = data;
       return next();
 
   } catch (err) {
@@ -73,9 +160,10 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
 
 //postgresQuery();
 //----------------------------------------------------------------------------
-
-
-
+//Previous schema query
+// SELECT column_name, data_type
+// FROM information_schema.columns
+// WHERE table_name = '${tableName}'
 
 // type ColumnSchema = {
 //   table_name: string;

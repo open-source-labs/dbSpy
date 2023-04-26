@@ -5,7 +5,7 @@ const mysqldump = require('mysqldump');
 const dotenv = require('dotenv');
 dotenv.config();
 import { DataSource } from 'typeorm';
-import { User } from '../entities/user.entity'
+//import { User } from '../entities/user.entity'
 
 const mySQLdataController = {};
 
@@ -21,7 +21,6 @@ export const MysqlDataSource = new DataSource({
   database: 'dbSpy',
   synchronize: true,
   logging: true,
-  entities: [ User ],
 });
 
 export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
@@ -41,6 +40,11 @@ export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, n
     }
 
     //Saving the table names, table data, and schemas in res.locals
+
+    console.log("data: ", data)
+    console.log("tables: ", tables)
+    console.log("schema: ", schema)
+
     res.locals.data = data;
     res.locals.tables = tables;
     res.locals.schema = schema;
