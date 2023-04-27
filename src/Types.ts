@@ -1,6 +1,4 @@
 
-
-
 export type DefaultErr = {
   log: string,
   status: number,
@@ -11,6 +9,63 @@ export type Props = {
   isActive: boolean;
   setIsActive: (active: boolean) => void;
 };
+
+export interface MysqlTableColumn {
+  Field?: string;
+  Type?: string;
+  Null?: string;
+  Key?: string;
+  Default?: any;
+  Extra?: string;
+  References?: any[];
+  TableName?: string;
+  IsForeignKey?: boolean;
+  IsPrimaryKey?: boolean;
+  Value?: null;
+  additional_constraints?: string;
+  data_type?: string;
+  field_name?: string;
+  Name?: string;
+  [key: string]: any;
+}
+
+export interface MysqlTableColumns {
+  [columnName: string]: MysqlTableColumn;
+}
+
+export interface MysqlTableSchema {
+  [tableName: string]: MysqlTableColumns;
+}
+
+export interface PostgresTableColumn {
+   column_name?: string;
+   data_type?: string;
+   character_maximum_length?: null;
+   is_nullable?: string;
+   column_default?: null;
+   is_autoincrement?: string;
+   additional_constraints?: string;
+   IsForeignKey?: boolean;
+   IsPrimaryKey?: boolean;
+   Value?: null;
+   field_name?: string;
+   Name?: string;
+   References?: any[];
+   [key: string]: any;
+   update_rule?: string;
+   delete_rule?: string;
+}
+
+export interface PostgresTableColumns {
+  [columnName: string]: PostgresTableColumn;
+}
+
+export interface PostgresTableSchema {
+  [tableName: string]: PostgresTableColumns;
+}
+
+
+
 
 // ---------------------------------------------------------------------
 // ZUSTAND STORE AND FRONT-END TYPES
