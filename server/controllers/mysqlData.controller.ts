@@ -111,23 +111,23 @@ export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, n
     console.log('Data Source has been initialized');
 
     const tables = await MysqlDataSource.query(`SHOW TABLES`);
-    const data = [];
+    const data: TableColumns = {};
     const schema: TableSchema = {}; // Define schema as TableSchema object
 
     for (const table of tables) {
       const tableName = table[`Tables_in_${MysqlDataSource.options.database}`];
 
       // Getting Data from all tables
-      data.push(await MysqlDataSource.query(`SELECT * FROM ${tableName}`));
-
+      const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
+      data[tableName] = tableData;
       // Getting Schemas from all tables
       const columns = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
       schema['public.' + tableName] = await formatTableSchema(columns); // Store schema using tableName as key
     }
 
     // Saving the table names, table data, and schemas in res.locals
-    //console.log("data: ", data);
-  //  console.log("schema: ", schema);
+    // console.log("data: ", data);
+   console.log("schema: ", schema);
 
     res.locals.data = data;
     //res.locals.tables = tables;

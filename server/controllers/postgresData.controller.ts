@@ -21,38 +21,72 @@ export const PostgresDataSource = new DataSource({
   logging: true,
 });
 
+interface TableColumn {
+  Field?: string;
+  Type?: string;
+  Null?: string;
+  Key?: string;
+  Default?: any;
+  Extra?: string;
+  References?: any[];
+  TableName?: string;
+  IsForeignKey?: boolean;
+  IsPrimaryKey?: boolean;
+  Value?: null;
+  additional_constraints?: string;
+  data_type?: string;
+  field_name?: string;
+  Name?: string;
+  [key: string]: any;
+}
+
+
+interface TableColumns {
+  [columnName: string]: TableColumn;
+}
+
+interface TableSchema {
+  [tableName: string]: TableColumns;
+}
+
 export const postgresQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
 
   try {
       await PostgresDataSource.initialize();
         console.log('Data Source has been initialized');
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
-        const data = [];
+        const data: TableColumns = {};
         const schema = [];
 
         //DATA FOR FOREIGN KEY INFORMATION 
         const foreignKeyQuery = `
-          SELECT 
-            kcu.table_schema || '.' || kcu.table_name AS table_with_foreign_key, 
-            kcu.column_name AS foreign_key_column, 
-            rel_tco.table_schema || '.' || rel_tco.table_name AS referenced_table, 
-            rco.update_rule, 
-            rco.delete_rule 
-          FROM 
-            information_schema.table_constraints tco 
-            JOIN information_schema.key_column_usage kcu ON tco.constraint_name = kcu.constraint_name 
-            JOIN information_schema.referential_constraints rco ON tco.constraint_name = rco.constraint_name 
-            JOIN information_schema.table_constraints rel_tco ON rco.unique_constraint_name = rel_tco.constraint_name 
-          WHERE 
-            tco.constraint_type = 'FOREIGN KEY';`;
+        SELECT 
+        kcu.table_schema || '.' || kcu.table_name AS table_with_foreign_key, 
+        kcu.column_name AS foreign_key_column, 
+        rel_tco.table_schema || '.' || rel_tco.table_name AS referenced_table, 
+        rco.update_rule, 
+        rco.delete_rule,
+        rel_kcu.column_name AS referenced_column,
+        tco.constraint_name AS constraint_name
+      FROM 
+        information_schema.table_constraints tco 
+        JOIN information_schema.key_column_usage kcu ON tco.constraint_name = kcu.constraint_name 
+        JOIN information_schema.referential_constraints rco ON tco.constraint_name = rco.constraint_name 
+        JOIN information_schema.table_constraints rel_tco ON rco.unique_constraint_name = rel_tco.constraint_name 
+        JOIN information_schema.key_column_usage rel_kcu ON rel_tco.constraint_name = rel_kcu.constraint_name
+                                                          AND kcu.ordinal_position = rel_kcu.ordinal_position
+      WHERE 
+        tco.constraint_type = 'FOREIGN KEY';
+            `
         const foreignKeys = await PostgresDataSource.query(foreignKeyQuery);
-
+    //console.log('foreignKeyQuery: ', foreignKeyQuery)
         // LOOP
       for (const table of tables) {
         // DATA
         // loop through the different tables, query all the information, push it on to the data array
         let tableName = table.tablename;
-        data.push(await PostgresDataSource.query(`SELECT * FROM ${tableName}`));
+        const tableData = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
+        data[tableName] = tableData
 
         // SCHEMAS
         // Have to pull from different innate sources like information_schema and join them together
@@ -91,7 +125,7 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
             c.ordinal_position;
           `);
         //push info on to the schema array each loop
-          schema.push(info);
+          schema.push(info)
         };
 
       // CONSTRUCTION OF A OBJECT THAT CONFORMS TO WHAT THE FRONT END USUALLY GETS
@@ -129,17 +163,30 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
               fk.table_with_foreign_key === `public.${tableName}` &&
               fk.foreign_key_column === columnName
           );
-      
+
+          //console.log('foreignKey: ', foreignKey)
+
+
+
+
           if (foreignKey) {
+            const references: any = {
+              length: 0,
+            };
+            references[references.length] = {
+              idDestination: false,
+              PrimaryKeyName: foreignKey.foreign_key_column,
+              PrimaryKeyTableName: foreignKey.table_with_foreign_key,
+              ReferencesPropertyName: foreignKey.referenced_column,
+              ReferencesTableName: foreignKey.referenced_table,
+              constraintName: foreignKey.constraint_name
+            };
+            references.length += 1;
+
             columnObject.IsForeignKey = true;
-            columnObject.References = [
-              {
-                table: foreignKey.referenced_table,
-                column: 'id',
-                onUpdate: foreignKey.update_rule,
-                onDelete: foreignKey.delete_rule,
-              },
-            ];
+            columnObject.References = foreignKey ? [references] : [];
+
+            //console.log('columnObject.References: ', columnObject.References)
           }
       
           tableObject[columnName] = columnObject;
@@ -148,6 +195,8 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
         publicTableName[`public.${tableName}`] = tableObject;
       });
       
+      //console.log('schema: ', publicTableName)
+      //console.log('data: ', data)
 
       res.locals.schema = publicTableName;
       res.locals.data = data;
