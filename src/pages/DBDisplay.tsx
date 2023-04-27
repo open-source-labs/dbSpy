@@ -6,6 +6,7 @@ import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
+import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
 
 import useSettingsStore from '../store/settingsStore';
@@ -18,6 +19,8 @@ const DBDisplay: React.FC = () => {
     inputModalState,
     setInputModalState,
     currentTable,
+    isSchema,
+    setTableMode
   } = useSettingsStore((state) => state);
 
   // Input Modal state and handlers
@@ -74,6 +77,12 @@ const DBDisplay: React.FC = () => {
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
+
+        {/* <button id="showData"
+          className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={setTableMode}
+        >Data</button> */}
+        
         {welcome ? (
           <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
             <h3 className="text-center">Welcome to dbSpy!</h3>
@@ -83,7 +92,19 @@ const DBDisplay: React.FC = () => {
             </p>
           </div>
         ) : (
-          <Flow />
+           isSchema? ( // if state for isSchema  === true
+              <><button id="showSchema"
+                className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={setTableMode}
+              >Show data</button><Flow /></>
+           ) : (
+            //if false, we need data table
+              <><button id="showSchema"
+                className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={setTableMode}
+              >Show Schema</button><DataFlow /></>
+                // <p>Data table</p>
+        )
         )}
       </div>
       {/* MODALS */}
@@ -99,3 +120,4 @@ const DBDisplay: React.FC = () => {
 };
 
 export default DBDisplay;
+

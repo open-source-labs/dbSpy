@@ -56,16 +56,22 @@ const Sidebar = (props: any) => {
     setConnectPressed(true);
 
     //change between which getSchema from MySQL to postgres based on db_type
-    const dbSchema = await axios
+
+    const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
-      .then((res) => res.data)
+      .then((res) => {
+        console.log('res.data',res.data)
+        return res.data;
+      })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
     //update schemaStore
-    setSchemaStore(dbSchema);
+    console.log('schemaFromBackend', dataFromBackend.schema)
+    setSchemaStore(dataFromBackend.schema);
     setWelcome(false);
     setConnectPressed(false);
     props.closeNav();
   };
+  
   //on change for db type selection, will affect state to conditionally render database URL
   const handleChange = (event: any) => {
     setSelected(event.target.value);
