@@ -10,5 +10,6 @@ export const mysqlForeignKeyQuery = `
     INFORMATION_SCHEMA.KEY_COLUMN_USAGE
   WHERE
     COLUMN_NAME = 'columnName'
-    AND REFERENCED_TABLE_NAME IS NOT NULL;
+    AND REFERENCED_TABLE_NAME IS NOT NULL
+    AND TABLE_NAME = 'tableName';
     `

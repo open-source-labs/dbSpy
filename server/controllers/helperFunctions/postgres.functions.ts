@@ -43,7 +43,7 @@ export async function postgresFormatTableSchema(columns: PostgresTableColumn[], 
       References: foreignKey ? [references] : [],
       TableName: 'public.' + tableName,
       Value: null,
-      additional_constraints: column.additional_constraints,
+      additional_constraints: keyString.includes('NOT NULL') ? 'NOT NULL' : null,
       data_type: column.data_type,
       field_name: columnName,
     };

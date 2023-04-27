@@ -30,12 +30,12 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
         };
 
       //check to see what things look like with these console.logs
-      console.log('schema: ', schema)
-      console.log('data: ', tableData)
+      // console.log('schema: ', schema)
+      // console.log('data: ', tableData)
 
       //Storage of queried results into res.locals
-      // res.locals.schema = schema;
-      // res.locals.data = tableData;
+      res.locals.schema = schema;
+      res.locals.data = tableData;
       return next();
 
   } catch (err: unknown) {

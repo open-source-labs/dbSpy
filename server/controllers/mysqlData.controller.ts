@@ -19,7 +19,7 @@ export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, n
 
     //LOOP
     for (const table of tables) {
-      const tableName = table[`Tables_in_${MysqlDataSource.options.database}`];
+      const tableName: string = table[`Tables_in_${MysqlDataSource.options.database}`];
 
       // Getting Data from all tables
       const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
@@ -30,7 +30,7 @@ export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, n
     }
     //Console.logs to check what the data looks like
     // console.log("data: ", data);
-    // console.log("schema: ", schema);
+    console.log("schema: ", schema);
 
     // Saving the table names, table data, and schemas in res.locals
     res.locals.data = data;

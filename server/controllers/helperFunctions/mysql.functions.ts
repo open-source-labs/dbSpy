@@ -2,9 +2,11 @@ import { mysqlForeignKeyQuery } from '../queries/mysql.queries';
 import { MysqlDataSource } from '../../datasource';
 import { MysqlTableColumn, MysqlTableColumns } from '@/Types';
 
+//Replacement object for 
+
 //Helper function for mysqlFormatTableSchema that gets all relative data about foreign keys
-export async function getForeignKeys(columnName: string): Promise<any[]> {
-    return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName));
+export async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
+    return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
 };
 
 //function organizing data from queries in to the desired format of the front end
@@ -13,10 +15,11 @@ export async function mysqlFormatTableSchema(columns: MysqlTableColumn[], tableN
 
     for (const column of columns) {
         const columnName: any = column.Field;
+        //const tableName: any = column.TableName
         const keyString: any = column.Key;
         
         //query for the foreign key data
-        const foreignKeys: any = await getForeignKeys(columnName);
+        const foreignKeys: any = await getForeignKeys(columnName, tableName);
         const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
 
         //Creating the format for the Reference property if their is a foreign key
@@ -44,7 +47,7 @@ export async function mysqlFormatTableSchema(columns: MysqlTableColumn[], tableN
             References: foreignKey ? [references] : [],
             TableName: 'public.' + tableName,
             Value: null,
-            additional_constraints: column.Extra,
+            additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
             data_type: column.Type,
             field_name: column.Field,
         };

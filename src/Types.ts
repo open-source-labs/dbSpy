@@ -22,7 +22,7 @@ export interface MysqlTableColumn {
   IsForeignKey?: boolean;
   IsPrimaryKey?: boolean;
   Value?: null;
-  additional_constraints?: string;
+  additional_constraints?: string | null;
   data_type?: string;
   field_name?: string;
   Name?: string;
