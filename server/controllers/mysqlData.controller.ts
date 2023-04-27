@@ -5,12 +5,7 @@ const mysqldump = require('mysqldump');
 const dotenv = require('dotenv');
 dotenv.config();
 import { DataSource } from 'typeorm';
-import { User } from '../entities/user.entity'
-
-const mySQLdataController = {};
-
-
-//----------------------------------------------------------------------------
+//import { User } from '../entities/user.entity'
 
 export const MysqlDataSource = new DataSource({
   type: "mysql",
@@ -21,30 +16,123 @@ export const MysqlDataSource = new DataSource({
   database: 'dbSpy',
   synchronize: true,
   logging: true,
-  entities: [ User ],
 });
+
+//----------------------------------------------------------------------------
+interface TableColumn {
+  Field?: string;
+  Type?: string;
+  Null?: string;
+  Key?: string;
+  Default?: any;
+  Extra?: string;
+  References?: any[];
+  TableName?: string;
+  IsForeignKey?: boolean;
+  IsPrimaryKey?: boolean;
+  Value?: null;
+  additional_constraints?: string;
+  data_type?: string;
+  field_name?: string;
+  Name?: string;
+  [key: string]: any;
+}
+
+interface TableColumns {
+  [columnName: string]: TableColumn;
+}
+
+interface TableSchema {
+  [tableName: string]: TableColumns;
+}
+
+async function getForeignKeys(columnName: string): Promise<any[]> {
+  const foreignKeyQuery = await MysqlDataSource.query(`
+  SELECT
+    COLUMN_NAME,
+    REFERENCED_TABLE_NAME,
+    REFERENCED_COLUMN_NAME,
+    CONSTRAINT_NAME,
+    TABLE_NAME
+  FROM
+    INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+  WHERE
+    COLUMN_NAME = '${columnName}'
+    AND REFERENCED_TABLE_NAME IS NOT NULL;
+`);
+console.log('foreignKeyQuery: ', foreignKeyQuery)
+  return foreignKeyQuery;
+}
+
+async function formatTableSchema(columns: TableColumn[]): Promise<TableColumns> {
+  const tableSchema: TableColumns = {};
+  console.log('inside of formateTableSchema')
+
+  for (const column of columns) {
+    const columnName: any = column.Field;
+    const keyString: any = column.Key;
+   
+    console.log('columnName: ', columnName)
+      const foreignKeys: any = await getForeignKeys(columnName)
+      const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
+
+      const references: any = {
+        length: 0,
+      };
+        references[references.length] = {
+          isDestination: false,
+          PrimaryKeyName: foreignKeys.COLUMN_NAME,
+          PrimaryKeyTableName: foreignKeys.TABLE_NAME,
+          ReferencesPropertyName: foreignKeys.REFERENCED_COLUMN_NAME,
+          ReferencesTableName: foreignKeys.REFERENCED_TABLE_NAME,
+          constraintName: foreignKeys.CONSTRAINT_NAME,
+        };
+        references.length += 1;
+
+      tableSchema[columnName] = {
+        IsForeignKey: keyString.includes('MUL'),
+        IsPrimaryKey: keyString.includes('PRI'),
+        Name: column.Field,
+        References: foreignKey ? [references] : [],
+        TableName: 'public.' + columnName,
+        Value: null,
+        additional_constraints: column.Extra,
+        data_type: column.Type,
+        field_name: column.Field,
+    };
+  }
+  
+  return tableSchema;
+}
 
 export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     await MysqlDataSource.initialize();
-      console.log('Data Source has been initialized');
+    console.log('Data Source has been initialized');
+
     const tables = await MysqlDataSource.query(`SHOW TABLES`);
-    const data = [];
-    const schema = [];
+    const data: TableColumns = {};
+    const schema: TableSchema = {}; // Define schema as TableSchema object
 
     for (const table of tables) {
       const tableName = table[`Tables_in_${MysqlDataSource.options.database}`];
-      //Getting Data from all tables
-      data.push(await MysqlDataSource.query(`SELECT * FROM ${tableName}`));
-      //Getting Schemas from all tables
-      schema.push(await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`));
+
+      // Getting Data from all tables
+      const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
+      data[tableName] = tableData;
+      // Getting Schemas from all tables
+      const columns = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
+      schema['public.' + tableName] = await formatTableSchema(columns); // Store schema using tableName as key
     }
 
-    //Saving the table names, table data, and schemas in res.locals
+    // Saving the table names, table data, and schemas in res.locals
+    // console.log("data: ", data);
+   console.log("schema: ", schema);
+
     res.locals.data = data;
-    res.locals.tables = tables;
+    //res.locals.tables = tables;
     res.locals.schema = schema;
-   
+
     return next();
   } catch (err) {
     console.log('Error during Data Source: ', err);
