@@ -18,7 +18,7 @@ import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
 import TableNodeForData from './TableNodeForData';
-import createEdges from './createEdges';
+import createDataEdges from './createDataEdges';
 import createDataNodes from './createDataNodes';
 import schemaStore from '../../store/schemaStore';
 
@@ -37,17 +37,17 @@ export default function DataFlow() {
   // re-render every time dataStore updates
 
   useEffect(() => {  
-    reRender(dataStore,schemaStore);
+    reRender(dataStore);
   }, [dataStore]);
 
-  function reRender(dataStore: DataStore, schemaStore: SchemaStore) {
+  function reRender(dataStore: DataStore) {
     if (!dataStore || !Object.keys(dataStore).length) return;
-    const initialEdges = createEdges(schemaStore);
+    const initialEdges = createDataEdges(dataStore);
     setEdges(initialEdges);
     const initialNodes = createDataNodes(dataStore, initialEdges);
     setNodes(initialNodes);
   }
-
+  console.log('dataStore',dataStore)
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>

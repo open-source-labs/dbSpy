@@ -6,17 +6,17 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
 
 export default function TableNode({ data }) {
-  console.log(data)
+  //console.log(data)
   const tableName = data.table[0];
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);
-  const [tableColumns, setTableColumns] = useState(columnData);
+  //const [tableColumns, setTableColumns] = useState(columnData);
   const { setInputModalState } = useSettingsStore((state) => state);
 
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
-  console.log(data.edges)
+  //console.log(data.edges)
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
       //make handle placement dynamic, we need to know the column of our source

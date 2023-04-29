@@ -102,6 +102,18 @@ export type ColumnSchema = {
   data_type: SQLDataType;
   additional_constraints: 'NULL' | 'NOT NULL' | null;
 };
+
+// these are for data tables ######################
+export type RowsOfData = {
+  [key: string | number]: string | number,
+};
+
+
+export type ColumnDataForDataTable = {
+  [key: string | number]: RowsOfData[],
+};
+//######################
+
 export interface Table {
   [key: string]: ColumnSchema;
 }
