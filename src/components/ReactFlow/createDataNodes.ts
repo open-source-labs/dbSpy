@@ -1,7 +1,7 @@
-
-import { Edge } from './createEdges';
-import { RowsOfData, ColumnDataForDataTable } from '../../Types';
-import { DataStore } from '../../store/dataStore';
+import { DataStore } from '@/store/dataStore';
+import { SchemaStore } from '@/store/schemaStore';
+import { Edge } from './createDataEdges';
+import { ColumnDataForDataTable, ColumnSchema } from '../../Types';
 
 type Node = {
   id: string;
@@ -14,8 +14,12 @@ type Node = {
 };
 type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnDataForDataTable }];
 //hard-coded xy positioning of each node in the canvas
-export default function createNodes(dataObject: DataStore, edges: Edge[]): Node[] {
-    console.log('i am here in createDataNodes')
+
+console.log("are we here?")
+
+export default function createDataNodes(dataObject: DataStore, edges: Edge[]): Node[] {
+  console.log('i am here in createDataNodes')
+  console.log('dataObject', dataObject)
   const nodePositions = [
     { x: 1000, y: 400 },
     { x: 1000, y: 0 },

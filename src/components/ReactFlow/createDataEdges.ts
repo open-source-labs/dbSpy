@@ -21,6 +21,7 @@ export type Edge = {
 export default function createDataEdges(dataObject: DataStore) {
   console.log("inside createDataEdges file")
   const edges: Edge[] = [];
+  console.log('dataObject',dataObject)
   for (const tableKey in dataObject) {
     const arrOfRowObj = dataObject[tableKey]; //arr of row obj
     for (const columnKey in arrOfRowObj[0]) {

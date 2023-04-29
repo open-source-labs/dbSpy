@@ -34,8 +34,8 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): N
   for (const tableKey in schemaObject) {
     //tableKey is name of the table
     const columnData = schemaObject[tableKey]; //obj of obj
-    console.log("here", tableKey, columnData)
-    console.log("edges", edges) //edges are coming from createEdges file
+    //console.log("here", tableKey, columnData)
+    //console.log("edges", edges) //edges are coming from createEdges file
     nodes.push({
       id: tableKey,
       type: 'table',
