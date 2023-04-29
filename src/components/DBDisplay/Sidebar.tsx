@@ -19,25 +19,27 @@ const Sidebar = (props: any) => {
   const [_selected, setSelected] = useState('postgres');
 
     //form state hooks
-    const [formValues, setFormValues] = useState({ db_type: 'postgres' });
+    const [formValues, setFormValues] = useState<{ db_type: string; database_link?: string }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: Event) => {
     e.preventDefault();
     const values: any = formValues;
     //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link) {
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
+      console.log('fullLink: ', fullLink)
+      console.log('splitURI: ', splitURI)
       if (splitURI[0] === 'postgres:') {
-        const name = splitURI[3];
-        const internalLinkArray = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray[1];
-        values.username = name;
-        values.password = internalLinkArray[0];
+        const name_postgres = splitURI[3];
+        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_Postgres[1];
+        values.username = name_postgres;
+        values.password = internalLinkArray_Postgres[0];
         values.port = '5432';
-        values.database_name = name;
+        values.database_name = name_postgres;
         values.db_type = 'postgres';
       } else if (splitURI[0] === 'mysql:') {
         const name_mySQL = splitURI[3].split('?');
@@ -48,10 +50,20 @@ const Sidebar = (props: any) => {
         values.port = '3306';
         values.database_name = name_mySQL[0];
         values.db_type = 'mysql';
+      } else if (splitURI[0] === 'mssql:') {
+        const name_mssql = splitURI[3];
+        const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_mssql[1];
+        values.username = splitURI[2].split(':')[0];
+        values.password = internalLinkArray_mssql[0];
+        values.port = '1433'; // Adjust the port number accordingly
+        values.database_name = name_mssql;
+        values.db_type = 'mssql';
       }
+      console.log('values: ', values)
     }
 
-console.log('values: ', values)
+
 
     //update dbCredentials
     setDbCredentials(values);

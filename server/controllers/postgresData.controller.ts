@@ -12,9 +12,7 @@ dotenv.config
 export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { hostname, password, port, username, database_name } = req.query;
-
-    console.log(hostname, password, port, username, database_name)
-    console.log('DataSource: ', DataSource)
+    console.log('req.params', req.params)
 
     const PostgresDataSource = new DataSource({
       type: "postgres",

@@ -7,6 +7,7 @@ import {
   verifyUser,
 } from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
+import { microsoftRouter } from './microsoft.router';
 import mysqlRouter from './mysql.router';
 import session from 'express-session'; // 
 declare module 'express-session' {
@@ -39,6 +40,8 @@ const routes = async (app: Express) => {
   app.use('/api/sql/postgres', postgresRouter);
 
   app.use('/api/sql/mysql', mysqlRouter);
+
+  app.use('/api/sql/mssql', microsoftRouter);
 
   app.post('/api/saveSchema', saveSchema);
 
