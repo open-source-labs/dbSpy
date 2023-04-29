@@ -1,14 +1,79 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { MysqlTableColumns, MysqlTableSchema } from '@/Types';
-import { MysqlDataSource } from '../datasource';
-import { mysqlFormatTableSchema } from './helperFunctions/mysql.functions';
+import { MysqlTableColumns, MysqlTableSchema, MysqlTableColumn } from '@/Types';
+import { DataSource } from 'typeorm';
+import { mysqlForeignKeyQuery } from './queries/mysql.queries';
 
 //----------------------------------------------------------------------------
-export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
+export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
+    const { hostname, password, port, username, database_name } = req.query;
+
+    const MysqlDataSource = new DataSource({
+      type: "mysql",
+      host: hostname as string,
+      port: port ? parseInt(port as string) : 3306,
+      username: username as string,
+      password: password as string,
+      database: database_name as string,
+      synchronize: true,
+      logging: true,
+    });
+
     //Establish connection with the database
     await MysqlDataSource.initialize();
     console.log('Data Source has been initialized');
+
+    async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
+      return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
+  };
+
+    async function mysqlFormatTableSchema(columns: MysqlTableColumn[], tableName: string): Promise<MysqlTableColumns> {
+      const tableSchema: MysqlTableColumns = {};
+
+  
+      for (const column of columns) {
+          const columnName: any = column.Field;
+          //const tableName: any = column.TableName
+          const keyString: any = column.Key;
+          
+          //query for the foreign key data
+          const foreignKeys: any = await getForeignKeys(columnName, tableName);
+          const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
+  
+          //Creating the format for the Reference property if their is a foreign key
+          const references: any = {
+              length: 0,
+          };
+  
+          if (foreignKey){
+              references[references.length] = {
+                  isDestination: false,
+                  PrimaryKeyName: foreignKeys.COLUMN_NAME,
+                  PrimaryKeyTableName: foreignKeys.TABLE_NAME,
+                  ReferencesPropertyName: foreignKeys.REFERENCED_COLUMN_NAME,
+                  ReferencesTableName: foreignKeys.REFERENCED_TABLE_NAME,
+                  constraintName: foreignKeys.CONSTRAINT_NAME,
+              };
+              references.length += 1;
+          };
+  
+          //Formation of the schema data
+          tableSchema[columnName] = {
+              IsForeignKey: keyString.includes('MUL'),
+              IsPrimaryKey: keyString.includes('PRI'),
+              Name: column.Field,
+              References: foreignKey ? [references] : [],
+              TableName: 'public.' + tableName,
+              Value: null,
+              additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
+              data_type: column.Type,
+              field_name: column.Field,
+          };
+      };
+  
+      return tableSchema;
+  };
 
     //Obtain all table names from the database
     const tables = await MysqlDataSource.query(`SHOW TABLES`);
@@ -56,13 +121,13 @@ export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, n
 //     : fs.readFileSync('./.cert/cert.pem').toString();
 
 // /**
-//  * mySQLdataController.getSchema
-//  * @param {string} hostname - A required string with database hostname
-//  * @param {string} password - A required string with database password
-//  * @param {string} port - A required string with database port
-//  * @param {string} username - A required string with database username
-//  * @param {string} databaseName - A required string with the database name
-//  **/
+// //  * mySQLdataController.getSchema
+// //  * @param {string} hostname - A required string with database hostname
+// //  * @param {string} password - A required string with database password
+// //  * @param {string} port - A required string with database port
+// //  * @param {string} username - A required string with database username
+// //  * @param {string} databaseName - A required string with the database name
+// //  **/
 
 // export const getSchema = async (req: Request, res: Response, next: NextFunction) => {
 //   // // Option 1 - Production
