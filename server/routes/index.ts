@@ -79,6 +79,7 @@ const routes = async (app: Express) => {
     const errorObj = Object.assign({}, defaultErr, err);
     log.error(errorObj.message);
     log.error(errorObj.log);
+    console.log(err)
     return res.status(errorObj.status).json(errorObj.message);
   });
 };

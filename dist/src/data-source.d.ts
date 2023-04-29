@@ -1,3 +1,2 @@
-import "reflect-metadata";
-export declare const AppDataSource: any;
+export {};
 //# sourceMappingURL=data-source.d.ts.map

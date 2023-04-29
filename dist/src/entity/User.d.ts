@@ -1,7 +1,2 @@
-export declare class User {
-    id: number;
-    firstName: string;
-    lastName: string;
-    age: number;
-}
+export {};
 //# sourceMappingURL=User.d.ts.map

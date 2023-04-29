@@ -21,11 +21,19 @@ const Sidebar = (props: any) => {
   const [_selected, setSelected] = useState('postgres');
 
     //form state hooks
-    const [formValues, setFormValues] = useState<{ db_type: string; database_link?: string }>({ db_type: 'postgres' });
+    const [formValues, setFormValues] = useState<{ 
+      db_type: string,
+      database_link?: string,
+      hostname?: string,
+      port?: string,
+      username?:string,
+      password?: string,
+      database_name?: string,
+     }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
-  const handleSubmit = async (e: Event) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const values: any = formValues;
     //parsing postgres database URL defers from parsing mySQL database URL
@@ -62,7 +70,6 @@ const Sidebar = (props: any) => {
         values.database_name = name_mssql;
         values.db_type = 'mssql';
       }
-      console.log('values: ', values)
     }
 
 

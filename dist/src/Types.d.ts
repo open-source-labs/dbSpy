@@ -7,6 +7,78 @@ export type Props = {
     isActive: boolean;
     setIsActive: (active: boolean) => void;
 };
+export interface MysqlTableColumn {
+    Field?: string;
+    Type?: string;
+    Null?: string;
+    Key?: string;
+    Default?: any;
+    Extra?: string;
+    References?: any[];
+    TableName?: string;
+    IsForeignKey?: boolean;
+    IsPrimaryKey?: boolean;
+    Value?: null;
+    additional_constraints?: string | null;
+    data_type?: string;
+    field_name?: string;
+    Name?: string;
+    [key: string]: any;
+}
+export interface MysqlTableColumns {
+    [columnName: string]: MysqlTableColumn;
+}
+export interface MysqlTableSchema {
+    [tableName: string]: MysqlTableColumns;
+}
+export interface PostgresTableColumn {
+    column_name?: string;
+    data_type?: string;
+    character_maximum_length?: null;
+    is_nullable?: string;
+    column_default?: null;
+    is_autoincrement?: string;
+    additional_constraints?: string;
+    IsForeignKey?: boolean;
+    IsPrimaryKey?: boolean;
+    Value?: null;
+    field_name?: string;
+    Name?: string;
+    References?: any[];
+    [key: string]: any;
+    update_rule?: string;
+    delete_rule?: string;
+}
+export interface PostgresTableColumns {
+    [columnName: string]: PostgresTableColumn;
+}
+export interface PostgresTableSchema {
+    [tableName: string]: PostgresTableColumns;
+}
+export interface MicrosoftTableColumn {
+    column_name?: string;
+    data_type?: string;
+    character_maximum_length?: null;
+    is_nullable?: string;
+    column_default?: null;
+    is_autoincrement?: string;
+    additional_constraints?: string;
+    IsForeignKey?: boolean;
+    IsPrimaryKey?: boolean;
+    Value?: null;
+    field_name?: string;
+    Name?: string;
+    References?: any[];
+    [key: string]: any;
+    update_rule?: string;
+    delete_rule?: string;
+}
+export interface MicrosoftTableColumns {
+    [columnName: string]: PostgresTableColumn;
+}
+export interface MicrosoftTableSchema {
+    [tableName: string]: PostgresTableColumns;
+}
 export type ColumnData = {
     name: string;
     type: SQLDataType;
@@ -32,6 +104,12 @@ export type ColumnSchema = {
     field_name: string;
     data_type: SQLDataType;
     additional_constraints: 'NULL' | 'NOT NULL' | null;
+};
+export type RowsOfData = {
+    [key: string | number]: string | number;
+};
+export type ColumnDataForDataTable = {
+    [key: string | number]: RowsOfData[];
 };
 export interface Table {
     [key: string]: ColumnSchema;

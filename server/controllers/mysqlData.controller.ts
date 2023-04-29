@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { MysqlTableColumns, MysqlTableSchema, MysqlTableColumn } from '@/Types';
+import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { DataSource } from 'typeorm';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
 
@@ -28,8 +28,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
 
-    async function mysqlFormatTableSchema(columns: MysqlTableColumn[], tableName: string): Promise<MysqlTableColumns> {
-      const tableSchema: MysqlTableColumns = {};
+    async function mysqlFormatTableSchema(columns: TableColumn[], tableName: string): Promise<TableColumn> {
+      const tableSchema: TableColumn = {};
 
   
       for (const column of columns) {
@@ -42,7 +42,7 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
   
           //Creating the format for the Reference property if their is a foreign key
-          const references: any = {
+          const references: ReferenceType = {
               length: 0,
           };
   
@@ -76,11 +76,11 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   };
 
     //Obtain all table names from the database
-    const tables = await MysqlDataSource.query(`SHOW TABLES`);
+    const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
 
     //Declare constants to store results we get back from queries
-    const data: MysqlTableColumns = {};
-    const schema: MysqlTableSchema = {};
+    const data: TableColumns = {};
+    const schema: TableSchema = {};
 
     //LOOP
     for (const table of tables) {
@@ -90,8 +90,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
       const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
       data[tableName] = tableData;
       // Getting Schemas for all tables
-      const columns = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
-      schema['public.' + tableName] = await mysqlFormatTableSchema(columns, tableName); // Store schema using tableName as key
+      const columns: any = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
+      schema['public.' + tableName] = await mysqlFormatTableSchema(columns, tableName);
     }
     //Console.logs to check what the data looks like
     // console.log("data: ", data);
