@@ -53,6 +53,8 @@ const Sidebar = (props: any) => {
       }
     }
 
+console.log('values: ', values)
+
     //update dbCredentials
     setDbCredentials(values);
     setConnectPressed(true);
@@ -105,6 +107,7 @@ const Sidebar = (props: any) => {
         >
           <option value="postgres">PostgreSQL</option>
           <option value="mysql">MySQL</option>
+          <option value="mssql">Microsoft SQL</option>
         </select>
       </span>
       <br></br>
