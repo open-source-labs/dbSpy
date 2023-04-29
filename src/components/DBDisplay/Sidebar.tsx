@@ -6,12 +6,14 @@ import axios from 'axios';
 import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
+import useDataStore from '../../store/dataStore';
 // const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
 
 const Sidebar = (props: any) => {
   //STATE DECLARATION (dbSpy3.0)
   const setDbCredentials = useCredentialsStore((state) => state.setDbCredentials);
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
+  const setDataStore = useDataStore((state) => state.setDataStore)
   const { setWelcome } = useSettingsStore((state) => state);
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
@@ -70,16 +72,24 @@ const Sidebar = (props: any) => {
     setConnectPressed(true);
 
     //change between which getSchema from MySQL to postgres based on db_type
-    const dbSchema = await axios
+
+    const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
-      .then((res) => res.data)
+      .then((res) => {
+        console.log('res.data',res.data)
+        return res.data;
+      })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
     //update schemaStore
-    setSchemaStore(dbSchema);
+    console.log('schemaFromBackend', dataFromBackend.schema)
+    console.log('dataFromBackend', dataFromBackend.data)
+    setSchemaStore(dataFromBackend.schema);
+    setDataStore(dataFromBackend.data)
     setWelcome(false);
     setConnectPressed(false);
     props.closeNav();
   };
+  
   //on change for db type selection, will affect state to conditionally render database URL
   const handleChange = (event: any) => {
     setSelected(event.target.value);

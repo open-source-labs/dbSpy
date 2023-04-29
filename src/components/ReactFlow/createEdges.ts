@@ -20,20 +20,27 @@ export type Edge = {
 };
 
 export default function createEdges(schemaObject: SchemaStore) {
+  //console.log("i am in createEages file")
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
     const table = schemaObject[tableKey];
+    //console.log('const table', table)
+    //console.log('what is this',)
     for (const rowKey in table) {
       const row = table[rowKey];
+      //console.log("row", row)
       if (row.IsForeignKey) {
+        //console.log("references", row.References[0][0])
+        // edges.push({key:'hi'})
         edges.push({
-          id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
-          source: row.References[0].ReferencesTableName,
-          sourceHandle: row.References[0].ReferencesPropertyName,
-          target: row.References[0].PrimaryKeyTableName,
-          targetHandle: row.References[0].PrimaryKeyName,
+          id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
+          
+          source: row.References[0][0].ReferencesTableName,
+          sourceHandle: row.References[0][0].ReferencesPropertyName,
+          target: row.References[0][0].PrimaryKeyTableName,
+          targetHandle: row.References[0][0].PrimaryKeyName,
           animated: true,
-          label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+          label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
           style: {
             strokeWidth: 2,
             stroke: '#085c84',
@@ -49,6 +56,6 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
-
+  //console.log('edges',edges)
   return edges;
 }

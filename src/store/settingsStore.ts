@@ -35,8 +35,13 @@ let settingsStore = (
       ...state,
       currentTable,
       inputModalState: { isOpen, mode },
-    }));
+    }))
   },
+
+  isSchema: true,
+  setTableMode: (input:any) =>
+    set((state: {isSchema: any}) => ({ ...state, isSchema: !state.isSchema })),
+    //!state.isSchema or input??  ##########
 });
 
 // settingsStore = devtools(settingsStore);
