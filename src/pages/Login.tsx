@@ -61,7 +61,6 @@ function getGoogle():string{
       'https://www.googleapis.com/auth/userinfo.email',
     ].join(' '),
   };
-
   const qs = new URLSearchParams(options);
   return `${rootUrl}?${qs.toString()}`;
 
