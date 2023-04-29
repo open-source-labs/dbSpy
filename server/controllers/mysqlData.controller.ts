@@ -1,149 +1,113 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import fs from 'fs';
-import log from '../logger/index';
-const mysqldump = require('mysqldump');
-const dotenv = require('dotenv');
-dotenv.config();
+import { MysqlTableColumns, MysqlTableSchema, MysqlTableColumn } from '@/Types';
 import { DataSource } from 'typeorm';
-//import { User } from '../entities/user.entity'
-
-export const MysqlDataSource = new DataSource({
-  type: "mysql",
-  host: process.env.USER_DB_URL_MYSQL,
-  port: 3306,
-  username: process.env.USER_DB_USER_MYSQL,
-  password: process.env.USER_DB_PW_MYSQL,
-  database: 'dbSpy',
-  synchronize: true,
-  logging: true,
-});
+import { mysqlForeignKeyQuery } from './queries/mysql.queries';
 
 //----------------------------------------------------------------------------
-interface TableColumn {
-  Field?: string;
-  Type?: string;
-  Null?: string;
-  Key?: string;
-  Default?: any;
-  Extra?: string;
-  References?: any[];
-  TableName?: string;
-  IsForeignKey?: boolean;
-  IsPrimaryKey?: boolean;
-  Value?: null;
-  additional_constraints?: string;
-  data_type?: string;
-  field_name?: string;
-  Name?: string;
-  [key: string]: any;
-}
-
-interface TableColumns {
-  [columnName: string]: TableColumn;
-}
-
-interface TableSchema {
-  [tableName: string]: TableColumns;
-}
-
-async function getForeignKeys(columnName: string): Promise<any[]> {
-  const foreignKeyQuery = await MysqlDataSource.query(`
-  SELECT
-    COLUMN_NAME,
-    REFERENCED_TABLE_NAME,
-    REFERENCED_COLUMN_NAME,
-    CONSTRAINT_NAME,
-    TABLE_NAME
-  FROM
-    INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-  WHERE
-    COLUMN_NAME = '${columnName}'
-    AND REFERENCED_TABLE_NAME IS NOT NULL;
-`);
-console.log('foreignKeyQuery: ', foreignKeyQuery)
-  return foreignKeyQuery;
-}
-
-async function formatTableSchema(columns: TableColumn[]): Promise<TableColumns> {
-  const tableSchema: TableColumns = {};
-  console.log('inside of formateTableSchema')
-
-  for (const column of columns) {
-    const columnName: any = column.Field;
-    const keyString: any = column.Key;
-   
-    console.log('columnName: ', columnName)
-      const foreignKeys: any = await getForeignKeys(columnName)
-      const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
-
-      const references: any = {
-        length: 0,
-      };
-        references[references.length] = {
-          isDestination: false,
-          PrimaryKeyName: foreignKeys.COLUMN_NAME,
-          PrimaryKeyTableName: foreignKeys.TABLE_NAME,
-          ReferencesPropertyName: foreignKeys.REFERENCED_COLUMN_NAME,
-          ReferencesTableName: foreignKeys.REFERENCED_TABLE_NAME,
-          constraintName: foreignKeys.CONSTRAINT_NAME,
-        };
-        references.length += 1;
-
-      tableSchema[columnName] = {
-        IsForeignKey: keyString.includes('MUL'),
-        IsPrimaryKey: keyString.includes('PRI'),
-        Name: column.Field,
-        References: foreignKey ? [references] : [],
-        TableName: 'public.' + columnName,
-        Value: null,
-        additional_constraints: column.Extra,
-        data_type: column.Type,
-        field_name: column.Field,
-    };
-  }
-  
-  return tableSchema;
-}
-
-export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
+export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
+    const { hostname, password, port, username, database_name } = req.query;
+
+    const MysqlDataSource = new DataSource({
+      type: "mysql",
+      host: hostname as string,
+      port: port ? parseInt(port as string) : 3306,
+      username: username as string,
+      password: password as string,
+      database: database_name as string,
+      synchronize: true,
+      logging: true,
+    });
+
+    //Establish connection with the database
     await MysqlDataSource.initialize();
     console.log('Data Source has been initialized');
 
-    const tables = await MysqlDataSource.query(`SHOW TABLES`);
-    const data: TableColumns = {};
-    const schema: TableSchema = {}; // Define schema as TableSchema object
+    async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
+      return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
+  };
 
+    async function mysqlFormatTableSchema(columns: MysqlTableColumn[], tableName: string): Promise<MysqlTableColumns> {
+      const tableSchema: MysqlTableColumns = {};
+
+  
+      for (const column of columns) {
+          const columnName: any = column.Field;
+          //const tableName: any = column.TableName
+          const keyString: any = column.Key;
+          
+          //query for the foreign key data
+          const foreignKeys: any = await getForeignKeys(columnName, tableName);
+          const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
+  
+          //Creating the format for the Reference property if their is a foreign key
+          const references: any = {
+              length: 0,
+          };
+  
+          if (foreignKey){
+              references[references.length] = {
+                  isDestination: false,
+                  PrimaryKeyName: foreignKeys.COLUMN_NAME,
+                  PrimaryKeyTableName: foreignKeys.TABLE_NAME,
+                  ReferencesPropertyName: foreignKeys.REFERENCED_COLUMN_NAME,
+                  ReferencesTableName: foreignKeys.REFERENCED_TABLE_NAME,
+                  constraintName: foreignKeys.CONSTRAINT_NAME,
+              };
+              references.length += 1;
+          };
+  
+          //Formation of the schema data
+          tableSchema[columnName] = {
+              IsForeignKey: keyString.includes('MUL'),
+              IsPrimaryKey: keyString.includes('PRI'),
+              Name: column.Field,
+              References: foreignKey ? [references] : [],
+              TableName: 'public.' + tableName,
+              Value: null,
+              additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
+              data_type: column.Type,
+              field_name: column.Field,
+          };
+      };
+  
+      return tableSchema;
+  };
+
+    //Obtain all table names from the database
+    const tables = await MysqlDataSource.query(`SHOW TABLES`);
+
+    //Declare constants to store results we get back from queries
+    const data: MysqlTableColumns = {};
+    const schema: MysqlTableSchema = {};
+
+    //LOOP
     for (const table of tables) {
-      const tableName = table[`Tables_in_${MysqlDataSource.options.database}`];
+      const tableName: string = table[`Tables_in_${MysqlDataSource.options.database}`];
 
       // Getting Data from all tables
       const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
       data[tableName] = tableData;
-      // Getting Schemas from all tables
+      // Getting Schemas for all tables
       const columns = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
-      schema['public.' + tableName] = await formatTableSchema(columns); // Store schema using tableName as key
+      schema['public.' + tableName] = await mysqlFormatTableSchema(columns, tableName); // Store schema using tableName as key
     }
+    //Console.logs to check what the data looks like
+    // console.log("data: ", data);
+    console.log("schema: ", schema);
 
     // Saving the table names, table data, and schemas in res.locals
-    // console.log("data: ", data);
-   console.log("schema: ", schema);
-
     res.locals.data = data;
-    //res.locals.tables = tables;
     res.locals.schema = schema;
-
     return next();
-  } catch (err) {
+
+  } catch (err: unknown) {
     console.log('Error during Data Source: ', err);
     return next(err);
   }
 }
-
 //----------------------------------------------------------------------------
-
-
-
 
 // // SSL data stored as environment variable for GitHub Actions access
 // // Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables
@@ -157,13 +121,13 @@ export const mysqlQuery: RequestHandler = async (_req: Request, res: Response, n
 //     : fs.readFileSync('./.cert/cert.pem').toString();
 
 // /**
-//  * mySQLdataController.getSchema
-//  * @param {string} hostname - A required string with database hostname
-//  * @param {string} password - A required string with database password
-//  * @param {string} port - A required string with database port
-//  * @param {string} username - A required string with database username
-//  * @param {string} databaseName - A required string with the database name
-//  **/
+// //  * mySQLdataController.getSchema
+// //  * @param {string} hostname - A required string with database hostname
+// //  * @param {string} password - A required string with database password
+// //  * @param {string} port - A required string with database port
+// //  * @param {string} username - A required string with database username
+// //  * @param {string} databaseName - A required string with the database name
+// //  **/
 
 // export const getSchema = async (req: Request, res: Response, next: NextFunction) => {
 //   // // Option 1 - Production

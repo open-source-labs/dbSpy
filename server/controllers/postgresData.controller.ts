@@ -1,178 +1,59 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { Client } from 'pg';
-import { SchemaStore } from '../../src/store/schemaStore';
-import { SQLDataType } from '@/Types';
-import log from '../logger/index';
-import dotenv from 'dotenv'
+import { PostgresTableColumns, PostgresTableSchema, PostgresTableColumn } from '@/Types';
+import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
+//import { PostgresDataSource } from '../datasource';
+//import { postgresFormatTableSchema } from './helperFunctions/postgres.functions';
 import { DataSource } from 'typeorm';
-//import { UserPost } from '../entities/user.entity'
-dotenv.config();
+import dotenv from 'dotenv';
+dotenv.config
 
 
 //----------------------------------------------------------------------------
-export const PostgresDataSource = new DataSource({
-  type: "postgres",
-  host: process.env.USER_DB_URL_POSTGRES,
-  port: 5432,
-  username: process.env.USER_DB_USER_POSTGRES,
-  password: process.env.USER_DB_PW_POSTGRES,
-  database: 'xvcmlhle',
-  synchronize: true,
-  logging: true,
-});
-
-interface TableColumn {
-  Field?: string;
-  Type?: string;
-  Null?: string;
-  Key?: string;
-  Default?: any;
-  Extra?: string;
-  References?: any[];
-  TableName?: string;
-  IsForeignKey?: boolean;
-  IsPrimaryKey?: boolean;
-  Value?: null;
-  additional_constraints?: string;
-  data_type?: string;
-  field_name?: string;
-  Name?: string;
-  [key: string]: any;
-}
-
-
-interface TableColumns {
-  [columnName: string]: TableColumn;
-}
-
-interface TableSchema {
-  [tableName: string]: TableColumns;
-}
-
-export const postgresQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
-
+export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { hostname, password, port, username, database_name } = req.query;
+
+    console.log(hostname, password, port, username, database_name)
+    console.log('DataSource: ', DataSource)
+
+    const PostgresDataSource = new DataSource({
+      type: "postgres",
+      host: hostname as string,
+      port: port ? parseInt(port as string) : 5432,
+      username: username as string,
+      password: password as string,
+      database: database_name as string,
+      synchronize: true,
+      logging: true,
+    });
+
+
+    //Start connection with the database
       await PostgresDataSource.initialize();
-        console.log('Data Source has been initialized');
-        const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
-        const data: TableColumns = {};
-        const schema = [];
+        console.log('Data source has been connected');
 
-        //DATA FOR FOREIGN KEY INFORMATION 
-        const foreignKeyQuery = `
-        SELECT 
-        kcu.table_schema || '.' || kcu.table_name AS table_with_foreign_key, 
-        kcu.column_name AS foreign_key_column, 
-        rel_tco.table_schema || '.' || rel_tco.table_name AS referenced_table, 
-        rco.update_rule, 
-        rco.delete_rule,
-        rel_kcu.column_name AS referenced_column,
-        tco.constraint_name AS constraint_name
-      FROM 
-        information_schema.table_constraints tco 
-        JOIN information_schema.key_column_usage kcu ON tco.constraint_name = kcu.constraint_name 
-        JOIN information_schema.referential_constraints rco ON tco.constraint_name = rco.constraint_name 
-        JOIN information_schema.table_constraints rel_tco ON rco.unique_constraint_name = rel_tco.constraint_name 
-        JOIN information_schema.key_column_usage rel_kcu ON rel_tco.constraint_name = rel_kcu.constraint_name
-                                                          AND kcu.ordinal_position = rel_kcu.ordinal_position
-      WHERE 
-        tco.constraint_type = 'FOREIGN KEY';
-            `
-        const foreignKeys = await PostgresDataSource.query(foreignKeyQuery);
-    //console.log('foreignKeyQuery: ', foreignKeyQuery)
-        // LOOP
-      for (const table of tables) {
-        // DATA
-        // loop through the different tables, query all the information, push it on to the data array
-        let tableName = table.tablename;
-        const tableData = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
-        data[tableName] = tableData
-
-        // SCHEMAS
-        // Have to pull from different innate sources like information_schema and join them together
-        const info = await PostgresDataSource.query(`
-          SELECT 
-            c.column_name, 
-            c.data_type, 
-            c.character_maximum_length,
-            c.is_nullable,
-            c.column_default,
-            CASE WHEN c.column_default LIKE 'nextval%' THEN 'YES' ELSE 'NO' END as is_autoincrement,
-            CASE WHEN c.column_default IS NOT NULL THEN 'DEFAULT' ELSE '' END ||
-                CASE WHEN c.is_nullable = 'NO' THEN ' NOT NULL' ELSE '' END ||
-                CASE WHEN tc.constraint_type = 'PRIMARY KEY' THEN ' PRIMARY KEY' ELSE '' END ||
-                CASE WHEN tc.constraint_type = 'FOREIGN KEY' THEN ' FOREIGN KEY REFERENCES ' || 
-                    ccu.table_name || '(' || ccu.column_name || ')' ELSE '' END
-                as additional_constraints
-          FROM 
-            information_schema.columns c
-            LEFT OUTER JOIN information_schema.key_column_usage kcu
-              ON c.table_catalog = kcu.table_catalog
-              AND c.table_schema = kcu.table_schema
-              AND c.table_name = kcu.table_name
-              AND c.column_name = kcu.column_name
-            LEFT OUTER JOIN information_schema.table_constraints tc
-              ON kcu.constraint_catalog = tc.constraint_catalog
-              AND kcu.constraint_schema = tc.constraint_schema
-              AND kcu.constraint_name = tc.constraint_name
-            LEFT OUTER JOIN information_schema.constraint_column_usage ccu
-              ON tc.constraint_catalog = ccu.constraint_catalog
-              AND tc.constraint_schema = ccu.constraint_schema
-              AND tc.constraint_name = ccu.constraint_name
-          WHERE 
-            c.table_name = '${tableName}'
-          ORDER BY 
-            c.ordinal_position;
-          `);
-        //push info on to the schema array each loop
-          schema.push(info)
+        async function getForeignKeys(): Promise<PostgresTableColumn[]> {
+          return await PostgresDataSource.query(postgresForeignKeyQuery);
         };
-
-      // CONSTRUCTION OF A OBJECT THAT CONFORMS TO WHAT THE FRONT END USUALLY GETS
-      // WHY DID I THINK RECONSTRUCTING THE BACKEND WAS A GOOD IDEA?
-      // IT'LL BE SIMPLER I SAID, MUCH EASIER I SAID. PAST ME IS A FOOL!
-
-      const publicTableName: any = {};
-
-      schema.forEach((tableColumns, index) => {
-        const tableName = tables[index].tablename;
-        const tableObject: any = {};
-      
-        tableColumns.forEach((column: any) => {
-          const columnName = column.column_name;
-          const dataType = column.data_type;
-      
-          const columnObject: any = {
-            IsForeignKey: false,
-            IsPrimaryKey: columnName === 'id',
-            Name: columnName,
-            References: [],
-            TableName: `public.${tableName}`,
-            Value: null,
-            data_type: dataType,
-            field_name: columnName,
+        
+        //function organizing data from queries in to the desired format of the front end
+        async function postgresFormatTableSchema(columns: PostgresTableColumn[], tableName: string): Promise<PostgresTableColumn> {
+        const tableSchema: PostgresTableColumn = {};
+        
+        for (const column of columns) {
+          const columnName: any = column.column_name
+          const keyString: any = column.additional_constraints
+        
+          //query for the foreign key data
+          const foreignKeys: any = await getForeignKeys();
+          const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
+          
+          //Creating the format for the Reference property if their is a foreign key
+          const references: any = {
+            length: 0,
           };
-
-          if (column.additional_constraints) {
-            columnObject.additional_constraints = column.additional_constraints;
-          }
-      
-          // check if the current column is a foreign key column
-          const foreignKey = foreignKeys.find(
-            (fk: any) =>
-              fk.table_with_foreign_key === `public.${tableName}` &&
-              fk.foreign_key_column === columnName
-          );
-
-          //console.log('foreignKey: ', foreignKey)
-
-
-
-
-          if (foreignKey) {
-            const references: any = {
-              length: 0,
-            };
+        
+          if (foreignKey){
             references[references.length] = {
               idDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
@@ -182,37 +63,57 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
               constraintName: foreignKey.constraint_name
             };
             references.length += 1;
+          };
+        
+          tableSchema[columnName] = {
+            IsForeignKey: keyString.includes('FOREIGN KEY'),
+            IsPrimaryKey: keyString.includes('PRIMARY KEY'),
+            Name: columnName,
+            References: foreignKey ? [references] : [],
+            TableName: 'public.' + tableName,
+            Value: null,
+            additional_constraints: keyString.includes('NOT NULL') ? 'NOT NULL' : null,
+            data_type: column.data_type,
+            field_name: columnName,
+          };
+        };
+        return tableSchema;
+        };
 
-            columnObject.IsForeignKey = true;
-            columnObject.References = foreignKey ? [references] : [];
+        //Retrieve all table names
+        const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
+        //Declare storage objects with their related interfaces
+        const tableData: PostgresTableColumns = {};
+        const schema: PostgresTableSchema = {};
 
-            //console.log('columnObject.References: ', columnObject.References)
-          }
-      
-          tableObject[columnName] = columnObject;
-        });
-      
-        publicTableName[`public.${tableName}`] = tableObject;
-      });
-      
-      //console.log('schema: ', publicTableName)
-      //console.log('data: ', data)
+        // LOOP
+      for (const table of tables) {
 
-      res.locals.schema = publicTableName;
-      res.locals.data = data;
+        // DATA Create property on tableData object with every loop
+        let tableName = table.tablename;
+        const tableDataQuery = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
+        tableData[tableName] = tableDataQuery
+
+        // SCHEMAS Create property on schema object with every loop
+          const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName))
+          schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
+        };
+
+      //check to see what things look like with these console.logs
+      console.log('schema: ', schema)
+      console.log('data: ', tableData)
+
+      //Storage of queried results into res.locals
+      res.locals.schema = schema;
+      res.locals.data = tableData;
       return next();
 
-  } catch (err) {
+  } catch (err: unknown) {
     console.log('Error during Data Source: ', err);
+    return next(err);
   }
 }
-
-//postgresQuery();
 //----------------------------------------------------------------------------
-//Previous schema query
-// SELECT column_name, data_type
-// FROM information_schema.columns
-// WHERE table_name = '${tableName}'
 
 // type ColumnSchema = {
 //   table_name: string;
