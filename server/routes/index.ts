@@ -1,5 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { handleGoogleAuth, getGoogleAuthUrl } from '../controllers/auth.controller';
+import { getGoogleAccesToken, getUserInfo } from '../controllers/oauth.controller';
 import {
   retrieveSchema,
   saveSchema,
@@ -32,9 +33,14 @@ const routes = async (app: Express) => {
 
   app.get('/api/healthcheck', (_req: Request, res: Response) => res.sendStatus(200));
 
-  app.get('/api/oauth/google', handleGoogleAuth);
+  app.post('/api/oauth', getGoogleAccesToken, getUserInfo ,(req,res) => {
+    console.log(res.locals.userInfo);
+    res.status(200).json('hello!')
+  })
 
-  app.get('/api/googleAuthUrl', getGoogleAuthUrl);
+  // app.get('/api/oauth/google', handleGoogleAuth);
+
+  // app.get('/api/googleAuthUrl', getGoogleAuthUrl);
 
   app.use('/api/sql/postgres', postgresRouter);
 

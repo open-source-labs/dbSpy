@@ -35,6 +35,39 @@ export default function Login() {
       });
   };
 
+///////////////////////////OAUTH//////////////
+
+type Options = {
+  redirect_uri: string,
+  client_id: string,
+  access_type: string,
+  response_type: string,
+  prompt: string,
+  scope:string,
+}
+
+function getGoogle():string{
+
+  const rootUrl:string = 'https://accounts.google.com/o/oauth2/v2/auth';
+
+  const options:Options = {
+    redirect_uri: 'http://localhost:8080/display',
+    client_id: '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
+    access_type: 'offline',
+    response_type: 'code',
+    prompt: 'consent',
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ].join(' '),
+  };
+
+  const qs = new URLSearchParams(options);
+  return `${rootUrl}?${qs.toString()}`;
+
+}
+
+///////////////////OAUTH/////////////
   return (
     <div className="mt-10 grid place-items-center">
       <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
@@ -91,12 +124,16 @@ export default function Login() {
           <div className="justify-center md:flex">
             <button
               className="focus:shadow-outline rounded bg-sky-700 py-2 px-4 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
-              type="submit"
-            >
+              type="submit">
               Sign In
             </button>
           </div>
         </form>
+        <a
+              className="focus:shadow-outline rounded bg-sky-700 py-2 px-4 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
+              type="submit" href={getGoogle()}>
+              Login Google
+        </a>
         {/* TODO: implement production level Google OAuth */}
         {/* <div className="inline-flex w-full items-center justify-between">
           <hr className="my-8 h-px w-32 border-0 bg-gray-200 dark:bg-gray-700"></hr>
