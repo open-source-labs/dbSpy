@@ -1,15 +1,85 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { PostgresTableColumns, PostgresTableSchema } from '@/Types';
-import { postgresSchemaQuery } from './queries/postgres.queries';
-import { PostgresDataSource } from '../datasource';
-import { postgresFormatTableSchema } from './helperFunctions/postgres.functions';
+import { PostgresTableColumns, PostgresTableSchema, PostgresTableColumn } from '@/Types';
+import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
+//import { PostgresDataSource } from '../datasource';
+//import { postgresFormatTableSchema } from './helperFunctions/postgres.functions';
+import { DataSource } from 'typeorm';
+import dotenv from 'dotenv';
+dotenv.config
+
 
 //----------------------------------------------------------------------------
-export const postgresQuery: RequestHandler = async (_req: Request, res: Response, next: NextFunction) => {
+export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { hostname, password, port, username, database_name } = req.query;
+
+    console.log(hostname, password, port, username, database_name)
+    console.log('DataSource: ', DataSource)
+
+    const PostgresDataSource = new DataSource({
+      type: "postgres",
+      host: hostname as string,
+      port: port ? parseInt(port as string) : 5432,
+      username: username as string,
+      password: password as string,
+      database: database_name as string,
+      synchronize: true,
+      logging: true,
+    });
+
+
     //Start connection with the database
       await PostgresDataSource.initialize();
         console.log('Data source has been connected');
+
+        async function getForeignKeys(): Promise<PostgresTableColumn[]> {
+          return await PostgresDataSource.query(postgresForeignKeyQuery);
+        };
+        
+        //function organizing data from queries in to the desired format of the front end
+        async function postgresFormatTableSchema(columns: PostgresTableColumn[], tableName: string): Promise<PostgresTableColumn> {
+        const tableSchema: PostgresTableColumn = {};
+        
+        for (const column of columns) {
+          const columnName: any = column.column_name
+          const keyString: any = column.additional_constraints
+        
+          //query for the foreign key data
+          const foreignKeys: any = await getForeignKeys();
+          const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
+          
+          //Creating the format for the Reference property if their is a foreign key
+          const references: any = {
+            length: 0,
+          };
+        
+          if (foreignKey){
+            references[references.length] = {
+              idDestination: false,
+              PrimaryKeyName: foreignKey.foreign_key_column,
+              PrimaryKeyTableName: foreignKey.table_with_foreign_key,
+              ReferencesPropertyName: foreignKey.referenced_column,
+              ReferencesTableName: foreignKey.referenced_table,
+              constraintName: foreignKey.constraint_name
+            };
+            references.length += 1;
+          };
+        
+          tableSchema[columnName] = {
+            IsForeignKey: keyString.includes('FOREIGN KEY'),
+            IsPrimaryKey: keyString.includes('PRIMARY KEY'),
+            Name: columnName,
+            References: foreignKey ? [references] : [],
+            TableName: 'public.' + tableName,
+            Value: null,
+            additional_constraints: keyString.includes('NOT NULL') ? 'NOT NULL' : null,
+            data_type: column.data_type,
+            field_name: columnName,
+          };
+        };
+        return tableSchema;
+        };
+
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
         //Declare storage objects with their related interfaces
@@ -30,8 +100,8 @@ export const postgresQuery: RequestHandler = async (_req: Request, res: Response
         };
 
       //check to see what things look like with these console.logs
-      // console.log('schema: ', schema)
-      // console.log('data: ', tableData)
+      console.log('schema: ', schema)
+      console.log('data: ', tableData)
 
       //Storage of queried results into res.locals
       res.locals.schema = schema;
