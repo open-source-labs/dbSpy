@@ -38,6 +38,7 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): N
   let i = 0;
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];
+    console.log(rowData, rowData)
     nodes.push({
       id: tableKey,
       type: 'table',
@@ -47,6 +48,7 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): N
     });
     i = (i + 1) % 17;
   }
+  // console.log('nodes?????', nodes)
   return nodes;
 }
 

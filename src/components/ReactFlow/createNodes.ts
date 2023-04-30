@@ -15,6 +15,8 @@ type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnS
 //hard-coded xy positioning of each node in the canvas
 export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): Node[] {
   console.log('i am in createNodes file')
+   console.log('dataObject', schemaObject)
+
   const nodePositions = [
     { x: 1000, y: 400 },
     { x: 1000, y: 0 },

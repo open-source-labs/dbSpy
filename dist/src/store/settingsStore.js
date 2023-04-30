@@ -32,6 +32,9 @@ let settingsStore = (set) => ({
             inputModalState: { isOpen, mode },
         }));
     },
+    isSchema: true,
+    setTableMode: (input) => set((state) => ({ ...state, isSchema: !state.isSchema })),
+    //!state.isSchema or input??  ##########
 });
 // settingsStore = devtools(settingsStore);
 const useSettingsStore = (0, zustand_1.default)((0, middleware_1.devtools)(settingsStore));

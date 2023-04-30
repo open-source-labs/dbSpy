@@ -9,7 +9,7 @@ import useSettingsStore from '../../store/settingsStore';
 
 export default function TableNodeForData({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
   const tableName = data.table[0];
-  console.log('inside tableNodeForData file');
+  console.log('inside tableNodeForData file', data);
   // columnData is an array of objects with each column in the table as an element
   const RowData = Object.values(data.table[1]);
   const firstRow = Object.keys(RowData[0]) //arr of obj
@@ -24,9 +24,9 @@ export default function TableNodeForData({ data }) {  //this 'data' is created a
   // console.log("restRows", restRows);
 
 
-  restRowsData?.forEach(eachRow => {
-    eachRow.map(eachColumn => (
-      console.log('eachColumn', eachColumn)))})
+  // restRowsData?.forEach(eachRow => {
+  //   eachRow.map(eachColumn => (
+  //     console.log('eachColumn', eachColumn)))})
 
   //console.log('arrOfRows',Object.keys(data.table))
 
@@ -116,9 +116,9 @@ export default function TableNodeForData({ data }) {  //this 'data' is created a
             </thead>
             <tbody>
             {/* generates dynamic columns */}
-            {restRowsData.map((column, index) => (
+            {restRowsData?.map((row, index) => (
               <DataTableNodeColumn
-                column={column}
+                row={row}
                 key={`${tableName}-column${index}`}
                 id={`${tableName}-column${index}`}
               />

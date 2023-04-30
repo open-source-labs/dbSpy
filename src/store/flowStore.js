@@ -11,7 +11,6 @@ let flowStore = (set, get) => ({
   setEdges: (eds) => set((state) => ({ ...state, edges: eds })),
   nodes: [],
   setNodes: (nds) => set((state) => ({ ...state, nodes: nds })),
-
   //functions
   onNodesChange: (changes) =>
     set({

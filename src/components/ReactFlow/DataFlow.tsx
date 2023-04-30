@@ -35,7 +35,7 @@ export default function DataFlow() {
 
   //need to finish build dataStore###################
   // re-render every time dataStore updates
-
+  
   useEffect(() => {  
     reRender(dataStore);
   }, [dataStore]);
@@ -45,9 +45,14 @@ export default function DataFlow() {
     const initialEdges = createDataEdges(dataStore);
     setEdges(initialEdges);
     const initialNodes = createDataNodes(dataStore, initialEdges);
+    console.log('dataStore1', dataStore)
+    console.log('initialNodes', initialNodes)
     setNodes(initialNodes);
   }
-  console.log('dataStore',dataStore)
+
+
+  // console.log('dataStore2', dataStore)
+  console.log('nodes from dataFlow (DATA INFO)', nodes) //it's passing schema... and where this came from? why???
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
