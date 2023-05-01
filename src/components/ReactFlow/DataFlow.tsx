@@ -17,13 +17,13 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
-import TableNodeForData from './TableNodeForData';
 import createDataEdges from './createDataEdges';
 import createDataNodes from './createDataNodes';
 import schemaStore from '../../store/schemaStore';
+import DataTableNode from './DataTableNode';
 
 const nodeTypes = {
-  table: TableNodeForData,
+  table: DataTableNode,
   // table: TableNode,
 };
 

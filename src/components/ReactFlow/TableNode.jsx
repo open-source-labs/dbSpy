@@ -31,7 +31,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberSource * 21,
+            top: 40 + columnNumberSource * 21,
             // bottom: 'auto',
           }}
         />
@@ -50,7 +50,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberTarget * 21,
+            top: 90 + columnNumberTarget * 21,
             // bottom: 'auto',
           }}
         />

@@ -7,7 +7,7 @@ import DataTableNodeColumn from './DataTableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
 
-export default function TableNodeForData({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
+export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
   const tableName = data.table[0];
   console.log('inside tableNodeForData file', data);
   // columnData is an array of objects with each column in the table as an element
