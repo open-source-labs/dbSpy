@@ -1,5 +1,4 @@
 import useFlowStore from '../../store/flowStore';
-// import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import useDataStore, { DataStore } from '../../store/dataStore';
 import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React from 'react';
@@ -32,7 +31,7 @@ export default function DataFlow() {
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
   const { dataStore } = useDataStore(((state) => state))
-
+  const { schemaStore } = useSchemaStore((state) => state);
   //need to finish build dataStore###################
   // re-render every time dataStore updates
 
@@ -52,7 +51,7 @@ export default function DataFlow() {
 
 
   // console.log('dataStore2', dataStore)
-  console.log('nodes from dataFlow (DATA INFO)', nodes) //it's passing schema... and where this came from? why???
+  //console.log('nodes from dataFlow (DATA INFO)', nodes) //it's passing schema... and where this came from? why???
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>

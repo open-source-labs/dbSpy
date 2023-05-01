@@ -9,24 +9,24 @@ import useSettingsStore from '../../store/settingsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
   const tableName = data.table[0];
-  console.log('inside tableNodeForData file', data);
+  //console.log('inside tableNodeForData file', data);
   // columnData is an array of objects with each column in the table as an element
   const RowData = Object.values(data.table[1]);
   const firstRow = Object.keys(RowData[0]) //arr of obj
   //const restRows = data inside the rows ###############################
   const restRowsData = RowData.map(each => Object.values(each));
   // const restRows = restRowsData.map(each => Object.values(each))
-  console.log("data.table", data.table);
-  console.log("tableName",tableName)
-  console.log("RowData", RowData);
-  console.log('firstRow', firstRow)
-  console.log("restRowsData", restRowsData); //each inside this array need to render as each column inside the table
+  //console.log("data.table", data.table);
+  //console.log("tableName",tableName)
+  // console.log("RowData", RowData);
+  // console.log('firstRow', firstRow)
+  // console.log("restRowsData", restRowsData); //each inside this array need to render as each column inside the table
   // console.log("restRows", restRows);
 
 
-  restRowsData?.forEach(eachRow => {
-    eachRow.map(eachColumn => (
-      console.log('eachColumn', eachColumn)))})
+  // restRowsData?.forEach(eachRow => {
+  //   eachRow.map(eachColumn => (
+  //     console.log('eachColumn', eachColumn)))})
 
   //console.log('arrOfRows',Object.keys(data.table))
 

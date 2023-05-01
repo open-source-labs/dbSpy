@@ -1,3 +1,4 @@
+
 import { DataStore } from '../../store/dataStore';
 
 export type Edge = {
@@ -20,6 +21,10 @@ export type Edge = {
 
 export default function createDataEdges(dataObject: DataStore) {
   console.log("inside createDataEdges file")
+  // console.log(hi)
+  console.log('hello')
+
+
   const edges: Edge[] = [];
   console.log('dataObject',dataObject)
   for (const tableKey in dataObject) {
