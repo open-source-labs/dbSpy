@@ -36,12 +36,12 @@ export default function DataFlow() {
   // re-render every time dataStore updates
 
   useEffect(() => {  
-    reRender(dataStore);
-  }, [dataStore]);
+    reRender(dataStore, schemaStore);
+  }, [dataStore, schemaStore]);
 
   function reRender(dataStore: DataStore) {
     if (!dataStore || !Object.keys(dataStore).length) return;
-    const initialEdges = createDataEdges(dataStore);
+    const initialEdges = createDataEdges(dataStore,schemaStore);
     setEdges(initialEdges);
     const initialNodes = createDataNodes(dataStore, initialEdges);
     console.log('dataStore1', dataStore)
