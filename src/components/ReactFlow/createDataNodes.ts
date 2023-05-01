@@ -15,11 +15,11 @@ type Node = {
 type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnDataForDataTable }];
 //hard-coded xy positioning of each node in the canvas
 
-//console.log("are we here?")
+console.log("are we here?")
 
 export default function createDataNodes(dataObject: DataStore, edges: Edge[]): Node[] {
-  //console.log('i am here in createDataNodes')
-  //console.log('dataObject', dataObject)
+  console.log('i am here in createDataNodes')
+  console.log('dataObject', dataObject)
   const nodePositions = [
     { x: 1000, y: 400 },
     { x: 1000, y: 0 },
@@ -38,6 +38,7 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): N
   let i = 0;
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];
+    console.log(rowData, rowData)
     nodes.push({
       id: tableKey,
       type: 'table',

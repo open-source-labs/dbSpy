@@ -30,7 +30,7 @@ export default function createEdges(schemaObject: SchemaStore) {
       const row = table[rowKey];
       //console.log("row", row)
       if (row.IsForeignKey) {
-        console.log("references", row.References[0][0])
+        //console.log("references", row.References[0][0])
         // edges.push({key:'hi'})
         edges.push({
           id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,

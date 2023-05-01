@@ -37,6 +37,8 @@ export default function Flow() {
   //   reRender(schemaStore);
   // }, [schemaStore]);
 
+  
+  console.log('flow Table (SCHEMA INFO)- nodes', nodes)
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
