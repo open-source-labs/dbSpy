@@ -57,6 +57,9 @@ export default function TableNodeColumn({
     setEditRefMode(true, columnData.TableName, columnData.Name);
   };
 
+  //console.log('columnData', columnData.IsForeignKey)
+
+  
   return (
     <>
       {/* TODO: SEE ABOUT DELETING KEY ATTRIBUTE AND ID ATTRIBUTES */}
@@ -119,7 +122,7 @@ export default function TableNodeColumn({
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {columnData.IsPrimaryKey}
+          {`${columnData.IsPrimaryKey}`}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {mode === 'edit' ? (
@@ -146,7 +149,7 @@ export default function TableNodeColumn({
               }}
             />
           ) : (
-            columnData.IsForeignKey
+              `${columnData.IsForeignKey}`
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">

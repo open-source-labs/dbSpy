@@ -21,7 +21,7 @@ export default function DataTableNodeColumn({
   id: string;
 }) {
   // const [rowData, setRowData] = useState<RowsOfData>({ ...row });
-  console.log('row',row, id)
+  //console.log('row',row, id)
 
 
 
