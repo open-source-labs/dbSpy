@@ -1,5 +1,5 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { PostgresTableColumns, PostgresTableSchema, PostgresTableColumn } from '@/Types';
+import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
 //import { PostgresDataSource } from '../datasource';
 //import { postgresFormatTableSchema } from './helperFunctions/postgres.functions';
@@ -12,9 +12,6 @@ dotenv.config
 export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { hostname, password, port, username, database_name } = req.query;
-
-    console.log(hostname, password, port, username, database_name)
-    console.log('DataSource: ', DataSource)
 
     const PostgresDataSource = new DataSource({
       type: "postgres",
@@ -32,13 +29,13 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
       await PostgresDataSource.initialize();
         console.log('Data source has been connected');
 
-        async function getForeignKeys(): Promise<PostgresTableColumn[]> {
+        async function getForeignKeys(): Promise<TableColumn[]> {
           return await PostgresDataSource.query(postgresForeignKeyQuery);
         };
         
         //function organizing data from queries in to the desired format of the front end
-        async function postgresFormatTableSchema(columns: PostgresTableColumn[], tableName: string): Promise<PostgresTableColumn> {
-        const tableSchema: PostgresTableColumn = {};
+        async function postgresFormatTableSchema(columns: TableColumn[], tableName: string): Promise<TableColumn> {
+        const tableSchema: TableColumn = {};
         
         for (const column of columns) {
           const columnName: any = column.column_name
@@ -49,13 +46,13 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
           const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
           
           //Creating the format for the Reference property if their is a foreign key
-          const references: any = {
+          const references: ReferenceType = {
             length: 0,
           };
         
           if (foreignKey){
             references[references.length] = {
-              idDestination: false,
+              isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
               PrimaryKeyTableName: foreignKey.table_with_foreign_key,
               ReferencesPropertyName: foreignKey.referenced_column,
@@ -83,14 +80,14 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
         //Declare storage objects with their related interfaces
-        const tableData: PostgresTableColumns = {};
-        const schema: PostgresTableSchema = {};
+        const tableData: TableColumns = {};
+        const schema: TableSchema = {};
 
         // LOOP
       for (const table of tables) {
 
         // DATA Create property on tableData object with every loop
-        let tableName = table.tablename;
+        const tableName = table.tablename;
         const tableDataQuery = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
         tableData[tableName] = tableDataQuery
 

@@ -7,6 +7,7 @@ import {
   verifyUser,
 } from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
+import { microsoftRouter } from './microsoft.router';
 import mysqlRouter from './mysql.router';
 import session from 'express-session'; // 
 declare module 'express-session' {
@@ -39,6 +40,8 @@ const routes = async (app: Express) => {
   app.use('/api/sql/postgres', postgresRouter);
 
   app.use('/api/sql/mysql', mysqlRouter);
+
+  app.use('/api/sql/mssql', microsoftRouter);
 
   app.post('/api/saveSchema', saveSchema);
 
@@ -76,6 +79,7 @@ const routes = async (app: Express) => {
     const errorObj = Object.assign({}, defaultErr, err);
     log.error(errorObj.message);
     log.error(errorObj.log);
+    console.log(err)
     return res.status(errorObj.status).json(errorObj.message);
   });
 };

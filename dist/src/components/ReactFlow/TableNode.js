@@ -33,14 +33,16 @@ const TableNodeColumn_1 = __importDefault(require("./TableNodeColumn"));
 const fa_1 = require("react-icons/fa");
 const settingsStore_1 = __importDefault(require("../../store/settingsStore"));
 function TableNode({ data }) {
+    //console.log(data)
     const tableName = data.table[0];
     // columnData is an array of objects with each column in the table as an element
     const columnData = Object.values(data.table[1]);
-    const [tableColumns, setTableColumns] = (0, react_1.useState)(columnData);
+    //const [tableColumns, setTableColumns] = useState(columnData);
     const { setInputModalState } = (0, settingsStore_1.default)((state) => state);
     // function to generate handles on the table by iterating through all
     // schema edges to match source and target handles of edges to handle id
     const tableHandles = [];
+    //console.log(data.edges)
     for (let i = 0; i < data.edges.length; i++) {
         if (data.edges[i].source === tableName) {
             //make handle placement dynamic, we need to know the column of our source

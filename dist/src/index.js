@@ -14,5 +14,5 @@ data_source_1.AppDataSource.initialize().then(async () => {
     const users = await data_source_1.AppDataSource.manager.find(User_1.User);
     console.log("Loaded users: ", users);
     console.log("Here you can setup and run express / fastify / any other framework.");
-}).catch(error => console.log(error));
+}).catch((error) => console.log(error));
 //# sourceMappingURL=index.js.map
