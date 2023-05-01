@@ -106,13 +106,9 @@ export type ColumnSchema = {
 };
 
 // these are for data tables ######################
-// export type RowsOfData = {
-//   [key: string | number]: string | number,
-// };
-
 export type RowsOfData = {
-  [key: string | number]: string | number | null;
-}[];
+  [key: string | number]: string | number,
+};
 
 
 export type ColumnDataForDataTable = {

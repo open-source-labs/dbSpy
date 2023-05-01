@@ -6,8 +6,7 @@ const postgresData_controller_1 = require("../controllers/postgresData.controlle
 const postgresRouter = (0, express_1.Router)();
 exports.postgresRouter = postgresRouter;
 // Retrieve Postgres schema from remote db
-postgresRouter.get('/schema', postgresData_controller_1.postgresQuery, (_req, res) => {
-    console.log('Returned to the postgres router with data');
-    return res.status(200).json(res.locals);
+postgresRouter.get('/schema', postgresData_controller_1.getSchema, (_req, res) => {
+    return res.status(200).json(res.locals.data);
 });
 //# sourceMappingURL=postgres.router.js.map

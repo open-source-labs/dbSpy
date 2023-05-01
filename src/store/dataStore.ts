@@ -3,15 +3,9 @@ import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { ColumnData, RowsOfData, Reference, ColumnDataForDataTable} from '../Types';
 
-// export type DataStore = {
-//   [TableName: string]: RowsOfData[]
-// }
-
 export type DataStore = {
-  [TableName: string]: {
-    [ColumnName: string]: RowsOfData;
-  };
-};
+  [TableName: string]: RowsOfData[]
+}
 
 export type DataState = {
   // DATA

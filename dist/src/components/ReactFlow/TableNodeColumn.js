@@ -57,7 +57,7 @@ function TableNodeColumn({ column, id, }) {
                 react_1.default.createElement("option", { value: "NOT NULL" }, "NOT NULL"),
                 react_1.default.createElement("option", { value: "PRIMARY" }, "PRIMARY"),
                 react_1.default.createElement("option", { value: "UNIQUE" }, "UNIQUE"))) : (columnData.additional_constraints)),
-            react_1.default.createElement("td", { className: "dark:text-[#f8f4eb]", id: `${id}-IsPrimaryKey` }, columnData.IsPrimaryKey),
+            react_1.default.createElement("td", { className: "dark:text-[#f8f4eb]", id: `${id}-IsPrimaryKey` }, columnData.IsPrimaryKey.toString()),
             react_1.default.createElement("td", { className: "dark:text-[#f8f4eb]", id: `${id}-IsForeignKey` }, mode === 'edit' ? (react_1.default.createElement("input", { type: "checkbox", className: "bg-[#f8f4eb] dark:text-black", checked: columnData.IsForeignKey, onChange: () => {
                     // don't allow if only one table
                     if (Object.keys(schemaStore).length <= 1) {
@@ -72,7 +72,7 @@ function TableNodeColumn({ column, id, }) {
                     // if box is now checked (state hasn't updated yet), open fk modal
                     if (!columnData.IsForeignKey)
                         openAddReferenceModal();
-                } })) : (columnData.IsForeignKey)),
+                } })) : (columnData.IsForeignKey.toString())),
             react_1.default.createElement("td", { className: "dark:text-[#f8f4eb]" }, mode === 'edit' ? (react_1.default.createElement("button", { id: `${id}-saveBtn`, onClick: onSave, className: "transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]" },
                 react_1.default.createElement(fa_1.FaRegSave, { size: 17 }))) : mode === 'delete' ? (react_1.default.createElement("button", { id: `${id}-confirmBtn`, onClick: () => {
                     onDelete();

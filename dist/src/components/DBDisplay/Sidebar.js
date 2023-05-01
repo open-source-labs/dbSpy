@@ -33,13 +33,11 @@ const axios_1 = __importDefault(require("axios"));
 const credentialsStore_1 = __importDefault(require("../../store/credentialsStore"));
 const schemaStore_1 = __importDefault(require("../../store/schemaStore"));
 const settingsStore_1 = __importDefault(require("../../store/settingsStore"));
-const dataStore_1 = __importDefault(require("../../store/dataStore"));
 // const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
 const Sidebar = (props) => {
     //STATE DECLARATION (dbSpy3.0)
     const setDbCredentials = (0, credentialsStore_1.default)((state) => state.setDbCredentials);
     const setSchemaStore = (0, schemaStore_1.default)((state) => state.setSchemaStore);
-    const setDataStore = (0, dataStore_1.default)((state) => state.setDataStore);
     const { setWelcome } = (0, settingsStore_1.default)((state) => state);
     //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
     const [connectPressed, setConnectPressed] = (0, react_1.useState)(false);
@@ -77,23 +75,16 @@ const Sidebar = (props) => {
                 values.db_type = 'mysql';
             }
         }
-        console.log('values: ', values);
         //update dbCredentials
         setDbCredentials(values);
         setConnectPressed(true);
         //change between which getSchema from MySQL to postgres based on db_type
-        const dataFromBackend = await axios_1.default
+        const dbSchema = await axios_1.default
             .get(`api/sql/${values.db_type}/schema`, { params: values })
-            .then((res) => {
-            console.log('res.data', res.data);
-            return res.data;
-        })
+            .then((res) => res.data)
             .catch((err) => console.error('getSchema error', err));
         //update schemaStore
-        console.log('schemaFromBackend', dataFromBackend.schema);
-        console.log('dataFromBackend', dataFromBackend.data);
-        setSchemaStore(dataFromBackend.schema);
-        setDataStore(dataFromBackend.data);
+        setSchemaStore(dbSchema);
         setWelcome(false);
         setConnectPressed(false);
         props.closeNav();
@@ -114,8 +105,7 @@ const Sidebar = (props) => {
                     handleChange(e);
                 } },
                 react_1.default.createElement("option", { value: "postgres" }, "PostgreSQL"),
-                react_1.default.createElement("option", { value: "mysql" }, "MySQL"),
-                react_1.default.createElement("option", { value: "mssql" }, "Microsoft SQL"))),
+                react_1.default.createElement("option", { value: "mysql" }, "MySQL"))),
         react_1.default.createElement("br", null),
         react_1.default.createElement("div", null,
             react_1.default.createElement("span", { className: "form-item" },
