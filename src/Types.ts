@@ -83,12 +83,14 @@ export type ColumnData = {
 
 // ColumnSchema and Reference are used by schemaStore
 export type Reference = {
-  PrimaryKeyName: string;
-  PrimaryKeyTableName: string;
-  ReferencesPropertyName: string;
-  ReferencesTableName: string;
-  IsDestination: boolean;
-  constraintName: string;
+  [refName: string]: {
+    PrimaryKeyName: string;
+    PrimaryKeyTableName: string;
+    ReferencesPropertyName: string;
+    ReferencesTableName: string;
+    IsDestination: boolean;
+    constraintName: string;
+  };
 };
 
 export type ColumnSchema = {

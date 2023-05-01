@@ -88,7 +88,7 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
 
       // Getting Data from all tables
       const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
-      data[tableName] = tableData;
+      data['public.' + tableName] = tableData;
       // Getting Schemas for all tables
       const columns = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
       schema['public.' + tableName] = await mysqlFormatTableSchema(columns, tableName); // Store schema using tableName as key

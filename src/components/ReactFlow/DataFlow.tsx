@@ -32,27 +32,29 @@ export default function DataFlow() {
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
   const { dataStore } = useDataStore(((state) => state))
+  const { schemaStore } = useSchemaStore((state) => state);
 
   //need to finish build dataStore###################
   // re-render every time dataStore updates
   
   useEffect(() => {  
-    reRender(dataStore);
+    reRender(dataStore, schemaStore);
   }, [dataStore]);
 
   function reRender(dataStore: DataStore) {
+      // function reRender(dataStore: DataStore, schemaStore: SchemaStore) {
     if (!dataStore || !Object.keys(dataStore).length) return;
-    const initialEdges = createDataEdges(dataStore);
+    const initialEdges = createDataEdges(dataStore, schemaStore);
     setEdges(initialEdges);
     const initialNodes = createDataNodes(dataStore, initialEdges);
-    console.log('dataStore1', dataStore)
-    console.log('initialNodes', initialNodes)
+    //console.log('dataStore1', dataStore)
+    //console.log('initialNodes', initialNodes)
     setNodes(initialNodes);
   }
 
 
   // console.log('dataStore2', dataStore)
-  console.log('nodes from dataFlow (DATA INFO)', nodes) //it's passing schema... and where this came from? why???
+  //console.log('nodes from dataFlow (DATA INFO)', nodes) //it's passing schema... and where this came from? why???
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>

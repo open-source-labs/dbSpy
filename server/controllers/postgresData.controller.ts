@@ -92,7 +92,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         // DATA Create property on tableData object with every loop
         let tableName = table.tablename;
         const tableDataQuery = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
-        tableData[tableName] = tableDataQuery
+        tableData['public.' + tableName] = tableDataQuery
 
         // SCHEMAS Create property on schema object with every loop
           const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName))
