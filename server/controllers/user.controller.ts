@@ -30,12 +30,15 @@ export const createUser = async (user: string[]) => {
 
 // Register w/o OAuth
 export const userRegistration: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  
+
   log.info('Registering user (middleware)');
 
   const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
   if (foundUser[0].length) return res.status(403).json({ err: 'Email already in use' });
 
   const { full_name, email, password } = req.body;
+  // console.log(typeof full_name, typeof email, typeof password)
   if (
     typeof full_name !== 'string' ||
     typeof email !== 'string' ||
@@ -59,8 +62,33 @@ export const userRegistration: RequestHandler = async (req: Request, res: Respon
     .catch((err: ErrorEvent) => next(err));
 };
 
+
+
 export const verifyUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   log.info('Verifying user (middleware)');
+
+  //check if login is from Oauth2 and add to database
+  if(typeof req.body.code === 'string'){
+    const {id, email, verified_email, name, picture} = res.locals.userInfo;
+    const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
+    const hashedPw = await bcrypt.hash(id,saltRounds)
+    if(verified_email){
+      const addUser = await pool.query(queryStr,[name, email, hashedPw, picture,'oauth'])
+      log.info('verified or added Oauth User');
+      const foundUser = (await findUser(email)) as RowDataPacket[][];
+      log.info('found user')
+      res.locals.user = foundUser[0][0];
+      console.log(res.locals.user)
+      return res.status(200).json(res.locals.user);
+    }
+    else{
+      log.error('Error in verifyUser OAUTH')
+      next(`Email not verified`)
+    } 
+  }
+
+  //other use regular login  methods
+else{
   if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string')
     return next({
       log: 'Error in user.controller.userRegistration',
@@ -80,11 +108,14 @@ export const verifyUser: RequestHandler = async (req: Request, res: Response, ne
   if (match) {
     log.info('Username/Password confirmed');
     res.locals.user = foundUser[0][0];
+    console.log(res.locals.user)
     return res.status(200).json(res.locals.user);
   } else {
     log.error('Incorrect password');
     return res.redirect(401, '/login');
   }
+}
+
 };
 
 // Save currentSchema into database

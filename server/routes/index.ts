@@ -33,10 +33,7 @@ const routes = async (app: Express) => {
 
   app.get('/api/healthcheck', (_req: Request, res: Response) => res.sendStatus(200));
 
-  app.post('/api/oauth', getGoogleAccesToken, getUserInfo ,(req,res) => {
-    console.log(res.locals.userInfo);
-    res.status(200).json('hello!')
-  })
+  app.post('/api/oauth', getGoogleAccesToken, getUserInfo , verifyUser)
 
   // app.get('/api/oauth/google', handleGoogleAuth);
 

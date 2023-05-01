@@ -8,11 +8,15 @@ import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
-
+import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
 
+
 const DBDisplay: React.FC = () => {
+
+  const { setUser } = useCredentialsStore();
+
   const {
     sidebarDisplayState,
     welcome,
@@ -45,7 +49,6 @@ const DBDisplay: React.FC = () => {
       const windowUrl = window.location.search;
       const urlParams = new URLSearchParams(windowUrl);
       const code = urlParams.get('code');
-      console.log(code);
   
       if(code){
 
@@ -57,10 +60,15 @@ const DBDisplay: React.FC = () => {
            body: JSON.stringify({code:code}),
          })
           .then((data) => {
-            console.log(data);
             if(data.status === 200) console.log(`OAuth : successfully sent authorization code back ${data.status}`);
             else console.log(`OAUTH: error sending authorization code back ${data.status}`);
-          }) 
+            return data.json();
+          })
+          .then((res) => {
+            console.log(res);
+            setUser(res);
+
+          })
           .catch((err)=> {
             console.log({
               log:`error Post request to backend from DBdisplay ${err}`,

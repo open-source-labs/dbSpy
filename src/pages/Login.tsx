@@ -46,7 +46,7 @@ type Options = {
   scope:string,
 }
 
-function getGoogle():string{
+function getGoogle():void{
 
   const rootUrl:string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -62,7 +62,11 @@ function getGoogle():string{
     ].join(' '),
   };
   const qs = new URLSearchParams(options);
-  return `${rootUrl}?${qs.toString()}`;
+  const url = `${rootUrl}?${qs.toString()}`;
+
+  const strWindowFeatures =
+    'toolbar=no, menubar=no, width=600, height=700, top=100, left=800';
+  window.open(url, '_self', strWindowFeatures);
 
 }
 
@@ -128,11 +132,10 @@ function getGoogle():string{
             </button>
           </div>
         </form>
-        <a
-              className="focus:shadow-outline rounded bg-sky-700 py-2 px-4 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
-              type="submit" href={getGoogle()}>
+        <button
+              className="focus:shadow-outline rounded bg-sky-700 py-2 px-4 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none" onClick={()=>getGoogle()}>
               Login Google
-        </a>
+        </button>
         {/* TODO: implement production level Google OAuth */}
         {/* <div className="inline-flex w-full items-center justify-between">
           <hr className="my-8 h-px w-32 border-0 bg-gray-200 dark:bg-gray-700"></hr>
