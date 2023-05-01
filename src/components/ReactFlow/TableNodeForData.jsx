@@ -116,9 +116,9 @@ export default function TableNodeForData({ data }) {  //this 'data' is created a
             </thead>
             <tbody>
             {/* generates dynamic columns */}
-            {restRowsData.map((column, index) => (
+            {restRowsData.map((row, index) => (
               <DataTableNodeColumn
-                column={column}
+                row={row}
                 key={`${tableName}-column${index}`}
                 id={`${tableName}-column${index}`}
               />
