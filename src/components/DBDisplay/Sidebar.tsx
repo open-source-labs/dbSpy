@@ -15,6 +15,7 @@ const Sidebar = (props: any) => {
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const setDataStore = useDataStore((state) => state.setDataStore)
   const { setWelcome } = useSettingsStore((state) => state);
+  const [serviceName, setServiceName] = useState('');
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
@@ -29,6 +30,7 @@ const Sidebar = (props: any) => {
       username?:string,
       password?: string,
       database_name?: string,
+      service_name?: string,
      }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
@@ -46,7 +48,7 @@ const Sidebar = (props: any) => {
         const name_postgres = splitURI[3];
         const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
         values.hostname = internalLinkArray_Postgres[1];
-        values.username = name_postgres;
+        values.username = name_postgres.split(':')[0];
         values.password = internalLinkArray_Postgres[0];
         values.port = '5432';
         values.database_name = name_postgres;
@@ -66,11 +68,21 @@ const Sidebar = (props: any) => {
         values.hostname = internalLinkArray_mssql[1];
         values.username = splitURI[2].split(':')[0];
         values.password = internalLinkArray_mssql[0];
-        values.port = '1433'; // Adjust the port number accordingly
+        values.port = '1433';
         values.database_name = name_mssql;
         values.db_type = 'mssql';
+      } else if (splitURI[0] === 'oracle:') {
+        const name_oracle = splitURI[3];
+        const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_oracle[1];
+        values.username = splitURI[2].split(':')[0];
+        values.password = internalLinkArray_oracle[0];
+        values.port = '1521';
+        values.database_name = name_oracle;
+        values.db_type = 'oracle';
+        values.service_name = values.service_name;
       }
-    }
+    };
 
 
 
@@ -99,6 +111,10 @@ const Sidebar = (props: any) => {
   //on change for db type selection, will affect state to conditionally render database URL
   const handleChange = (event: any) => {
     setSelected(event.target.value);
+    if (event.target.value === 'oracle') {
+      setServiceName('oracle');
+    }
+    else setServiceName('');
   };
   //END: HELPER FUNCTIONS
 
@@ -124,6 +140,7 @@ const Sidebar = (props: any) => {
           <option value="postgres">PostgreSQL</option>
           <option value="mysql">MySQL</option>
           <option value="mssql">Microsoft SQL</option>
+          <option value="oracle">Oracle SQL (requires OIC)</option>
         </select>
       </span>
       <br></br>
@@ -143,6 +160,37 @@ const Sidebar = (props: any) => {
             }
           />
         </span>
+        {serviceName === 'oracle' && (
+        <div> 
+          <span className="form-item">
+            <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
+              Service Name
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="service-name"
+              name="service-name"
+              autoComplete="off"
+              placeholder='ORCL'
+              // onFocus={handleFocus}
+              // onBlur={handleBlur}
+              // defaultValue='ORCL'
+              value={formValues.service_name}
+              onChange={
+                (e) => { 
+                setFormValues({ ...formValues, service_name: e.target.value });
+                // setServiceNameDefault(e.target.value);
+              }
+            }/>
+          </span>
+          <button className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
+                  onClick={(e) => { e.preventDefault()
+                  setFormValues({ ...formValues, service_name: 'ORCL' })}}>
+            ORCL
+          </button>
+          </div> 
+        )}
         <br></br>
         <div className="form-item dark:text-[#f8f4eb]">
           <p className="">OR</p>
