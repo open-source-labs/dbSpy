@@ -45,8 +45,6 @@ const [mode, setMode] = useState('default');
        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
        </td>
       
-
-
          {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
          <button
            id={`$rowEditBtn`}
