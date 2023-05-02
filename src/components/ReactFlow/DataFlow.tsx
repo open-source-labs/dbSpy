@@ -29,7 +29,7 @@ export default function DataFlow() {
 
   function reRender(dataStore: DataStore) {
     if (!dataStore || !Object.keys(dataStore).length) return;
-    const initialEdges = createDataEdges(dataStore,schemaStore);
+    const initialEdges = createDataEdges(schemaStore);
     setEdges(initialEdges);
     const initialNodes = createDataNodes(dataStore, initialEdges);
     setNodes(initialNodes);

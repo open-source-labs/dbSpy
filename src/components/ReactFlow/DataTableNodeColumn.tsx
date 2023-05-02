@@ -61,7 +61,7 @@ const [mode, setMode] = useState('default');
          <button
            id={`dataDeleteBtn`}
            className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-           // onClick={() => setMode('delete')}
+           onClick={() => setMode('delete')}
          >
            <FaRegTrashAlt size={17} />
          </button>

@@ -20,14 +20,17 @@ export type Edge = {
   };
 };
 
-export default function createDataEdges(dataObject: DataStore, schemaObject: SchemaStore) {
+export default function createDataEdges(schemaObject: SchemaStore) {
 
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
     const table = schemaObject[tableKey];
 
+    console.log('schemaObject',schemaObject)
+
     for (const rowKey in table) {
       const row = table[rowKey];
+      console.log(row.IsForeignKey)
   
       if (row.IsForeignKey) {
       
@@ -35,9 +38,9 @@ export default function createDataEdges(dataObject: DataStore, schemaObject: Sch
           edges.push({
             id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
           
-            source: row.References[0][0].ReferencesTableName.slice(7),
+            source: row.References[0][0].ReferencesTableName,
             sourceHandle: row.References[0][0].ReferencesPropertyName,
-            target: row.References[0][0].PrimaryKeyTableName.slice(7),
+            target: row.References[0][0].PrimaryKeyTableName,
             targetHandle: row.References[0][0].PrimaryKeyName,
             animated: true,
             label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
@@ -57,5 +60,8 @@ export default function createDataEdges(dataObject: DataStore, schemaObject: Sch
       }
     }
   }
+  console.log(' data edges',edges)
   return edges;
 }
+
+// 'public.' +row.References[0][0].PrimaryKeyTableName.slice(7),

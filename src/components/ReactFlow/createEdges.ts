@@ -28,9 +28,9 @@ export default function createEdges(schemaObject: SchemaStore) {
       if (row.IsForeignKey) {
         edges.push({
           id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
-          source: row.References[0][0].ReferencesTableName,
+          source: 'public.' + row.References[0][0].ReferencesTableName,
           sourceHandle: row.References[0][0].ReferencesPropertyName,
-          target: row.References[0][0].PrimaryKeyTableName,
+          target: 'public.' + row.References[0][0].PrimaryKeyTableName,
           targetHandle: row.References[0][0].PrimaryKeyName,
           animated: true,
           label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
@@ -49,5 +49,6 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
+  console.log('schema edges', edges)
   return edges;
 }
