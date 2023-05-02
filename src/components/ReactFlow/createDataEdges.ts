@@ -31,29 +31,30 @@ export default function createDataEdges(dataObject: DataStore, schemaObject: Sch
       const row = table[rowKey];
       //console.log("row", row)
       if (row.IsForeignKey) {
-        console.log("references", row.References[0][0])
-        // edges.push({key:'hi'})
-        edges.push({
-          id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
+        //console.log("references", row.References[0][0])
+        if (row.References[0][0].ReferencesTableName || row.References[0][0].PrimaryKeyTableName) {
+          edges.push({
+            id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
           
-          source: row.References[0][0].ReferencesTableName.slice(7),
-          sourceHandle: row.References[0][0].ReferencesPropertyName,
-          target: row.References[0][0].PrimaryKeyTableName.slice(7),
-          targetHandle: row.References[0][0].PrimaryKeyName,
-          animated: true,
-          label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
-          style: {
-            strokeWidth: 2,
-            stroke: '#085c84',
-          },
-          markerEnd: {
-            type: 'arrowclosed',
-            orient: 'auto',
-            width: 20,
-            height: 20,
-            color: '#085c84',
-          },
-        });
+            source: row.References[0][0].ReferencesTableName.slice(7),
+            sourceHandle: row.References[0][0].ReferencesPropertyName,
+            target: row.References[0][0].PrimaryKeyTableName.slice(7),
+            targetHandle: row.References[0][0].PrimaryKeyName,
+            animated: true,
+            label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
+            style: {
+              strokeWidth: 2,
+              stroke: '#085c84',
+            },
+            markerEnd: {
+              type: 'arrowclosed',
+              orient: 'auto',
+              width: 20,
+              height: 20,
+              color: '#085c84',
+            },
+          });
+        }
       }
     }
   }

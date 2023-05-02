@@ -9,17 +9,36 @@ import useSettingsStore from '../../store/settingsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
   const tableName = data.table[0];
-  //console.log('inside tableNodeForData file', data);
+  console.log('inside tableNodeForData file: data=>', data);
   // columnData is an array of objects with each column in the table as an element
+  
+  // const RowData = Object.values(data.table[1]);
+  // console.log('RowData',RowData)
+  // const firstRow = Object.keys(RowData[0]) //arr of obj
+  // //const restRows = data inside the rows ###############################
+  // const restRowsData = RowData.map(each => Object.values(each));
+  // // const restRows = restRowsData.map(each => Object.values(each))
+  // //console.log("data.table", data.table);
+  // console.log("tableName",tableName)
+  // // console.log("RowData", RowData);
+  // // console.log('firstRow', firstRow)
+  // // console.log("restRowsData", restRowsData); //each inside this array need to render as each column inside the table
+  // // console.log("restRows", restRows);
+
+  let firstRow =[]
+  let restRowsData = []
   const RowData = Object.values(data.table[1]);
-  const firstRow = Object.keys(RowData[0]) //arr of obj
-  //const restRows = data inside the rows ###############################
-  const restRowsData = RowData.map(each => Object.values(each));
+  console.log('RowData', RowData)
+  if (RowData[0] !== undefined) {
+    firstRow = Object.keys(RowData[0]); //arr of obj
+    //const restRows = data inside the rows ###############################
+    restRowsData = RowData.map(each => Object.values(each));
+  } 
   // const restRows = restRowsData.map(each => Object.values(each))
   //console.log("data.table", data.table);
-  //console.log("tableName",tableName)
+  console.log("tableName",tableName)
   // console.log("RowData", RowData);
-  // console.log('firstRow', firstRow)
+  console.log('firstRow', firstRow)
   // console.log("restRowsData", restRowsData); //each inside this array need to render as each column inside the table
   // console.log("restRows", restRows);
 
@@ -45,14 +64,14 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
         firstRow.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
       if (columnNumberSource === 0) columnNumberSource = 1;
       tableHandles.push(
-        <Handle
+        <Handle //start
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Top}
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberSource * 21,
+            left: "5%"
             // bottom: 'auto',
           }}
         />
@@ -64,14 +83,14 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
         firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
       if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
-        <Handle
+        <Handle //end
           key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Bottom}
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberTarget * 21,
+            left: "80%"
             // bottom: 'auto',
           }}
         />
@@ -87,6 +106,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
             {tableName}
           </label>
         </div>
+        {/* <div className = "nowheel"></div> */}
         <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
           <table className="transition-colors duration-500 dark:text-[#fbf3de]">
             <thead>
@@ -98,21 +118,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
                     className="transition-colors duration-500 dark:text-[#fbf3de]"
                   >{each}</th>
                 ))}
-                {/* <th>top column</th> */}
               </tr>
-
-              {/* need for loop/map to render each row!! */}
-              {/* <tr>
-                {restRowsData?.forEach(eachRow => {
-                  eachRow.map(eachColumn => (
-                    <th
-                    key={eachColumn}
-                    scope="col"
-                    className="transition-colors duration-500 dark:text-[#fbf3de]"
-                  >{eachColumn}</th>
-                  ))
-                 })}
-              </tr> */}
             </thead>
             <tbody>
             {/* generates dynamic columns */}
@@ -130,3 +136,14 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
     );
   
 }
+
+
+
+//        {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) =>
+        //   <td
+        //     // key={`${row[1]}${eachData}`}
+        //     key={getRandomInt(100000)}
+        //     scope="col"
+        //     className="transition-colors duration-500 dark:text-[#fbf3de]"
+        //   >{eachData}</td>
+        // )}

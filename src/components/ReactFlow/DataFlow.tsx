@@ -36,7 +36,8 @@ export default function DataFlow() {
   // re-render every time dataStore updates
 
   useEffect(() => {  
-    reRender(dataStore, schemaStore);
+    reRender(dataStore);
+    // reactFlowInstance.fitView();
   }, [dataStore, schemaStore]);
 
   function reRender(dataStore: DataStore) {
@@ -65,6 +66,7 @@ export default function DataFlow() {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
+        
         //
       >
         <div id="download-image"></div>
