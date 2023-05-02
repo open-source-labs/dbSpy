@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { TableColumns, TableSchema, ReferenceType } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { DataSource } from 'typeorm';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-//import { microsoftFormatTableSchema } from './helperFunctions/mysql.functions';
-
 
 export const microsoftQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -27,12 +25,12 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         await MicrosoftDataSource.initialize();
         console.log('Data Source has been initialized');
       
-          async function microsoftFormatTableSchema(microsoftSchema: any, tableName: string): Promise<TableColumns> {
-            const tableSchema: TableColumns = {};
+          async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
+            const tableSchema: TableColumn = {};
       
             // console.log('microsoftSchema: ', microsoftSchema)
-            for (const key of microsoftSchema) {
-                const columnName: string = key.COLUMN_NAME;
+            for (const column of microsoftSchemaData) {
+                const columnName: string = column.COLUMN_NAME;
                 // console.log('column: ', columnName)
                 //query for the foreign key data
 
@@ -61,17 +59,16 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
                 //Formation of the schema data
                 tableSchema[columnName] = {
                     IsForeignKey: foreignKey ? true : false,
-                    IsPrimaryKey: key.IS_PRIMARY_KEY === 'YES' ? true : false,
-                    Name: key.COLUMN_NAME,
+                    IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
+                    Name: column.COLUMN_NAME,
                     References: foreignKey ? [references] : [],
                     TableName: 'public.' + tableName,
                     Value: null,
-                    additional_constraints: key.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
-                    data_type: `${key.DATA_TYPE.toUpperCase()}` + `${key.DATA_TYPE === 'varchar' ? `(${key.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
+                    additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
+                    data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
                     field_name: columnName,
                 };
             };
-            console.log('tableSchema: ', tableSchema);
             return tableSchema;
         };
 
@@ -89,35 +86,25 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
             const tableDataQuery = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
             tableData[tableName] = tableDataQuery;
 
-
-
-            // type References = [{
-            //     isDestination: boolean,
-            //     PrimaryKeyName: string,
-            //     PrimaryKeyTableName: string,
-            //     ReferencesPropertyName: string,
-            //     ReferencesTableName: string,
-            //     constraintName: string,
-            // }]
-
-            const microsoftSchema = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
+            const microsoftSchemaData = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
             //console.log('microsoftSchemaData: ', microsoftSchema)
-            schema['public.' + tableName] = await microsoftFormatTableSchema(microsoftSchema, tableName);
-
+            schema['public.' + tableName] = await microsoftFormatTableSchema(microsoftSchemaData, tableName);
           }
 
-          console.log('Table data: ', tableData);
-          console.log('schema: ', schema);
+        // Console.logs to check what the data looks like
+        // console.log('table data: ', tableData);
+        // console.log('schema data: ', schema);
 
+        // Storage of queried results into res.locals
+        res.locals.data = tableData;
+        res.locals.schema = schema;
 
-
-
-
-          res.locals.data = tableData;
-          res.locals.schema = schema;
-
+        // Disconnecting after data has been received 
+        MicrosoftDataSource.destroy();
+        console.log('Database has been disconnected');
 
         return next();
+
     } catch(err: unknown) {
         return next(err);
     }
