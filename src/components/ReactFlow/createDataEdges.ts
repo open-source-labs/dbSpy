@@ -1,3 +1,5 @@
+// creates an array of all edges in the schema
+import { SchemaStore } from '../../store/schemaStore';
 import { DataStore } from '../../store/dataStore';
 
 export type Edge = {
@@ -18,39 +20,42 @@ export type Edge = {
   };
 };
 
-export default function createDataEdges(dataObject: DataStore) {
-  console.log("inside createDataEdges file")
+export default function createDataEdges(dataObject: DataStore, schemaObject: SchemaStore) {
+
   const edges: Edge[] = [];
-  console.log('dataObject',dataObject)
-  for (const tableKey in dataObject) {
-    const arrOfRowObj = dataObject[tableKey]; //arr of row obj
-    for (const columnKey in arrOfRowObj[0]) {
-      // const column = arrOfRowObj[columnKey]; //double check from here
-      if (columnKey.IsForeignKey) {
-        console.log('here??',columnKey.References[0])
-        edges.push({
-          id: `${columnKey.References[0].ReferencesTableName}-to-${columnKey.References[0].PrimaryKeyTableName}`,
-          source: columnKey.References[0].ReferencesTableName,
-          sourceHandle: columnKey.References[0].ReferencesPropertyName,
-          target: columnKey.References[0].PrimaryKeyTableName,
-          targetHandle: columnKey.References[0].PrimaryKeyName,
-          animated: true,
-          label: `${columnKey.References[0].ReferencesPropertyName}-to-${columnKey.References[0].PrimaryKeyName}`,
-          style: {
-            strokeWidth: 2,
-            stroke: '#085c84',
-          },
-          markerEnd: {
-            type: 'arrowclosed',
-            orient: 'auto',
-            width: 20,
-            height: 20,
-            color: '#085c84',
-          },
-        });
+  for (const tableKey in schemaObject) {
+    const table = schemaObject[tableKey];
+
+    for (const rowKey in table) {
+      const row = table[rowKey];
+  
+      if (row.IsForeignKey) {
+      
+        if (row.References[0][0].ReferencesTableName || row.References[0][0].PrimaryKeyTableName) {
+          edges.push({
+            id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
+          
+            source: row.References[0][0].ReferencesTableName.slice(7),
+            sourceHandle: row.References[0][0].ReferencesPropertyName,
+            target: row.References[0][0].PrimaryKeyTableName.slice(7),
+            targetHandle: row.References[0][0].PrimaryKeyName,
+            animated: true,
+            label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
+            style: {
+              strokeWidth: 2,
+              stroke: '#085c84',
+            },
+            markerEnd: {
+              type: 'arrowclosed',
+              orient: 'auto',
+              width: 20,
+              height: 20,
+              color: '#085c84',
+            },
+          });
+        }
       }
     }
   }
-
   return edges;
 }
