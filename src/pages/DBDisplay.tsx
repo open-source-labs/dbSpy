@@ -8,6 +8,7 @@ import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
+import DataInputModal from '../components/Modals/DataInputModal';
 
 import useSettingsStore from '../store/settingsStore';
 
@@ -54,6 +55,8 @@ const DBDisplay: React.FC = () => {
     if (sidebarDisplayState) closeNav();
     else openNav();
   }
+
+  console.log('isSchema???', isSchema)
 
   return (
     <div
@@ -108,16 +111,61 @@ const DBDisplay: React.FC = () => {
         )}
       </div>
       {/* MODALS */}
-      {inputModalState.isOpen && (
+
+      {/* if isSchema === true => need modal for schema
+      if isSchema === false => need modal for data */}
+
+      {inputModalState.isOpen ? (
+        isSchema ? (
+          <InputModal
+            mode={inputModalState.mode}
+            tableNameProp={currentTable}
+            closeInputModal={() => setInputModalState(false)}
+          />
+        ) : (
+          <DataInputModal
+            mode={inputModalState.mode}
+            tableNameProp={currentTable}
+            closeInputModal={() => setInputModalState(false)}
+          />
+      
+        )
+      ):null}
+      
+
+
+      {/* this is what was working with schema!!!! */}
+      {/* {inputModalState.isOpen && (
         <InputModal
           mode={inputModalState.mode}
           tableNameProp={currentTable}
           closeInputModal={() => setInputModalState(false)}
         />
-      )}
+      )} */}
     </div>
   );
 };
 
 export default DBDisplay;
+
+
+//      {inputModalState.isOpen &&
+  //       isSchema ? 
+        
+  //                  (
+  //       <DataInputModal
+  //         mode={inputModalState.mode}
+  //         tableNameProp={currentTable}
+  //         closeInputModal={() => setInputModalState(false)}
+  //       />
+  // ) : (
+        
+  //           (
+  //       <InputModal
+  //         mode={inputModalState.mode}
+  //         tableNameProp={currentTable}
+  //         closeInputModal={() => setInputModalState(false)}
+  //       />
+  //     ) 
+  //     )}
 

@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import DataTableNodeColumn from './DataTableNodeColumn';
-import { FaRegPlusSquare } from 'react-icons/fa'
+import { FaRegPlusSquare } from 'react-icons/fa';
+import useSettingsStore from '../../store/settingsStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
@@ -15,8 +16,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
    restRowsData = RowData.map(each => Object.values(each));
  }
 
-
- const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
+  const { setInputModalState } = useSettingsStore((state) => state);
+//  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
 
 
  // function to generate handles on the table by iterating through all
@@ -103,7 +104,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
            <div className="addRowBtn">
              <button
              className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-             // onClick={() => setInputModalState(true, 'column', tableName)}
+             onClick={() => setInputModalState(true, 'column', tableName)}
              >
                <FaRegPlusSquare size={20} />
              </button>
