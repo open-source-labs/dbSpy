@@ -33,10 +33,11 @@ const Sidebar_1 = __importDefault(require("../components/DBDisplay/Sidebar"));
 const FeatureTab_1 = __importDefault(require("../components/DBDisplay/FeatureTab"));
 const AddReference_1 = __importDefault(require("../components/DBDisplay/AddReference"));
 const Flow_1 = __importDefault(require("../components/ReactFlow/Flow"));
+const DataFlow_1 = __importDefault(require("../components/ReactFlow/DataFlow"));
 const InputModal_1 = __importDefault(require("../components/Modals/InputModal"));
 const settingsStore_1 = __importDefault(require("../store/settingsStore"));
 const DBDisplay = () => {
-    const { sidebarDisplayState, welcome, editRefMode, inputModalState, setInputModalState, currentTable, } = (0, settingsStore_1.default)((state) => state);
+    const { sidebarDisplayState, welcome, editRefMode, inputModalState, setInputModalState, currentTable, isSchema, setTableMode } = (0, settingsStore_1.default)((state) => state);
     const openAddTableModal = () => setInputModalState(true, 'table');
     const openAddColumnModal = (tableName) => setInputModalState(true, 'column', tableName);
     //create references for HTML elements
@@ -67,7 +68,16 @@ const DBDisplay = () => {
         react_1.default.createElement(FeatureTab_1.default, { handleSidebar: handleSidebar, openAddTableModal: openAddTableModal }),
         react_1.default.createElement("div", { ref: mainId, id: "main", className: "mx-auto transition-colors duration-500" }, welcome ? (react_1.default.createElement("div", { className: "canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]" },
             react_1.default.createElement("h3", { className: "text-center" }, "Welcome to dbSpy!"),
-            react_1.default.createElement("p", { className: "text-center" }, "Please connect your database, upload a SQL file, or build your database from scratch!"))) : (react_1.default.createElement(Flow_1.default, null))),
+            react_1.default.createElement("p", { className: "text-center" }, "Please connect your database, upload a SQL file, or build your database from scratch!"))) : (isSchema ? ( // if state for isSchema  === true
+        react_1.default.createElement(react_1.default.Fragment, null,
+            react_1.default.createElement("button", { id: "showSchema", className: "bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded", onClick: setTableMode }, "Show data"),
+            react_1.default.createElement(Flow_1.default, null))) : (
+        //if false, we need data table
+        react_1.default.createElement(react_1.default.Fragment, null,
+            react_1.default.createElement("button", { id: "showSchema", className: "bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded", onClick: setTableMode }, "Show Schema"),
+            react_1.default.createElement(DataFlow_1.default, null))
+        // <p>Data table</p>
+        ))),
         inputModalState.isOpen && (react_1.default.createElement(InputModal_1.default, { mode: inputModalState.mode, tableNameProp: currentTable, closeInputModal: () => setInputModalState(false) }))));
 };
 exports.default = DBDisplay;

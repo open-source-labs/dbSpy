@@ -10,7 +10,7 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
-export interface MysqlTableColumn {
+export interface TableColumn {
   Field?: string;
   Type?: string;
   Null?: string;
@@ -27,44 +27,29 @@ export interface MysqlTableColumn {
   field_name?: string;
   Name?: string;
   [key: string]: any;
-}
+  update_rule?: string;
+  delete_rule?: string;
+};
 
-export interface MysqlTableColumns {
-  [columnName: string]: MysqlTableColumn;
-}
+export interface TableColumns {
+  [columnName: string]: TableColumn;
+};
 
-export interface MysqlTableSchema {
-  [tableName: string]: MysqlTableColumns;
-}
+export interface TableSchema {
+  [tableName: string]: TableColumns;
+};
 
-export interface PostgresTableColumn {
-   column_name?: string;
-   data_type?: string;
-   character_maximum_length?: null;
-   is_nullable?: string;
-   column_default?: null;
-   is_autoincrement?: string;
-   additional_constraints?: string;
-   IsForeignKey?: boolean;
-   IsPrimaryKey?: boolean;
-   Value?: null;
-   field_name?: string;
-   Name?: string;
-   References?: any[];
-   [key: string]: any;
-   update_rule?: string;
-   delete_rule?: string;
-}
-
-export interface PostgresTableColumns {
-  [columnName: string]: PostgresTableColumn;
-}
-
-export interface PostgresTableSchema {
-  [tableName: string]: PostgresTableColumns;
-}
-
-
+export interface ReferenceType {
+  [index: number]: {
+    isDestination: boolean,
+    PrimaryKeyName: string,
+    PrimaryKeyTableName: string,
+    ReferencesPropertyName: string,
+    ReferencesTableName: string,
+    constraintName: string,
+  },
+  length: number,
+};
 
 
 // ---------------------------------------------------------------------
