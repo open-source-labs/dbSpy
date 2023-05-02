@@ -29,7 +29,6 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
 
     async function mysqlFormatTableSchema(mysqlSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
-
   
       for (const column of mysqlSchemaData) {
           const columnName: any = column.Field;
@@ -39,7 +38,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           //query for the foreign key data
           const foreignKeys: any = await getForeignKeys(columnName, tableName);
           const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
-  
+
+          console.log('foreignKey: ', foreignKey)
           //Creating the format for the Reference property if their is a foreign key
           const references: ReferenceType = {
               length: 0,
@@ -48,14 +48,15 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           if (foreignKey){
               references[references.length] = {
                   isDestination: false,
-                  PrimaryKeyName: foreignKeys.COLUMN_NAME,
-                  PrimaryKeyTableName: foreignKeys.TABLE_NAME,
-                  ReferencesPropertyName: foreignKeys.REFERENCED_COLUMN_NAME,
-                  ReferencesTableName: foreignKeys.REFERENCED_TABLE_NAME,
-                  constraintName: foreignKeys.CONSTRAINT_NAME,
+                  PrimaryKeyName: foreignKey.COLUMN_NAME,
+                  PrimaryKeyTableName: 'public.' + tableName,
+                  ReferencesPropertyName: foreignKey.REFERENCED_COLUMN_NAME,
+                  ReferencesTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+                  constraintName: foreignKey.CONSTRAINT_NAME,
               };
               references.length += 1;
           };
+          console.log('references: ', references)
   
           //Formation of the schema data
           tableSchema[columnName] = {
@@ -98,8 +99,9 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
     // console.log("schema data: ", schema);
 
     // Storage of queried results into res.locals
-    res.locals.data = data;
     res.locals.schema = schema;
+    res.locals.data = data;
+    
 
     // Disconnecting after data has been received 
     MysqlDataSource.destroy();

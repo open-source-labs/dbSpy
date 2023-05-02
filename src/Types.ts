@@ -51,6 +51,37 @@ export interface ReferenceType {
   length: number,
 };
 
+export type Edge = {
+  id: string;
+  source: string;
+  sourceHandle: string;
+  target: string;
+  targetHandle: string;
+  animated: boolean;
+  label: string;
+  style: { strokeWidth: number; stroke: string };
+  markerEnd: {
+    type: string;
+    orient: string;
+    width: number;
+    height: number;
+    color: string;
+  };
+};
+
+export type DataNode = {
+  id: string;
+  type: 'table';
+  position: { x: number; y: number };
+  data: {
+    table: TableTuple;
+    edges: Edge[];
+  };
+};
+
+export type TableTuple = 
+[TableKey: string, 
+  ColumnData: { [ColumnName: string]: ColumnDataForDataTable; }];
 
 // ---------------------------------------------------------------------
 // ZUSTAND STORE AND FRONT-END TYPES
@@ -95,9 +126,37 @@ export type RowsOfData = [{
   [key: string | number]: string | number,
 }];
 
+export type DataStore = {
+  [TableName: string]: RowsOfData[]
+}
+
+export type DataState = {
+  // DATA
+  dataStore: DataStore;
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
+  history: DataStore[];
+  historyCounter: number;
+
+  
+
+  // DATA SETTERS
+  setDataStore: (dataInfo: DataStore) => void;
+  setSystem: (system: DataStore) => void;
+}
+
+export type FlowState = {
+  edges: any[];
+  setEdges: (eds: any) => void;
+  nodes: any[];
+  setNodes: (nds: any) => void;
+  onNodesChange: (changes: any) => void;
+  onEdgesChange: (changes: any) => void;
+  onConnect: (connection: any) => void;
+};
 
 export type ColumnDataForDataTable = {
   [key: string | number]: RowsOfData[],
+  
 };
 //######################
 

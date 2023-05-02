@@ -54,13 +54,14 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
             references[references.length] = {
               isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
-              PrimaryKeyTableName: foreignKey.table_with_foreign_key,
+              PrimaryKeyTableName: 'public.' + tableName,
               ReferencesPropertyName: foreignKey.referenced_column,
               ReferencesTableName: foreignKey.referenced_table,
               constraintName: foreignKey.constraint_name
             };
             references.length += 1;
           };
+          console.log('references: ', references)
         
           tableSchema[columnName] = {
             IsForeignKey: keyString.includes('FOREIGN KEY'),

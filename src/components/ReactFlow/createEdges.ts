@@ -1,23 +1,6 @@
 // creates an array of all edges in the schema
 import { SchemaStore } from '../../store/schemaStore';
-
-export type Edge = {
-  id: string;
-  source: string;
-  sourceHandle: string;
-  target: string;
-  targetHandle: string;
-  animated: boolean;
-  label: string;
-  style: { strokeWidth: number; stroke: string };
-  markerEnd: {
-    type: string;
-    orient: string;
-    width: number;
-    height: number;
-    color: string;
-  };
-};
+import { Edge } from '@/Types';
 
 export default function createEdges(schemaObject: SchemaStore) {
   const edges: Edge[] = [];
@@ -49,5 +32,6 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
+  console.log('edges: ', edges)
   return edges;
 }

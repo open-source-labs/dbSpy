@@ -48,12 +48,14 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
                     references[references.length] = {
                         isDestination: false,
                         PrimaryKeyName: foreignKey.column_name,
-                        PrimaryKeyTableName: foreignKey.table_name,
+                        PrimaryKeyTableName: 'public.' + tableName,
                         ReferencesPropertyName: foreignKey.referenced_column_name,
-                        ReferencesTableName: foreignKey.referenced_table_name,
+                        ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
                         constraintName: foreignKey.constraint_name,
                     };
                     references.length += 1;
+                    console.log('references: ', references)
+
                 };
                 console.log('references: ', references)
                 //Formation of the schema data
@@ -96,8 +98,8 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         // console.log('schema data: ', schema);
 
         // Storage of queried results into res.locals
-        res.locals.data = tableData;
         res.locals.schema = schema;
+        res.locals.data = tableData;
 
         // Disconnecting after data has been received 
         MicrosoftDataSource.destroy();

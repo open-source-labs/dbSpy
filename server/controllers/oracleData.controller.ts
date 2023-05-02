@@ -41,13 +41,14 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
                     references[references.length] = {
                         isDestination: false,
                         PrimaryKeyName: column.COLUMN_NAME,
-                        PrimaryKeyTableName: column.TABLE_NAME,
+                        PrimaryKeyTableName: 'public.' + tableName,
                         ReferencesPropertyName: column.R_COLUMN_NAME,
-                        ReferencesTableName: column.R_TABLE_NAME,
+                        ReferencesTableName: 'public.' + column.R_TABLE_NAME,
                         constraintName: column.CONSTRAINT_NAME,
                     };
                     references.length += 1;
                 };
+                console.log('references: ', references)
         
                 //Formation of the schema data
                 tableSchema[columnName] = {
@@ -55,7 +56,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
                     IsPrimaryKey: keyString ? keyString.includes('P') ? true : false : false,
                     Name: column.COLUMN_NAME,
                     References: column.CONSTRAINT_TYPE === 'R' ? [references] : [],
-                    TableName: username + '.' + tableName,
+                    TableName: 'public.' + tableName,
                     Value: null,
                     additional_constraints: column.IS_NULLABLE === 'N' ? 'NOT NULL' : null ,
                     data_type: column.DATA_TYPE + `${column.DATA_TYPE.includes('VARCHAR2') ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
@@ -80,7 +81,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
 
                 const oracleSchema = await OracleDataSource.query(oracleSchemaQuery.replace('user', user.toUpperCase()).replace('tableName', tableName));
                 console.log('oracleSchema: ', oracleSchema)
-                schema[username + '.' + tableName] = await oracleFormatTableSchema(oracleSchema, tableName);
+                schema['public.' + tableName] = await oracleFormatTableSchema(oracleSchema, tableName);
             };
 
         // Console.logs to check what the data looks like
@@ -88,8 +89,9 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
         // console.log('schema data: ', schema);
 
         // Storage of queried results into res.locals
-        res.locals.data = tableData;
         res.locals.schema = schema;
+        res.locals.data = tableData;
+        
 
         // Disconnecting after data has been received 
         OracleDataSource.destroy();

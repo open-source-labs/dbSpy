@@ -48,7 +48,7 @@ const Sidebar = (props: any) => {
         const name_postgres = splitURI[3];
         const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
         values.hostname = internalLinkArray_Postgres[1];
-        values.username = name_postgres;
+        values.username = name_postgres.split(':')[0];
         values.password = internalLinkArray_Postgres[0];
         values.port = '5432';
         values.database_name = name_postgres;
@@ -68,7 +68,7 @@ const Sidebar = (props: any) => {
         values.hostname = internalLinkArray_mssql[1];
         values.username = splitURI[2].split(':')[0];
         values.password = internalLinkArray_mssql[0];
-        values.port = '1433'; // Adjust the port number accordingly
+        values.port = '1433';
         values.database_name = name_mssql;
         values.db_type = 'mssql';
       } else if (splitURI[0] === 'oracle:') {
