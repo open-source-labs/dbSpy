@@ -18,8 +18,8 @@ export default function Flow() {
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
+  
   // re-render every time schemaStore updates
-  // useSchemaStore.subscribe((state) => state.schemaStore, reRender);
 
   useEffect(() => {
     reRender(schemaStore);
@@ -33,12 +33,6 @@ export default function Flow() {
     setNodes(initialNodes);
   }
 
-  // useEffect(() => {
-  //   reRender(schemaStore);
-  // }, [schemaStore]);
-
-  
- // console.log('flow Table (SCHEMA INFO)- nodes', nodes)
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>

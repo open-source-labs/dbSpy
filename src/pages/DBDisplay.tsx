@@ -92,19 +92,19 @@ const DBDisplay: React.FC = () => {
             </p>
           </div>
         ) : (
-           isSchema? ( // if state for isSchema  === true
-              <><button id="showSchema"
-                className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={setTableMode}
-              >Show data</button><Flow /></>
-           ) : (
-            //if false, we need data table
+            // if true, show schema table
+          isSchema? ( 
+            <><button id="showSchema"
+              className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={setTableMode}
+            >Show data</button><Flow /></>
+          ) : (
+            //if false, show data table
               <><button id="showSchema"
                 className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={setTableMode}
               >Show Schema</button><DataFlow /></>
-                // <p>Data table</p>
-        )
+          )
         )}
       </div>
       {/* MODALS */}

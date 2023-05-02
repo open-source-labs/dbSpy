@@ -53,8 +53,6 @@ const Sidebar = (props: any) => {
       }
     }
 
-console.log('values: ', values)
-
     //update dbCredentials
     setDbCredentials(values);
     setConnectPressed(true);
@@ -64,13 +62,12 @@ console.log('values: ', values)
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => {
-        console.log('res.data',res.data)
         return res.data;
       })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
-    //update schemaStore
-    console.log('schemaFromBackend', dataFromBackend.schema)
-    console.log('dataFromBackend', dataFromBackend.data)
+    //update schemaStore and dataStore
+    // console.log('schemaFromBackend', dataFromBackend.schema)
+    // console.log('dataFromBackend', dataFromBackend.data)
     setSchemaStore(dataFromBackend.schema);
     setDataStore(dataFromBackend.data)
     setWelcome(false);
@@ -83,8 +80,6 @@ console.log('values: ', values)
     setSelected(event.target.value);
   };
   //END: HELPER FUNCTIONS
-
-
 
   return (
     <form id="dbconnect" className="bg-[#fbf3de] dark:bg-slate-700">
