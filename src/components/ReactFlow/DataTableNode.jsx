@@ -92,7 +92,10 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
                 id={`${tableName}-column${index}`}
               />
             ))}
-            </tbody>
+              </tbody>
+              {/* <button id={`${id}-deleteBtn`} onClick={() => setMode('delete')}>
+              <FaRegTrashAlt size={17} />
+            </button> */}
           </table>
           </div>
           </div>
