@@ -1,7 +1,18 @@
 import React from 'react';
+import { useState } from 'react';
+import useDataStore from '../../store/dataStore';
 
 export default function DataTableNodeColumn({row}: {row: string|number[]}) {
 
+//####### for CRUD ##########
+   const { dataStore } = useDataStore(
+    (state) => state
+  );
+const [mode, setMode] = useState('default');
+
+
+//####### for CRUD ##########
+  
   //we need better way to generate unique key
   function uniqueKey(max: number) {
     return Math.floor(Math.random() * max);
