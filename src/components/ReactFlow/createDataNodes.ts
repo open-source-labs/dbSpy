@@ -1,21 +1,9 @@
-import { DataStore } from '@/store/dataStore';
-import { Edge } from './createDataEdges';
-import { ColumnDataForDataTable} from '../../Types';
+import { Edge, DataNode, DataStore } from '@/Types';
 
-type Node = {
-  id: string;
-  type: 'table';
-  position: { x: number; y: number };
-  data: {
-    table: TableTuple;
-    edges: Edge[];
-  };
-};
-type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnDataForDataTable; }];
 
 //hard-coded xy positioning of each node in the canvas
 
-export default function createDataNodes(dataObject: DataStore, edges: Edge[]): Node[] {
+export default function createDataNodes(dataObject: DataStore, edges: Edge[]): DataNode[] {
   const nodePositions = [
     { x: 1000, y: 400 },
     { x: 1000, y: 0 },
@@ -30,7 +18,7 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): N
     { x: 0, y: 1050 },
   ];
   // renders each table on the React Flow canvas
-  const nodes: Node[] = [];
+  const nodes: DataNode[] = [];
   let i = 0;
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];

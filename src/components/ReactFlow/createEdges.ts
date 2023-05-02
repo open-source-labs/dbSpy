@@ -1,23 +1,6 @@
 // creates an array of all edges in the schema
 import { SchemaStore } from '../../store/schemaStore';
-
-export type Edge = {
-  id: string;
-  source: string;
-  sourceHandle: string;
-  target: string;
-  targetHandle: string;
-  animated: boolean;
-  label: string;
-  style: { strokeWidth: number; stroke: string };
-  markerEnd: {
-    type: string;
-    orient: string;
-    width: number;
-    height: number;
-    color: string;
-  };
-};
+import { Edge } from '@/Types';
 
 export default function createEdges(schemaObject: SchemaStore) {
   const edges: Edge[] = [];
@@ -28,9 +11,9 @@ export default function createEdges(schemaObject: SchemaStore) {
       if (row.IsForeignKey) {
         edges.push({
           id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
-          source: 'public.' + row.References[0][0].ReferencesTableName,
+          source: row.References[0][0].ReferencesTableName,
           sourceHandle: row.References[0][0].ReferencesPropertyName,
-          target: 'public.' + row.References[0][0].PrimaryKeyTableName,
+          target: row.References[0][0].PrimaryKeyTableName,
           targetHandle: row.References[0][0].PrimaryKeyName,
           animated: true,
           label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
@@ -49,6 +32,6 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
-  console.log('schema edges', edges)
+  console.log('edges: ', edges)
   return edges;
 }

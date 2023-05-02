@@ -1,5 +1,6 @@
 import useFlowStore from '../../store/flowStore';
-import useDataStore, { DataStore } from '../../store/dataStore';
+import useDataStore from '../../store/dataStore';
+import { DataStore } from '@/Types'
 import useSchemaStore from '../../store/schemaStore';
 import React from 'react';
 import { useEffect } from 'react';

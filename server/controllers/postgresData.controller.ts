@@ -34,10 +34,10 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         };
         
         //function organizing data from queries in to the desired format of the front end
-        async function postgresFormatTableSchema(columns: TableColumn[], tableName: string): Promise<TableColumn> {
+        async function postgresFormatTableSchema(postgresSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
         const tableSchema: TableColumn = {};
         
-        for (const column of columns) {
+        for (const column of postgresSchemaData) {
           const columnName: any = column.column_name
           const keyString: any = column.additional_constraints
         
@@ -54,13 +54,14 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
             references[references.length] = {
               isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
-              PrimaryKeyTableName: foreignKey.table_with_foreign_key,
+              PrimaryKeyTableName: 'public.' + tableName,
               ReferencesPropertyName: foreignKey.referenced_column,
               ReferencesTableName: foreignKey.referenced_table,
               constraintName: foreignKey.constraint_name
             };
             references.length += 1;
           };
+          console.log('references: ', references)
         
           tableSchema[columnName] = {
             IsForeignKey: keyString.includes('FOREIGN KEY'),
@@ -96,13 +97,19 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
           schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
         };
 
-      //check to see what things look like with these console.logs
-      console.log('schema: ', schema)
-      console.log('data: ', tableData)
+      // Console.logs to check what the data looks like
+      // console.log('table data: ', tableData)
+      // console.log('schema data: ', schema)
 
-      //Storage of queried results into res.locals
+
+      // Storage of queried results into res.locals
       res.locals.schema = schema;
       res.locals.data = tableData;
+
+      // Disconnecting after data has been received 
+      PostgresDataSource.destroy();
+      console.log('Database has been disconnected');
+
       return next();
 
   } catch (err: unknown) {
