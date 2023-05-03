@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { SQLDataType, ColumnData } from '../../Types';
+import { SQLDataType, ColumnData, RowsOfData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
+import useDataStore from '../../store/dataStore';
 
 type InputModalProps = {
-  mode: 'table' | 'column';
+  mode: 'table' | 'row';
   closeInputModal: () => void;
   tableNameProp?: string;
 };
 
+
+type DataRowArray = Array<string | number | boolean | null>
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
 
@@ -21,51 +24,61 @@ export default function DataInputModal({
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
   const initialTable: string = 'untitled_table';
-  const initialColumns: ColumnData[] = [
-    {
-      name: 'id',
-      type: 'AUTO_INCREMENT',
-      isNullable: false,
-      isPrimary: true,
-      defaultValue: null,
-    },
-    {
-      name: 'created_at',
-      type: 'TIMESTAMP',
-      isNullable: false,
-      isPrimary: false,
-      defaultValue: 'NOW()',
-    },
-  ];
-  const additionalColumn: ColumnData[] = [
-    {
-      name: 'column_1',
-      type: 'VARCHAR(255)',
-      isNullable: false,
-      isPrimary: false,
-      defaultValue: null,
-    },
-  ];
+  const initialRows: DataRowArray = [];
+  const additionalRows: DataRowArray = [];
+  // const initialRows: RowsOfData = [
+  //   {
+  //     name: 'id',
+  //     type: 'AUTO_INCREMENT',
+  //     isNullable: false,
+  //     isPrimary: true,
+  //     defaultValue: null,
+  //   },
+  //   {
+  //     name: 'created_at',
+  //     type: 'TIMESTAMP',
+  //     isNullable: false,
+  //     isPrimary: false,
+  //     defaultValue: 'NOW()',
+  //   },
+  // ];
+  // const additionalColumn: ColumnData[] = [
+  //   {
+  //     name: 'column_1',
+  //     type: 'VARCHAR(255)',
+  //     isNullable: false,
+  //     isPrimary: false,
+  //     defaultValue: null,
+  //   },
+  // ];
   const [tableName, setTableName] = useState<string>(() => {
     if (!tableNameProp) return initialTable;
     else return tableNameProp;
   });
-  const [columnData, setColumnData] = useState<ColumnData[]>(() => {
-    if (mode === 'table') return initialColumns;
-    else return additionalColumn;
+  const [rowData, setRowData] = useState<DataRowArray>(() => {
+    if (mode === 'table') return initialRows;
+    else return additionalRows;
   });
 
-  // functions that check validity and add schema to the store
-  const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+  // functions that check validity and add data to the store
+  // const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+  //   (state) => state
+  // );
+
+  const { dataStore, addTableData, addRow } = useDataStore(
     (state) => state
   );
+
+  console.log('here!! dataStore!!', dataStore)
+  
+ //NEED TO WORK FROM HERE!!!!!!!
 
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
-      if (mode === 'table') addTableSchema(tableName, columnData);
-      else if (mode === 'column') {
-        addColumnSchema(tableName, columnData);
+      if (mode === 'table') addTableData(tableName, rowData);
+      else if (mode === 'row') {
+        addRow(tableName, rowData);
       }
 
       return true;
@@ -76,13 +89,8 @@ export default function DataInputModal({
     }
   };
 
-  const newColumn: ColumnData = {
-    name: `column_${columnData.length + 1}`,
-    type: 'VARCHAR(255)',
-    isNullable: false,
-    isPrimary: false,
-    defaultValue: null,
-  };
+   
+  const newColumn: RowData = [];
 
   const addColumn = () => {
     setColumnData((prevColumns) => {
@@ -123,7 +131,7 @@ export default function DataInputModal({
     });
   };
 
-  const columnInputs = columnData.map((col, index) => (
+  const columnInputs = rowData.map((col, index) => (
     <ColumnInput
       key={`column-${index}`}
       index={index}
@@ -134,7 +142,7 @@ export default function DataInputModal({
       isNullable={col.isNullable}
       isPrimary={col.isPrimary}
       defaultValue={col.defaultValue}
-      columnCount={columnData.length}
+      columnCount={rowData.length}
       mode={mode}
     />
   ));
@@ -157,7 +165,7 @@ export default function DataInputModal({
                 htmlFor="table-modal-name"
                 className="  text-slate-900 dark:text-[#f8f4eb]"
               >
-                hi
+                Table Name
               </label>
               <input
                 id="table-modal-name"
@@ -168,7 +176,7 @@ export default function DataInputModal({
               />
             </>
           ) : (
-            <h1>{`hi`}</h1>
+            <h1>{`i am data table modal!!!!!!!`}</h1>
           )}
         </div>
         <div className="column-header">
