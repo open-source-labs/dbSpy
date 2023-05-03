@@ -101,14 +101,14 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
              ))}
            </tbody>
            {/* this button should add a whole new row, need to work on onClick function */}
-           <div className="addRowBtn">
+           {/* <div className="addRowBtn"> */}
              <button
              className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
              onClick={() => setInputModalState(true, 'column', tableName)}
              >
                <FaRegPlusSquare size={20} />
              </button>
-           </div>
+           {/* </div> */}
          </table>
        </div>
      </div>

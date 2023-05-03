@@ -14,6 +14,8 @@ type InputModalProps = {
   tableNameProp?: string;
 };
 
+//############ where this closeInputModal came from????????????????
+// what closeInputModal does is.... setInputModalState(false)
 
 type DataRowArray = Array<string | number | boolean | null>
 
@@ -42,7 +44,7 @@ export default function DataInputModal({
   });
 
 
-  const { dataStore, addTableData, addRow } = useDataStore(
+  const { dataStore, addTableData} = useDataStore(
     (state) => state
   );
 
@@ -69,14 +71,13 @@ export default function DataInputModal({
   //then, send to backend via AXIOS request
   //#######################
 
-  const addColumn = () => {
+  const addRow = () => {
     setRowData((prevRows) => {
       prevRows.push(newRow);
       return [...prevRows];
     });
   };
 
-    //NEED TO WORK FROM HERE!!!!!!!
   const deleteRow = (index: number) => {
     setRowData((prevRows) => {
       prevRows.splice(index, 1);
@@ -84,44 +85,25 @@ export default function DataInputModal({
     });
   };
 
-  // const handleColumnChange = (
-  //   index: number,
-  //   property: keyof ColumnData,
-  //   value: string | boolean
-  // ) => {
-  //   setRowData((prevRows) => {
-  //     // isPrimary is special. Only one column may be pk. Extra logic required
-  //     if (property !== 'isPrimary') {
-  //       // TODO: LEARN WHY TS IS YELLING
-  //       prevColumns[index][property] = value;
-  //       return [...prevColumns];
-  //     }
-  //     // Disables unchecking pk
-  //     else if (!value) return prevColumns;
-  //     else {
-  //       // If checking new column, uncheck old pk
-  //       for (const column of prevColumns) {
-  //         column.isPrimary = false;
-  //       }
-  //       prevColumns[index].isPrimary = true;
-  //       return [...prevColumns];
-  //     }
-  //   });
-  // };
+  const rowEdit = () => {
+    //replacing hadleColumnChange???
+  }
+  
 
-  const columnInputs = rowData.map((col, index) => (
+  const rowInputs = rowData.map((row, index) => (
     <RowInput
-      key={`column-${index}`}
+      key={`row-${index}`}
       index={index}
       deleteRow={deleteRow}
-      handleColumnChange={handleColumnChange}
-      name={col.name}
-      type={col.type}
-      isNullable={col.isNullable}
-      isPrimary={col.isPrimary}
-      defaultValue={col.defaultValue}
-      columnCount={rowData.length}
-      mode={mode}
+      row={row}
+      // handleColumnChange={handleColumnChange}
+      // name={row.name}
+      // type={row.type}
+      // isNullable={row.isNullable}
+      // isPrimary={row.isPrimary}
+      // defaultValue={row.defaultValue}
+      rowCount={rowData.length}
+      // mode={mode}
     />
   ));
 
@@ -137,40 +119,23 @@ export default function DataInputModal({
         className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="table-name">
-          {mode === 'table' ? (
-            <>
-              <label
-                htmlFor="table-modal-name"
-                className="  text-slate-900 dark:text-[#f8f4eb]"
-              >
-                Table Name
-              </label>
-              <input
-                id="table-modal-name"
-                value={tableName}
-                required
-                maxLength={63}
-                onChange={(e) => setTableName(e.target.value.trim())}
-              />
-            </>
-          ) : (
-            <h1>{`i am data table modal!!!!!!!`}</h1>
-          )}
-        </div>
+          {<h1>{`Table Name: ${tableName}`}</h1>}
+        </div>        
+
         <div className="column-header">
           <h1 className="  text-slate-900 dark:text-[#f8f4eb]">
-            {mode === 'table' ? 'Columns' : 'New Columns'}
+            {'New Rows'}
           </h1>
           <button
             type="button"
             className="  text-slate-900 dark:text-[#f8f4eb]"
-            onClick={addColumn}
+            onClick={addRow}
             data-testid="add-table-add-column"
           >
-            Add Column
+            Add Row
           </button>
         </div>
-        {columnInputs}
+        {rowInputs}
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
             type="button"
@@ -183,8 +148,11 @@ export default function DataInputModal({
           <button
             className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
             data-testid="modal-submit"
+            // need to work on this ###############
+            //we need to create function for sending collected data to DB
+            // onClick={updateDB}
           >
-            {mode === 'table' ? 'Create Table' : 'Submit'}
+            { 'Submit'}
           </button>
         </div>
       </form>

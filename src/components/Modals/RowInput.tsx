@@ -1,25 +1,25 @@
 //need to finish building this file#####################
 
 import React from 'react';
-import { SQLDataType, ColumnData } from '../../Types';
+import { SQLDataType, RowsOfData } from '../../Types';
 import DataTypeOptions from './DataTypeOptions';
 
-type ColumnInputProps = {
-  index: number;
-  deleteColumn: (index: number) => void;
-  handleColumnChange: (
-    index: number,
-    property: keyof ColumnData,
-    value: string | boolean
-  ) => void;
-  name: string;
-  type: SQLDataType;
-  isNullable: boolean;
-  isPrimary: boolean;
-  defaultValue: string | null;
-  columnCount: number;
-  mode: 'table' | 'column';
-};
+// type ColumnInputProps = {
+//   index: number;
+//   deleteColumn: (index: number) => void;
+//   handleColumnChange: (
+//     index: number,
+//     property: keyof RowsOfData,
+//     value: string | boolean
+//   ) => void;
+//   name: string;
+//   type: SQLDataType;
+//   isNullable: boolean;
+//   isPrimary: boolean;
+//   defaultValue: string | null;
+//   columnCount: number;
+//   mode: 'table' | 'column';
+// };
 
 function RowInput({
   index,
