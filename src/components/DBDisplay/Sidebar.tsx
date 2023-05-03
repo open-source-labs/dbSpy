@@ -1,6 +1,9 @@
 // React & React Router & React Query Modules;
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import axios from 'axios';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import informationIcon from '../../../images/informationIcon.jpg'
 
 // Components Imported;
 import useCredentialsStore from '../../store/credentialsStore';
@@ -8,6 +11,7 @@ import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
 // const server_url = process.env.NODE_ENV === 'dev' ? process.env.DEV_SERVER_ENDPOINT : process.env.SERVER_ENDPOINT
+
 
 const Sidebar = (props: any) => {
   //STATE DECLARATION (dbSpy3.0)
@@ -20,6 +24,7 @@ const Sidebar = (props: any) => {
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
   const [_selected, setSelected] = useState('postgres');
+  const infoIconStr: string = "Format: '{DatabaseType}://{Username}:{Password}@{Host Name or Server Name or End Point}:{Port}/{DatabaseName}' *:port is optional and may not be needed" 
 
     //form state hooks
     const [formValues, setFormValues] = useState<{ 
@@ -146,10 +151,15 @@ const Sidebar = (props: any) => {
       </span>
       <br></br>
       <div>
-        <span className="form-item">
+        <div className="form-item">
+          <span className="flex position">
           <label htmlFor="database_link" className="dark:text-[#f8f4eb]">
-            Full Database Link
+            Full Database Link               
           </label>
+          <Tippy content={infoIconStr} placement="top" trigger="mouseenter click">
+              <img src={informationIcon} alt="Information Icon" className="h-3 pl-2" />
+            </Tippy>
+          </span>
           <input
             className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
             type="text"
@@ -160,7 +170,7 @@ const Sidebar = (props: any) => {
               setFormValues({ ...formValues, database_link: e.target.value })
             }
           />
-        </span>
+        </div>
         {serviceName === 'oracle' && (
         <div> 
           <span className="form-item">
