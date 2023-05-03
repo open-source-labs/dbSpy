@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useRef } from 'react';
+import React, { useRef,useEffect } from 'react';
 
 // Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
@@ -9,10 +9,15 @@ import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
-
+import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
+
+
 const DBDisplay: React.FC = () => {
+
+  const { setUser } = useCredentialsStore();
+
   const {
     sidebarDisplayState,
     welcome,
@@ -38,6 +43,48 @@ const DBDisplay: React.FC = () => {
   const mySideBarId: any = useRef();
   const mainId: any = useRef();
 
+////////////OAUTHHHHHHHH//////////////////
+
+useEffect(() :void => { 
+
+
+  const windowUrl = window.location.search;
+  const urlParams = new URLSearchParams(windowUrl);
+  const code = urlParams.get('code');
+  const state = urlParams.get('state')
+
+
+  if(code){
+
+    fetch('/api/oauth',{
+       method:'POST',
+       headers:{
+         'Content-Type': 'Application/JSON'
+       },
+       body: JSON.stringify({code:code, state:state}),
+     })
+      .then((data) => {
+        if(data.status === 200) console.log(`OAuth : successfully sent authorization code back ${data.status}`);
+        else console.log(`OAUTH: error sending authorization code back ${data.status}`);
+        return data.json();
+      })
+      .then((res) => {
+        console.log(res);
+        setUser(res);
+
+      })
+      .catch((err)=> {
+        console.log({
+          log:`error Post request to backend from DBdisplay ${err}`,
+          status:err,
+          message: `error occured logging in`})
+      })
+   }
+
+},[])
+
+
+  //////////////OAUTHHHHHHH//////////////
   /* Set the width of the side navigation to 250px and add a black background color to body */
   const openNav = () => {
     mySideBarId.current.style.width = '400px';
