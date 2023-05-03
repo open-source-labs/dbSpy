@@ -69,11 +69,13 @@ export const verifyUser: RequestHandler = async (req: Request, res: Response, ne
 
   //check if login is from Oauth2 and add to database
   if(typeof req.body.code === 'string'){
-    const {id, email, verified_email, name, picture} = res.locals.userInfo;
+    if(res.locals.userInfo.type === 'google'){ //for Google
+     const {id, email, verified_email, name, picture, type} = res.locals.userInfo;
+    
     const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
     const hashedPw = await bcrypt.hash(id,saltRounds)
     if(verified_email){
-      const addUser = await pool.query(queryStr,[name, email, hashedPw, picture,'oauth'])
+      const addUser = await pool.query(queryStr,[name, email, hashedPw, picture,type])
       log.info('verified or added Oauth User');
       const foundUser = (await findUser(email)) as RowDataPacket[][];
       log.info('found user')
@@ -85,6 +87,20 @@ export const verifyUser: RequestHandler = async (req: Request, res: Response, ne
       log.error('Error in verifyUser OAUTH')
       next(`Email not verified`)
     } 
+  }else{// for GITHUB
+    const {login,id,url,avatar_url,type} = res.locals.userInfo;
+    const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
+    const hashedPw = await bcrypt.hash(id.toString(),saltRounds);
+    console.log(hashedPw);
+    const addUser = await pool.query(queryStr,[login, url, hashedPw, avatar_url,type]);
+    log.info('verified or added Oauth User');
+    const foundUser = (await findUser(url)) as RowDataPacket[][];
+    log.info('found user')
+    res.locals.user = foundUser[0][0];
+    console.log(res.locals.user)
+    return res.status(200).json(res.locals.user);
+  }
+
   }
 
   //other use regular login  methods

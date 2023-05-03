@@ -43,41 +43,44 @@ const DBDisplay: React.FC = () => {
   const mainId: any = useRef();
 
 ////////////OAUTHHHHHHHH//////////////////
-  useEffect(() :void => { 
+
+useEffect(() :void => { 
 
 
-      const windowUrl = window.location.search;
-      const urlParams = new URLSearchParams(windowUrl);
-      const code = urlParams.get('code');
-  
-      if(code){
+  const windowUrl = window.location.search;
+  const urlParams = new URLSearchParams(windowUrl);
+  const code = urlParams.get('code');
+  const state = urlParams.get('state')
 
-        fetch('/api/oauth',{
-           method:'POST',
-           headers:{
-             'Content-Type': 'Application/JSON'
-           },
-           body: JSON.stringify({code:code}),
-         })
-          .then((data) => {
-            if(data.status === 200) console.log(`OAuth : successfully sent authorization code back ${data.status}`);
-            else console.log(`OAUTH: error sending authorization code back ${data.status}`);
-            return data.json();
-          })
-          .then((res) => {
-            console.log(res);
-            setUser(res);
 
-          })
-          .catch((err)=> {
-            console.log({
-              log:`error Post request to backend from DBdisplay ${err}`,
-              status:err,
-              message: `error occured logging in`})
-          })
-       }
+  if(code){
 
-  },[])
+    fetch('/api/oauth',{
+       method:'POST',
+       headers:{
+         'Content-Type': 'Application/JSON'
+       },
+       body: JSON.stringify({code:code, state:state}),
+     })
+      .then((data) => {
+        if(data.status === 200) console.log(`OAuth : successfully sent authorization code back ${data.status}`);
+        else console.log(`OAUTH: error sending authorization code back ${data.status}`);
+        return data.json();
+      })
+      .then((res) => {
+        console.log(res);
+        setUser(res);
+
+      })
+      .catch((err)=> {
+        console.log({
+          log:`error Post request to backend from DBdisplay ${err}`,
+          status:err,
+          message: `error occured logging in`})
+      })
+   }
+
+},[])
 
 
   //////////////OAUTHHHHHHH//////////////

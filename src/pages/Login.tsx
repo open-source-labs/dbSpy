@@ -40,11 +40,14 @@ export default function Login() {
 type Options = {
   redirect_uri: string,
   client_id: string,
-  access_type: string,
-  response_type: string,
-  prompt: string,
+  access_type ?: string,
+  response_type ?: string,
+  prompt ?: string,
   scope:string,
+  state ?: string,
+  allow_signup ?: string,
 }
+
 
 function getGoogle():void{
 
@@ -68,6 +71,27 @@ function getGoogle():void{
     'toolbar=no, menubar=no, width=600, height=700, top=100, left=800';
   window.open(url, '_self', strWindowFeatures);
 
+}
+
+
+const getGithub = ():void => {
+  const rootUrl: string = 'https://github.com/login/oauth/authorize';
+  const options: Options = {
+    redirect_uri: 'http://localhost:8080/display',
+    client_id: 'd44f1421ff7324a4468d',
+    state: 'randomstring',
+    allow_signup: 'true',
+    scope:[
+      'read:user',
+      'user:email'
+    ].join(' ')
+  }
+  const qs = new URLSearchParams(options);
+  const url = `${rootUrl}?${qs.toString()}`;
+  console.log(url);
+  
+  const strWindowFeatures = 'toolbar=no, menu=no, width=600, height=700, top=100, left=800';
+  window.open(url,'_self', strWindowFeatures);
 }
 
 ///////////////////OAUTH/////////////
@@ -133,24 +157,16 @@ function getGoogle():void{
           </div>
         </form>
         <button
-              className="focus:shadow-outline rounded bg-sky-700 py-2 px-4 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none" onClick={()=>getGoogle()}>
-              Login Google
+              className="bg-red-600 hover:text-cyan-950 text-white py-1 px-4 inline-flex items-center ml-1 mr-1" onClick={()=>getGoogle()}>
+              <img src='../../images/GoogleImage.png' alt= 'google logo' className='h-5 mr-1 '></img>
+              Sign in with Google
         </button>
-        {/* TODO: implement production level Google OAuth */}
-        {/* <div className="inline-flex w-full items-center justify-between">
-          <hr className="my-8 h-px w-32 border-0 bg-gray-200 dark:bg-gray-700"></hr>
-          <span className="absolute left-1/2 -translate-x-1/2 px-3 font-medium text-gray-900 dark:bg-slate-700 dark:text-white">
-            or
-          </span>
-          <hr className="my-8 h-px w-32 border-0 bg-gray-200 dark:bg-gray-700"></hr>
-        </div> */}
+        <button
+              className="bg-black hover:text-cyan-950 text-white py-1 px-4 inline-flex items-center ml-1" onClick={()=>getGithub()}>
+              <img src='../../images/GithubImage.png' alt= 'google logo' className='h-5 mr-1 '></img>
+              Sign in with GitHub
+        </button>
       </div>
-      {/* <div className="w-h sm:w-1/2 sm:pl-2 inline-flex justify-center">
-        <button className='bg-red-600 hover:bg-red-700 text-stone-100 py-1 px-4 inline-flex items-center' onClick={handleOAuthLogin}>
-          <svg className="h-4 w-4 mr-2 text-white" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M17.788 5.108A9 9 0 1021 12h-8" /></svg>
-          <span>Login with Google</span>
-        </button>
-      </div> */}
     </div>
   );
 }
