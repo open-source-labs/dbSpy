@@ -103,6 +103,7 @@ export default function InputModal({
     property: keyof ColumnData,
     value: string | boolean
   ) => {
+    console.log('handle column chnage')
     setColumnData((prevColumns) => {
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {

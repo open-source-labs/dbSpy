@@ -3,84 +3,53 @@ import { SQLDataType, ColumnData, RowsOfData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
 import useDataStore from '../../store/dataStore';
+import RowInput from './RowInput';
 
+//i dont think we need table mode?!, since we are not going to create new tables for data
 type InputModalProps = {
-  mode: 'table' | 'row';
+  // mode: 'table' | 'row';
   closeInputModal: () => void;
   tableNameProp?: string;
 };
 
 
 type DataRowArray = Array<string | number | boolean | null>
-// TODO: ADD FORM VALIDATION
-// table or column name can have length <= 63
 
 export default function DataInputModal({
-  mode,
+  // mode,
   closeInputModal,
   tableNameProp,
 }: InputModalProps) {
-  // TODO: separate state for table name and column data
-  // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
-  // AFTERWARDS, PK MAY NOT BE EDITED
+
   const initialTable: string = 'untitled_table';
-  const initialRows: DataRowArray = [];
+
+  //do we need initial row for data table??? maybe not...... since we are not creating new table in data section
+  // const initialRows: DataRowArray = [];
+
   const additionalRows: DataRowArray = [];
-  // const initialRows: RowsOfData = [
-  //   {
-  //     name: 'id',
-  //     type: 'AUTO_INCREMENT',
-  //     isNullable: false,
-  //     isPrimary: true,
-  //     defaultValue: null,
-  //   },
-  //   {
-  //     name: 'created_at',
-  //     type: 'TIMESTAMP',
-  //     isNullable: false,
-  //     isPrimary: false,
-  //     defaultValue: 'NOW()',
-  //   },
-  // ];
-  // const additionalColumn: ColumnData[] = [
-  //   {
-  //     name: 'column_1',
-  //     type: 'VARCHAR(255)',
-  //     isNullable: false,
-  //     isPrimary: false,
-  //     defaultValue: null,
-  //   },
-  // ];
-  const [tableName, setTableName] = useState<string>(() => {
-    if (!tableNameProp) return initialTable;
-    else return tableNameProp;
+
+  const [tableName, setTableName] = useState/*<string>*/(() => {
+    // if (!tableNameProp) return initialTable;
+    // else
+      return tableNameProp;
   });
-  const [rowData, setRowData] = useState<DataRowArray>(() => {
-    if (mode === 'table') return initialRows;
-    else return additionalRows;
+  const [rowData, setRowData] = useState/*<DataRowArray>*/(() => {
+    // if (mode === 'table') return initialRows;
+    // else
+      return additionalRows;
   });
 
-  // functions that check validity and add data to the store
-  // const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
-  //   (state) => state
-  // );
 
   const { dataStore, addTableData, addRow } = useDataStore(
     (state) => state
   );
 
-  console.log('here!! dataStore!!', dataStore)
-  
- //NEED TO WORK FROM HERE!!!!!!!
+  console.log('here!! dataStore!!', dataStore) //we can use this to access data info
 
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
-      if (mode === 'table') addTableData(tableName, rowData);
-      else if (mode === 'row') {
-        addRow(tableName, rowData);
-      }
-
+      addRow(tableName, rowData);
       return true;
     } catch (error) {
       window.alert(error);
@@ -89,53 +58,60 @@ export default function DataInputModal({
     }
   };
 
-   
-  const newColumn: RowData = [];
+  const newRow: DataRowArray = [];  //out inputs goes here??
+
+  //#######################
+  //TO SAVE ALL THESE NEW DATA/UPDATES to DB => need another function for SAVE info we alter/add
+  //need to convert this "newRow" into format of obj => ex) {id: new data, something: new data}
+  //keys for this obj format === first row of our table
+  //then, send to backend via AXIOS request
+  //#######################
 
   const addColumn = () => {
-    setColumnData((prevColumns) => {
-      prevColumns.push(newColumn);
-      return [...prevColumns];
+    setRowData((prevRows) => {
+      prevRows.push(newRow);
+      return [...prevRows];
     });
   };
 
-  const deleteColumn = (index: number) => {
-    setColumnData((prevColumns) => {
-      prevColumns.splice(index, 1);
-      return [...prevColumns];
+    //NEED TO WORK FROM HERE!!!!!!!
+  const deleteRow = (index: number) => {
+    setRowData((prevRows) => {
+      prevRows.splice(index, 1);
+      return [...prevRows];
     });
   };
 
-  const handleColumnChange = (
-    index: number,
-    property: keyof ColumnData,
-    value: string | boolean
-  ) => {
-    setColumnData((prevColumns) => {
-      // isPrimary is special. Only one column may be pk. Extra logic required
-      if (property !== 'isPrimary') {
-        // TODO: LEARN WHY TS IS YELLING
-        prevColumns[index][property] = value;
-        return [...prevColumns];
-      }
-      // Disables unchecking pk
-      else if (!value) return prevColumns;
-      else {
-        // If checking new column, uncheck old pk
-        for (const column of prevColumns) {
-          column.isPrimary = false;
-        }
-        prevColumns[index].isPrimary = true;
-        return [...prevColumns];
-      }
-    });
-  };
+  // const handleColumnChange = (
+  //   index: number,
+  //   property: keyof ColumnData,
+  //   value: string | boolean
+  // ) => {
+  //   setRowData((prevRows) => {
+  //     // isPrimary is special. Only one column may be pk. Extra logic required
+  //     if (property !== 'isPrimary') {
+  //       // TODO: LEARN WHY TS IS YELLING
+  //       prevColumns[index][property] = value;
+  //       return [...prevColumns];
+  //     }
+  //     // Disables unchecking pk
+  //     else if (!value) return prevColumns;
+  //     else {
+  //       // If checking new column, uncheck old pk
+  //       for (const column of prevColumns) {
+  //         column.isPrimary = false;
+  //       }
+  //       prevColumns[index].isPrimary = true;
+  //       return [...prevColumns];
+  //     }
+  //   });
+  // };
 
   const columnInputs = rowData.map((col, index) => (
-    <ColumnInput
+    <RowInput
       key={`column-${index}`}
       index={index}
-      deleteColumn={deleteColumn}
+      deleteRow={deleteRow}
       handleColumnChange={handleColumnChange}
       name={col.name}
       type={col.type}

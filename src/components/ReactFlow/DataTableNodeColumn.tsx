@@ -44,7 +44,7 @@ const [mode, setMode] = useState('default');
        )}
        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
        </td>
-      
+      <td>
          {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
          <button
            id={`$rowEditBtn`}
@@ -54,7 +54,8 @@ const [mode, setMode] = useState('default');
          >
            <FaRegEdit size={17} />
          </button>
-        
+       </td>
+       <td>
          {/* this button should DELETE the row, need to work on onClick function */}
          <button
            id={`dataDeleteBtn`}
@@ -63,7 +64,7 @@ const [mode, setMode] = useState('default');
          >
            <FaRegTrashAlt size={17} />
          </button>
-  
+  </td>
      </tr>
    </>
   );
