@@ -15,31 +15,43 @@ const Sidebar = (props: any) => {
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const setDataStore = useDataStore((state) => state.setDataStore)
   const { setWelcome } = useSettingsStore((state) => state);
+  const [serviceName, setServiceName] = useState('');
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
   const [_selected, setSelected] = useState('postgres');
 
     //form state hooks
-    const [formValues, setFormValues] = useState({ db_type: 'postgres' });
+    const [formValues, setFormValues] = useState<{ 
+      db_type: string,
+      database_link?: string,
+      hostname?: string,
+      port?: string,
+      username?:string,
+      password?: string,
+      database_name?: string,
+      service_name?: string,
+     }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
   //HELPER FUNCTIONS
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const values: any = formValues;
     //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link) {
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
+      console.log('fullLink: ', fullLink)
+      console.log('splitURI: ', splitURI)
       if (splitURI[0] === 'postgres:') {
-        const name = splitURI[3];
-        const internalLinkArray = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray[1];
-        values.username = name;
-        values.password = internalLinkArray[0];
+        const name_postgres = splitURI[3];
+        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_Postgres[1];
+        values.username = name_postgres.split(':')[0];
+        values.password = internalLinkArray_Postgres[0];
         values.port = '5432';
-        values.database_name = name;
+        values.database_name = name_postgres;
         values.db_type = 'postgres';
       } else if (splitURI[0] === 'mysql:') {
         const name_mySQL = splitURI[3].split('?');
@@ -50,10 +62,29 @@ const Sidebar = (props: any) => {
         values.port = '3306';
         values.database_name = name_mySQL[0];
         values.db_type = 'mysql';
+      } else if (splitURI[0] === 'mssql:') {
+        const name_mssql = splitURI[3];
+        const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_mssql[1];
+        values.username = splitURI[2].split(':')[0];
+        values.password = internalLinkArray_mssql[0];
+        values.port = '1433';
+        values.database_name = name_mssql;
+        values.db_type = 'mssql';
+      } else if (splitURI[0] === 'oracle:') {
+        const name_oracle = splitURI[3];
+        const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_oracle[1];
+        values.username = splitURI[2].split(':')[0];
+        values.password = internalLinkArray_oracle[0];
+        values.port = '1521';
+        values.database_name = name_oracle;
+        values.db_type = 'oracle';
+        values.service_name = values.service_name;
       }
-    }
+    };
 
-console.log('values: ', values)
+
 
     //update dbCredentials
     setDbCredentials(values);
@@ -64,13 +95,13 @@ console.log('values: ', values)
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => {
-        console.log('res.data',res.data)
+        console.log('data from back',res.data)
         return res.data;
       })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
-    //update schemaStore
-    console.log('schemaFromBackend', dataFromBackend.schema)
-    console.log('dataFromBackend', dataFromBackend.data)
+    //update schemaStore and dataStore
+    // console.log('schemaFromBackend', dataFromBackend.schema)
+    // console.log('dataFromBackend', dataFromBackend.data)
     setSchemaStore(dataFromBackend.schema);
     setDataStore(dataFromBackend.data)
     setWelcome(false);
@@ -81,10 +112,12 @@ console.log('values: ', values)
   //on change for db type selection, will affect state to conditionally render database URL
   const handleChange = (event: any) => {
     setSelected(event.target.value);
+    if (event.target.value === 'oracle') {
+      setServiceName('oracle');
+    }
+    else setServiceName('');
   };
   //END: HELPER FUNCTIONS
-
-
 
   return (
     <form id="dbconnect" className="bg-[#fbf3de] dark:bg-slate-700">
@@ -108,6 +141,7 @@ console.log('values: ', values)
           <option value="postgres">PostgreSQL</option>
           <option value="mysql">MySQL</option>
           <option value="mssql">Microsoft SQL</option>
+          <option value="oracle">Oracle SQL (requires OIC)</option>
         </select>
       </span>
       <br></br>
@@ -127,6 +161,37 @@ console.log('values: ', values)
             }
           />
         </span>
+        {serviceName === 'oracle' && (
+        <div> 
+          <span className="form-item">
+            <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
+              Service Name
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="service-name"
+              name="service-name"
+              autoComplete="off"
+              placeholder='ORCL'
+              // onFocus={handleFocus}
+              // onBlur={handleBlur}
+              // defaultValue='ORCL'
+              value={formValues.service_name}
+              onChange={
+                (e) => { 
+                setFormValues({ ...formValues, service_name: e.target.value });
+                // setServiceNameDefault(e.target.value);
+              }
+            }/>
+          </span>
+          <button className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
+                  onClick={(e) => { e.preventDefault()
+                  setFormValues({ ...formValues, service_name: 'ORCL' })}}>
+            ORCL
+          </button>
+          </div> 
+        )}
         <br></br>
         <div className="form-item dark:text-[#f8f4eb]">
           <p className="">OR</p>

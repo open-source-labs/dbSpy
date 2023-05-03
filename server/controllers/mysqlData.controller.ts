@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { MysqlTableColumns, MysqlTableSchema, MysqlTableColumn } from '@/Types';
+import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { DataSource } from 'typeorm';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
 
 //----------------------------------------------------------------------------
 export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-
     const { hostname, password, port, username, database_name } = req.query;
 
     const MysqlDataSource = new DataSource({
@@ -28,11 +27,10 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
 
-    async function mysqlFormatTableSchema(columns: MysqlTableColumn[], tableName: string): Promise<MysqlTableColumns> {
-      const tableSchema: MysqlTableColumns = {};
-
+    async function mysqlFormatTableSchema(mysqlSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
+      const tableSchema: TableColumn = {};
   
-      for (const column of columns) {
+      for (const column of mysqlSchemaData) {
           const columnName: any = column.Field;
           //const tableName: any = column.TableName
           const keyString: any = column.Key;
@@ -40,23 +38,25 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           //query for the foreign key data
           const foreignKeys: any = await getForeignKeys(columnName, tableName);
           const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
-  
+
+          console.log('foreignKey: ', foreignKey)
           //Creating the format for the Reference property if their is a foreign key
-          const references: any = {
+          const references: ReferenceType = {
               length: 0,
           };
   
           if (foreignKey){
               references[references.length] = {
                   isDestination: false,
-                  PrimaryKeyName: foreignKeys.COLUMN_NAME,
-                  PrimaryKeyTableName: foreignKeys.TABLE_NAME,
-                  ReferencesPropertyName: foreignKeys.REFERENCED_COLUMN_NAME,
-                  ReferencesTableName: foreignKeys.REFERENCED_TABLE_NAME,
-                  constraintName: foreignKeys.CONSTRAINT_NAME,
+                  PrimaryKeyName: foreignKey.COLUMN_NAME,
+                  PrimaryKeyTableName: 'public.' + tableName,
+                  ReferencesPropertyName: foreignKey.REFERENCED_COLUMN_NAME,
+                  ReferencesTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+                  constraintName: foreignKey.CONSTRAINT_NAME,
               };
               references.length += 1;
           };
+          console.log('references: ', references)
   
           //Formation of the schema data
           tableSchema[columnName] = {
@@ -76,11 +76,11 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   };
 
     //Obtain all table names from the database
-    const tables = await MysqlDataSource.query(`SHOW TABLES`);
+    const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
 
     //Declare constants to store results we get back from queries
-    const data: MysqlTableColumns = {};
-    const schema: MysqlTableSchema = {};
+    const data: TableColumns = {};
+    const schema: TableSchema = {};
 
     //LOOP
     for (const table of tables) {
@@ -90,16 +90,23 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
       const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
       data[tableName] = tableData;
       // Getting Schemas for all tables
-      const columns = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
-      schema['public.' + tableName] = await mysqlFormatTableSchema(columns, tableName); // Store schema using tableName as key
+      const mysqlSchemaData: any = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
+      schema['public.' + tableName] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
     }
-    //Console.logs to check what the data looks like
-    // console.log("data: ", data);
-    console.log("schema: ", schema);
 
-    // Saving the table names, table data, and schemas in res.locals
-    res.locals.data = data;
+    // Console.logs to check what the data looks like
+    // console.log("table data: ", data);
+    // console.log("schema data: ", schema);
+
+    // Storage of queried results into res.locals
     res.locals.schema = schema;
+    res.locals.data = data;
+    
+
+    // Disconnecting after data has been received 
+    MysqlDataSource.destroy();
+    console.log('Database has been disconnected');
+
     return next();
 
   } catch (err: unknown) {

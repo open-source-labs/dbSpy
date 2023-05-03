@@ -56,7 +56,7 @@ export default function TableNodeColumn({
     // document.querySelector('#main').style.marginRight = '400px';
     setEditRefMode(true, columnData.TableName, columnData.Name);
   };
-
+  
   return (
     <>
       {/* TODO: SEE ABOUT DELETING KEY ATTRIBUTE AND ID ATTRIBUTES */}
@@ -100,13 +100,6 @@ export default function TableNodeColumn({
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
-              // value={columnData.additional_constraints}
-              // onChange={(e) =>
-              //   setColumnData((prevData) => ({
-              //     ...prevData,
-              //     additional_constraints: e.target.value,
-              //   }))
-              // }
             >
               {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
               <option value="NA">NA</option>
@@ -119,7 +112,7 @@ export default function TableNodeColumn({
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {columnData.IsPrimaryKey}
+          {`${columnData.IsPrimaryKey}`}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {mode === 'edit' ? (
@@ -134,7 +127,6 @@ export default function TableNodeColumn({
                     'Must have more than one table to create foreign key constraints'
                   );
                 }
-
                 setColumnData((prevData) => {
                   return {
                     ...prevData,
@@ -146,7 +138,7 @@ export default function TableNodeColumn({
               }}
             />
           ) : (
-            columnData.IsForeignKey
+              `${columnData.IsForeignKey}`
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">

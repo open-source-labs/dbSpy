@@ -13,6 +13,8 @@ declare const useSettingsStore: import("zustand").UseBoundStore<Omit<import("zus
         mode: string;
     };
     setInputModalState: (isOpen: boolean, mode?: string, currentTable?: string) => void;
+    isSchema: boolean;
+    setTableMode: (input: any) => any;
 }>, "setState"> & {
     setState<A extends string | {
         type: unknown;
@@ -31,6 +33,8 @@ declare const useSettingsStore: import("zustand").UseBoundStore<Omit<import("zus
             mode: string;
         };
         setInputModalState: (isOpen: boolean, mode?: string, currentTable?: string) => void;
+        isSchema: boolean;
+        setTableMode: (input: any) => any;
     } | Partial<{
         darkMode: boolean;
         setDarkMode: () => any;
@@ -46,6 +50,8 @@ declare const useSettingsStore: import("zustand").UseBoundStore<Omit<import("zus
             mode: string;
         };
         setInputModalState: (isOpen: boolean, mode?: string, currentTable?: string) => void;
+        isSchema: boolean;
+        setTableMode: (input: any) => any;
     }> | ((state: {
         darkMode: boolean;
         setDarkMode: () => any;
@@ -61,6 +67,8 @@ declare const useSettingsStore: import("zustand").UseBoundStore<Omit<import("zus
             mode: string;
         };
         setInputModalState: (isOpen: boolean, mode?: string, currentTable?: string) => void;
+        isSchema: boolean;
+        setTableMode: (input: any) => any;
     }) => {
         darkMode: boolean;
         setDarkMode: () => any;
@@ -76,6 +84,8 @@ declare const useSettingsStore: import("zustand").UseBoundStore<Omit<import("zus
             mode: string;
         };
         setInputModalState: (isOpen: boolean, mode?: string, currentTable?: string) => void;
+        isSchema: boolean;
+        setTableMode: (input: any) => any;
     } | Partial<{
         darkMode: boolean;
         setDarkMode: () => any;
@@ -91,6 +101,8 @@ declare const useSettingsStore: import("zustand").UseBoundStore<Omit<import("zus
             mode: string;
         };
         setInputModalState: (isOpen: boolean, mode?: string, currentTable?: string) => void;
+        isSchema: boolean;
+        setTableMode: (input: any) => any;
     }>), replace?: boolean | undefined, action?: A | undefined): void;
 }>;
 export default useSettingsStore;

@@ -10,7 +10,7 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
-export interface MysqlTableColumn {
+export interface TableColumn {
   Field?: string;
   Type?: string;
   Null?: string;
@@ -27,45 +27,61 @@ export interface MysqlTableColumn {
   field_name?: string;
   Name?: string;
   [key: string]: any;
-}
+  update_rule?: string;
+  delete_rule?: string;
+};
 
-export interface MysqlTableColumns {
-  [columnName: string]: MysqlTableColumn;
-}
+export interface TableColumns {
+  [columnName: string]: TableColumn;
+};
 
-export interface MysqlTableSchema {
-  [tableName: string]: MysqlTableColumns;
-}
+export interface TableSchema {
+  [tableName: string]: TableColumns;
+};
 
-export interface PostgresTableColumn {
-   column_name?: string;
-   data_type?: string;
-   character_maximum_length?: null;
-   is_nullable?: string;
-   column_default?: null;
-   is_autoincrement?: string;
-   additional_constraints?: string;
-   IsForeignKey?: boolean;
-   IsPrimaryKey?: boolean;
-   Value?: null;
-   field_name?: string;
-   Name?: string;
-   References?: any[];
-   [key: string]: any;
-   update_rule?: string;
-   delete_rule?: string;
-}
+export interface ReferenceType {
+  [index: number]: {
+    isDestination: boolean,
+    PrimaryKeyName: string,
+    PrimaryKeyTableName: string,
+    ReferencesPropertyName: string,
+    ReferencesTableName: string,
+    constraintName: string,
+  },
+  length: number,
+};
 
-export interface PostgresTableColumns {
-  [columnName: string]: PostgresTableColumn;
-}
+export type Edge = {
+  id: string;
+  source: string;
+  sourceHandle: string;
+  target: string;
+  targetHandle: string;
+  animated: boolean;
+  label: string;
+  style: { strokeWidth: number; stroke: string };
+  markerEnd: {
+    type: string;
+    orient: string;
+    width: number;
+    height: number;
+    color: string;
+  };
+};
 
-export interface PostgresTableSchema {
-  [tableName: string]: PostgresTableColumns;
-}
+export type DataNode = {
+  id: string;
+  type: 'table';
+  position: { x: number; y: number };
+  data: {
+    table: TableTuple;
+    edges: Edge[];
+  };
+};
 
-
-
+export type TableTuple = 
+[TableKey: string, 
+  ColumnData: { [ColumnName: string]: ColumnDataForDataTable; }];
 
 // ---------------------------------------------------------------------
 // ZUSTAND STORE AND FRONT-END TYPES
@@ -83,12 +99,14 @@ export type ColumnData = {
 
 // ColumnSchema and Reference are used by schemaStore
 export type Reference = {
-  PrimaryKeyName: string;
-  PrimaryKeyTableName: string;
-  ReferencesPropertyName: string;
-  ReferencesTableName: string;
-  IsDestination: boolean;
-  constraintName: string;
+  [tableName: string]: {
+    PrimaryKeyName: string;
+    PrimaryKeyTableName: string;
+    ReferencesPropertyName: string;
+    ReferencesTableName: string;
+    IsDestination: boolean;
+    constraintName: string;
+  };
 };
 
 export type ColumnSchema = {
@@ -104,13 +122,41 @@ export type ColumnSchema = {
 };
 
 // these are for data tables ######################
-export type RowsOfData = {
+export type RowsOfData = [{
   [key: string | number]: string | number,
-};
+}];
 
+export type DataStore = {
+  [TableName: string]: RowsOfData[]
+}
+
+export type DataState = {
+  // DATA
+  dataStore: DataStore;
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
+  history: DataStore[];
+  historyCounter: number;
+
+  
+
+  // DATA SETTERS
+  setDataStore: (dataInfo: DataStore) => void;
+  setSystem: (system: DataStore) => void;
+}
+
+export type FlowState = {
+  edges: any[];
+  setEdges: (eds: any) => void;
+  nodes: any[];
+  setNodes: (nds: any) => void;
+  onNodesChange: (changes: any) => void;
+  onEdgesChange: (changes: any) => void;
+  onConnect: (connection: any) => void;
+};
 
 export type ColumnDataForDataTable = {
   [key: string | number]: RowsOfData[],
+  
 };
 //######################
 
