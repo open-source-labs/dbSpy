@@ -40,21 +40,18 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
 
           console.log('foreignKey: ', foreignKey)
-          //Creating the format for the Reference property if their is a foreign key
-          const references: ReferenceType = {
-              length: 0,
-          };
-  
+          //Creating the format for the Reference property if there is a foreign key
+          const references = []
+
           if (foreignKey){
-              references[references.length] = {
+              references.push({
                   isDestination: false,
                   PrimaryKeyName: foreignKey.COLUMN_NAME,
                   PrimaryKeyTableName: 'public.' + tableName,
                   ReferencesPropertyName: foreignKey.REFERENCED_COLUMN_NAME,
                   ReferencesTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
                   constraintName: foreignKey.CONSTRAINT_NAME,
-              };
-              references.length += 1;
+              });
           };
           console.log('references: ', references)
   
@@ -63,7 +60,7 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
               IsForeignKey: keyString.includes('MUL'),
               IsPrimaryKey: keyString.includes('PRI'),
               Name: column.Field,
-              References: foreignKey ? [references] : [],
+              References: references,
               TableName: 'public.' + tableName,
               Value: null,
               additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
