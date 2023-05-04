@@ -55,21 +55,30 @@ export default function TableNode({ data }) {
   
   // renders columns within table
   return (
+    <>
     <div className="table-node transition-colors duration-500" key={tableName}>
-      {tableHandles}
-      <div>
-        <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
-          {tableName}
-        </label>
-      </div>
-      <div>
-        <button
-          className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-          onClick={() => setInputModalState(true, 'column', tableName)}
-        >
-          <FaRegPlusSquare size={20} />
-        </button>
-      </div>
+    <div className="flex items-center justify-between table-header bg-[#075985] dark:opacity-75">
+  {/* <NodeResizer minWidth={100} minHeight={30} /> */}
+  {tableHandles}
+  <div>
+    <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+      {tableName}
+    </label>
+  </div>
+    <div className="addRowBtn ml-3 mb-1.5">
+      <button
+        className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
+        onClick={() => setInputModalState(true, 'column', tableName)}
+      >
+        <FaRegPlusSquare size={20} className="text-white" />
+      </button>
+    </div>
+</div>
+
+<div
+    style={{overflow: "auto", maxHeight: "400px", maxWidth: "600px" }}
+    className="nowheel"
+  >
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
         <table className="transition-colors duration-500 dark:text-[#fbf3de]">
           <thead>
@@ -78,31 +87,31 @@ export default function TableNode({ data }) {
                 scope="col"
                 className="transition-colors duration-500 dark:text-[#fbf3de]"
               >
-                Column
+                <b>Column</b>
               </th>
               <th
                 scope="col"
                 className="transition-colors duration-500 dark:text-[#fbf3de]"
               >
-                Type
+                <b>Type</b>
               </th>
               <th
                 scope="col"
                 className="transition-colors duration-500 dark:text-[#fbf3de]"
               >
-                Constraints
+                <b>Constraints</b>
               </th>
               <th
                 scope="col"
                 className="transition-colors duration-500 dark:text-[#fbf3de]"
               >
-                PK
+                <b>PK</b>
               </th>
               <th
                 scope="col"
                 className="transition-colors duration-500 dark:text-[#fbf3de]"
               >
-                FK
+                <b>FK</b>
               </th>
             </tr>
           </thead>
@@ -118,6 +127,8 @@ export default function TableNode({ data }) {
           </tbody>
         </table>
       </div>
+      </div>
     </div>
+    </>
   );
 }
