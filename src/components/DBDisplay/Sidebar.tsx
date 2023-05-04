@@ -202,11 +202,14 @@ const Sidebar = (props: any) => {
               }
             }/>
           </span>
+          <span className="flex justify-start items-center space-x-2 mt-3">
+          <p className="align-middle">Default:</p>
           <button className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
                   onClick={(e) => { e.preventDefault()
                   setFormValues({ ...formValues, service_name: 'ORCL' })}}>
             ORCL
           </button>
+          </span>
           </div> 
         )}
         {serviceName === 'sqlite' && (
