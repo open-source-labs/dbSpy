@@ -31,22 +31,19 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
                 const columnName: any = column.COLUMN_NAME;
                 const keyString: any = column.CONSTRAINT_TYPE;
         
-                //Creating the format for the Reference property if their is a foreign key
-                const references: ReferenceType = {
-                    length: 0,
-                };
+                //Creating the format for the Reference property if there is a foreign key
+                const references = [];
 
                 //Formation of the Reference data
                 if (column.CONSTRAINT_TYPE === 'R'){
-                    references[references.length] = {
+                    references.push({
                         isDestination: false,
                         PrimaryKeyName: column.COLUMN_NAME,
                         PrimaryKeyTableName: 'public.' + tableName,
                         ReferencesPropertyName: column.R_COLUMN_NAME,
                         ReferencesTableName: 'public.' + column.R_TABLE_NAME,
                         constraintName: column.CONSTRAINT_NAME,
-                    };
-                    references.length += 1;
+                    });
                 };
                 console.log('references: ', references)
         
@@ -55,7 +52,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
                     IsForeignKey: keyString ? keyString.includes('R') ? true : false : false,
                     IsPrimaryKey: keyString ? keyString.includes('P') ? true : false : false,
                     Name: column.COLUMN_NAME,
-                    References: column.CONSTRAINT_TYPE === 'R' ? [references] : [],
+                    References: column.CONSTRAINT_TYPE === 'R' ? references : [],
                     TableName: 'public.' + tableName,
                     Value: null,
                     additional_constraints: column.IS_NULLABLE === 'N' ? 'NOT NULL' : null ,

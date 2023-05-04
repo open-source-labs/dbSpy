@@ -11,6 +11,7 @@ import { postgresRouter } from './postgres.router';
 import { microsoftRouter } from './microsoft.router';
 import { oracleRouter } from './oracle.router';
 import { mysqlRouter } from './mysql.router';
+import { sqliteRouter } from './sqlite.router';
 import session from 'express-session'; // 
 declare module 'express-session' {
   interface SessionData {
@@ -48,6 +49,8 @@ const routes = async (app: Express) => {
   app.use('/api/sql/mssql', microsoftRouter);
 
   app.use('/api/sql/oracle', oracleRouter);
+
+  app.use('/api/sql/sqlite', sqliteRouter);
 
   app.post('/api/saveSchema', saveSchema);
 

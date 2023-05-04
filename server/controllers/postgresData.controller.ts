@@ -1,12 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-//import { PostgresDataSource } from '../datasource';
-//import { postgresFormatTableSchema } from './helperFunctions/postgres.functions';
 import { DataSource } from 'typeorm';
-import dotenv from 'dotenv';
-dotenv.config
-
 
 //----------------------------------------------------------------------------
 export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +15,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
       username: username as string,
       password: password as string,
       database: database_name as string,
-      synchronize: true,
+      synchronize: true,//sqlite
       logging: true,
     });
 
@@ -45,29 +40,50 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
           const foreignKeys: any = await getForeignKeys();
           const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
           
-          //Creating the format for the Reference property if their is a foreign key
-          const references: ReferenceType = {
-            length: 0,
-          };
+          //Creating the format for the Reference property if there is a foreign key
+
+          const references = []
         
           if (foreignKey){
-            references[references.length] = {
+            console.log('foreignKey: ', foreignKey)
+            references.push({
               isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
               PrimaryKeyTableName: 'public.' + tableName,
               ReferencesPropertyName: foreignKey.referenced_column,
               ReferencesTableName: foreignKey.referenced_table,
               constraintName: foreignKey.constraint_name
-            };
-            references.length += 1;
+            }
+            );
+            //references.length += 1;
+            console.log('[references]: ', [references])
           };
-          console.log('references: ', references)
+
+          // const references: ReferenceType = {
+          //   length: 0,
+          // };
+        
+          // if (foreignKey){
+          //   console.log('foreignKey: ', foreignKey)
+          //   references[references.length] = {
+          //     isDestination: false,
+          //     PrimaryKeyName: foreignKey.foreign_key_column,
+          //     PrimaryKeyTableName: 'public.' + tableName,
+          //     ReferencesPropertyName: foreignKey.referenced_column,
+          //     ReferencesTableName: foreignKey.referenced_table,
+          //     constraintName: foreignKey.constraint_name
+          //   };
+          //   references.length += 1;
+          //   console.log('[references]: ', [references])
+          // };
+          // console.log('references: ', references)
         
           tableSchema[columnName] = {
             IsForeignKey: keyString.includes('FOREIGN KEY'),
             IsPrimaryKey: keyString.includes('PRIMARY KEY'),
             Name: columnName,
-            References: foreignKey ? [references] : [],
+           // References: foreignKey ? [references] : [],
+            References: references,
             TableName: 'public.' + tableName,
             Value: null,
             additional_constraints: keyString.includes('NOT NULL') ? 'NOT NULL' : null,
