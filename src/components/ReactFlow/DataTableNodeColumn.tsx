@@ -9,8 +9,12 @@ import {
  FaRegWindowClose,
 } from 'react-icons/fa';
 
+type RowData = {
+  [key: string]: string | number
+}
 
-export default function DataTableNodeColumn({row}: {row: string|number[]}) {
+export default function DataTableNodeColumn({row,id}: {row:RowData, id:string|number}) {
+
 
 
 //####### for CRUD ##########
@@ -20,6 +24,9 @@ export default function DataTableNodeColumn({row}: {row: string|number[]}) {
 const [mode, setMode] = useState('default');
 
 
+const rowDataKeys = Object.keys(row)
+
+const [rowData, setRowData] = useState({ ...row });
 
 
 //####### for CRUD ##########
@@ -28,44 +35,57 @@ const [mode, setMode] = useState('default');
    return Math.floor(Math.random() * max);
  }
 
+ // useEffect(()=> {
+//   if(mode === 'default')   console.log("HELLO");
+// },[])
 
- return (
-    <>
-     <tr>
-       {/* have to filter out object, because when we first got info, schema info came in and that includes obj.
-       but, it re-render automatically with correct data info. Not sure why we get the schema info at first, but at least filter
-       method makes it work */}
-       {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) =>
-         <td
-           key={uniqueKey(1000000000)}
-           scope="col"
-           className="transition-colors duration-500 dark:text-[#fbf3de]"
-         >{eachData}</td>
-       )}
-       <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-       </td>
-      <td>
-         {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
-         <button
-           id={`$rowEditBtn`}
-           // onClick={() => setMode('edit')}
-           className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-           data-testid="edit-column"
-         >
-           <FaRegEdit size={17} />
-         </button>
-       </td>
-       <td>
-         {/* this button should DELETE the row, need to work on onClick function */}
-         <button
-           id={`dataDeleteBtn`}
-           className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-           onClick={() => setMode('delete')}
-         >
-           <FaRegTrashAlt size={17} />
-         </button>
-  </td>
-     </tr>
-   </>
+
+return (
+  <tr key={id} className="dark:text-[#f8f4eb]">
+
+    {rowDataKeys.map((element:string|number,ind:number) => 
+        <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} val={`${id}-col${element}`}> 
+        { mode === 'edit'?
+        (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={rowData[element]} 
+        onChange={(e)=>
+          setRowData((prevData) =>  ({
+            ...prevData,
+            [element]: e.target.value
+          }))}
+        ></input>):
+        (row[element])
+        }
+        </td>
+    )}
+    <td>{
+      mode ==='default'?
+            (<button val={`${id}-rowEditBtn`} onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+              <FaRegEdit size={17} />
+            </button>):
+          mode==='edit'?
+            (<button val={`${id}-rowSaveBtn`} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+                <FaRegSave size={17} />
+              </button>):
+            (<button val={`${id}-rowCheckBtn`} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+              <FaRegCheckSquare size={17} />
+            </button>)
+      }
+    </td>
+    <td>
+      {
+        mode ==='default'?
+        (<button id={`${id}-rowDeleteBtn`} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]" >
+        <FaRegTrashAlt size={17} />
+      </button>):
+        (<button id={`${id}-cancelBtn`}>
+                  
+              <FaRegWindowClose size={17} />
+        </button>)
+      }
+
+    </td>
+
+  </tr>
+ 
   );
 }

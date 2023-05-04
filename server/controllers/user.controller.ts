@@ -3,7 +3,7 @@ import log from '../logger/index';
 import { RowDataPacket } from 'mysql2';
 import pool from '../models/userModel';
 import bcrypt from 'bcrypt';
-const saltRounds = 10;
+const saltRounds = 5;
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -90,7 +90,12 @@ export const verifyUser: RequestHandler = async (req: Request, res: Response, ne
   }else{// for GITHUB
     const {login,id,url,avatar_url,type} = res.locals.userInfo;
     const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-    const hashedPw = await bcrypt.hash(id.toString(),saltRounds);
+    let hashedPw:string
+    //fix bcrypt bug
+    if(id) {
+       hashedPw = await bcrypt.hash(id.toString(),saltRounds)
+      }else {
+        hashedPw = 'default'};
     console.log(hashedPw);
     const addUser = await pool.query(queryStr,[login, url, hashedPw, avatar_url,type]);
     log.info('verified or added Oauth User');

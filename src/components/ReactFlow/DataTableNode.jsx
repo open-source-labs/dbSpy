@@ -11,10 +11,13 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  let firstRow =[]
  let restRowsData = []
  const RowData = Object.values(data.table[1]);
- if (RowData[0] !== undefined) {
+
+ //Filter out Schemas from data
+ if (RowData[0].IsForeignKey === undefined) {
    firstRow = Object.keys(RowData[0]);
-   restRowsData = RowData.map(each => Object.values(each));
+   restRowsData = [...RowData];
  }
+
 
   const { setInputModalState } = useSettingsStore((state) => state);
 //  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
@@ -95,8 +98,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
              {restRowsData.map((row, index) => (
                <DataTableNodeColumn
                  row={row}
-                 key={`${tableName}-column${index}`}
-                 id={`${tableName}-column${index}`}
+                 key={`${tableName}-row${index}`}
+                 id={`${tableName}-row${index}`}
                />
              ))}
            </tbody>
