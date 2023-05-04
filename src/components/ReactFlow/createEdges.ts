@@ -11,12 +11,12 @@ export default function createEdges(schemaObject: SchemaStore) {
       if (row.IsForeignKey) {
         edges.push({
           id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
-          source: row.References[0].ReferencesTableName,
-          sourceHandle: row.References[0].ReferencesPropertyName,
-          target: row.References[0].PrimaryKeyTableName,
-          targetHandle: row.References[0].PrimaryKeyName,
+          target: row.References[0].ReferencesTableName,
+          targetHandle: row.References[0].ReferencesPropertyName,
+          source: row.References[0].PrimaryKeyTableName,
+          sourceHandle: row.References[0].PrimaryKeyName,
           animated: true,
-          label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+          label: `${row.References[0].PrimaryKeyName}-to-${row.References[0].ReferencesPropertyName}`,
           style: {
             strokeWidth: 2,
             stroke: '#085c84',

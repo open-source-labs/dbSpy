@@ -3,7 +3,7 @@ import React, { useState, ReactNode } from 'react';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationIcon.jpg'
+import informationIcon from '../../../images/informationSqIcon.png'
 
 // Components Imported;
 import useCredentialsStore from '../../store/credentialsStore';
@@ -160,14 +160,13 @@ const Sidebar = (props: any) => {
       {(serviceName !== 'sqlite') && (
         <div className="form-item">
           <span className="flex position">
-          <label htmlFor="database_link" className="dark:text-[#f8f4eb]">
-            Full Database Link               
-          </label>
-          <Tippy content={infoIconStr} placement="top" trigger="mouseenter click">
-              <img src={informationIcon} alt="Information Icon" className="h-3 pl-2" />
-            </Tippy>
+            <label htmlFor="database_link" className="dark:text-[#f8f4eb] rounded-md ">
+              Full Database Link
+            </label>
+              <Tippy content={infoIconStr} placement="top" trigger="mouseenter click">
+                <img src={informationIcon} alt="Information Icon" className="h-3 rounded-full ml-2" />
+              </Tippy>
           </span>
-          
           <input
             className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
             type="text"
@@ -178,10 +177,9 @@ const Sidebar = (props: any) => {
               setFormValues({ ...formValues, database_link: e.target.value })
             }
           />
-          
         </div>
-        )}
-        {serviceName === 'oracle' && (
+      )}
+      {serviceName === 'oracle' && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
@@ -198,21 +196,20 @@ const Sidebar = (props: any) => {
               onChange={
                 (e) => { 
                 setFormValues({ ...formValues, service_name: e.target.value });
-                // setServiceNameDefault(e.target.value);
               }
             }/>
           </span>
           <span className="flex justify-start items-center space-x-2 mt-3">
-          <p className="align-middle">Default:</p>
-          <button className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
-                  onClick={(e) => { e.preventDefault()
-                  setFormValues({ ...formValues, service_name: 'ORCL' })}}>
-            ORCL
-          </button>
+            <p className="align-middle">Default:</p>
+            <button className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
+                    onClick={(e) => { e.preventDefault()
+                    setFormValues({ ...formValues, service_name: 'ORCL' })}}>
+              ORCL
+            </button>
           </span>
-          </div> 
-        )}
-        {serviceName === 'sqlite' && (
+        </div> 
+      )}
+      {serviceName === 'sqlite' && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
@@ -229,103 +226,102 @@ const Sidebar = (props: any) => {
               onChange={
                 (e) => { 
                 setFormValues({ ...formValues, file_path: e.target.value });
-                // setServiceNameDefault(e.target.value);
               }
             }/>
           </span>
-          </div> 
-        )}
-        {(serviceName !== 'sqlite') && (
-          <><div>
-            <br></br>
-            <div className="form-item dark:text-[#f8f4eb]">
-              <p className="">OR</p>
-            </div>
-            <br></br>
-          </div><span className="form-item">
-              <label htmlFor="hostname" className="dark:text-[#f8f4eb]">
-                Host
-              </label>
-              <input
-                className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
-                type="text"
-                id="hostname"
-                name="hostname"
-                autoComplete="off"
-                onChange={(e) => setFormValues({ ...formValues, hostname: e.target.value })} />
-            </span><span className="form-item">
-              <label htmlFor="port" className="dark:text-[#f8f4eb]">
-                Port
-              </label>
-              <input
-                className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
-                type="text"
-                id="port"
-                name="port"
-                autoComplete="off"
-                onChange={(e) => setFormValues({ ...formValues, port: e.target.value })} />
-            </span><span className="form-item">
-              <label htmlFor="username" className="dark:text-[#f8f4eb]">
-                Database Username
-              </label>
-              <input
-                className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
-                type="text"
-                id="username"
-                name="username"
-                autoComplete="off"
-                onChange={(e) => setFormValues({ ...formValues, username: e.target.value })} />
-            </span><span className="form-item">
-              <label htmlFor="password" className="dark:text-[#f8f4eb]">
-                Database Password
-              </label>
-              <input
-                className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
-                type="text"
-                id="password"
-                name="password"
-                autoComplete="off"
-                onChange={(e) => setFormValues({ ...formValues, password: e.target.value })} />
-            </span><span className="form-item">
-              <label htmlFor="database_name" className="dark:text-[#f8f4eb]">
-                Database Name
-              </label>
-              <input
-                className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
-                type="text"
-                id="database_name "
-                name="database_name"
-                autoComplete="off"
-                onChange={(e) => setFormValues({ ...formValues, database_name: e.target.value })} />
-            </span><br></br></>
+        </div> 
+      )}
+      {(serviceName !== 'sqlite') && (
+        <><div>
+          <br></br>
+          <div className="form-item dark:text-[#f8f4eb]">
+            <p className="">OR</p>
+          </div>
+          <br></br>
+        </div><span className="form-item">
+            <label htmlFor="hostname" className="dark:text-[#f8f4eb]">
+              Host
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="hostname"
+              name="hostname"
+              autoComplete="off"
+              onChange={(e) => setFormValues({ ...formValues, hostname: e.target.value })} />
+          </span><span className="form-item">
+            <label htmlFor="port" className="dark:text-[#f8f4eb]">
+              Port
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="port"
+              name="port"
+              autoComplete="off"
+              onChange={(e) => setFormValues({ ...formValues, port: e.target.value })} />
+          </span><span className="form-item">
+            <label htmlFor="username" className="dark:text-[#f8f4eb]">
+              Database Username
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="username"
+              name="username"
+              autoComplete="off"
+              onChange={(e) => setFormValues({ ...formValues, username: e.target.value })} />
+          </span><span className="form-item">
+            <label htmlFor="password" className="dark:text-[#f8f4eb]">
+              Database Password
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="password"
+              name="password"
+              autoComplete="off"
+              onChange={(e) => setFormValues({ ...formValues, password: e.target.value })} />
+          </span><span className="form-item">
+            <label htmlFor="database_name" className="dark:text-[#f8f4eb]">
+              Database Name
+            </label>
+            <input
+              className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+              type="text"
+              id="database_name "
+              name="database_name"
+              autoComplete="off"
+              onChange={(e) => setFormValues({ ...formValues, database_name: e.target.value })} />
+          </span><br></br></>
       )}
       </div>
-      <button
-        className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
-        id="submit"
-        onClick={(e) => handleSubmit(e)}
-      >
-        Connect
-      </button>
+        <button
+          className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
+          id="submit"
+          onClick={(e) => handleSubmit(e)}
+        >
+          Connect
+        </button>
       <br></br>
-      {!connectPressed ? (
-        <div className="h-[58px]"></div>
-      ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <div className="flex items-center justify-center space-x-1 dark:text-[#f8f4eb]">
-            <svg
-              fill="none"
-              className="h-6 w-6 animate-spin"
-              viewBox="0 0 32 32"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                clipRule="evenodd"
-                d="M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z"
-                fill="currentColor"
-                fillRule="evenodd"
-              />
-            </svg>
+        {!connectPressed ? (
+          <div className="h-[58px]"></div>
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <div className="flex items-center justify-center space-x-1 dark:text-[#f8f4eb]">
+              <svg
+                fill="none"
+                className="h-6 w-6 animate-spin"
+                viewBox="0 0 32 32"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clipRule="evenodd"
+                  d="M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z"
+                  fill="currentColor"
+                  fillRule="evenodd"
+                />
+              </svg>
             <div>
               <p>Loading...</p>
               <p>Please wait, this could take a minute</p>

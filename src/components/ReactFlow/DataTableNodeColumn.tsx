@@ -9,9 +9,7 @@ import {
  FaRegWindowClose,
 } from 'react-icons/fa';
 
-
-export default function DataTableNodeColumn({row}: {row: string|number[]}) {
-
+export default function DataTableNodeColumn({row}: {row: (string | number)[]}) {
 
 //####### for CRUD ##########
   const { dataStore } = useDataStore(
@@ -19,15 +17,11 @@ export default function DataTableNodeColumn({row}: {row: string|number[]}) {
  );
 const [mode, setMode] = useState('default');
 
-
-
-
 //####### for CRUD ##########
   //we need better way to generate unique key
  function uniqueKey(max: number) {
    return Math.floor(Math.random() * max);
  }
-
 
  return (
     <>
@@ -40,11 +34,10 @@ const [mode, setMode] = useState('default');
            key={uniqueKey(1000000000)}
            scope="col"
            className="transition-colors duration-500 dark:text-[#fbf3de]"
-         >{eachData}</td>
+         >{eachData}
+         </td>
        )}
-       <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-       </td>
-      
+       <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] ml-auto">
          {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
          <button
            id={`$rowEditBtn`}
@@ -52,9 +45,10 @@ const [mode, setMode] = useState('default');
            className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
            data-testid="edit-column"
          >
-           <FaRegEdit size={17} />
+           <FaRegEdit size={18} />
          </button>
-        
+        </td>
+        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] ml-auto">
          {/* this button should DELETE the row, need to work on onClick function */}
          <button
            id={`dataDeleteBtn`}
@@ -63,7 +57,7 @@ const [mode, setMode] = useState('default');
          >
            <FaRegTrashAlt size={17} />
          </button>
-  
+         </td>
      </tr>
    </>
   );
