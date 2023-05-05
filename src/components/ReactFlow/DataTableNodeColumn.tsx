@@ -9,20 +9,14 @@ import {
  FaRegWindowClose,
 } from 'react-icons/fa';
 
-//if we get the info in obj form, we can grab the value of each and render them!!
-
-export default function DataTableNodeColumn({row}: {row: string|number[]}) {
-
+export default function DataTableNodeColumn({row}: {row: (string | number)[]}) {
 
 //####### for CRUD ##########
   const { dataStore } = useDataStore(
    (state) => state
  );
-  const [mode, setMode] = useState('default');
-  
- //console.log('dataStore in DTNC', dataStore)
+const [mode, setMode] = useState('default');
 
-  
 //####### for CRUD ##########
   //we need better way to generate unique key
  function uniqueKey(max: number) {
@@ -52,11 +46,10 @@ export default function DataTableNodeColumn({row}: {row: string|number[]}) {
            key={uniqueKey(1000000000)}
            scope="col"
            className="transition-colors duration-500 dark:text-[#fbf3de]"
-         >{eachData}</td>
+         >{eachData}
+         </td>
        )}
-       <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-       </td>
-        <td>
+       <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] ml-auto">
          {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
          <button
            id={`$rowEditBtn`}
@@ -64,10 +57,10 @@ export default function DataTableNodeColumn({row}: {row: string|number[]}) {
            className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
            data-testid="edit-column"
          >
-           <FaRegEdit size={17} />
+           <FaRegEdit size={18} />
          </button>
-       </td>
-       <td>
+        </td>
+        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] ml-auto">
          {/* this button should DELETE the row, need to work on onClick function */}
          <button
            id={`dataDeleteBtn`}
@@ -76,7 +69,7 @@ export default function DataTableNodeColumn({row}: {row: string|number[]}) {
          >
            <FaRegTrashAlt size={17} />
          </button>
-      </td>
+         </td>
      </tr>
    </>
   );
