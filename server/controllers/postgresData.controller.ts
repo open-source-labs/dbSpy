@@ -45,7 +45,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
           const references = []
         
           if (foreignKey){
-            console.log('foreignKey: ', foreignKey)
+            //console.log('foreignKey: ', foreignKey)
             references.push({
               isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
@@ -55,34 +55,13 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
               constraintName: foreignKey.constraint_name
             }
             );
-            //references.length += 1;
-            console.log('[references]: ', [references])
+            //console.log('[references]: ', [references])
           };
-
-          // const references: ReferenceType = {
-          //   length: 0,
-          // };
-        
-          // if (foreignKey){
-          //   console.log('foreignKey: ', foreignKey)
-          //   references[references.length] = {
-          //     isDestination: false,
-          //     PrimaryKeyName: foreignKey.foreign_key_column,
-          //     PrimaryKeyTableName: 'public.' + tableName,
-          //     ReferencesPropertyName: foreignKey.referenced_column,
-          //     ReferencesTableName: foreignKey.referenced_table,
-          //     constraintName: foreignKey.constraint_name
-          //   };
-          //   references.length += 1;
-          //   console.log('[references]: ', [references])
-          // };
-          // console.log('references: ', references)
         
           tableSchema[columnName] = {
             IsForeignKey: keyString.includes('FOREIGN KEY'),
             IsPrimaryKey: keyString.includes('PRIMARY KEY'),
             Name: columnName,
-           // References: foreignKey ? [references] : [],
             References: references,
             TableName: 'public.' + tableName,
             Value: null,

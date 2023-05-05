@@ -64,11 +64,15 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  return (
 <>
   <div className="table-node transition-colors duration-500" key={tableName}>
-  <div className="flex items-center justify-between table-header bg-[#075985] dark:opacity-75">
+  <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
   {/* <NodeResizer minWidth={100} minHeight={30} /> */}
   {tableHandles}
   <div>
-    <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+    <label htmlFor="text" 
+    className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
+    style={{ 
+      padding: '0.5rem 1rem',
+       }}>
       {tableName}
     </label>
   </div>
