@@ -18,6 +18,23 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
    restRowsData = [...RowData];
  }
 
+ const [rowState, setRowState] = useState([...restRowsData]);
+
+
+ const deleteRow = async (value,index) => {
+  console.log(tableName)
+  let newRowState = rowState.slice();
+  newRowState.splice(index,1);
+  setRowState([...newRowState]);
+  const sendDeleteRequest = fetch('/api/delete',{
+    method:'DELETE',
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({tableName : value})
+  })
+  
+ }
 
   const { setInputModalState } = useSettingsStore((state) => state);
 //  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
@@ -95,11 +112,13 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
            </thead>
            <tbody>
              {/* generates dynamic columns */}
-             {restRowsData.map((row, index) => (
+             {rowState.map((row, index) => (
                <DataTableNodeColumn
                  row={row}
                  key={`${tableName}-row${index}`}
                  id={`${tableName}-row${index}`}
+                 index={index}
+                 deleteRow={deleteRow}
                />
              ))}
            </tbody>
