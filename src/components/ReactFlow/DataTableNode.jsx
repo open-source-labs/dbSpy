@@ -4,17 +4,21 @@ import { Handle, Position } from 'reactflow';
 import DataTableNodeColumn from './DataTableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
+import useDataStore from '../../store/dataStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
- const tableName = data.table[0];
+   //console.log(data)
+  const tableName = data.table[0];
  let firstRow =[]
  let restRowsData = []
- const RowData = Object.values(data.table[1]);
- if (RowData[0] !== undefined) {
-   firstRow = Object.keys(RowData[0]);
-   restRowsData = RowData.map(each => Object.values(each));
- }
+  const remainingRows= Object.values(data.table[1]);
+  //console.log('HERE!!!!!!!!',remainingRows)
+//  if (RowData[0] !== undefined) {
+   firstRow = Object.keys(remainingRows[0]);
+  restRowsData = remainingRows.map(each => Object.values(each));
+  //console.log(restRowsData)
+//  }
 
   const { setInputModalState } = useSettingsStore((state) => state);
 //  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
@@ -100,16 +104,17 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
                />
              ))}
            </tbody>
-           {/* this button should add a whole new row, need to work on onClick function */}
-           {/* <div className="addRowBtn"> */}
+
+         </table>
+            {/* this button should add a whole new row, need to work on onClick function */}
+            {/* <div className="addRowBtn"> */}
              <button
              className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-             onClick={() => setInputModalState(true, 'column', tableName)}
+             onClick={() => setInputModalState(true, 'row', tableName)}
              >
                <FaRegPlusSquare size={20} />
              </button>
            {/* </div> */}
-         </table>
        </div>
      </div>
    </div>

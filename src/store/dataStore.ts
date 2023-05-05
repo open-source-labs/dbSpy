@@ -5,7 +5,7 @@ import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 // import { DataState } from '@/Types';
 
-type DataRowArray = Array<string | number | boolean | null>
+// type DataRowArray = Array<string | number | boolean | null>
 
 export type DataState = {
   // DATA
@@ -16,8 +16,8 @@ export type DataState = {
 
   // DATA SETTERS
   setDataStore: (dataInfo: DataStore) => void;
-  addTableData: (tableName: string, rowDataArr: DataRowArray[]) => void;
-        addRow: (tableName: string, columnDataArr: DataRowArray[]) => void,
+  addTableData: (tableName: string, rowDataArr: any) => void;
+        addRow: (tableName: string, rowDataArr: any) => void,
     _addHistory: (newState: any) => void;
   setSystem: (system: DataStore) => void;
 
@@ -25,7 +25,7 @@ export type DataState = {
     _addRows: (
     newStore: DataStore,
     tableName: string,
-    columnDataArr: DataRowArray[]
+    columnDataArr: any
   ) => DataStore;
 }
 
@@ -42,14 +42,27 @@ const useDataStore = create<DataState>()(
         historyCounter: 0,
         setSystem: (system) => set((state) => ({ ...state, system })),
         setDataStore: (dataInfo) => set((state) => ({ ...state, dataStore: dataInfo })),
+        addRow: (tableName, rowDataArr) =>
+          set((state) => {
+            console.log('are we in here??? dataStore',state)
+            const newState = { ...state };
+            newState.dataStore = get()._addRows(
+              newState.dataStore,
+              tableName,
+              rowDataArr
+            );
+            get()._addHistory(newState);
+            return newState;
+          }),
         _addHistory: (newState) => {
-          newState.historyCounter += 1;
-          newState.history[newState.historyCounter] = JSON.parse(
-            JSON.stringify(newState.dataStore)
-          );
-          if (newState.history[newState.historyCounter + 1]) {
-            newState.history = newState.history.slice(0, newState.historyCounter + 1);
-          }
+          // newState.historyCounter += 1;
+          // newState.history[newState.historyCounter] = JSON.parse(  //ERROR!!!
+          //   JSON.stringify(newState.dataStore)
+          // );
+          // if (newState.history[newState.historyCounter + 1]) {
+          //   newState.history = newState.history.slice(0, newState.historyCounter + 1);
+          // }
+          console.log(newState)
         },
         addTableData: (tableName, rowDataArr) => {
           set((state) => {
@@ -72,13 +85,13 @@ const useDataStore = create<DataState>()(
           });
         },
         _addRows: (newStore, tableName, rowDataArr) => {
-          const newRow: rowData = rowDataArr[rowDataArr.length-1]
+          const newRow: rowData = rowDataArr
             // reassigning newStore so subscriptions pick up on the change
           newStore = {
             ...newStore,
             [tableName]: {
               ...newStore[tableName],
-              [rowData.name]: newRow,
+              newRow,
             },
           };
         }

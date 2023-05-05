@@ -1,59 +1,45 @@
 //need to finish building this file#####################
 
-import React, { useState } from 'react';
-import { SQLDataType, ColumnData, RowsOfData } from '../../Types';
-import ColumnInput from './ColumnInput';
-import useSchemaStore from '../../store/schemaStore';
+import React, { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
 import RowInput from './RowInput';
 
-//i dont think we need table mode?!, since we are not going to create new tables for data
 type InputModalProps = {
-  // mode: 'table' | 'row';
   closeInputModal: () => void;
   tableNameProp?: string;
 };
 
-//############ where this closeInputModal came from????????????????
-// what closeInputModal does is.... setInputModalState(false)
-
 type DataRowArray = Array<string | number | boolean | null>
 
 export default function DataInputModal({
-  // mode,
   closeInputModal,
   tableNameProp,
 }: InputModalProps) {
 
-  const initialTable: string = 'untitled_table';
-
-  //do we need initial row for data table??? maybe not...... since we are not creating new table in data section
-  // const initialRows: DataRowArray = [];
-
+  //console.log('table', tableNameProp) // this is name of current table we chose
   const additionalRows: DataRowArray = [];
-
-  const [tableName, setTableName] = useState/*<string>*/(() => {
-    // if (!tableNameProp) return initialTable;
-    // else
-      return tableNameProp;
-  });
-  const [rowData, setRowData] = useState/*<DataRowArray>*/(() => {
-    // if (mode === 'table') return initialRows;
-    // else
-      return additionalRows;
-  });
-
-
-  const { dataStore, addTableData} = useDataStore(
+  const [tableName, setTableName] = useState(tableNameProp);
+  //console.log('tableName', tableName)
+  const [rowData, setRowData] = useState([]);
+  const { dataStore} = useDataStore(
     (state) => state
   );
-
-  console.log('here!! dataStore!!', dataStore) //we can use this to access data info
-
-  const handleSubmit = (): boolean => {
-    // table must be added to schema first to enable column validity checks
+  //console.log('here!! dataStore!!', dataStore);//we can use this to access data info
+  // console.log('here!! rowData??', rowData) //empty array??
+  const newRow: DataRowArray = [];  //our inputs goes here??
+  
+  const handleSubmit = (): boolean => { 
+    //console.log('are wwe getting this info???', rowData)
+    //console.log("currentTable", currentTable)
     try {
-      addRow(tableName, rowData);
+      // addRow(tableName, /*newRow,*/ rowData);
+      const additionalRow:any = {}
+      Object.keys(currentTable[0]).forEach((columnName, i) => {
+        additionalRow[columnName] = rowData[i]
+      })
+      console.log(additionalRow)
+      currentTable.push(additionalRow)
+      console.log('updated table', currentTable)
       return true;
     } catch (error) {
       window.alert(error);
@@ -62,53 +48,48 @@ export default function DataInputModal({
     }
   };
 
-  const newRow: DataRowArray = [];  //out inputs goes here??
+  // const addNewRow = () => {  
+  //   setRowData((prevRows) => {
+  //     prevRows.push(newRow);
+  //     return [...prevRows];
+  //   });
+  // };
 
-  //#######################
-  //TO SAVE ALL THESE NEW DATA/UPDATES to DB => need another function for SAVE info we alter/add
-  //need to convert this "newRow" into format of obj => ex) {id: new data, something: new data}
-  //keys for this obj format === first row of our table
-  //then, send to backend via AXIOS request
-  //#######################
+  // const deleteRow = (index: number) => {
+  //   setRowData((prevRows) => {
+  //     prevRows.splice(index, 1);
+  //     return [...prevRows];
+  //   });
+  // };
 
-  const addRow = () => {
+  const values: Array<string | number | boolean | null> = []
+
+  const handleRowChange = (
+    index: number,
+    value: string | number | boolean | null
+  ) => {
+    //console.log('value',value)
+    values.push(value)
+    //console.log('entered values', values)
+    //console.log(values[values.length - 1], index);  //this is final input and its index
     setRowData((prevRows) => {
-      prevRows.push(newRow);
-      return [...prevRows];
-    });
-  };
-
-  const deleteRow = (index: number) => {
-    setRowData((prevRows) => {
-      prevRows.splice(index, 1);
-      return [...prevRows];
-    });
-  };
-
-  const rowEdit = () => {
-    //replacing hadleColumnChange???
+      prevRows[index] = values[values.length - 1]
+      console.log('prevRows', [...prevRows])
+      arrForNewRow = [...prevRows] // we got this!!!!!
+      return [...prevRows]
+    })
+    //console.log("rowData", rowData)
   }
-  
+  //console.log("tableName", tableName)
 
-  const rowInputs = rowData.map((row, index) => (
-    <RowInput
-      key={`row-${index}`}
-      index={index}
-      deleteRow={deleteRow}
-      row={row}
-      // handleColumnChange={handleColumnChange}
-      // name={row.name}
-      // type={row.type}
-      // isNullable={row.isNullable}
-      // isPrimary={row.isPrimary}
-      // defaultValue={row.defaultValue}
-      rowCount={rowData.length}
-      // mode={mode}
-    />
-  ));
+  //##################### this is INFO we need to send back to BACKEND #####################
+  const currentTable = dataStore[tableName]  
+  console.log('chosen table', currentTable)
+  //##################### this is INFO we need to send back to BACKEND #####################
 
+  // console.log('new rowData',rowData) 
   return (
-    <div id="inputModal" className="input-modal">
+    <div id="inputModal" className="input-modal" >
       <form
         autoComplete="off"
         onSubmit={(e) => {
@@ -121,21 +102,16 @@ export default function DataInputModal({
         <div className="table-name">
           {<h1>{`Table Name: ${tableName}`}</h1>}
         </div>        
-
-        <div className="column-header">
-          <h1 className="  text-slate-900 dark:text-[#f8f4eb]">
-            {'New Rows'}
+        <div className="column-header" >
+          <h1 className="text-slate-900 dark:text-[#f8f4eb] flex-auto">
+            {'New Row'}
           </h1>
-          <button
-            type="button"
-            className="  text-slate-900 dark:text-[#f8f4eb]"
-            onClick={addRow}
-            data-testid="add-table-add-column"
-          >
-            Add Row
-          </button>
         </div>
-        {rowInputs}
+        <RowInput
+          deleteRow={deleteRow}
+          currentTable={currentTable}
+          handleRowChange={handleRowChange}
+        />
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
             type="button"
@@ -148,11 +124,8 @@ export default function DataInputModal({
           <button
             className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
             data-testid="modal-submit"
-            // need to work on this ###############
-            //we need to create function for sending collected data to DB
-            // onClick={updateDB}
           >
-            { 'Submit'}
+            Add Row
           </button>
         </div>
       </form>

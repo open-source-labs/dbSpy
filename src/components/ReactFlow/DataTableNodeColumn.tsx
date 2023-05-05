@@ -9,6 +9,7 @@ import {
  FaRegWindowClose,
 } from 'react-icons/fa';
 
+//if we get the info in obj form, we can grab the value of each and render them!!
 
 export default function DataTableNodeColumn({row}: {row: string|number[]}) {
 
@@ -17,26 +18,37 @@ export default function DataTableNodeColumn({row}: {row: string|number[]}) {
   const { dataStore } = useDataStore(
    (state) => state
  );
-const [mode, setMode] = useState('default');
+  const [mode, setMode] = useState('default');
+  
+ //console.log('dataStore in DTNC', dataStore)
 
-
-
-
+  
 //####### for CRUD ##########
   //we need better way to generate unique key
  function uniqueKey(max: number) {
    return Math.floor(Math.random() * max);
  }
 
+ // console.log("row in DataTableNodeColumn", row)
+
+  {/* When we first got props/states drilled down here, schema info came in and that includes obj.
+  rows cannot render obj =>have to replace object to ""
+  but, it re-render automatically with correct data info. Not sure why we get the schema info at first */}
+  const updatedRow = []
+  for (let i = 0; i < row.length; i++) {
+    if (typeof row[i] === "object") {
+      updatedRow.push('');
+    } else {
+      updatedRow.push(row[i])
+     }
+   }
 
  return (
     <>
      <tr>
-       {/* have to filter out object, because when we first got info, schema info came in and that includes obj.
-       but, it re-render automatically with correct data info. Not sure why we get the schema info at first, but at least filter
-       method makes it work */}
-       {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) =>
-         <td
+       {/* {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) => */}
+        {updatedRow.map((eachData: string|number) =>  
+       <td
            key={uniqueKey(1000000000)}
            scope="col"
            className="transition-colors duration-500 dark:text-[#fbf3de]"
@@ -44,7 +56,7 @@ const [mode, setMode] = useState('default');
        )}
        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
        </td>
-      <td>
+        <td>
          {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
          <button
            id={`$rowEditBtn`}
@@ -64,7 +76,7 @@ const [mode, setMode] = useState('default');
          >
            <FaRegTrashAlt size={17} />
          </button>
-  </td>
+      </td>
      </tr>
    </>
   );
