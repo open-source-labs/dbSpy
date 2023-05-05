@@ -17,15 +17,21 @@ export default function DataInputModal({
 }: InputModalProps) {
 
   //console.log('table', tableNameProp) // this is name of current table we chose
+
   const additionalRows: DataRowArray = [];
+
   const [tableName, setTableName] = useState(tableNameProp);
   //console.log('tableName', tableName)
+  
   const [rowData, setRowData] = useState([]);
+  
   const { dataStore} = useDataStore(
     (state) => state
   );
   //console.log('here!! dataStore!!', dataStore);//we can use this to access data info
+
   // console.log('here!! rowData??', rowData) //empty array??
+
   const newRow: DataRowArray = [];  //our inputs goes here??
   
   const handleSubmit = (): boolean => { 
@@ -48,21 +54,15 @@ export default function DataInputModal({
     }
   };
 
-  // const addNewRow = () => {  
-  //   setRowData((prevRows) => {
-  //     prevRows.push(newRow);
-  //     return [...prevRows];
-  //   });
-  // };
-
-  // const deleteRow = (index: number) => {
-  //   setRowData((prevRows) => {
-  //     prevRows.splice(index, 1);
-  //     return [...prevRows];
-  //   });
-  // };
+  const deleteRow = (index: number) => {
+    setRowData((prevRows) => {
+      prevRows.splice(index, 1);
+      return [...prevRows];
+    });
+  };
 
   const values: Array<string | number | boolean | null> = []
+  let arrForNewRow;
 
   const handleRowChange = (
     index: number,
@@ -71,15 +71,16 @@ export default function DataInputModal({
     //console.log('value',value)
     values.push(value)
     //console.log('entered values', values)
-    //console.log(values[values.length - 1], index);  //this is final input and its index
+    //console.log(values[values.length - 1], index); 
     setRowData((prevRows) => {
       prevRows[index] = values[values.length - 1]
       console.log('prevRows', [...prevRows])
-      arrForNewRow = [...prevRows] // we got this!!!!!
+      arrForNewRow = [...prevRows] 
       return [...prevRows]
     })
     //console.log("rowData", rowData)
   }
+  
   //console.log("tableName", tableName)
 
   //##################### this is INFO we need to send back to BACKEND #####################
@@ -88,6 +89,7 @@ export default function DataInputModal({
   //##################### this is INFO we need to send back to BACKEND #####################
 
   // console.log('new rowData',rowData) 
+
   return (
     <div id="inputModal" className="input-modal" >
       <form
