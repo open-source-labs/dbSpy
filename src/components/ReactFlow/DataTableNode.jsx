@@ -80,7 +80,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
     <div className="addRowBtn ml-3 mb-1.5">
       <button
         className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
-        // onClick={() => setInputModalState(true, 'column', tableName)}
+        onClick={() => setInputModalState(true, 'row', tableName)}
       >
         <FaRegPlusSquare size={20} className="text-white" />
       </button>
