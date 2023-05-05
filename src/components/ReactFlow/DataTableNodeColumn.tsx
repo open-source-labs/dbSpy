@@ -55,14 +55,14 @@ const onSave = async () => {
   setMode('default');
   
 
-  const sendChanges = await fetch('/api/changes',{
-    method:'POST',
+  const sendChangesRequest = await fetch('/api/changes',{
+    method:'PATCH',
     headers:{
-      'Type-Content': 'application/json'
+      'Content-Type': 'application/json'
     },
     body:JSON.stringify(changes)
   });
-  const data = await sendChanges.json()
+  const data = await sendChangesRequest.json()
   console.log(data);
 
 }
