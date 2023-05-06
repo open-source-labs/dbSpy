@@ -25,7 +25,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
         const references = [];
 
           if (foreignKey) {
-            console.log('foreignKey after: ', foreignKey)
+            // console.log('foreignKey after: ', foreignKey)
             references.push({
                 isDestination: false,
                 PrimaryKeyName: foreignKey.from,
@@ -35,7 +35,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
                 constraintName: tableName + '_' + foreignKey.from + '_fkey'
               });
               
-              console.log('[references]: ', [references])
+              // console.log('[references]: ', [references])
             };
       
         tableSchema[columnName] = {
@@ -121,7 +121,7 @@ export const sqliteAddNewRow: RequestHandler = async (req: Request, res: Respons
       res.locals.newSqliteRow = result
 
       SqliteDataSource.destroy();
-      console.log('Database has been disdbConnected');
+      console.log('Database has been disconnected');
       
       return next();
   } catch (err: unknown) {
