@@ -1,5 +1,4 @@
-//need to finish building this file#####################
-
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
 import RowInput from './RowInput';
@@ -34,9 +33,16 @@ export default function DataInputModal({
 
   const newRow: DataRowArray = [];  //our inputs goes here??
   
+    //we need to send updated list and DB form value back to DB
+  const updatingDB = (updatedTable):void => {
+    console.log('hello'); //hello for now
+    //add axios here!!!!!
+    // return axios.post
+  }
+
   const handleSubmit = (): boolean => { 
     //console.log('are wwe getting this info???', rowData)
-    //console.log("currentTable", currentTable)
+    console.log("currentTable", currentTable)
     try {
       // addRow(tableName, /*newRow,*/ rowData);
       const additionalRow:any = {}
@@ -46,19 +52,15 @@ export default function DataInputModal({
       console.log(additionalRow)
       currentTable.push(additionalRow)
       console.log('updated table', currentTable)
+
+      updatingDB(currentTable)
+
       return true;
     } catch (error) {
       window.alert(error);
       console.error(error);
       return false;
     }
-  };
-
-  const deleteRow = (index: number) => {
-    setRowData((prevRows) => {
-      prevRows.splice(index, 1);
-      return [...prevRows];
-    });
   };
 
   const values: Array<string | number | boolean | null> = []
@@ -110,7 +112,6 @@ export default function DataInputModal({
           </h1>
         </div>
         <RowInput
-          deleteRow={deleteRow}
           currentTable={currentTable}
           handleRowChange={handleRowChange}
         />

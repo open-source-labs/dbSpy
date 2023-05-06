@@ -8,16 +8,22 @@ import useDataStore from '../../store/dataStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-   //console.log(data)
+   console.log(data)
   const tableName = data.table[0];
  let firstRow =[]
  let restRowsData = []
-  const remainingRows= Object.values(data.table[1]);
+
+   const RowData = Object.values(data.table[1]);
+ if (RowData[0] !== undefined) {
+   firstRow = Object.keys(RowData[0]);
+   restRowsData = RowData.map(each => Object.values(each));
+ }
   //console.log('HERE!!!!!!!!',remainingRows)
+//   const remainingRows = Object.values(data.table[1]);
 //  if (RowData[0] !== undefined) {
-   firstRow = Object.keys(remainingRows[0]);
-  restRowsData = remainingRows.map(each => Object.values(each));
-  //console.log(restRowsData)
+//    firstRow = Object.keys(remainingRows[0]);
+//   restRowsData = remainingRows.map(each => Object.values(each));
+//   // console.log(restRowsData)
 //  }
 
   const { setInputModalState } = useSettingsStore((state) => state);
@@ -70,7 +76,6 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 <>
   <div className="table-node transition-colors duration-500" key={tableName}>
   <div className="flex items-center justify-between table-header bg-[#075985] dark:opacity-75">
-  {/* <NodeResizer minWidth={100} minHeight={30} /> */}
   {tableHandles}
   <div>
     <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
