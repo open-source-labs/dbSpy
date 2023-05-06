@@ -18,7 +18,7 @@ function DataRowInput({
  /*index, deleteRow, rowCount,row*/currentTable, handleRowChange, closeInputModal
 }: RowInputProps) {
 
-  console.log('inside RowInput', currentTable)
+  //console.log('inside RowInput', currentTable)
   //console.log(currentTable[0])
   const columns: any = [];
   const inputs = [];
@@ -28,7 +28,7 @@ function DataRowInput({
     closeInputModal()
   } else {
     const columnNames = Object.keys(currentTable[0]);
-    console.log('columnNames', columnNames);
+    //console.log('columnNames', columnNames);
     // const columns: any = [];
     // const inputs = [];
     columnNames.map(each => {
@@ -47,7 +47,6 @@ function DataRowInput({
           onChange={(e) => {
             handleRowChange(i, e.target.value.trim());
           }}
-        
         />);
     }
    }

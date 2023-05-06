@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
+import useCredentialsStore from '../../store/credentialsStore';
 import RowInput from './RowInput';
 
 type InputModalProps = {
@@ -21,12 +22,13 @@ export default function DataInputModal({
 
   const [tableName, setTableName] = useState(tableNameProp);
   //console.log('tableName', tableName)
-  
   const [rowData, setRowData] = useState([]);
-  
-  const { dataStore} = useDataStore(
-    (state) => state
-  );
+
+  const { dbCredentials } = useCredentialsStore((state) => state);
+
+  const { dataStore} = useDataStore((state) => state);
+
+  console.log(dataStore)
   //console.log('here!! dataStore!!', dataStore);//we can use this to access data info
 
   // console.log('here!! rowData??', rowData) //empty array??
@@ -34,26 +36,33 @@ export default function DataInputModal({
   const newRow: DataRowArray = [];  //our inputs goes here??
   
     //we need to send updated list and DB form value back to DB
-  const updatingDB = (updatedTable):void => {
+  const updatingDB = (newRow):void => {
     console.log('hello'); //hello for now
+    console.log(newRow)
+    console.log(dbCredentials)
     //add axios here!!!!!
-    // return axios.post
+    axios
+      .post(`api/sql/${dbCredentials.db_type}/data`, {newRow: newRow})
+      .then((res) => {
+        console.log('sucessfully updated');
+      })
+      .catch((err: ErrorEvent) => { console.error('sending new row error', err) })
   }
 
   const handleSubmit = (): boolean => { 
     //console.log('are wwe getting this info???', rowData)
-    console.log("currentTable", currentTable)
+    //console.log("currentTable", currentTable)
     try {
       // addRow(tableName, /*newRow,*/ rowData);
       const additionalRow:any = {}
       Object.keys(currentTable[0]).forEach((columnName, i) => {
         additionalRow[columnName] = rowData[i]
       })
-      console.log(additionalRow)
+      //console.log(additionalRow)
       currentTable.push(additionalRow)
-      console.log('updated table', currentTable)
+      //console.log('updated table', currentTable)
 
-      updatingDB(currentTable)
+      updatingDB(currentTable[currentTable.length-1])
 
       return true;
     } catch (error) {
@@ -76,7 +85,7 @@ export default function DataInputModal({
     //console.log(values[values.length - 1], index); 
     setRowData((prevRows) => {
       prevRows[index] = values[values.length - 1]
-      console.log('prevRows', [...prevRows])
+      //console.log('prevRows', [...prevRows])
       arrForNewRow = [...prevRows] 
       return [...prevRows]
     })
@@ -87,7 +96,7 @@ export default function DataInputModal({
 
   //##################### this is INFO we need to send back to BACKEND #####################
   const currentTable = dataStore[tableName]  
-  console.log('chosen table', currentTable)
+  //console.log('chosen table', currentTable)
   //##################### this is INFO we need to send back to BACKEND #####################
 
   // console.log('new rowData',rowData) 
