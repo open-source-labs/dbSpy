@@ -1,26 +1,8 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-//import { sqliteSchemaQuery } from './queries/sqlite.queries';
-import { DataSource } from 'typeorm';
+import { dbConnect } from './helperFunctions/universal.helpers'
 
-
-const connect = async (req: Request) => {
-            const { file_path } = req.query;
-            
-            const SqliteDataSource = new DataSource({
-              type: "sqlite",
-              database: file_path as string,
-              logging: true,
-              synchronize: true,
-            });
-
-           //Start connection with the database
-           await SqliteDataSource.initialize();
-           console.log('Data source has been connected');
-
-           return SqliteDataSource;
-          }
-
+//----------------------------------------------------------------------------
 
 export const sqliteQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -71,7 +53,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
      return tableSchema;
       };
 
-      const SqliteDataSource = await connect(req);
+      const SqliteDataSource = await dbConnect(req);
 
         const tables = await SqliteDataSource.query(`SELECT name FROM sqlite_master WHERE type='table'`)
  
@@ -112,5 +94,40 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
     } catch (err: unknown) {
         console.log('Error during Data Source: ', err);
         return next(err);
-    }
-}
+    };
+};
+
+//----------------------------------------------------------------------------
+
+export const sqliteAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    const SqliteDataSource = await dbConnect(req)
+    const newSqliteRowData: {[key: string]: string } = req.params
+    const tableName: string = newSqliteRowData.tableName
+    const newSqliteRow: {[key: string]: string} = newSqliteRowData.newSqliteRow as any ;
+    
+      const sqliteInsertRow = SqliteDataSource.createQueryBuilder()
+      .insert()
+      .into(tableName)
+
+      Object.keys(newSqliteRow).forEach((key) => {
+        sqliteInsertRow.values({ [key]: newSqliteRow[key] });
+      });
+
+      const result = await sqliteInsertRow.execute()
+
+      console.log(`Row: ${newSqliteRow} has been added to ${tableName} and this is the result: `, result)
+
+      res.locals.newSqliteRow = result
+
+      SqliteDataSource.destroy();
+      console.log('Database has been disdbConnected');
+      
+      return next();
+  } catch (err: unknown) {
+    console.log('Error occurred in the SqliteAddNewRow middleware: ', err);
+    return next(err);
+  };
+};
+
+//----------------------------------------------------------------------------

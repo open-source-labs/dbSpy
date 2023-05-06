@@ -1,28 +1,9 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { DataSource } from 'typeorm';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
+import { dbConnect} from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
-const connect = async (req: Request) => {
-  const { hostname, password, port, username, database_name } = req.query;
-  const MysqlDataSource = new DataSource({
-    type: "mysql",
-    host: hostname as string,
-    port: port ? parseInt(port as string) : 3306,
-    username: username as string,
-    password: password as string,
-    database: database_name as string,
-    synchronize: true,
-    logging: true,
-  });
-    //Start connection with the database
-      await MysqlDataSource.initialize();
-        console.log('Data source has been connected');
-    return MysqlDataSource;
-  }
-
-
 
 export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {;
@@ -74,7 +55,7 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
       return tableSchema;
   };
 
-  const MysqlDataSource = await connect(req);
+  const MysqlDataSource = await dbConnect(req);
 
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
@@ -113,8 +94,43 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   } catch (err: unknown) {
     console.log('Error during Data Source: ', err);
     return next(err);
-  }
-}
+  };
+};
+
+//----------------------------------------------------------------------------
+
+export const mysqlAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    const MysqlDataSource = await dbConnect(req)
+    const newMysqlRowData: {[key: string]: string } = req.params
+    const tableName: string = newMysqlRowData.tableName
+    const newMysqlRow: {[key: string]: string} = newMysqlRowData.newRow as any ;
+    
+      const mysqlInsertRow = MysqlDataSource.createQueryBuilder()
+      .insert()
+      .into(tableName)
+
+      Object.keys(newMysqlRow).forEach((key) => {
+        mysqlInsertRow.values({ [key]: newMysqlRow[key] });
+      });
+
+      const result = await mysqlInsertRow.execute()
+
+      console.log(`Row: ${newMysqlRow} has been added to ${tableName} and this is the result: `, result)
+
+      res.locals.newRow = result
+
+      MysqlDataSource.destroy();
+      console.log('Database has been disconnected');
+      
+      return next();
+  } catch (err: unknown) {
+    console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+    return next(err);
+  };
+};
+
+
 //----------------------------------------------------------------------------
 
 // // SSL data stored as environment variable for GitHub Actions access

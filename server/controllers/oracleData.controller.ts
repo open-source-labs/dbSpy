@@ -1,30 +1,9 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, ReferenceType, TableColumn } from '@/Types';
-import { DataSource } from 'typeorm';
 import { oracleSchemaQuery } from './queries/oracle.queries';
+import { dbConnect} from './helperFunctions/universal.helpers'
 
-
-const connect = async (req: Request) => {
-const { hostname, password, port, username, database_name, service_name } = req.query;
-
-        const OracleDataSource = new DataSource({
-            type: "oracle",
-            host: hostname as string,
-            port: port ? parseInt(port as string) : 1521,
-            username: username as string,
-            password: password as string,
-            database: database_name as string,
-            serviceName: service_name as string,
-            synchronize: true,
-            logging: true,
-          });
-
-        await OracleDataSource.initialize();
-        console.log('Data Source has been initialized');
-
-        return OracleDataSource;
-        }
-
+//----------------------------------------------------------------------------
 
 export const oracleQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -68,7 +47,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
             return tableSchema;
         };
         const { username } = req.query
-        const OracleDataSource = await connect(req);
+        const OracleDataSource = await dbConnect(req);
 
 
         const tables: [{TABLE_NAME: string}] = await OracleDataSource.query(`SELECT table_name FROM user_tables`);
@@ -108,3 +87,38 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
         return next(err);
     };
 };
+
+//----------------------------------------------------------------------------
+
+export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+      const OracleDataSource = await dbConnect(req)
+      const newOracleRowData: {[key: string]: string } = req.params
+      const tableName: string = newOracleRowData.tableName
+      const newOracleRow: {[key: string]: string} = newOracleRowData.newOracleRow as any ;
+      
+        const oracleInsertRow = OracleDataSource.createQueryBuilder()
+        .insert()
+        .into(tableName)
+  
+        Object.keys(newOracleRow).forEach((key) => {
+          oracleInsertRow.values({ [key]: newOracleRow[key] });
+        });
+  
+        const result = await oracleInsertRow.execute()
+  
+        console.log(`Row: ${newOracleRow} has been added to ${tableName} and this is the result: `, result)
+  
+        res.locals.newOracleRow = result
+  
+        OracleDataSource.destroy();
+        console.log('Database has been disconnected');
+        
+        return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the oracleAddNewRow middleware: ', err);
+      return next(err);
+    };
+  };
+  
+  //----------------------------------------------------------------------------

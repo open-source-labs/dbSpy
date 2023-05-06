@@ -1,30 +1,9 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { DataSource } from 'typeorm';
+import { dbConnect } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
-
-const connect = async (req: Request) => {
-  const { hostname, password, port, username, database_name } = req.session;
-    const PostgresDataSource: DataSource = new DataSource({
-      type: "postgres",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 5432,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-    });
-    //Start connection with the database
-      await PostgresDataSource.initialize();
-        console.log('Data source has been connected');
- 
-
-    return PostgresDataSource;
-  }
-
 
 export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -78,7 +57,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 
 
 
-        const PostgresDataSource = await connect(req)
+        const PostgresDataSource = await dbConnect(req)
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
         //Declare storage objects with their related interfaces
@@ -116,41 +95,40 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
   } catch (err: unknown) {
     console.log('Error during Data Source: ', err);
     return next(err);
-  }
+  };
 }
 //----------------------------------------------------------------------------
 
 export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try{
-    const PostgresDataSource = await connect(req)
-    const newRowData: {[key: string]: string } = req.params
-    const tableName: string = newRowData.tableName
-    const newRow: {[key: string]: string} = newRowData.newRow as any ;
+    const PostgresDataSource = await dbConnect(req)
+    const newPostgresRowData: {[key: string]: string } = req.params
+    const tableName: string = newPostgresRowData.tableName
+    const newPostgresRow: {[key: string]: string} = newPostgresRowData.newPostgresRow as any ;
     
       const postgresInsertRow = PostgresDataSource.createQueryBuilder()
       .insert()
       .into(tableName)
 
-      Object.keys(newRow).forEach((key) => {
-        postgresInsertRow.values({ [key]: newRow[key] });
+      Object.keys(newPostgresRow).forEach((key) => {
+        postgresInsertRow.values({ [key]: newPostgresRow[key] });
       });
 
       const result = await postgresInsertRow.execute()
 
-      console.log(`Row: ${newRow} has been added to ${tableName} and this is the result: `, result)
+      console.log(`Row: ${newPostgresRow} has been added to ${tableName} and this is the result: `, result)
 
-      res.locals.newRow = result
+      res.locals.newPostgresRow = result
 
       PostgresDataSource.destroy();
-      console.log('Database has been disconnected');
+      console.log('Database has been disdbConnected');
       
       return next();
   } catch (err: unknown) {
-    console.log('Error occured in the postgressAddNewRow middleware: ', err);
+    console.log('Error occurred in the postgresAddNewPostgresRow middleware: ', err);
     return next(err);
-  }
-}
-
+  };
+};
 
 //----------------------------------------------------------------------------
 
@@ -221,8 +199,8 @@ export const postgresAddNewRow: RequestHandler = async (req: Request, res: Respo
 //   });
 
 //   try {
-//     await client.connect();
-//     log.info('Connected to Postgres database');
+//     await client.dbConnect();
+//     log.info('dbConnected to Postgres database');
 
 //     const result = await Promise.all([client.query(schemaQuery), client.query(keyQuery)]);
 //     const [schemaResult, keyResult] = result;
