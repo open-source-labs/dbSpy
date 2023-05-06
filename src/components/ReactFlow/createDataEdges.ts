@@ -2,24 +2,6 @@
 import { SchemaStore } from '../../store/schemaStore';
 import { Edge } from '@/Types';
 
-// export type Edge = {
-//   id: string;
-//   source: string;
-//   sourceHandle: string;
-//   target: string;
-//   targetHandle: string;
-//   animated: boolean;
-//   label: string;
-//   style: { strokeWidth: number; stroke: string };
-//   markerEnd: {
-//     type: string;
-//     orient: string;
-//     width: number;
-//     height: number;
-//     color: string;
-//   };
-// }; postgres
-
 export default function createDataEdges(schemaObject: SchemaStore) {
 
   const edges: Edge[] = [];

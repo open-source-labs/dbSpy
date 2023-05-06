@@ -42,7 +42,7 @@ export default function DataInputModal({
     console.log(dbCredentials)
     //add axios here!!!!!
     axios
-      .post(`api/sql/${dbCredentials.db_type}/data`, {newRow: newRow})
+      .post(`api/sql/${dbCredentials.db_type}/data`, {tableName: tableName, newRow: newRow})
       .then((res) => {
         console.log('sucessfully updated');
       })
