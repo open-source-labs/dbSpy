@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { dbConnect } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -101,33 +101,13 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 
 export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try{
-    const PostgresDataSource = await dbConnect(req)
-    const newPostgresRowData: {[key: string]: string } = req.params
-    const tableName: string = newPostgresRowData.tableName
-    const newPostgresRow: {[key: string]: string} = newPostgresRowData.newPostgresRow as any ;
-    
-      const postgresInsertRow = PostgresDataSource.createQueryBuilder()
-      .insert()
-      .into(tableName)
-
-      Object.keys(newPostgresRow).forEach((key) => {
-        postgresInsertRow.values({ [key]: newPostgresRow[key] });
-      });
-
-      const result = await postgresInsertRow.execute()
-
-      console.log(`Row: ${newPostgresRow} has been added to ${tableName} and this is the result: `, result)
-
-      res.locals.newPostgresRow = result
-
-      PostgresDataSource.destroy();
-      console.log('Database has been disdbConnected');
-      
-      return next();
-  } catch (err: unknown) {
-    console.log('Error occurred in the postgresAddNewPostgresRow middleware: ', err);
-    return next(err);
-  };
+    addNewDbRow(req, res, next);
+    console.log('Row was added');
+    return next();
+} catch (err: unknown) {
+  console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+  return next(err);
+};
 };
 
 //----------------------------------------------------------------------------

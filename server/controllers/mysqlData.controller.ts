@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
-import { dbConnect} from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
 export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {;
-    console.log('cookie?: ', req.session)
+
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
@@ -56,7 +55,7 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   };
 
   const MysqlDataSource = await dbConnect(req);
-
+  try {
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
 
@@ -92,6 +91,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
     return next();
 
   } catch (err: unknown) {
+    MysqlDataSource.destroy();
+    console.log('Database has been disconnected');
     console.log('Error during Data Source: ', err);
     return next(err);
   };
@@ -100,34 +101,15 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
 //----------------------------------------------------------------------------
 
 export const mysqlAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  
   try{
-    const MysqlDataSource = await dbConnect(req)
-    const newMysqlRowData: {[key: string]: string } = req.params
-    const tableName: string = newMysqlRowData.tableName
-    const newMysqlRow: {[key: string]: string} = newMysqlRowData.newRow as any ;
-    
-      const mysqlInsertRow = MysqlDataSource.createQueryBuilder()
-      .insert()
-      .into(tableName)
-
-      Object.keys(newMysqlRow).forEach((key) => {
-        mysqlInsertRow.values({ [key]: newMysqlRow[key] });
-      });
-
-      const result = await mysqlInsertRow.execute()
-
-      console.log(`Row: ${newMysqlRow} has been added to ${tableName} and this is the result: `, result)
-
-      res.locals.newRow = result
-
-      MysqlDataSource.destroy();
-      console.log('Database has been disconnected');
-      
-      return next();
-  } catch (err: unknown) {
-    console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-    return next(err);
-  };
+    addNewDbRow(req, res, next);
+    console.log('Row was added');
+    return next();
+} catch (err: unknown) {
+  console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+  return next(err);
+};
 };
 
 

@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { dbConnect } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -101,33 +101,13 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
 
 export const sqliteAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try{
-    const SqliteDataSource = await dbConnect(req)
-    const newSqliteRowData: {[key: string]: string } = req.params
-    const tableName: string = newSqliteRowData.tableName
-    const newSqliteRow: {[key: string]: string} = newSqliteRowData.newSqliteRow as any ;
-    
-      const sqliteInsertRow = SqliteDataSource.createQueryBuilder()
-      .insert()
-      .into(tableName)
-
-      Object.keys(newSqliteRow).forEach((key) => {
-        sqliteInsertRow.values({ [key]: newSqliteRow[key] });
-      });
-
-      const result = await sqliteInsertRow.execute()
-
-      console.log(`Row: ${newSqliteRow} has been added to ${tableName} and this is the result: `, result)
-
-      res.locals.newSqliteRow = result
-
-      SqliteDataSource.destroy();
-      console.log('Database has been disconnected');
-      
-      return next();
-  } catch (err: unknown) {
-    console.log('Error occurred in the SqliteAddNewRow middleware: ', err);
-    return next(err);
-  };
+    addNewDbRow(req, res, next);
+    console.log('Row was added');
+    return next();
+} catch (err: unknown) {
+  console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+  return next(err);
+};
 };
 
 //----------------------------------------------------------------------------

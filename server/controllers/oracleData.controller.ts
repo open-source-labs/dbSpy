@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, ReferenceType, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { dbConnect} from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -91,32 +91,13 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
 //----------------------------------------------------------------------------
 
 export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+
     try{
-      const OracleDataSource = await dbConnect(req)
-      const newOracleRowData: {[key: string]: string } = req.params
-      const tableName: string = newOracleRowData.tableName
-      const newOracleRow: {[key: string]: string} = newOracleRowData.newOracleRow as any ;
-      
-        const oracleInsertRow = OracleDataSource.createQueryBuilder()
-        .insert()
-        .into(tableName)
-  
-        Object.keys(newOracleRow).forEach((key) => {
-          oracleInsertRow.values({ [key]: newOracleRow[key] });
-        });
-  
-        const result = await oracleInsertRow.execute()
-  
-        console.log(`Row: ${newOracleRow} has been added to ${tableName} and this is the result: `, result)
-  
-        res.locals.newOracleRow = result
-  
-        OracleDataSource.destroy();
-        console.log('Database has been disconnected');
-        
+        addNewDbRow(req, res, next);
+        console.log('Row was added');
         return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the oracleAddNewRow middleware: ', err);
+      console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
       return next(err);
     };
   };

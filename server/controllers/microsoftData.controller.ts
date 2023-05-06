@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { dbConnect} from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -95,29 +95,9 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
 //----------------------------------------------------------------------------
 
 export const microsoftAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-    try{
-      const MicrosoftDataSource = await dbConnect(req)
-      const newMicrosoftRowData: {[key: string]: string } = req.params
-      const tableName: string = newMicrosoftRowData.tableName
-      const newMicrosoftRow: {[key: string]: string} = newMicrosoftRowData.newMicrosoftRow as any ;
-      
-        const microsoftInsertRow = MicrosoftDataSource.createQueryBuilder()
-        .insert()
-        .into(tableName)
-  
-        Object.keys(newMicrosoftRow).forEach((key) => {
-          microsoftInsertRow.values({ [key]: newMicrosoftRow[key] });
-        });
-  
-        const result = await microsoftInsertRow.execute()
-  
-        console.log(`Row: ${newMicrosoftRow} has been added to ${tableName} and this is the result: `, result)
-  
-        res.locals.newMicrosoftRow = result
-  
-        MicrosoftDataSource.destroy();
-        console.log('Database has been disconnected');
-        
+      try{
+        addNewDbRow(req, res, next);
+        console.log('Row was added');
         return next();
     } catch (err: unknown) {
       console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
