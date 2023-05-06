@@ -82,8 +82,8 @@ export default function TableNode({ data }) {
 </div>
 
 <div
-    style={{overflow: "auto", maxHeight: "400px", maxWidth: "600px" }}
-    className="nowheel"
+    style={{ maxHeight: "400px", maxWidth: "600px" }}
+    className="nowheel overflow-auto"
   >
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
         <table className="transition-colors duration-500 dark:text-[#fbf3de]">

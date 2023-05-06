@@ -83,6 +83,18 @@ export type TableTuple =
 [TableKey: string, 
   ColumnData: { [ColumnName: string]: ColumnDataForDataTable; }];
 
+  export interface dataSourceConnection {
+    type: string,
+    host?: string,
+    port?: string | number,
+    username?:string,
+    password?: string,
+    database?: string,
+    serviceName?: string,
+    synchronize?: boolean,
+    logging?: boolean,
+}
+
 // ---------------------------------------------------------------------
 // ZUSTAND STORE AND FRONT-END TYPES
 

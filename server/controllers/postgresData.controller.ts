@@ -1,29 +1,34 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
+import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
 import { DataSource } from 'typeorm';
 
 //----------------------------------------------------------------------------
-export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { hostname, password, port, username, database_name } = req.query;
 
-    const PostgresDataSource = new DataSource({
+const connect = async (req: Request) => {
+  const { hostname, password, port, username, database_name } = req.session;
+    const PostgresDataSource: DataSource = new DataSource({
       type: "postgres",
       host: hostname as string,
       port: port ? parseInt(port as string) : 5432,
       username: username as string,
       password: password as string,
       database: database_name as string,
-      synchronize: true,//sqlite
+      synchronize: true,
       logging: true,
     });
-
-
     //Start connection with the database
       await PostgresDataSource.initialize();
         console.log('Data source has been connected');
+ 
 
+    return PostgresDataSource;
+  }
+
+
+export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    console.log('cookie?: ', req.session)
         async function getForeignKeys(): Promise<TableColumn[]> {
           return await PostgresDataSource.query(postgresForeignKeyQuery);
         };
@@ -45,7 +50,6 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
           const references = []
         
           if (foreignKey){
-            //console.log('foreignKey: ', foreignKey)
             references.push({
               isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
@@ -55,7 +59,6 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
               constraintName: foreignKey.constraint_name
             }
             );
-            //console.log('[references]: ', [references])
           };
         
           tableSchema[columnName] = {
@@ -73,6 +76,9 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         return tableSchema;
         };
 
+
+
+        const PostgresDataSource = await connect(req)
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
         //Declare storage objects with their related interfaces
@@ -112,6 +118,40 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
     return next(err);
   }
 }
+//----------------------------------------------------------------------------
+
+export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    const PostgresDataSource = await connect(req)
+    const newRowData: {[key: string]: string } = req.params
+    const tableName: string = newRowData.tableName
+    const newRow: {[key: string]: string} = newRowData.newRow as any ;
+    
+      const postgresInsertRow = PostgresDataSource.createQueryBuilder()
+      .insert()
+      .into(tableName)
+
+      Object.keys(newRow).forEach((key) => {
+        postgresInsertRow.values({ [key]: newRow[key] });
+      });
+
+      const result = await postgresInsertRow.execute()
+
+      console.log(`Row: ${newRow} has been added to ${tableName} and this is the result: `, result)
+
+      res.locals.newRow = result
+
+      PostgresDataSource.destroy();
+      console.log('Database has been disconnected');
+      
+      return next();
+  } catch (err: unknown) {
+    console.log('Error occured in the postgressAddNewRow middleware: ', err);
+    return next(err);
+  }
+}
+
+
 //----------------------------------------------------------------------------
 
 // type ColumnSchema = {

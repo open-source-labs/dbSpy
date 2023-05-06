@@ -3,28 +3,31 @@ import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { DataSource } from 'typeorm';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
 
+
+const connect = async (req: Request) => {
+    const { hostname, password, port, username, database_name } = req.query;
+    const MicrosoftDataSource = new DataSource({
+        type: "mssql",
+        host: hostname as string,
+        port: port ? parseInt(port as string) : 1433,
+        username: username as string,
+        password: password as string,
+        database: database_name as string,
+        synchronize: true,
+        logging: true,
+        options: {
+            encrypt: false,
+        }
+      });
+      //Start connection with the database
+        await MicrosoftDataSource.initialize();
+          console.log('Data source has been connected');
+      return MicrosoftDataSource;
+    }
+
 export const microsoftQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { hostname, password, port, username, database_name } = req.query;
-
-        const MicrosoftDataSource = new DataSource({
-            type: "mssql",
-            host: hostname as string,
-            port: port ? parseInt(port as string) : 1433,
-            username: username as string,
-            password: password as string,
-            database: database_name as string,
-            synchronize: true,
-            logging: true,
-            options: {
-                encrypt: false,
-            }
-          });
-
-        await MicrosoftDataSource.initialize();
-        console.log('Data Source has been initialized');
-      
           async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
             const tableSchema: TableColumn = {};
       
@@ -71,7 +74,7 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
             return tableSchema;
         };
 
-
+        const MicrosoftDataSource = await connect(req);
 
           const tables: [{TABLE_NAME: string}] = await MicrosoftDataSource.query(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES`);
 

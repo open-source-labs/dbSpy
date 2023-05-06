@@ -3,21 +3,27 @@ import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 //import { sqliteSchemaQuery } from './queries/sqlite.queries';
 import { DataSource } from 'typeorm';
 
+
+const connect = async (req: Request) => {
+            const { file_path } = req.query;
+            
+            const SqliteDataSource = new DataSource({
+              type: "sqlite",
+              database: file_path as string,
+              logging: true,
+              synchronize: true,
+            });
+
+           //Start connection with the database
+           await SqliteDataSource.initialize();
+           console.log('Data source has been connected');
+
+           return SqliteDataSource;
+          }
+
+
 export const sqliteQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { file_path } = req.query;
-  
-     const SqliteDataSource = new DataSource({
-        type: "sqlite",
-        database: file_path as string,
-        logging: true,
-        synchronize: true,
-      });
-
-              //Start connection with the database
-              await SqliteDataSource.initialize();
-              console.log('Data source has been connected');
-
       
       //function organizing data from queries in to the desired format of the front end
       async function sqliteFormatTableSchema(sqliteSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
@@ -65,6 +71,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
      return tableSchema;
       };
 
+      const SqliteDataSource = await connect(req);
 
         const tables = await SqliteDataSource.query(`SELECT name FROM sqlite_master WHERE type='table'`)
  

@@ -86,8 +86,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
     </div>
 </div>
   <div
-    style={{overflow: "auto", maxHeight: "350px", maxWidth: "600px" }}
-    className="nowheel"
+    style={{ maxHeight: "350px", maxWidth: "600px" }}
+    className="nowheel overflow-auto scrollbar-hide"
   >
     <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
       <table className="transition-colors duration-500 dark:text-[#fbf3de]">

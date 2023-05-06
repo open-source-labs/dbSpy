@@ -4,25 +4,29 @@ import { DataSource } from 'typeorm';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
 
 //----------------------------------------------------------------------------
+const connect = async (req: Request) => {
+  const { hostname, password, port, username, database_name } = req.query;
+  const MysqlDataSource = new DataSource({
+    type: "mysql",
+    host: hostname as string,
+    port: port ? parseInt(port as string) : 3306,
+    username: username as string,
+    password: password as string,
+    database: database_name as string,
+    synchronize: true,
+    logging: true,
+  });
+    //Start connection with the database
+      await MysqlDataSource.initialize();
+        console.log('Data source has been connected');
+    return MysqlDataSource;
+  }
+
+
+
 export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { hostname, password, port, username, database_name } = req.query;
-
-    const MysqlDataSource = new DataSource({
-      type: "mysql",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 3306,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-    });
-
-    //Establish connection with the database
-    await MysqlDataSource.initialize();
-    console.log('Data Source has been initialized');
-
+  try {;
+    console.log('cookie?: ', req.session)
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
@@ -39,7 +43,6 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           const foreignKeys: any = await getForeignKeys(columnName, tableName);
           const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
 
-          console.log('foreignKey: ', foreignKey)
           //Creating the format for the Reference property if there is a foreign key
           const references = []
 
@@ -53,7 +56,6 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
                   constraintName: foreignKey.CONSTRAINT_NAME,
               });
           };
-          console.log('references: ', references)
   
           //Formation of the schema data
           tableSchema[columnName] = {
@@ -71,6 +73,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   
       return tableSchema;
   };
+
+  const MysqlDataSource = await connect(req);
 
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
