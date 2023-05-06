@@ -28,7 +28,7 @@ export default function DataFlow() {
   
   useEffect(() => {  
     reRender(dataStore);
-  }, [dataStore /*, schemaStore*/]);
+  }, [dataStore/*, schemaStore*/]);
 
   function reRender(dataStore: DataStore) {
     if (!dataStore || !Object.keys(dataStore).length) return;

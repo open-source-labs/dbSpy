@@ -1,6 +1,3 @@
-
- 
-
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
@@ -14,6 +11,8 @@ export default function TableNode({ data }) {
   const columnData = Object.values(data.table[1]);
   const [tableColumns, setTableColumns] = useState(columnData);
   const { setInputModalState } = useSettingsStore((state) => state);
+
+  //console.log(data)
 
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
@@ -32,7 +31,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberSource * 21,
+            top: 77 + columnNumberSource * 12,
             // bottom: 'auto',
           }}
         />
@@ -51,7 +50,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberTarget * 21,
+            top: 77 + columnNumberTarget * 12,
             // bottom: 'auto',
           }}
         />

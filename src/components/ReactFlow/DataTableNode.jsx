@@ -5,19 +5,35 @@ import DataTableNodeColumn from './DataTableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
+import useSchemaStore from '../../store/schemaStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-   //console.log(data)
+  //console.log(data)
+
+  const { setInputModalState } = useSettingsStore((state) => state);
+  const { schemaStore } = useSchemaStore((state) => state);
+
+  //console.log(schemaStore)
+//  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
+
   const tableName = data.table[0];
  let firstRow =[]
- let restRowsData = []
+  let restRowsData = []
+  let secondaryFirstRow = []
+
+  if (schemaStore['public.' + tableName] !== undefined) {
+    secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
+    //console.log(secondaryFirstRow);
+  }
 
    const RowData = Object.values(data.table[1]);
- if (RowData[0] !== undefined) {
-   firstRow = Object.keys(RowData[0]);
-   restRowsData = RowData.map(each => Object.values(each));
- }
+  if (RowData[0] !== undefined) {
+    firstRow = Object.keys(RowData[0]);
+    restRowsData = RowData.map(each => Object.values(each));
+  } else {
+    firstRow = secondaryFirstRow
+   }
   //console.log('HERE!!!!!!!!',remainingRows)
 //   const remainingRows = Object.values(data.table[1]);
 //  if (RowData[0] !== undefined) {
@@ -25,10 +41,6 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 //   restRowsData = remainingRows.map(each => Object.values(each));
 //   // console.log(restRowsData)
 //  }
-
-  const { setInputModalState } = useSettingsStore((state) => state);
-//  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
-
 
  // function to generate handles on the table by iterating through all
  // schema edges to match source and target handles of edges to handle id

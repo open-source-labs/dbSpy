@@ -11,23 +11,27 @@ type RowInputProps = {
     value: string | boolean
   ) => void;
   closeInputModal: () => void;
+  secondaryColumnNames: string[]
 };
 
 
 function DataRowInput({
- /*index, deleteRow, rowCount,row*/currentTable, handleRowChange, closeInputModal
+ /*index, deleteRow, rowCount,row*/currentTable, handleRowChange, closeInputModal, secondaryColumnNames
 }: RowInputProps) {
 
   //console.log('inside RowInput', currentTable)
   //console.log(currentTable[0])
   const columns: any = [];
   const inputs = [];
+  let columnNames: string[];
   if (!currentTable.length) {
-    window.alert("No column exists in the table");
-    console.error("No column exists in the table");
-    closeInputModal()
+    // window.alert("No column exists in the table");
+    // console.error("No column exists in the table");
+    // closeInputModal()
+    columnNames = secondaryColumnNames;
   } else {
-    const columnNames = Object.keys(currentTable[0]);
+    columnNames = Object.keys(currentTable[0]);
+  }
     //console.log('columnNames', columnNames);
     // const columns: any = [];
     // const inputs = [];
@@ -36,6 +40,7 @@ function DataRowInput({
         {each}
       </label>);
     });
+  
   
     for (let i = 0; i < columns.length; i++) {
       inputs.push(
@@ -49,7 +54,7 @@ function DataRowInput({
           }}
         />);
     }
-   }
+  //  }
 
   return (
     <div className="column-input">
