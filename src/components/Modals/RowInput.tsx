@@ -4,50 +4,52 @@ import React from 'react';
 import { SQLDataType, RowsOfData } from '../../Types';
 import DataTypeOptions from './DataTypeOptions';
 
-// type ColumnInputProps = {
-//   index: number;
-//   deleteColumn: (index: number) => void;
-//   handleColumnChange: (
-//     index: number,
-//     property: keyof RowsOfData,
-//     value: string | boolean
-//   ) => void;
-//   name: string;
-//   type: SQLDataType;
-//   isNullable: boolean;
-//   isPrimary: boolean;
-//   defaultValue: string | null;
-//   columnCount: number;
-//   mode: 'table' | 'column';
-// };
+type RowInputProps = {
+  currentTable;
+  handleRowChange: (
+    index: number,
+    value: string | boolean
+  ) => void;
+  closeInputModal: () => void;
+};
 
 
 function DataRowInput({
- index, deleteRow, /*row*/currentTable, handleRowChange, rowCount
-}: ColumnInputProps) {
+ /*index, deleteRow, rowCount,row*/currentTable, handleRowChange, closeInputModal
+}: RowInputProps) {
 
   console.log('inside RowInput', currentTable)
   //console.log(currentTable[0])
-  const columnNames = Object.keys(currentTable[0])
-  //console.log('columnNames', columnNames)
-  const columns:any = []
-  const inputs = []
-  columnNames.map(each => {
-    columns.push(<label className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
-      {each}
-    </label>)
-   })
-  for (let i = 0; i < columns.length; i++) {
-    inputs.push(
-      <input
-        className='m-2'
+  const columns: any = [];
+  const inputs = [];
+  if (!currentTable.length) {
+    window.alert("No column exists in the table");
+    console.error("No column exists in the table");
+    closeInputModal()
+  } else {
+    const columnNames = Object.keys(currentTable[0]);
+    console.log('columnNames', columnNames);
+    // const columns: any = [];
+    // const inputs = [];
+    columnNames.map(each => {
+      columns.push(<label className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
+        {each}
+      </label>);
+    });
+  
+    for (let i = 0; i < columns.length; i++) {
+      inputs.push(
+        <input
+          className='m-2'
           type="text"
           required
           maxLength={63}
           onChange={(e) => {
-            handleRowChange( i, e.target.value.trim());
+            handleRowChange(i, e.target.value.trim());
           }}
-        />)
+        
+        />);
+    }
    }
 
   return (

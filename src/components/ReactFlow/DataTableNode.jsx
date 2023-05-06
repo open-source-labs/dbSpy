@@ -8,7 +8,7 @@ import useDataStore from '../../store/dataStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-   console.log(data)
+   //console.log(data)
   const tableName = data.table[0];
  let firstRow =[]
  let restRowsData = []

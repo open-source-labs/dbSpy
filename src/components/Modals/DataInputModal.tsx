@@ -114,6 +114,7 @@ export default function DataInputModal({
         <RowInput
           currentTable={currentTable}
           handleRowChange={handleRowChange}
+          closeInputModal={closeInputModal}
         />
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
