@@ -1,8 +1,4 @@
-//need to finish building this file#####################
-
 import React from 'react';
-import { SQLDataType, RowsOfData } from '../../Types';
-import DataTypeOptions from './DataTypeOptions';
 
 type RowInputProps = {
   currentTable;
@@ -10,37 +6,25 @@ type RowInputProps = {
     index: number,
     value: string | boolean
   ) => void;
-  closeInputModal: () => void;
   secondaryColumnNames: string[]
 };
 
-
 function DataRowInput({
- /*index, deleteRow, rowCount,row*/currentTable, handleRowChange, closeInputModal, secondaryColumnNames
+currentTable, handleRowChange, secondaryColumnNames
 }: RowInputProps) {
-
-  //console.log('inside RowInput', currentTable)
-  //console.log(currentTable[0])
   const columns: any = [];
   const inputs = [];
   let columnNames: string[];
   if (!currentTable.length) {
-    // window.alert("No column exists in the table");
-    // console.error("No column exists in the table");
-    // closeInputModal()
     columnNames = secondaryColumnNames;
   } else {
     columnNames = Object.keys(currentTable[0]);
   }
-    //console.log('columnNames', columnNames);
-    // const columns: any = [];
-    // const inputs = [];
     columnNames.map(each => {
       columns.push(<label className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
         {each}
       </label>);
     });
-  
   
     for (let i = 0; i < columns.length; i++) {
       inputs.push(
@@ -54,7 +38,6 @@ function DataRowInput({
           }}
         />);
     }
-  //  }
 
   return (
     <div className="column-input">
