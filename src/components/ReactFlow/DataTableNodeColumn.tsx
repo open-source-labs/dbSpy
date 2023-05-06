@@ -23,14 +23,26 @@ const [mode, setMode] = useState('default');
    return Math.floor(Math.random() * max);
  }
 
+ // console.log("row in DataTableNodeColumn", row)
+
+  {/* When we first got props/states drilled down here, schema info came in and that includes obj.
+  rows cannot render obj =>have to replace object to ""
+  but, it re-render automatically with correct data info. Not sure why we get the schema info at first */}
+  const updatedRow = []
+  for (let i = 0; i < row.length; i++) {
+    if (typeof row[i] === "object") {
+      updatedRow.push('');
+    } else {
+      updatedRow.push(row[i])
+     }
+   }
+
  return (
     <>
      <tr>
-       {/* have to filter out object, because when we first got info, schema info came in and that includes obj.
-       but, it re-render automatically with correct data info. Not sure why we get the schema info at first, but at least filter
-       method makes it work */}
-       {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) =>
-         <td
+       {/* {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) => */}
+        {updatedRow.map((eachData: string|number) =>  
+       <td
            key={uniqueKey(1000000000)}
            scope="col"
            className="transition-colors duration-500 dark:text-[#fbf3de]"

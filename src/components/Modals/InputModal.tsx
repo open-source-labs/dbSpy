@@ -20,7 +20,7 @@ export default function InputModal({
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
-  const initialTable: string = 'untitled_table';
+  const initialTable: string = 'untitled_table';  //for adding new table
   const initialColumns: ColumnData[] = [
     {
       name: 'id',
@@ -65,7 +65,7 @@ export default function InputModal({
     try {
       if (mode === 'table') addTableSchema(tableName, columnData);
       else if (mode === 'column') {
-        addColumnSchema(tableName, columnData);
+        addColumnSchema(tableName, columnData);  //same method as addRow for data table
       }
 
       return true;
@@ -84,7 +84,7 @@ export default function InputModal({
     defaultValue: null,
   };
 
-  const addColumn = () => {
+  const addColumn = () => { //addNewRow for data table
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
       return [...prevColumns];
@@ -138,6 +138,8 @@ export default function InputModal({
       mode={mode}
     />
   ));
+
+  // console.log("columnData", columnData)
 
   return (
     <div id="inputModal" className="input-modal">

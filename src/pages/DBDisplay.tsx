@@ -8,6 +8,7 @@ import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
+import DataInputModal from '../components/Modals/DataInputModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
@@ -37,6 +38,9 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openAddColumnModal = (tableName: string) =>
     setInputModalState(true, 'column', tableName);
+  
+  const openAddRowModal = (tableName: string) =>
+    setInputModalState(true, 'row', tableName); //(isOpen? mode? currentTable?)
 
   //create references for HTML elements
   const mySideBarId: any = useRef();
@@ -102,6 +106,9 @@ useEffect(() :void => {
     else openNav();
   }
 
+  //console.log('isSchema???', isSchema)
+  //console.log('currentTable???', currentTable)
+
   return (
     <div
       id="DBDisplay"
@@ -116,7 +123,9 @@ useEffect(() :void => {
           &times;
         </a>
         <Sidebar closeNav={closeNav} />
-        {editRefMode ? <AddReference /> : <></>}
+
+        {/* "AddReference" => change reference in schema */}
+        {editRefMode ? <AddReference /> : <></>} 
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
@@ -154,14 +163,28 @@ useEffect(() :void => {
           )
         )}
       </div>
+
       {/* MODALS */}
-      {inputModalState.isOpen && (
-        <InputModal
-          mode={inputModalState.mode}
-          tableNameProp={currentTable}
-          closeInputModal={() => setInputModalState(false)}
-        />
-      )}
+
+      {/* if isSchema === true => need modal for schema
+      if isSchema === false => need modal for data */}
+
+      {inputModalState.isOpen ? (
+        isSchema ? (
+          <InputModal
+            mode={inputModalState.mode}
+            tableNameProp={currentTable}
+            closeInputModal={() => setInputModalState(false)}
+          />
+        ) : (
+          <DataInputModal
+            //mode={inputModalState.mode}
+              tableNameProp={currentTable}
+            closeInputModal={() => setInputModalState(false)}
+          />
+      
+        )
+      ):null}
     </div>
   );
 };
