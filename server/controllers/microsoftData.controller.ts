@@ -39,21 +39,18 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         
 
                 // console.log('foreignKey: ', foreignKey)
-                //Creating the format for the Reference property if their is a foreign key
-                const references: ReferenceType = {
-                    length: 0,
-                };
+                //Creating the format for the Reference property if there is a foreign key
+                const references = []
         
                 if (foreignKey){
-                    references[references.length] = {
+                    references.push({
                         isDestination: false,
                         PrimaryKeyName: foreignKey.column_name,
                         PrimaryKeyTableName: 'public.' + tableName,
                         ReferencesPropertyName: foreignKey.referenced_column_name,
                         ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
                         constraintName: foreignKey.constraint_name,
-                    };
-                    references.length += 1;
+                    });
                     console.log('references: ', references)
 
                 };
@@ -63,7 +60,7 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
                     IsForeignKey: foreignKey ? true : false,
                     IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
                     Name: column.COLUMN_NAME,
-                    References: foreignKey ? [references] : [],
+                    References: references,
                     TableName: 'public.' + tableName,
                     Value: null,
                     additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,

@@ -83,57 +83,58 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  }
  // renders columns within table
  return (
-   <div className="table-node transition-colors duration-500" key={tableName}>
-     {/* <NodeResizer minWidth={100} minHeight={30} /> */}
-     {tableHandles}
-     <div>
-       <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
-         {tableName}
-       </label>
-     </div>
-
-
-     <div
-       style={{overflow: "scroll", height: "200px", width: "500px" }}
-       className="nowheel"
-     >
-       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
-         <table className="transition-colors duration-500 dark:text-[#fbf3de]">
-           <thead>
-             <tr className="head-column">
-               {firstRow?.map(each => (
-                 <th
-                   key={each}
-                   scope="col"
-                   className="transition-colors duration-500 dark:text-[#fbf3de]"
-                 >{each}</th>
-               ))}
-             </tr>
-           </thead>
-           <tbody>
-             {/* generates dynamic columns */}
-             {rowState.map((row, index) => (
-               <DataTableNodeColumn
-                 row={row}
-                 key={`${tableName}-row${index}`}
-                 id={`${tableName}-row${index}`}
-                 index={index}
-                 deleteRow={deleteRow}
-               />
-             ))}
-           </tbody>
-           {/* this button should add a whole new row, need to work on onClick function */}
-           {/* <div className="addRowBtn"> */}
-             <button
-             className="add-field text-[#273943] transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-             onClick={() => setInputModalState(true, 'column', tableName)}
-             >
-               <FaRegPlusSquare size={20} />
-             </button>
-           {/* </div> */}
-         </table>
-       </div>
-     </div>
-   </div>
+<>
+  <div className="table-node transition-colors duration-500" key={tableName}>
+  <div className="flex items-center justify-between table-header bg-[#075985] dark:opacity-75">
+  {/* <NodeResizer minWidth={100} minHeight={30} /> */}
+  {tableHandles}
+  <div>
+    <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+      {tableName}
+    </label>
+  </div>
+    <div className="addRowBtn ml-3 mb-1.5">
+      <button
+        className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
+        // onClick={() => setInputModalState(true, 'column', tableName)}
+      >
+        <FaRegPlusSquare size={20} className="text-white" />
+      </button>
+    </div>
+</div>
+  <div
+    style={{overflow: "auto", maxHeight: "350px", maxWidth: "600px" }}
+    className="nowheel"
+  >
+    <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
+      <table className="transition-colors duration-500 dark:text-[#fbf3de]">
+        <thead>
+          <tr className="head-column">
+            {firstRow?.map(each => (
+              <th
+                key={each}
+                scope="col"
+                className="transition-colors duration-500 dark:text-[#fbf3de]"
+              ><b>{each}</b></th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {/* generates dynamic columns */}
+          {rowState.map((row, index) => (
+            <DataTableNodeColumn
+              row={row}
+              key={`${tableName}-row${index}`}
+              id={`${tableName}-row${index}`}
+              index={index}
+              deleteRow={deleteRow}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</>
  );
 }

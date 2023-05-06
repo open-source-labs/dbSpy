@@ -31,15 +31,15 @@ export default function createDataEdges(schemaObject: SchemaStore) {
   
       if (row.IsForeignKey) {
       
-        if (row.References[0][0].ReferencesTableName || row.References[0][0].PrimaryKeyTableName) {
+        if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
           edges.push({
-            id: `${row.References[0][0].ReferencesTableName}-to-${row.References[0][0].PrimaryKeyTableName}`,
-            source: row.References[0][0].ReferencesTableName.slice(7),
-            sourceHandle: row.References[0][0].ReferencesPropertyName,
-            target: row.References[0][0].PrimaryKeyTableName.slice(7),
-            targetHandle: row.References[0][0].PrimaryKeyName,
+            id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
+            source: row.References[0].ReferencesTableName.slice(7),
+            sourceHandle: row.References[0].ReferencesPropertyName,
+            target: row.References[0].PrimaryKeyTableName.slice(7),
+            targetHandle: row.References[0].PrimaryKeyName,
             animated: true,
-            label: `${row.References[0][0].ReferencesPropertyName}-to-${row.References[0][0].PrimaryKeyName}`,
+            label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
             style: {
               strokeWidth: 2,
               stroke: '#085c84',
