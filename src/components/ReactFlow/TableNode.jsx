@@ -18,7 +18,7 @@ export default function TableNode({ data }) {
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === tableName) {
+    if (data.edges[i].source === tableName) {  //need to find bug in SOURCE Handles!!!!!
       //make handle placement dynamic, we need to know the column of our source
       let columnNumberSource =
         columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
@@ -50,7 +50,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberTarget * 12,
+            top: 77 + columnNumberTarget-1 * 12,
             // bottom: 'auto',
           }}
         />

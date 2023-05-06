@@ -59,7 +59,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
          id={data.edges[i].sourceHandle}
          style={{
            background: 'transparent',
-           left: "5%"
+           left: "60%"
          }}
        />
      );
@@ -77,7 +77,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
          id={data.edges[i].targetHandle}
          style={{
            background: 'transparent',
-           left: "80%"
+           left: "5%"  //need to fix this for dynamic handles
          }}
        />
      );
