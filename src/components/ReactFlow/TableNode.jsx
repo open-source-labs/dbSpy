@@ -69,7 +69,7 @@ export default function TableNode({ data }) {
             htmlFor="text"
             className="bg-[#075985] text-white text-stroke-black dark:bg-opacity-0"
             style={{
-              padding: '0.5rem 1rem',
+             'margin-left': '0px'
             }}
           >
       {tableName}
