@@ -29,6 +29,7 @@ currentTable, handleRowChange, secondaryColumnNames
     for (let i = 0; i < columns.length; i++) {
       inputs.push(
         <input
+          key={i+columns[i] }
           className='m-2'
           type="text"
           required
