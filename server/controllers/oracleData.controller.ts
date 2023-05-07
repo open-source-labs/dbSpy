@@ -1,32 +1,16 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, ReferenceType, TableColumn } from '@/Types';
-import { DataSource } from 'typeorm';
 import { oracleSchemaQuery } from './queries/oracle.queries';
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
+
+//----------------------------------------------------------------------------
 
 export const oracleQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { hostname, password, port, username, database_name, service_name } = req.query;
-
-        const OracleDataSource = new DataSource({
-            type: "oracle",
-            host: hostname as string,
-            port: port ? parseInt(port as string) : 1521,
-            username: username as string,
-            password: password as string,
-            database: database_name as string,
-            serviceName: service_name as string,
-            synchronize: true,
-            logging: true,
-          });
-
-        await OracleDataSource.initialize();
-        console.log('Data Source has been initialized');
-        
           async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string): Promise<TableColumn> {
             const tableSchema: TableColumn = {};
       
-        
             for (const column of oracleSchema) {
                 const columnName: any = column.COLUMN_NAME;
                 const keyString: any = column.CONSTRAINT_TYPE;
@@ -62,6 +46,9 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
             };
             return tableSchema;
         };
+        const { username } = req.query
+        const OracleDataSource = await dbConnect(req);
+
 
         const tables: [{TABLE_NAME: string}] = await OracleDataSource.query(`SELECT table_name FROM user_tables`);
         console.log('tables: ', tables)
@@ -100,3 +87,19 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
         return next(err);
     };
 };
+
+//----------------------------------------------------------------------------
+
+export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+
+    try{
+        addNewDbRow(req, res, next);
+        console.log('Row was added');
+        return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+      return next(err);
+    };
+  };
+  
+  //----------------------------------------------------------------------------

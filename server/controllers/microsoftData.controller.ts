@@ -1,30 +1,13 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
-import { DataSource } from 'typeorm';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
+
+//----------------------------------------------------------------------------
 
 export const microsoftQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { hostname, password, port, username, database_name } = req.query;
-
-        const MicrosoftDataSource = new DataSource({
-            type: "mssql",
-            host: hostname as string,
-            port: port ? parseInt(port as string) : 1433,
-            username: username as string,
-            password: password as string,
-            database: database_name as string,
-            synchronize: true,
-            logging: true,
-            options: {
-                encrypt: false,
-            }
-          });
-
-        await MicrosoftDataSource.initialize();
-        console.log('Data Source has been initialized');
-      
           async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
             const tableSchema: TableColumn = {};
       
@@ -71,7 +54,7 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
             return tableSchema;
         };
 
-
+        const MicrosoftDataSource = await dbConnect(req);
 
           const tables: [{TABLE_NAME: string}] = await MicrosoftDataSource.query(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES`);
 
@@ -106,5 +89,20 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
 
     } catch(err: unknown) {
         return next(err);
-    }
+    };
 };
+
+//----------------------------------------------------------------------------
+
+export const microsoftAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+      try{
+        addNewDbRow(req, res, next);
+        console.log('Row was added');
+        return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+      return next(err);
+    };
+  };
+  
+  //----------------------------------------------------------------------------

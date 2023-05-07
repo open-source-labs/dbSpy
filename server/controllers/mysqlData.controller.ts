@@ -1,27 +1,11 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { DataSource } from 'typeorm';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
+
 export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { hostname, password, port, username, database_name } = req.query;
-
-    const MysqlDataSource = new DataSource({
-      type: "mysql",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 3306,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-    });
-
-    //Establish connection with the database
-    await MysqlDataSource.initialize();
-    console.log('Data Source has been initialized');
 
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
@@ -39,7 +23,6 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
           const foreignKeys: any = await getForeignKeys(columnName, tableName);
           const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
 
-          console.log('foreignKey: ', foreignKey)
           //Creating the format for the Reference property if there is a foreign key
           const references = []
 
@@ -53,7 +36,6 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
                   constraintName: foreignKey.CONSTRAINT_NAME,
               });
           };
-          console.log('references: ', references)
   
           //Formation of the schema data
           tableSchema[columnName] = {
@@ -72,6 +54,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
       return tableSchema;
   };
 
+  const MysqlDataSource = await dbConnect(req);
+  try {
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
 
@@ -107,10 +91,28 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
     return next();
 
   } catch (err: unknown) {
+    MysqlDataSource.destroy();
+    console.log('Database has been disconnected');
     console.log('Error during Data Source: ', err);
     return next(err);
-  }
-}
+  };
+};
+
+//----------------------------------------------------------------------------
+
+export const mysqlAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  
+  try{
+    addNewDbRow(req, res, next);
+    console.log('Row was added');
+    return next();
+} catch (err: unknown) {
+  console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+  return next(err);
+};
+};
+
+
 //----------------------------------------------------------------------------
 
 // // SSL data stored as environment variable for GitHub Actions access
