@@ -41,15 +41,17 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 //   restRowsData = remainingRows.map(each => Object.values(each));
 //   // console.log(restRowsData)
 //  }
-
+  console.log("RowData", RowData)
+  console.log(data.edges)
+  console.log(tableName)
  // function to generate handles on the table by iterating through all
- // schema edges to match source and target handles of edges to handle id
+ // data edges to match source and target handles of edges to handle id
  const tableHandles = [];
  for (let i = 0; i < data.edges.length; i++) {
-   if (data.edges[i].source === tableName) {
+   if (data.edges[i].source === tableName || data.edges[i].source.slice(7) === tableName) {
      //make handle placement dynamic, we need to know the row of our source
      let columnNumberSource =
-       firstRow.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
+       RowData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
      if (columnNumberSource === 0) columnNumberSource = 1;
      tableHandles.push(
        <Handle
@@ -59,15 +61,16 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
          id={data.edges[i].sourceHandle}
          style={{
            background: 'transparent',
-           left: "60%"
+          //  left: "5%",
+           left: 77 + columnNumberSource+1 * 12,
          }}
        />
      );
    }
-   if (data.edges[i].target === tableName) {
+   if (data.edges[i].target === tableName || data.edges[i].target.slice(7) === tableName) {
      //make handle placement dynamic, we need to know the row of our target
      let columnNumberTarget =
-       firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+       RowData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
      if (columnNumberTarget === 0) columnNumberTarget = 1;
      tableHandles.push(
        <Handle
@@ -77,7 +80,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
          id={data.edges[i].targetHandle}
          style={{
            background: 'transparent',
-           left: "5%"  //need to fix this for dynamic handles
+          //  left: "5%"  //need to fix this for dynamic handles
+           left: 77 + columnNumberTarget-3 * 12,
          }}
        />
      );

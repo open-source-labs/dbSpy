@@ -12,7 +12,8 @@ export default function TableNode({ data }) {
   const [tableColumns, setTableColumns] = useState(columnData);
   const { setInputModalState } = useSettingsStore((state) => state);
 
-  //console.log(data)
+  console.log('columnData', columnData)
+   console.log(data.edges)
 
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
@@ -41,6 +42,7 @@ export default function TableNode({ data }) {
       //make handle placement dynamic, we need to know the column of our target
       let columnNumberTarget =
         columnData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+      console.log("columnNumberTarget", columnNumberTarget)
       if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
         <Handle
