@@ -1,29 +1,13 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
+import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { DataSource } from 'typeorm';
+import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
+
 export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { hostname, password, port, username, database_name } = req.query;
-
-    const PostgresDataSource = new DataSource({
-      type: "postgres",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 5432,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,//sqlite
-      logging: true,
-    });
-
-
-    //Start connection with the database
-      await PostgresDataSource.initialize();
-        console.log('Data source has been connected');
-
+    console.log('cookie?: ', req.session)
         async function getForeignKeys(): Promise<TableColumn[]> {
           return await PostgresDataSource.query(postgresForeignKeyQuery);
         };
@@ -45,7 +29,6 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
           const references = []
         
           if (foreignKey){
-            console.log('foreignKey: ', foreignKey)
             references.push({
               isDestination: false,
               PrimaryKeyName: foreignKey.foreign_key_column,
@@ -55,34 +38,12 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
               constraintName: foreignKey.constraint_name
             }
             );
-            //references.length += 1;
-            console.log('[references]: ', [references])
           };
-
-          // const references: ReferenceType = {
-          //   length: 0,
-          // };
-        
-          // if (foreignKey){
-          //   console.log('foreignKey: ', foreignKey)
-          //   references[references.length] = {
-          //     isDestination: false,
-          //     PrimaryKeyName: foreignKey.foreign_key_column,
-          //     PrimaryKeyTableName: 'public.' + tableName,
-          //     ReferencesPropertyName: foreignKey.referenced_column,
-          //     ReferencesTableName: foreignKey.referenced_table,
-          //     constraintName: foreignKey.constraint_name
-          //   };
-          //   references.length += 1;
-          //   console.log('[references]: ', [references])
-          // };
-          // console.log('references: ', references)
         
           tableSchema[columnName] = {
             IsForeignKey: keyString.includes('FOREIGN KEY'),
             IsPrimaryKey: keyString.includes('PRIMARY KEY'),
             Name: columnName,
-           // References: foreignKey ? [references] : [],
             References: references,
             TableName: 'public.' + tableName,
             Value: null,
@@ -94,6 +55,9 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         return tableSchema;
         };
 
+
+
+        const PostgresDataSource = await dbConnect(req)
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
         //Declare storage objects with their related interfaces
@@ -131,8 +95,21 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
   } catch (err: unknown) {
     console.log('Error during Data Source: ', err);
     return next(err);
-  }
+  };
 }
+//----------------------------------------------------------------------------
+
+export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    addNewDbRow(req, res, next);
+    console.log('Row was added');
+    return next();
+} catch (err: unknown) {
+  console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
+  return next(err);
+};
+};
+
 //----------------------------------------------------------------------------
 
 // type ColumnSchema = {
@@ -202,8 +179,8 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 //   });
 
 //   try {
-//     await client.connect();
-//     log.info('Connected to Postgres database');
+//     await client.dbConnect();
+//     log.info('dbConnected to Postgres database');
 
 //     const result = await Promise.all([client.query(schemaQuery), client.query(keyQuery)]);
 //     const [schemaResult, keyResult] = result;

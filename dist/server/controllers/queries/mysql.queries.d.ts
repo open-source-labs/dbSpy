@@ -1,2 +1,0 @@
-export declare const mysqlForeignKeyQuery = "\n  SELECT\n    COLUMN_NAME,\n    REFERENCED_TABLE_NAME,\n    REFERENCED_COLUMN_NAME,\n    CONSTRAINT_NAME,\n    TABLE_NAME\n  FROM\n    INFORMATION_SCHEMA.KEY_COLUMN_USAGE\n  WHERE\n    COLUMN_NAME = 'columnName'\n    AND REFERENCED_TABLE_NAME IS NOT NULL\n    AND TABLE_NAME = 'tableName';\n    ";
-//# sourceMappingURL=mysql.queries.d.ts.map

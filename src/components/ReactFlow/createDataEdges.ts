@@ -2,24 +2,6 @@
 import { SchemaStore } from '../../store/schemaStore';
 import { Edge } from '@/Types';
 
-// export type Edge = {
-//   id: string;
-//   source: string;
-//   sourceHandle: string;
-//   target: string;
-//   targetHandle: string;
-//   animated: boolean;
-//   label: string;
-//   style: { strokeWidth: number; stroke: string };
-//   markerEnd: {
-//     type: string;
-//     orient: string;
-//     width: number;
-//     height: number;
-//     color: string;
-//   };
-// }; postgres
-
 export default function createDataEdges(schemaObject: SchemaStore) {
 
   const edges: Edge[] = [];
@@ -34,12 +16,12 @@ export default function createDataEdges(schemaObject: SchemaStore) {
         if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
           edges.push({
             id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
-            source: row.References[0].ReferencesTableName.slice(7),
-            sourceHandle: row.References[0].ReferencesPropertyName,
-            target: row.References[0].PrimaryKeyTableName.slice(7),
-            targetHandle: row.References[0].PrimaryKeyName,
+            target: row.References[0].ReferencesTableName.slice(7),
+            targetHandle: row.References[0].ReferencesPropertyName,
+            source: row.References[0].PrimaryKeyTableName.slice(7),
+            sourceHandle: row.References[0].PrimaryKeyName,
             animated: true,
-            label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+            label: `${row.References[0].PrimaryKeyName}-to-${row.References[0].ReferencesPropertyName}`,
             style: {
               strokeWidth: 2,
               stroke: '#085c84',

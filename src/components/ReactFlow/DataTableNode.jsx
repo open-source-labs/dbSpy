@@ -2,22 +2,45 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import DataTableNodeColumn from './DataTableNodeColumn';
-import { FaRegPlusSquare } from 'react-icons/fa'
+import { FaRegPlusSquare } from 'react-icons/fa';
+import useSettingsStore from '../../store/settingsStore';
+import useDataStore from '../../store/dataStore';
+import useSchemaStore from '../../store/schemaStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
- const tableName = data.table[0];
+  //console.log(data)
+
+  const { setInputModalState } = useSettingsStore((state) => state);
+  const { schemaStore } = useSchemaStore((state) => state);
+
+  //console.log(schemaStore)
+//  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
+
+  const tableName = data.table[0];
  let firstRow =[]
- let restRowsData = []
- const RowData = Object.values(data.table[1]);
- if (RowData[0] !== undefined) {
-   firstRow = Object.keys(RowData[0]);
-   restRowsData = RowData.map(each => Object.values(each));
- }
+  let restRowsData = []
+  let secondaryFirstRow = []
 
+  if (schemaStore['public.' + tableName] !== undefined) {
+    secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
+    //console.log(secondaryFirstRow);
+  }
 
- const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
-
+   const RowData = Object.values(data.table[1]);
+  if (RowData[0] !== undefined) {
+    firstRow = Object.keys(RowData[0]);
+    restRowsData = RowData.map(each => Object.values(each));
+  } else {
+    firstRow = secondaryFirstRow
+   }
+  //console.log('HERE!!!!!!!!',remainingRows)
+//   const remainingRows = Object.values(data.table[1]);
+//  if (RowData[0] !== undefined) {
+//    firstRow = Object.keys(remainingRows[0]);
+//   restRowsData = remainingRows.map(each => Object.values(each));
+//   // console.log(restRowsData)
+//  }
 
  // function to generate handles on the table by iterating through all
  // schema edges to match source and target handles of edges to handle id
@@ -36,7 +59,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
          id={data.edges[i].sourceHandle}
          style={{
            background: 'transparent',
-           left: "5%"
+           left: "60%"
          }}
        />
      );
@@ -54,7 +77,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
          id={data.edges[i].targetHandle}
          style={{
            background: 'transparent',
-           left: "80%"
+           left: "5%"  //need to fix this for dynamic handles
          }}
        />
      );
@@ -64,26 +87,30 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  return (
 <>
   <div className="table-node transition-colors duration-500" key={tableName}>
-  <div className="flex items-center justify-between table-header bg-[#075985] dark:opacity-75">
+  <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
   {/* <NodeResizer minWidth={100} minHeight={30} /> */}
   {tableHandles}
   <div>
-    <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+    <label htmlFor="text" 
+    className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
+    style={{ 
+      padding: '0.5rem 1rem',
+       }}>
       {tableName}
     </label>
   </div>
     <div className="addRowBtn ml-3 mb-1.5">
       <button
         className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
-        // onClick={() => setInputModalState(true, 'column', tableName)}
+        onClick={() => setInputModalState(true, 'row', tableName)}
       >
         <FaRegPlusSquare size={20} className="text-white" />
       </button>
     </div>
 </div>
   <div
-    style={{overflow: "auto", maxHeight: "350px", maxWidth: "600px" }}
-    className="nowheel"
+    style={{ maxHeight: "350px", maxWidth: "600px" }}
+    className="nowheel overflow-auto scrollbar-hide"
   >
     <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
       <table className="transition-colors duration-500 dark:text-[#fbf3de]">
