@@ -13,7 +13,7 @@ export default function TableNode({ data }) {
   const { setInputModalState } = useSettingsStore((state) => state);
 
   console.log('columnData', columnData)
-   console.log(data.edges)
+  console.log('data.edges',data.edges)
 
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
@@ -23,7 +23,10 @@ export default function TableNode({ data }) {
       //make handle placement dynamic, we need to know the column of our source
       let columnNumberSource =
         columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
+      console.log('columnNumberSource',columnNumberSource)
       if (columnNumberSource === 0) columnNumberSource = 1;
+      console.log(data.edges[i].sourceHandle)
+      console.log(columnNumberSource)
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -32,7 +35,8 @@ export default function TableNode({ data }) {
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberSource * 12,
+            // top: 55 + (columnNumberSource * 12),
+            top: 67 + ((columnNumberSource-1)*24),
             // bottom: 'auto',
           }}
         />
@@ -52,13 +56,38 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberTarget-1 * 12,
+            top: 67 + ((columnNumberTarget-1)*24),
             // bottom: 'auto',
           }}
         />
       );
     }
+    //     if (data.edges[i].target === tableName) {
+    //   //make handle placement dynamic, we need to know the column of our target
+    //     let columnNumberTarget;
+    //     columnData.forEach(eachColumn => {
+    //       if (eachColumn.Name === data.edges[i].targetHandle) {
+    //         columnNumberTarget = eachColumn.Name
+    //        } })
+    //   console.log("columnNumberTarget", columnNumberTarget)
+    //   if (columnNumberTarget === 0) columnNumberTarget = 1;
+    //   tableHandles.push(
+    //     <Handle
+    //       key={`${data.edges[i]}-target-${[i]}`}
+    //       type="target"
+    //       position={Position.Left}
+    //       id={7}
+    //       style={{
+    //         background: 'transparent',
+    //         // top: 70 + columnNumberTarget * 12,
+    //         // bottom: 'auto',
+    //       }}
+    //     />
+    //   );
+    // }
   }
+
+  console.log(tableHandles)
   // renders columns within table
   return (
     <>

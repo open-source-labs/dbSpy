@@ -41,52 +41,100 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 //   restRowsData = remainingRows.map(each => Object.values(each));
 //   // console.log(restRowsData)
 //  }
-  console.log("RowData", RowData)
-  console.log(data.edges)
-  console.log(tableName)
+  //console.log("RowData", RowData)
+  //console.log(data.edges)
+  //console.log(tableName)
+  console.log(firstRow)
  // function to generate handles on the table by iterating through all
  // data edges to match source and target handles of edges to handle id
- const tableHandles = [];
- for (let i = 0; i < data.edges.length; i++) {
-   if (data.edges[i].source === tableName || data.edges[i].source.slice(7) === tableName) {
-     //make handle placement dynamic, we need to know the row of our source
-     let columnNumberSource =
-       RowData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
-     if (columnNumberSource === 0) columnNumberSource = 1;
-     tableHandles.push(
-       <Handle
-         key={`${data.edges[i]}-source-${[i]}`}
-         type="source"
-         position={Position.Top}
-         id={data.edges[i].sourceHandle}
-         style={{
-           background: 'transparent',
-          //  left: "5%",
-           left: 77 + columnNumberSource+1 * 12,
-         }}
-       />
-     );
-   }
-   if (data.edges[i].target === tableName || data.edges[i].target.slice(7) === tableName) {
-     //make handle placement dynamic, we need to know the row of our target
-     let columnNumberTarget =
-       RowData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
-     if (columnNumberTarget === 0) columnNumberTarget = 1;
-     tableHandles.push(
-       <Handle
-         key={`${data.edges[i]}-target-${[i]}`}
-         type="target"
-         position={Position.Bottom}
-         id={data.edges[i].targetHandle}
-         style={{
-           background: 'transparent',
-          //  left: "5%"  //need to fix this for dynamic handles
-           left: 77 + columnNumberTarget-3 * 12,
-         }}
-       />
-     );
-   }
- }
+  
+  const tableHandles = [];
+  for (let i = 0; i < data.edges.length; i++) {
+    if (data.edges[i].source === tableName) {  //need to find bug in SOURCE Handles!!!!!
+      //make handle placement dynamic, we need to know the column of our source
+      let columnNumberSource =
+        firstRow.findIndex((columnName) => columnName === data.edges[i].sourceHandle) + 1;
+      if (columnNumberSource === 0) columnNumberSource = 1;
+      tableHandles.push(
+        <Handle
+          key={`${data.edges[i]}-source-${[i]}`}
+          type="source"
+          position={Position.Top}
+          id={data.edges[i].sourceHandle}
+          style={{
+            background: 'transparent',
+            // left: "65%"
+            left: 85 + columnNumberSource * 12,
+            // bottom: 'auto',
+          }}
+        />
+      );
+    }
+    if (data.edges[i].target === tableName) {
+      //make handle placement dynamic, we need to know the column of our target
+      let columnNumberTarget =
+        firstRow.findIndex((columnName) => columnName === data.edges[i].targetHandle) + 1;
+      console.log("columnNumberTarget", columnNumberTarget)
+      if (columnNumberTarget === 0) columnNumberTarget = 1;
+      tableHandles.push(
+        <Handle
+          key={`${data.edges[i]}-target-${[i]}`}
+          type="target"
+          position={Position.Top}
+          id={data.edges[i].targetHandle}
+          style={{
+            background: 'transparent',
+            // left: "5%"
+            left: 30 + columnNumberTarget-2 * 12,
+            // bottom: 'auto',
+          }}
+        />
+      );
+    }
+  }
+//  const tableHandles = [];
+//  for (let i = 0; i < data.edges.length; i++) {
+//    if (data.edges[i].source === tableName || data.edges[i].source.slice(7) === tableName) {
+//      //make handle placement dynamic, we need to know the row of our source
+//     //  let columnNumberSource =
+//     //    RowData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
+//     //  if (columnNumberSource === 0) columnNumberSource = 1;
+//      tableHandles.push(
+//        <Handle
+//          key={`${data.edges[i]}-source-${[i]}`}
+//          type="source"
+//          position={Position.Top}
+//          id={data.edges[i].sourceHandle}
+//          style={{
+//            background: 'transparent',
+//           //  left: "60%",
+           
+//           //  left: 77 + columnNumberSource+1 * 12,
+//          }}
+//        />
+//      );
+//    }
+//    if (data.edges[i].target === tableName || data.edges[i].target.slice(7) === tableName) {
+//      //make handle placement dynamic, we need to know the row of our target
+//     //  let columnNumberTarget =
+//     //    RowData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+//     //  if (columnNumberTarget === 0) columnNumberTarget = 1;
+//      tableHandles.push(
+//        <Handle
+//          key={`${data.edges[i]}-target-${[i]}`}
+//          type="target"
+//          position={Position.Bottom}
+//          id={data.edges[i].targetHandle}
+//          style={{
+//            background: 'transparent',
+//           //  left: "5%"  //need to fix this for dynamic handles
+//           //  left: 77 + columnNumberTarget - 5 * 12,
+        
+//          }}
+//        />
+//      );
+//    }
+//  }
  // renders columns within table
  return (
 <>

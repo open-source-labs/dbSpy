@@ -29,11 +29,11 @@ export default function DataInputModal({
     axios
       .post(`api/sql/${dbCredentials.db_type}/data`, {tableName: tableName, newRow: newRow})
       .then((res) => {
-        console.log('sucessfully updated');
+        console.log('data has been sent to DB');
       })
       .catch((err: ErrorEvent) => { console.error('sending new row error', err) })
   }
-
+ console.log(schemaStore)
   const secondaryColumnNames: string[] = Object.keys(schemaStore['public.' + tableName])
 
   const handleSubmit = (): boolean => { 
