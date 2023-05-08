@@ -5,7 +5,10 @@ import { DataSource } from 'typeorm';
 
 
 const dbConnect = async (req: Request) => {
-  const { db_type, file_path } = req.session;
+  const { db_type } = req.session;
+  const { file_path } = req.query;
+  console.log('db_type: ', db_type, 'file_path: ', file_path);
+  console.log('req.session in controller: ', req.session)
   
   const dbDataSource = new DataSource({
     type: db_type as "sqlite", // "mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",

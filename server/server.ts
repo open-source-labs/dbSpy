@@ -86,7 +86,7 @@ app.use(session({
          httpOnly: true,
          path: '/',
          sameSite: true,
-         expires: undefined 
+         expires: undefined
         }, 
   }));
 

@@ -44,6 +44,7 @@ const Sidebar = (props: any) => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const values: any = formValues;
+    console.log('values: ', values)
     //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link) {
       const fullLink = values.database_link;
@@ -179,7 +180,7 @@ const Sidebar = (props: any) => {
           />
         </div>
       )}
-      {serviceName === 'oracle' && (
+      {(serviceName === 'oracle') && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
@@ -209,7 +210,7 @@ const Sidebar = (props: any) => {
           </span>
         </div> 
       )}
-      {serviceName === 'sqlite' && (
+      {(serviceName === 'sqlite') && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
