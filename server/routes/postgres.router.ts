@@ -20,4 +20,8 @@ postgresRouter.post('/saveNewTable', (_req: Request, res: Response) => {
 console.log(_req.body)
 })
 
+postgresRouter.post('/addForeignKey',(_req: Request, res: Response) => {
+  console.log(_req.body)
+})
+
 export { postgresRouter };
