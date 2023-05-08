@@ -1,86 +1,63 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-// import { addNewDbRow } from './helperFunctions/universal.helpers'
-import { DataSource } from 'typeorm';
-
-
-export const dbConnect = async (req: Request) => {
-  const { db_type, hostname, password, port, username, database_name } = req.session;
-  
-  const dbDataSource = new DataSource({
-    type: db_type as "mssql", //"mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
-    host: hostname as string,
-    port: port ? parseInt(port as string) : 1521,
-    username: username as string,
-    password: password as string,
-    database: database_name as string,
-    synchronize: true,
-    logging: true,
-    options: {
-      encrypt: false,
-      }
-  });
-  console.log('db_type: ', db_type)
- //Start connection with the database
- await dbDataSource.initialize();
- console.log('Data source has been connected');
-
- return dbDataSource;
-};
+import { dbConnect } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
 export const microsoftQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-
-    try {
-          async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
-            const tableSchema: TableColumn = {};
-      
-            // console.log('microsoftSchema: ', microsoftSchema)
-            for (const column of microsoftSchemaData) {
-                const columnName: string = column.COLUMN_NAME;
-                // console.log('column: ', columnName)
-                //query for the foreign key data
-
-                const foreignKeys: any = await MicrosoftDataSource.query(microsoftForeignKeyQuery);
-                const foreignKey = foreignKeys.find((fk: any) => fk.column_name === columnName);
-        
-
-                // console.log('foreignKey: ', foreignKey)
-                //Creating the format for the Reference property if there is a foreign key
-                const references = []
-        
-                if (foreignKey){
-                    references.push({
-                        isDestination: false,
-                        PrimaryKeyName: foreignKey.column_name,
-                        PrimaryKeyTableName: 'public.' + tableName,
-                        ReferencesPropertyName: foreignKey.referenced_column_name,
-                        ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
-                        constraintName: foreignKey.constraint_name,
-                    });
-                    console.log('references: ', references)
-
-                };
-                console.log('references: ', references)
-                //Formation of the schema data
-                tableSchema[columnName] = {
-                    IsForeignKey: foreignKey ? true : false,
-                    IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
-                    Name: column.COLUMN_NAME,
-                    References: references,
-                    TableName: 'public.' + tableName,
-                    Value: null,
-                    additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
-                    data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
-                    field_name: columnName,
-                };
-            };
-            return tableSchema;
-        };
-
+    
         const MicrosoftDataSource = await dbConnect(req);
+        try{
+
+//-------------------------------------------
+    async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
+
+        const tableSchema: TableColumn = {};
+    
+        // console.log('microsoftSchema: ', microsoftSchema)
+        for (const column of microsoftSchemaData) {
+            const columnName: string = column.COLUMN_NAME;
+            // console.log('column: ', columnName)
+            //query for the foreign key data
+
+
+            const foreignKeys: any = await MicrosoftDataSource.query(microsoftForeignKeyQuery);
+            const foreignKey = foreignKeys.find((fk: any) => fk.column_name === columnName);
+    
+
+            // console.log('foreignKey: ', foreignKey)
+            //Creating the format for the Reference property if there is a foreign key
+            const references = []
+    
+            if (foreignKey){
+                references.push({
+                    isDestination: false,
+                    PrimaryKeyName: foreignKey.column_name,
+                    PrimaryKeyTableName: 'public.' + tableName,
+                    ReferencesPropertyName: foreignKey.referenced_column_name,
+                    ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
+                    constraintName: foreignKey.constraint_name,
+                });
+                console.log('references: ', references)
+
+            };
+            console.log('references: ', references)
+            //Formation of the schema data
+            tableSchema[columnName] = {
+                IsForeignKey: foreignKey ? true : false,
+                IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
+                Name: column.COLUMN_NAME,
+                References: references,
+                TableName: 'public.' + tableName,
+                Value: null,
+                additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
+                data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
+                field_name: columnName,
+        }};
+        return tableSchema;
+    };
+//-------------------------------------------------
 
           const tables: [{TABLE_NAME: string}] = await MicrosoftDataSource.query(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES`);
 
@@ -112,10 +89,15 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         console.log('Database has been disconnected');
 
         return next();
+        
 
     } catch(err: unknown) {
+        console.log('Error during Data Source: ', err);
+        MicrosoftDataSource.destroy();
+        console.log('Database has been disconnected');
         return next(err);
     };
+    
 };
 
 //----------------------------------------------------------------------------
@@ -123,7 +105,8 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
 export const microsoftAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
     const dbDataSource = await dbConnect(req)
     console.log('req.session: ', req.session)
-    try{
+    if (dbDataSource)
+{    try{
     const newDbRowData: {[key: string]: string } = req.body;
     const tableName = newDbRowData.tableName;
     const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
@@ -147,6 +130,9 @@ export const microsoftAddNewRow: RequestHandler = async (req: Request, _res: Res
     console.log('Database has been disconnected');
     return next(err);
   };
+} else {
+    throw new Error('Unable to make connection with database');
+}
   };
   
   //----------------------------------------------------------------------------

@@ -1,39 +1,21 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
-// import { addNewDbRow } from './helperFunctions/universal.helpers'
-import { DataSource } from 'typeorm';
-
-
-export const dbConnect = async (req: Request) => {
-  const { db_type, hostname, password, port, username, database_name } = req.session;
-  
-  const dbDataSource = new DataSource({
-    type: db_type as "mysql", //"mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
-    host: hostname as string,
-    port: port ? parseInt(port as string) : 1521,
-    username: username as string,
-    password: password as string,
-    database: database_name as string,
-    synchronize: true,
-    logging: true,
-  });
-  console.log('db_type: ', db_type)
- //Start connection with the database
- await dbDataSource.initialize();
- console.log('Data source has been connected');
-
- return dbDataSource;
-};
+import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
 export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
+  const MysqlDataSource = await dbConnect(req);
+  try {
+
+//-------------------------------------------
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
 
+//-------------------------------------------
     async function mysqlFormatTableSchema(mysqlSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
   
@@ -76,9 +58,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   
       return tableSchema;
   };
+//-------------------------------------------
 
-  const MysqlDataSource = await dbConnect(req);
-  try {
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
 

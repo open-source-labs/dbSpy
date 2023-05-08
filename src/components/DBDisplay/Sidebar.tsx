@@ -91,7 +91,7 @@ const Sidebar = (props: any) => {
       }
     } else if (values.file_path) {
       values.db_type = 'sqlite';
-      values.file_path = values.file_path;
+      values.database_name = values.file_path;
     }
 
 

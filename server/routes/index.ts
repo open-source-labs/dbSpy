@@ -96,32 +96,29 @@ const routes = async (app: Express) => {
 
 export const cookieSession = (req: Request, _res: Response, next: NextFunction) => {
   //app.get('/', (_req: Request, _res: Response, next: NextFunction) => {
-    const { db_type, hostname, password, port, username, database_name, service_name, file_path } = req.query;
+    const { db_type, hostname, password, port, username, database_name, service_name } = req.query;
     try {
-      if (typeof db_type === 'string') {
+      if (typeof db_type === 'string' ) {
         req.session.db_type = db_type;
-      } else { delete req.session['db_type']; } 
+      } 
       if (typeof hostname === 'string') {
         req.session.hostname = hostname;
-      } else { delete req.session['hostname']; } 
+      } 
       if (typeof password === 'string') {
         req.session.password = password;
-      } else { delete req.session['password']; }  
+      } 
       if (typeof port === 'string') {
         req.session.port = port;
-      } else { delete req.session['port']; } 
+      } 
       if (typeof username === 'string') {
         req.session.username = username;
-      } else { delete req.session['username']; }  
+      } 
       if (typeof database_name === 'string') {
         req.session.database_name = database_name;
-      } else { delete req.session['database_name']; } 
+      } 
       if (typeof service_name === 'string') {
         req.session.service_name = service_name;
-      } else { delete req.session['service_name']; } 
-      if (typeof file_path === 'string') {
-        req.session.file_path === file_path;
-      } else { delete req.session['file_path']; }
+      } 
     console.log('Cookie has been set and is saving session data')
     console.log('req.session: ', req.session)
   } catch (err: unknown) {
