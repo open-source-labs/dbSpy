@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
 import {
  FaRegEdit,
@@ -13,9 +13,21 @@ type RowData = {
   [key: string]: string | number
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number)=>void,index:number}) {
+export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string)=>void,index:number}) {
 
 //####### for CRUD ##########
+
+const newRow = JSON.parse(JSON.stringify(row));
+
+const [rowData, setRowData] = useState({ ...newRow });
+const [tempData, setTempData] = useState({ ...newRow });
+
+
+//reset the state when row changes. Specifically for on-delete functionality. 
+useEffect(()=> {
+  setRowData({...newRow})
+  setTempData({...newRow})
+  },[row])
 
 const [mode, setMode] = useState('default');
 
@@ -32,8 +44,7 @@ interface changes{
   [key:string|number]:string|number|tempData
 }
 
-const [rowData, setRowData] = useState({ ...row });
-const [tempData, setTempData] = useState({ ...row });
+
 
 
 const onCancel = () => {
@@ -101,7 +112,7 @@ return (
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
                 <FaRegSave size={17} />
               </button>):
-            (<button val={`${id}-rowCheckBtn`} onClick={() => deleteRow(rowData,index)}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            (<button val={`${id}-rowCheckBtn`} onClick={() =>{ deleteRow(rowData,index,id)}}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
               <FaRegCheckSquare size={17} />
             </button>)
       }

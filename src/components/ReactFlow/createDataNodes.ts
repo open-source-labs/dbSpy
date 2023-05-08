@@ -22,6 +22,8 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): D
   let i = 0;
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];
+
+
     nodes.push({
       id: tableKey,
       type: 'table',
