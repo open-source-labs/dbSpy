@@ -31,7 +31,7 @@ currentTable, handleRowChange, secondaryColumnNames
         <input
           className='m-2'
           type="text"
-          required
+          // required
           maxLength={63}
           onChange={(e) => {
             handleRowChange(i, e.target.value.trim());

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { TableColumns, TableSchema, ReferenceType, TableColumn } from '@/Types';
+import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
 import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
 
-//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 
 export const oracleQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     const { username } = req.query
@@ -51,7 +51,6 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
         };
 //-------------------------------------------
 
-
         const tables: [{TABLE_NAME: string}] = await OracleDataSource.query(`SELECT table_name FROM user_tables`);
         console.log('tables: ', tables)
         //Declare constants to store results we get back from queries
@@ -93,46 +92,42 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
     };
 };
 
-//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-
+    addNewDbRow(req, res, next);
+    return next();
 
     //export 
-    const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-        const dbDataSource = await dbConnect(req)
-        console.log('req.session: ', req.session)
-        try{
-        const newDbRowData: {[key: string]: string } = req.body
-        let tableName: string;
-        if (req.session.db_type === 'oracle') {
-            const tempName: any = req.session.username;
-            tableName = `"${tempName.toUpperCase()}"` + '.' + `"${newDbRowData.tableName}"`
-        } else {
-            tableName = newDbRowData.tableName
-        }
-        const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {} ;
+    //const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+    //     const dbDataSource = await dbConnect(req)
+    //     console.log('req.session: ', req.session)
+    //     try{
+    //     const newDbRowData: {[key: string]: string } = req.body
+    //     const user: any = req.session.username;
+    //     const tableName = `"${user.toUpperCase()}"."${newDbRowData.tableName}"`
+    //     const newSqlRow: {[key: string]: string} = newDbRowData.newRow as {} ;
     
-              const keys: string = Object.keys(newMysqlRow).join(", ");
-              console.log('keys: ', keys)
-              const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-              console.log('values: ', values)
-              const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} ("${keys}")
-                VALUES (${values})`);
+    //           const keys: string = Object.keys(newSqlRow).map(key => `"${key}"`).join(", ");
+    //           console.log('keys: ', keys)
+    //           const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
+    //           console.log('values: ', values)
+    //           const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+    //             VALUES (${values})`);
     
-          dbDataSource.destroy();
-          console.log('Database has been disconnected');
-          console.log('dbAddedRow in helper: ', dbAddedRow)
-          return dbAddedRow;
+    //       dbDataSource.destroy();
+    //       console.log('Database has been disconnected');
+    //       console.log('dbAddedRow in helper: ', dbAddedRow)
+    //       return dbAddedRow;
           
     
-      } catch (err: unknown) {
-        console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-        dbDataSource.destroy();
-        console.log('Database has been disconnected');
-        return next(err);
-      };
-      };
+    //   } catch (err: unknown) {
+    //     console.log('Error occurred in the addNewDbRow middleware: ', err);
+    //     dbDataSource.destroy();
+    //     console.log('Database has been disconnected');
+    //     return next(err);
+    //   };
+     // };
 
     // try{
     //     addNewDbRow(req, res, next);
@@ -144,4 +139,4 @@ export const oracleAddNewRow: RequestHandler = async (req: Request, res: Respons
     // };
   };
   
-  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { dbConnect } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 export const microsoftQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -100,39 +100,41 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
     
 };
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
-export const microsoftAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
-    const dbDataSource = await dbConnect(req)
-    console.log('req.session: ', req.session)
-    if (dbDataSource)
-{    try{
-    const newDbRowData: {[key: string]: string } = req.body;
-    const tableName = newDbRowData.tableName;
-    const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+export const microsoftAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    addNewDbRow(req, res, next);
+    return next();
+//     const dbDataSource = await dbConnect(req)
+//     console.log('req.session: ', req.session)
+//     if (dbDataSource)
+// {    try{
+//     const newDbRowData: {[key: string]: string } = req.body;
+//     const tableName = newDbRowData.tableName;
+//     const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
 
-          const keys: string = Object.keys(newMysqlRow).join(", ");
-          console.log("keys: ", keys)
-          const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-          console.log('values: ', values)
-          const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-            VALUES (${values})`);
+//           const keys: string = Object.keys(newMysqlRow).join(", ");
+//           console.log("keys: ", keys)
+//           const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
+//           console.log('values: ', values)
+//           const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+//             VALUES (${values})`);
 
-      dbDataSource.destroy();
-      console.log('Database has been disconnected');
-      console.log('dbAddedRow in helper: ', dbAddedRow)
-      return dbAddedRow;
+//       dbDataSource.destroy();
+//       console.log('Database has been disconnected');
+//       console.log('dbAddedRow in helper: ', dbAddedRow)
+//       return dbAddedRow;
       
 
-  } catch (err: unknown) {
-    console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    return next(err);
-  };
-} else {
-    throw new Error('Unable to make connection with database');
-}
+//   } catch (err: unknown) {
+//     console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+//     dbDataSource.destroy();
+//     console.log('Database has been disconnected');
+//     return next(err);
+//   };
+// } else {
+//     throw new Error('Unable to make connection with database');
+// }
   };
   
-  //----------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------------

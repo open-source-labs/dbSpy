@@ -24,6 +24,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
     for (const column of postgresSchemaData) {
       const columnName: any = column.column_name
       const keyString: any = column.additional_constraints
+      // console.log('column:', column)
     
       //query for the foreign key data
       const foreignKeys: any = await getForeignKeys();
@@ -45,6 +46,10 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         );
       };
     
+
+      const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null
+      const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : ''
+
       tableSchema[columnName] = {
         IsForeignKey: keyString.includes('FOREIGN KEY'),
         IsPrimaryKey: keyString.includes('PRIMARY KEY'),
@@ -52,7 +57,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
         References: references,
         TableName: 'public.' + tableName,
         Value: null,
-        additional_constraints: keyString.includes('NOT NULL') ? 'NOT NULL' : null,
+        additional_constraints: additionalConstraints + hasIdentity === 'null' ? null : additionalConstraints + hasIdentity,
         data_type: column.data_type,
         field_name: columnName,
       };
@@ -82,7 +87,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData)
-      // console.log('schema data: ', schema)
+      console.log('schema data: ', schema)
 
 
       // Storage of queried results into res.locals
@@ -104,33 +109,35 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 }
 //----------------------------------------------------------------------------
 
-export const postgresAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
-  const dbDataSource = await dbConnect(req)
-  console.log('req.session: ', req.session)
-  try{
-  const newDbRowData: {[key: string]: string } = req.body;
-  const tableName = newDbRowData.tableName;
-  const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbRow(req, res, next)
+  return next();
+  // const dbDataSource = await dbConnect(req)
+  // console.log('req.session: ', req.session)
+  // try{
+  // const newDbRowData: {[key: string]: string } = req.body;
+  // const tableName = newDbRowData.tableName;
+  // const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
 
-        const keys: string = Object.keys(newMysqlRow).join(", ");
-        console.log("keys: ", keys)
-        const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-        console.log('values: ', values)
-        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-          VALUES (${values})`);
+  //       const keys: string = Object.keys(newMysqlRow).join(", ");
+  //       console.log("keys: ", keys)
+  //       const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
+  //       console.log('values: ', values)
+  //       const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+  //         VALUES (${values})`);
 
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    console.log('dbAddedRow in helper: ', dbAddedRow)
-    return dbAddedRow;
+  //   dbDataSource.destroy();
+  //   console.log('Database has been disconnected');
+  //   console.log('dbAddedRow in helper: ', dbAddedRow)
+  //   return dbAddedRow;
     
 
-} catch (err: unknown) {
-  console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-  dbDataSource.destroy();
-  console.log('Database has been disconnected');
-  return next(err);
-};
+// } catch (err: unknown) {
+//   console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+//   dbDataSource.destroy();
+//   console.log('Database has been disconnected');
+//   return next(err);
+// };
 };
 
 //----------------------------------------------------------------------------

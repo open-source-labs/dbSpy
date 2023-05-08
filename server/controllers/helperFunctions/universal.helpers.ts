@@ -6,26 +6,29 @@ import { DataSource } from 'typeorm';
 export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
     console.log('req.session: ', req.session)
-    try{
-    const newDbRowData: {[key: string]: string } = req.body;
-    const tableName = newDbRowData.tableName;
-    const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
 
-          const keys: string = Object.keys(newMysqlRow).join(", ");
-          console.log("keys: ", keys)
-          const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-          console.log('values: ', values)
-          const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-            VALUES (${values})`);
+    try{
+    const user: string | undefined = req.session.username;   
+    const newDbRowData: {[key: string]: string } = req.body;
+    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${newDbRowData.tableName}"` : newDbRowData.tableName;
+    const newSqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+
+        const keys: string = req.session.db_type === 'oracle' ? Object.keys(newSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(newSqlRow).join(", ");
+        console.log('keys: ', keys)
+        const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
+        console.log('values: ', values)
+        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+        VALUES (${values})`);
+
+    
 
       dbDataSource.destroy();
       console.log('Database has been disconnected');
       console.log('dbAddedRow in helper: ', dbAddedRow)
-      return dbAddedRow;
-      
+      return dbAddedRow; 
 
   } catch (err: unknown) {
-    console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+    console.log('Error occurred in the addNewDbRow middleware: ', err);
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     return next(err);
@@ -35,8 +38,8 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
   //----------------------------------------------------------------------------
 
  export const dbConnect = async (req: Request) => {
-    const { db_type, hostname, password, port, username, database_name, service_name, file_path } = req.session;    
-if (db_type){
+    const { db_type, hostname, password, port, username, database_name, service_name } = req.session;    
+
     if (db_type === 'mysql') {
         const dbDataSource = new DataSource({
             type: "mysql",
@@ -109,9 +112,6 @@ if (db_type){
         console.log('Data source has been connected');
         return dbDataSource;
     } 
-} else {
-    throw new Error('Unable to connect to database')
-}
-  };
+ };
 
   //----------------------------------------------------------------------------
