@@ -29,4 +29,8 @@ postgresRouter.post('/deleteRow', postgresDeleteRow, (_req: Request, res: Respon
   return res.status(200).json(res.locals.deletedRow);
 });
 
+postgresRouter.post('/addForeignKey',(_req: Request, res: Response) => {
+  console.log(_req.body)
+})
+
 export { postgresRouter };

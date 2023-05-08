@@ -38,7 +38,7 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openAddColumnModal = (tableName: string) =>
     setInputModalState(true, 'column', tableName);
-  
+
   const openAddRowModal = (tableName: string) =>
     setInputModalState(true, 'row', tableName); //(isOpen? mode? currentTable?)
 
@@ -48,7 +48,7 @@ const DBDisplay: React.FC = () => {
 
 ////////////OAUTHHHHHHHH//////////////////
 
-useEffect(() :void => { 
+useEffect(() :void => {
 
 
   const windowUrl = window.location.search;
@@ -85,7 +85,10 @@ useEffect(() :void => {
    }
 
 },[])
-
+//TODO: Hide add table on dataview click
+  // const dataOnclick = ():void => {
+  //   const addTableButtonRef = useRef(null);
+  // }
 
   //////////////OAUTHHHHHHH//////////////
   /* Set the width of the side navigation to 250px and add a black background color to body */
@@ -125,7 +128,7 @@ useEffect(() :void => {
         <Sidebar closeNav={closeNav} />
 
         {/* "AddReference" => change reference in schema */}
-        {editRefMode ? <AddReference /> : <></>} 
+        {editRefMode ? <AddReference /> : <></>}
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
@@ -138,7 +141,7 @@ useEffect(() :void => {
           className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={setTableMode}
         >Data</button> */}
-        
+
         {welcome ? (
           <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
             <h3 className="text-center">Welcome to dbSpy!</h3>
@@ -149,7 +152,7 @@ useEffect(() :void => {
           </div>
         ) : (
             // if true, show schema table
-          isSchema? ( 
+          isSchema? (
             <><button id="showSchema"
               className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={setTableMode}
@@ -182,7 +185,7 @@ useEffect(() :void => {
               tableNameProp={currentTable}
             closeInputModal={() => setInputModalState(false)}
           />
-      
+
         )
       ):null}
     </div>
