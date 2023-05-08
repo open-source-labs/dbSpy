@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -8,7 +8,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
   const SqliteDataSource = await dbConnect(req);  
   try {
 
-//-------------------------------------------   
+//--------HELPER FUNCTION-----------------------------------   
     //function organizing data from queries in to the desired format of the front end
     async function sqliteFormatTableSchema(sqliteSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
     const tableSchema: TableColumn = {};
@@ -54,7 +54,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
     };
     return tableSchema;
     };
-//-------------------------------------------
+//--------HELPER FUNCTION END-----------------------------------
       
         const tables = await SqliteDataSource.query(`SELECT name FROM sqlite_master WHERE type='table'`)
  
@@ -132,3 +132,17 @@ export const sqliteAddNewRow: RequestHandler = async (req: Request, _res: Respon
 };
 
 //----------------------------------------------------------------------------
+
+  export const sqliteUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  };
+
+//--------------------------------------------------------------------------------------------------------
+
+//   export const sqliteDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+//     deleteRow(req, res, next);
+//     return next();
+//   };
+
+//--------------------------------------------------------------------------------------------------------

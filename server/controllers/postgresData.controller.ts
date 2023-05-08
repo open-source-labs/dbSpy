@@ -1,21 +1,20 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const PostgresDataSource = await dbConnect(req);
 
   try {
-
-//-------------------------------------------
+//--------HELPER FUNCTION----------------------------------- 
     async function getForeignKeys(): Promise<TableColumn[]> {
       return await PostgresDataSource.query(postgresForeignKeyQuery);
     };
 
-//------------------------------------------- 
+//--------HELPER FUNCTION----------------------------------- 
 
     //function organizing data from queries in to the desired format of the front end
     async function postgresFormatTableSchema(postgresSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
@@ -64,7 +63,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
     };
     return tableSchema;
     };
-//-------------------------------------------
+//--------HELPER FUNCTIONS END-----------------------------------
 
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
@@ -107,14 +106,32 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
     return next(err);
   };
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   addNewDbRow(req, res, next)
   return next();
 };
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+  export const postgresUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  };
+
+//--------------------------------------------------------------------------------------------------------
+
+//   export const postgresDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+//     deleteRow(req, res, next);
+//     return next();
+//   };
+
+//--------------------------------------------------------------------------------------------------------
+
+
+
+
 
 // type ColumnSchema = {
 //   table_name: string;

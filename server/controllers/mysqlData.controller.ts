@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
-import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -10,12 +10,12 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   const MysqlDataSource = await dbConnect(req);
   try {
 
-//-------------------------------------------
+//--------HELPER FUNCTION-----------------------------------
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
 
-//-------------------------------------------
+//--------HELPER FUNCTION-----------------------------------
     async function mysqlFormatTableSchema(mysqlSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
   
@@ -58,7 +58,7 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   
       return tableSchema;
   };
-//-------------------------------------------
+//--------HELPER FUNCTIONS END-----------------------------------
 
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
@@ -109,8 +109,26 @@ export const mysqlAddNewRow: RequestHandler = async (req: Request, res: Response
   return next();
 };
 
-
 //----------------------------------------------------------------------------
+
+  export const mysqlUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  };
+
+//--------------------------------------------------------------------------------------------------------
+
+//   export const mysqlDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+//     deleteRow(req, res, next);
+//     return next();
+//   };
+
+//--------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
 // // SSL data stored as environment variable for GitHub Actions access
 // // Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables

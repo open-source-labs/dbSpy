@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-import { sqliteQuery, sqliteAddNewRow } from '../controllers/sqliteData.controller';
+import { sqliteQuery, sqliteAddNewRow, sqliteUpdateRow } from '../controllers/sqliteData.controller';
 
 const sqliteRouter = Router();
 
@@ -12,6 +12,11 @@ sqliteRouter.get('/schema', sqliteQuery, (_req: Request, res: Response) => {
 sqliteRouter.post('/data', sqliteAddNewRow, (_req: Request, res: Response) => {
   console.log('Returned to the sqlite router after adding a new row');
   return res.status(200).json(res.locals.newRow);
+});
+
+sqliteRouter.post('/updateRow', sqliteUpdateRow, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after updating a row');
+  return res.status(200).json(res.locals.updatedRow);
 });
 
 export { sqliteRouter };

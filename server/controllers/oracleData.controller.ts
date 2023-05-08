@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------------------------
 
@@ -10,7 +10,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
     const OracleDataSource = await dbConnect(req);
 
     try {
-//-------------------------------------------
+//--------HELPER FUNCTION-----------------------------------
           async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string): Promise<TableColumn> {
             const tableSchema: TableColumn = {};
       
@@ -49,7 +49,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
             };
             return tableSchema;
         };
-//-------------------------------------------
+//--------HELPER FUNCTION END-----------------------------------
 
         const tables: [{TABLE_NAME: string}] = await OracleDataSource.query(`SELECT table_name FROM user_tables`);
         console.log('tables: ', tables)
@@ -99,4 +99,18 @@ export const oracleAddNewRow: RequestHandler = async (req: Request, res: Respons
     return next();
   };
   
-  //----------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
+
+    export const oracleUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  };
+
+//--------------------------------------------------------------------------------------------------------
+
+//   export const oracleDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+//     deleteRow(req, res, next);
+//     return next();
+//   };
+
+//--------------------------------------------------------------------------------------------------------

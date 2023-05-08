@@ -101,7 +101,6 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
         console.log('Data source has been connected');
         return dbDataSource;
     } else {
-        //req.session.database = file_path;
         const dbDataSource = new DataSource({
             type: "sqlite",
             database: database_name as string,
@@ -115,3 +114,35 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
  };
 
   //----------------------------------------------------------------------------
+
+  export const updateRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+    const dbDataSource = await dbConnect(req)
+    console.log('req.session: ', req.session)
+
+    try{
+    const user: string | undefined = req.session.username;   
+    const updatedDbRowData: {[key: string]: string } = req.body;
+    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${updatedDbRowData.tableName}"` : updatedDbRowData.tableName;
+    const updatedSqlRow: {[key: string]: string} = updatedDbRowData.updatedRow as {};
+
+        // const keys: string = req.session.db_type === 'oracle' ? Object.keys(updatedSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(updatedSqlRow).join(", ");
+        // console.log('keys: ', keys)
+        // const values: string = Object.values(updatedSqlRow).map(val => `'${val}'`).join(", ");
+        // console.log('values: ', values)
+        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`
+        UPDATE ${tableName} 
+        SET ${updatedSqlRow}
+        `);
+
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('dbAddedRow in helper: ', dbAddedRow)
+      return dbAddedRow; 
+
+  } catch (err: unknown) {
+    console.log('Error occurred in the updatedRow middleware: ', err);
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    return next(err);
+  };
+  };

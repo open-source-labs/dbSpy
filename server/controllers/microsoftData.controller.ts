@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { addNewDbRow, dbConnect } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
 
 //------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,7 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         const MicrosoftDataSource = await dbConnect(req);
         try{
 
-//-------------------------------------------
+//--------HELPER FUNCTION-----------------------------------
     async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
 
         const tableSchema: TableColumn = {};
@@ -57,7 +57,7 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         }};
         return tableSchema;
     };
-//-------------------------------------------------
+//--------HELPER FUNCTION END-----------------------------------
 
           const tables: [{TABLE_NAME: string}] = await MicrosoftDataSource.query(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES`);
 
@@ -107,4 +107,18 @@ export const microsoftAddNewRow: RequestHandler = async (req: Request, res: Resp
     return next();
   };
   
-  //------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------
+
+  export const microsoftUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  };
+
+//--------------------------------------------------------------------------------------------------------
+
+//   export const microsoftDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+//     deleteRow(req, res, next);
+//     return next();
+//   };
+
+//--------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-import { postgresQuery, postgresAddNewRow } from '../controllers/postgresData.controller';
+import { postgresQuery, postgresAddNewRow, postgresUpdateRow } from '../controllers/postgresData.controller';
 
 
 const postgresRouter = Router();
@@ -18,6 +18,11 @@ postgresRouter.post('/data', postgresAddNewRow, (_req: Request, res: Response) =
 postgresRouter.post('/saveNewTable', (_req: Request, res: Response) => {
 
 console.log(_req.body)
+
+postgresRouter.post('/updateRow', postgresUpdateRow, (_req: Request, res: Response) => {
+  console.log('Returned to the postgres router after updating a row');
+  return res.status(200).json(res.locals.updatedRow);
+});
 })
 
 export { postgresRouter };
