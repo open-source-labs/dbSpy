@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-import { oracleQuery, oracleAddNewRow, oracleUpdateRow } from '../controllers/oracleData.controller';
+import { oracleQuery, oracleAddNewRow, oracleUpdateRow, oracleDeleteRow } from '../controllers/oracleData.controller';
 
 const oracleRouter = Router();
 
@@ -17,6 +17,11 @@ oracleRouter.post('/data', oracleAddNewRow, (_req: Request, res: Response) => {
 oracleRouter.post('/updateRow', oracleUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the oracle router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
+});
+
+oracleRouter.post('/deleteRow', oracleDeleteRow, (_req: Request, res: Response) => {
+  console.log('Returned to the oracle router after deleting a row');
+  return res.status(200).json(res.locals.deletedRow);
 });
 
 export { oracleRouter };

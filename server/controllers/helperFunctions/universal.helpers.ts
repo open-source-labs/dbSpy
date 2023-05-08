@@ -129,18 +129,50 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
         // console.log('keys: ', keys)
         // const values: string = Object.values(updatedSqlRow).map(val => `'${val}'`).join(", ");
         // console.log('values: ', values)
-        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`
+        const dbUpdatedRow: Promise<unknown> = await dbDataSource.query(`
         UPDATE ${tableName} 
         SET ${updatedSqlRow}
         `);
 
       dbDataSource.destroy();
       console.log('Database has been disconnected');
-      console.log('dbAddedRow in helper: ', dbAddedRow)
-      return dbAddedRow; 
+      console.log('dbUpdatedRow in helper: ', dbUpdatedRow)
+      return dbUpdatedRow; 
 
   } catch (err: unknown) {
     console.log('Error occurred in the updatedRow middleware: ', err);
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    return next(err);
+  };
+  };
+
+  export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+    const dbDataSource = await dbConnect(req)
+    console.log('req.session: ', req.session)
+
+    try{
+    const user: string | undefined = req.session.username;   
+    const deletedDbRowData: {[key: string]: string } = req.body;
+    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${deletedDbRowData.tableName}"` : updatedDbRowData.tableName;
+    const deletedSqlRow: {[key: string]: string} = deletedDbRowData.updatedRow as {};
+
+        // const keys: string = req.session.db_type === 'oracle' ? Object.keys(updatedSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(updatedSqlRow).join(", ");
+        // console.log('keys: ', keys)
+        // const values: string = Object.values(updatedSqlRow).map(val => `'${val}'`).join(", ");
+        // console.log('values: ', values)
+        const dbDeletedRow: Promise<unknown> = await dbDataSource.query(`
+        DELETE FROM ${tableName} 
+        WHERE primary_key_column = ${deletedSqlRow.primary_key_value}
+        `);
+
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('dbAddedRow in helper: ', dbDeletedRow)
+      return dbDeletedRow; 
+
+  } catch (err: unknown) {
+    console.log('Error occurred in the deleteRow middleware: ', err);
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     return next(err);

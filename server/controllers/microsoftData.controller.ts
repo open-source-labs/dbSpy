@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
 
 //------------------------------------------------------------------------------------------------------
 
@@ -116,9 +116,9 @@ export const microsoftAddNewRow: RequestHandler = async (req: Request, res: Resp
 
 //--------------------------------------------------------------------------------------------------------
 
-//   export const microsoftDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-//     deleteRow(req, res, next);
-//     return next();
-//   };
+  export const microsoftDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    deleteRow(req, res, next);
+    return next();
+  };
 
 //--------------------------------------------------------------------------------------------------------

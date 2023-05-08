@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-import { microsoftQuery, microsoftAddNewRow, microsoftUpdateRow } from '../controllers/microsoftData.controller';
+import { microsoftQuery, microsoftAddNewRow, microsoftUpdateRow, microsoftDeleteRow } from '../controllers/microsoftData.controller';
 
 const microsoftRouter = Router();
 
@@ -16,6 +16,11 @@ microsoftRouter.post('/data', microsoftAddNewRow, (_req: Request, res: Response)
 microsoftRouter.post('/updateRow', microsoftUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the microsoft router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
+});
+
+microsoftRouter.post('/deleteRow', microsoftDeleteRow, (_req: Request, res: Response) => {
+  console.log('Returned to the microsoft router after deleting a row');
+  return res.status(200).json(res.locals.deletedRow);
 });
 
 export { microsoftRouter };

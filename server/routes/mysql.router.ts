@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-import { mysqlQuery, mysqlAddNewRow, mysqlUpdateRow } from '../controllers/mysqlData.controller';
+import { mysqlQuery, mysqlAddNewRow, mysqlUpdateRow, mysqlDeleteRow } from '../controllers/mysqlData.controller';
 
 const mysqlRouter = Router();
 
@@ -16,6 +16,11 @@ mysqlRouter.post('/data', mysqlAddNewRow, (_req: Request, res: Response) => {
 mysqlRouter.post('/updateRow', mysqlUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the mysql router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
+});
+
+mysqlRouter.post('/deleteRow', mysqlDeleteRow, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after deleting a row');
+  return res.status(200).json(res.locals.deletedRow);
 });
 
 export { mysqlRouter };

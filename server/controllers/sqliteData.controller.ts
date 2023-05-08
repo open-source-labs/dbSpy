@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 

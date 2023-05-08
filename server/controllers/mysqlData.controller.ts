@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
-import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------
 
@@ -118,10 +118,10 @@ export const mysqlAddNewRow: RequestHandler = async (req: Request, res: Response
 
 //--------------------------------------------------------------------------------------------------------
 
-//   export const mysqlDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-//     deleteRow(req, res, next);
-//     return next();
-//   };
+  export const mysqlDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    deleteRow(req, res, next);
+    return next();
+  };
 
 //--------------------------------------------------------------------------------------------------------
 

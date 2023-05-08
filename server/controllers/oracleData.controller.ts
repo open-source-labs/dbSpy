@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
 
 //----------------------------------------------------------------------------------------------
 
@@ -108,9 +108,9 @@ export const oracleAddNewRow: RequestHandler = async (req: Request, res: Respons
 
 //--------------------------------------------------------------------------------------------------------
 
-//   export const oracleDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-//     deleteRow(req, res, next);
-//     return next();
-//   };
+  export const oracleDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    deleteRow(req, res, next);
+    return next();
+  };
 
 //--------------------------------------------------------------------------------------------------------

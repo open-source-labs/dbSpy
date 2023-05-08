@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { addNewDbRow, dbConnect, updateRow } from './helperFunctions/universal.helpers'
+import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
 
 //------------------------------------------------------------------------------------------------------
 
@@ -122,10 +122,10 @@ export const postgresAddNewRow: RequestHandler = async (req: Request, res: Respo
 
 //--------------------------------------------------------------------------------------------------------
 
-//   export const postgresDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-//     deleteRow(req, res, next);
-//     return next();
-//   };
+  export const postgresDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+    deleteRow(req, res, next);
+    return next();
+  };
 
 //--------------------------------------------------------------------------------------------------------
 
