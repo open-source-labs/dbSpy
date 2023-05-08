@@ -9,6 +9,19 @@ type InputModalProps = {
   tableNameProp?: string;
 };
 
+interface Column {
+  name: string,
+  type: any,
+  isNullable: boolean,
+  isPrimary: boolean,
+  defaultValue: string | null;
+  }
+
+  type AddTableToDb = {
+  newTableName: string;
+  newColumns: Column[]
+  };
+
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
 
@@ -63,7 +76,24 @@ export default function InputModal({
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
-      if (mode === 'table') addTableSchema(tableName, columnData);
+      if (mode === 'table') {
+        addTableSchema(tableName, columnData);
+        const dataToSend: AddTableToDb = {
+          newTableName: tableName,
+          newColumns: columnData
+          }
+
+          //req to backend to save new table
+
+          fetch('/api/sql/postgres/saveNewTable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify(dataToSend)
+          })
+          .then((responseData)=> responseData.json())
+          .then((parsedData)=> console.log(parsedData))
+          console.log('tn:',tableName, 'cd:',columnData)
+      }
       else if (mode === 'column') {
         addColumnSchema(tableName, columnData);  //same method as addRow for data table
       }

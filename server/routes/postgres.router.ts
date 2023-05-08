@@ -15,4 +15,9 @@ postgresRouter.post('/data', postgresAddNewRow, (_req: Request, res: Response) =
   return res.status(200).json(res.locals.newRow);
 });
 
+postgresRouter.post('/saveNewTable', (_req: Request, res: Response) => {
+
+console.log(_req.body)
+})
+
 export { postgresRouter };
