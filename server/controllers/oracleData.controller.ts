@@ -1,7 +1,31 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, ReferenceType, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { dbConnect, addNewDbRow } from './helperFunctions/universal.helpers'
+// import { addNewDbRow } from './helperFunctions/universal.helpers'
+import { DataSource } from 'typeorm';
+
+
+export const dbConnect = async (req: Request) => {
+  const { db_type, hostname, password, port, username, database_name, service_name } = req.session;
+  
+  const dbDataSource = new DataSource({
+    type: db_type as "oracle", //"mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
+    host: hostname as string,
+    port: port ? parseInt(port as string) : 1521,
+    username: username as string,
+    password: password as string,
+    database: database_name as string,
+    serviceName: service_name ? service_name as string : undefined,
+    synchronize: true,
+    logging: true,
+  });
+  console.log('db_type: ', db_type)
+ //Start connection with the database
+ await dbDataSource.initialize();
+ console.log('Data source has been connected');
+
+ return dbDataSource;
+};
 
 //----------------------------------------------------------------------------
 
