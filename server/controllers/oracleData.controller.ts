@@ -97,46 +97,6 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
 export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     addNewDbRow(req, res, next);
     return next();
-
-    //export 
-    //const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-    //     const dbDataSource = await dbConnect(req)
-    //     console.log('req.session: ', req.session)
-    //     try{
-    //     const newDbRowData: {[key: string]: string } = req.body
-    //     const user: any = req.session.username;
-    //     const tableName = `"${user.toUpperCase()}"."${newDbRowData.tableName}"`
-    //     const newSqlRow: {[key: string]: string} = newDbRowData.newRow as {} ;
-    
-    //           const keys: string = Object.keys(newSqlRow).map(key => `"${key}"`).join(", ");
-    //           console.log('keys: ', keys)
-    //           const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
-    //           console.log('values: ', values)
-    //           const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-    //             VALUES (${values})`);
-    
-    //       dbDataSource.destroy();
-    //       console.log('Database has been disconnected');
-    //       console.log('dbAddedRow in helper: ', dbAddedRow)
-    //       return dbAddedRow;
-          
-    
-    //   } catch (err: unknown) {
-    //     console.log('Error occurred in the addNewDbRow middleware: ', err);
-    //     dbDataSource.destroy();
-    //     console.log('Database has been disconnected');
-    //     return next(err);
-    //   };
-     // };
-
-    // try{
-    //     addNewDbRow(req, res, next);
-    //     console.log('Row was added');
-    //     return next();
-    // } catch (err: unknown) {
-    //   console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
-    //   return next(err);
-    // };
   };
   
   //----------------------------------------------------------------------------------------------------------------
