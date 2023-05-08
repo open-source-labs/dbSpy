@@ -7,14 +7,13 @@ import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
 
-
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
   const { setInputModalState } = useSettingsStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
 
   const tableName = data.table[0];
-  let firstRow =[]
+ let firstRow =[]
   let restRowsData = []
   let secondaryFirstRow = []
 
@@ -28,7 +27,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
     restRowsData = RowData.map(each => Object.values(each));
   } else {
     firstRow = secondaryFirstRow
-  }
+   }
   //console.log('HERE!!!!!!!!',remainingRows)
 //   const remainingRows = Object.values(data.table[1]);
 //  if (RowData[0] !== undefined) {
@@ -36,11 +35,17 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 //   restRowsData = remainingRows.map(each => Object.values(each));
 //   // console.log(restRowsData)
 //  }
-
-//cannot make handles for data table dynamic since width of each column can be vary
+console.log(tableName)  
+  console.log(data.edges)
+console.log(firstRow)  
+//cannot make handles for data table dynamic since size of each column can vary
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === tableName) { 
+    if (data.edges[i].source === tableName) {
+      let columnNumberSource =
+        firstRow.findIndex((eachColumnName) => eachColumnName === data.edges[i].sourceHandle) + 1;
+      console.log('columnNumberSource',columnNumberSource)
+      if (columnNumberSource === 0) columnNumberSource = 1;
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -49,12 +54,17 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            left: "60%"
+            // left: "25%" + ((columnNumberSource - 1) * 30)
+            left: 62 + ((columnNumberSource-1)* 40)
           }}
         />
       );
     }
     if (data.edges[i].target === tableName) {
+      let columnNumberTarget =
+        firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+      console.log("columnNumberTarget", columnNumberTarget)
+      if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
@@ -74,7 +84,6 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 <>
   <div className="table-node transition-colors duration-500" key={tableName}>
   <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
-  {/* <NodeResizer minWidth={100} minHeight={30} /> */}
   {tableHandles}
   <div>
     <label htmlFor="text" 

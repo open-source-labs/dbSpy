@@ -101,7 +101,7 @@ const Sidebar = (props: any) => {
 
     //change between which getSchema from MySQL to postgres based on db_type
 
-    console.log('values in Sidebar', values)
+    //console.log('values in Sidebar', values)
 
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
