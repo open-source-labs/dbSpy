@@ -5,6 +5,7 @@ import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
 import RowInput from './RowInput';
 
+
 type InputModalProps = {
   closeInputModal: () => void;
   tableNameProp?: string;
@@ -21,9 +22,11 @@ export default function DataInputModal({
 
   const [tableName, setTableName] = useState(tableNameProp);
   const [rowData, setRowData] = useState([]);
-  const { schemaStore } = useSchemaStore((state) => state);
+  const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);
-  const { dataStore } = useDataStore((state) => state);
+  const { dataStore, setDataStore } = useDataStore((state) => state);
+
+  console.log("dbCredentials", dbCredentials)
 
   const updatingDB = (newRow):void => {
     axios
@@ -33,7 +36,22 @@ export default function DataInputModal({
       })
       .catch((err: ErrorEvent) => { console.error('sending new row error', err) })
   }
- console.log(schemaStore)
+  console.log(schemaStore)
+  
+  
+  // const getUpdatedData =  async() => {
+  //   const newData = await axios
+  //     .get(`api/sql/${values.db_type}/schema`, { params: dbCredentials })
+  //     .then((res) => {
+  //       console.log(res)
+  //       return res.data;
+  //     })
+  //     .catch((err: ErrorEvent) => console.error('getSchema error', err));
+  //   //update schemaStore and dataStore
+  //   setSchemaStore(newData.schema);
+  //   setDataStore(newData.data)
+  // }
+
   const secondaryColumnNames: string[] = Object.keys(schemaStore['public.' + tableName])
 
   const handleSubmit = (): boolean => { 
@@ -51,6 +69,7 @@ export default function DataInputModal({
       currentTable.push(additionalRow)
       //console.log('after update', currentTable)
       updatingDB(currentTable[currentTable.length-1])
+      // getUpdatedData()
       return true;
     } catch (error) {
       window.alert(error);
