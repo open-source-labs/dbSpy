@@ -20,7 +20,6 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const{schemaStore} = useSchemaStore((state) => state);
 
   const setDataStore = useDataStore((state) => state.setDataStore);
-  const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
 
 
 
@@ -80,7 +79,6 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 
 
   const { setInputModalState } = useSettingsStore((state) => state);
-  const { schemaStore } = useSchemaStore((state) => state);
 
   //console.log(schemaStore)
 //  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
