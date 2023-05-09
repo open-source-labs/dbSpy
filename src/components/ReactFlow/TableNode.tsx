@@ -76,7 +76,7 @@ export default function TableNode({ data }) {
             htmlFor="text"
             className="bg-[#075985] text-white text-stroke-black dark:bg-opacity-0"
             style={{
-             'margin-left': '0px'
+             'marginLeft': '0px'
             }}
           >
       {tableName}
