@@ -1,41 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 
-//----------------------------------------------------------------------------
-
-export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-    const dbDataSource = await dbConnect(req)
-    console.log('req.session: ', req.session)
-
-    try{
-    const user: string | undefined = req.session.username;   
-    const newDbRowData: {[key: string]: string } = req.body;
-    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${newDbRowData.tableName}"` : newDbRowData.tableName;
-    const newSqlRow: {[key: string]: string} = newDbRowData.newRow as {};
-
-        const keys: string = req.session.db_type === 'oracle' ? Object.keys(newSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(newSqlRow).join(", ");
-        console.log('keys: ', keys)
-        const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
-        console.log('values: ', values)
-        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-        VALUES (${values})`);
-
-    
-
-      dbDataSource.destroy();
-      console.log('Database has been disconnected');
-      console.log('dbAddedRow in helper: ', dbAddedRow)
-      return dbAddedRow; 
-
-  } catch (err: unknown) {
-    console.log('Error occurred in the addNewDbRow middleware: ', err);
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    return next(err);
-  };
-  };
-
-  //----------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------------------
 
  export const dbConnect = async (req: Request) => {
     const { db_type, hostname, password, port, username, database_name, service_name } = req.session;    
@@ -113,17 +79,52 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
     } 
  };
 
-  //----------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------------------------------------
+
+export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+    const dbDataSource = await dbConnect(req)
+    console.log('req.session: ', req.session)
+
+    try{
+    const user: string | undefined = req.session.username;   
+    const newDbRowData: {[key: string]: string } = req.body;
+    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${newDbRowData.tableName}"` : newDbRowData.tableName;
+    const newSqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+
+        const keys: string = req.session.db_type === 'oracle' ? Object.keys(newSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(newSqlRow).join(", ");
+        console.log('keys: ', keys)
+        const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
+        console.log('values: ', values)
+        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+        VALUES (${values})`);
+
+    
+
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('dbAddedRow in helper: ', dbAddedRow)
+      return dbAddedRow; 
+
+  } catch (err: unknown) {
+    console.log('Error occurred in the addNewDbRow middleware: ', err);
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    return next(err);
+  };
+  };
+
+  //------------------------------------------------------------------------------------------------------------
 
   export const updateRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
     console.log('req.session: ', req.session)
 
     try{
-    const user: string | undefined = req.session.username;   
-    const updatedDbRowData: {[key: string]: string } = req.body;
-    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${updatedDbRowData.tableName}"` : updatedDbRowData.tableName;
-    const updatedSqlRow: {[key: string]: string} = updatedDbRowData.updatedRow as {};
+        const user: string | undefined = req.session.username;   
+        const updatedDbRowData: {[key: string]: string } = req.body;
+        const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${updatedDbRowData.tableName}"` : updatedDbRowData.tableName;
+        const updatedSqlRow: {[key: string]: string} = updatedDbRowData.updatedRow as {};
 
         // const keys: string = req.session.db_type === 'oracle' ? Object.keys(updatedSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(updatedSqlRow).join(", ");
         // console.log('keys: ', keys)
@@ -136,45 +137,80 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
 
       dbDataSource.destroy();
       console.log('Database has been disconnected');
-      console.log('dbUpdatedRow in helper: ', dbUpdatedRow)
+    //   console.log('dbUpdatedRow in helper: ', dbUpdatedRow)
       return dbUpdatedRow; 
 
-  } catch (err: unknown) {
-    console.log('Error occurred in the updatedRow middleware: ', err);
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    return next(err);
+    } catch (err: unknown) {
+        console.log('Error occurred in the updatedRow middleware: ', err);
+        dbDataSource.destroy();
+        console.log('Database has been disconnected');
+        return next(err);
   };
   };
+
+  //------------------------------------------------------------------------------------------------------------
 
   export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
     console.log('req.session: ', req.session)
 
     try{
-    const user: string | undefined = req.session.username;   
-    const deletedDbRowData: {[key: string]: string } = req.body;
-    const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${deletedDbRowData.tableName}"` : updatedDbRowData.tableName;
-    const deletedSqlRow: {[key: string]: string} = deletedDbRowData.updatedRow as {};
+        const user: string | undefined = req.session.username;   
+        const deletedDbRowData: {[key: string]: string } = req.body;
+        const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${deletedDbRowData.tableName}"` : deletedDbRowData.tableName;
 
-        // const keys: string = req.session.db_type === 'oracle' ? Object.keys(updatedSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(updatedSqlRow).join(", ");
-        // console.log('keys: ', keys)
-        // const values: string = Object.values(updatedSqlRow).map(val => `'${val}'`).join(", ");
-        // console.log('values: ', values)
+
         const dbDeletedRow: Promise<unknown> = await dbDataSource.query(`
         DELETE FROM ${tableName} 
-        WHERE primary_key_column = ${deletedSqlRow.primary_key_value}
+        WHERE '${deletedDbRowData.primaryKey}' = ${deletedDbRowData.value}
         `);
 
       dbDataSource.destroy();
       console.log('Database has been disconnected');
-      console.log('dbAddedRow in helper: ', dbDeletedRow)
+    //   console.log('deletedRow in helper: ', dbDeletedRow)
       return dbDeletedRow; 
 
-  } catch (err: unknown) {
-    console.log('Error occurred in the deleteRow middleware: ', err);
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    return next(err);
+    } catch (err: unknown) {
+        console.log('Error occurred in the deleteRow middleware: ', err);
+        dbDataSource.destroy();
+        console.log('Database has been disconnected');
+        return next(err);
+    };
   };
+
+  //------------------------------------------------------------------------------------------------------------
+
+  export const addForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+    const dbDataSource = await dbConnect(req)
+    console.log('req.session: ', req.session)
+
+    try{
+        const user: string | undefined = req.session.username;   
+        const addForeignKeyData: {[key: string]: string } = req.body;
+        console.log('req.body: ', req.body)
+
+        //For Oracle, the special database
+        const primaryKeyTableName = addForeignKeyData.PrimaryKeyTableName.slice(7, addForeignKeyData.PrimaryKeyTableName.length + 1)
+        const foreignKeyTableName = addForeignKeyData.ForeignKeyTableName.slice(7, addForeignKeyData.ForeignKeyTableName.length + 1)
+        const primaryTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${primaryKeyTableName}"` : addForeignKeyData.PrimaryKeyTableName;
+        const foreignTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` : addForeignKeyData.ForeignKeyTableName;
+
+        const addedForeignKey: Promise<unknown> = await dbDataSource.query(`
+        ALTER TABLE ${foreignTableName}
+        ADD CONSTRAINT fk_${addForeignKeyData.ForeignKeyColumnName}_to_${addForeignKeyData.PrimaryKeyColumnName}
+        FOREIGN KEY ("${addForeignKeyData.ForeignKeyColumnName}")
+        REFERENCES ${primaryTableName} ("${addForeignKeyData.PrimaryKeyColumnName}")
+        `);
+        console.log('addedForeignKey: ', addedForeignKey)
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('addedForeignKey in helper: ', addedForeignKey)
+      return addedForeignKey; 
+
+    } catch (err: unknown) {
+        console.log('Error occurred in the addedForeignKey middleware: ', err);
+        dbDataSource.destroy();
+        console.log('Database has been disconnected');
+        return next(err);
+    };
   };

@@ -1,11 +1,12 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
+const postgresController = {
 //------------------------------------------------------------------------------------------------------
 
-export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
   const PostgresDataSource = await dbConnect(req);
 
   try {
@@ -105,32 +106,41 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
     console.log('Database has been disconnected');
     return next(err);
   };
-}
+},
 //------------------------------------------------------------------------------------------------------
 
-export const postgresAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
   addNewDbRow(req, res, next)
   return next();
-};
+},
 
 //------------------------------------------------------------------------------------------------------
 
-  export const postgresUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
 
-  export const postgresDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-    deleteRow(req, res, next);
+postgresDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+  deleteRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
 
+postgresAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  addForeignKey(req, res, next);
+  console.log("postgresAddForeignKey function has concluded")
+  return next();
+},
 
+//--------------------------------------------------------------------------------------------------------
 
+};
+
+export default postgresController;
 
 
 // type ColumnSchema = {

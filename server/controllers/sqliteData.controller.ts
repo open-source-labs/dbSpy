@@ -1,10 +1,12 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
+
+const sqliteController = {
 //----------------------------------------------------------------------------
 
-export const sqliteQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+sqliteQuery: async (req: Request, res: Response, next: NextFunction) => {
   const SqliteDataSource = await dbConnect(req);  
   try {
 
@@ -98,11 +100,11 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
       console.log('Database has been disconnected');
       return next(err);
     };
-};
+},
 
 //----------------------------------------------------------------------------
 
-export const sqliteAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
+sqliteAddNewRow: async (req: Request, _res: Response, next: NextFunction) => {
   const dbDataSource = await dbConnect(req)
   console.log('req.session: ', req.session)
   try{
@@ -129,20 +131,31 @@ export const sqliteAddNewRow: RequestHandler = async (req: Request, _res: Respon
   console.log('Database has been disconnected');
   return next(err);
 };
-};
+},
 
 //----------------------------------------------------------------------------
 
-  export const sqliteUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+sqliteUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
 
-//   export const sqliteDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-//     deleteRow(req, res, next);
-//     return next();
-//   };
+sqliteDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+    deleteRow(req, res, next);
+    return next();
+  },
 
 //--------------------------------------------------------------------------------------------------------
+
+sqliteAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  addForeignKey(req, res, next);
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+};
+
+export default sqliteController;

@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
+const microsoftController = {
 //------------------------------------------------------------------------------------------------------
 
-export const microsoftQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+microsoftQuery: async (req: Request, res: Response, next: NextFunction) => {
     
         const MicrosoftDataSource = await dbConnect(req);
         try{
@@ -98,27 +99,38 @@ export const microsoftQuery: RequestHandler = async (req: Request, res: Response
         return next(err);
     };
     
-};
+},
 
 //------------------------------------------------------------------------------------------------------
 
-export const microsoftAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+microsoftAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     addNewDbRow(req, res, next);
     return next();
-  };
+  },
   
 //-------------------------------------------------------------------------------------------------------
 
-  export const microsoftUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+microsoftUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
 
-  export const microsoftDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+microsoftDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
     deleteRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
+
+microsoftAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+    addForeignKey(req, res, next);
+    return next();
+  },
+  
+  //--------------------------------------------------------------------------------------------------------
+
+};
+
+export default microsoftController;

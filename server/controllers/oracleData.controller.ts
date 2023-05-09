@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { addNewDbRow, dbConnect, updateRow, deleteRow } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
+const oracleController = {
 //----------------------------------------------------------------------------------------------
 
-export const oracleQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+oracleQuery: async (req: Request, res: Response, next: NextFunction) => {
     const { username } = req.query
     const OracleDataSource = await dbConnect(req);
 
@@ -90,27 +91,38 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
         console.log('Disconnected from the database');
         return next(err);
     };
-};
+},
 
 //----------------------------------------------------------------------------------------------------------------
 
-export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+oracleAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     addNewDbRow(req, res, next);
     return next();
-  };
+  },
   
 //----------------------------------------------------------------------------------------------------------------
 
-    export const oracleUpdateRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+oracleUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
 
-  export const oracleDeleteRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+oracleDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
     deleteRow(req, res, next);
     return next();
-  };
+  },
 
 //--------------------------------------------------------------------------------------------------------
+
+oracleAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+    addForeignKey(req, res, next);
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+};
+
+export default oracleController;
