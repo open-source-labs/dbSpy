@@ -13,7 +13,7 @@ microsoftRouter.post('/data', microsoftController.microsoftAddNewRow, (_req: Req
   return res.status(200).json(res.locals.newRow);
 });
 
-microsoftRouter.put('/updateRow', microsoftController.microsoftUpdateRow, (_req: Request, res: Response) => {
+microsoftRouter.patch('/updateRow', microsoftController.microsoftUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the microsoft router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
 });

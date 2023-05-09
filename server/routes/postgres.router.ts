@@ -20,7 +20,7 @@ postgresRouter.post('/saveNewTable', (_req: Request, res: Response) => {
 console.log(_req.body)
 })
 
-postgresRouter.put('/updateRow', postgresController.postgresUpdateRow, (_req: Request, res: Response) => {
+postgresRouter.patch('/updateRow', postgresController.postgresUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the postgres router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
 });

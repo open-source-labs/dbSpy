@@ -124,15 +124,23 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
         const user: string | undefined = req.session.username;   
         const updatedDbRowData: {[key: string]: string } = req.body;
         const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${updatedDbRowData.tableName}"` : updatedDbRowData.tableName;
-        const updatedSqlRow: {[key: string]: string} = updatedDbRowData.updatedRow as {};
+        const updatedSqlRow: {[key: string]: string} = updatedDbRowData.newRow as {};
 
-        // const keys: string = req.session.db_type === 'oracle' ? Object.keys(updatedSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(updatedSqlRow).join(", ");
+        // const keys: string = req.session.db_type === 'oracle' ? Object.keys(updatedSqlRow).map(key => `"${key}"`) : Object.keys(updatedSqlRow);
         // console.log('keys: ', keys)
         // const values: string = Object.values(updatedSqlRow).map(val => `'${val}'`).join(", ");
         // console.log('values: ', values)
+
+        const keys = Object.keys(updatedSqlRow);
+        const values = Object.values(updatedSqlRow);
+        let updateString = '';
+        for (let i = 0; i < keys.length; i++) {
+            updateString += `"${keys[i]}" = ${values[i]}, `
+        }
+
         const dbUpdatedRow: Promise<unknown> = await dbDataSource.query(`
         UPDATE ${tableName} 
-        SET ${updatedSqlRow}
+        SET ${updateString}
         `);
 
       dbDataSource.destroy();
@@ -167,7 +175,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
 
       dbDataSource.destroy();
       console.log('Database has been disconnected');
-    //   console.log('deletedRow in helper: ', dbDeletedRow)
+      console.log('deletedRow in helper: ', dbDeletedRow)
       return dbDeletedRow; 
 
     } catch (err: unknown) {

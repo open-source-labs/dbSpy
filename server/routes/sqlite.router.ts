@@ -14,7 +14,7 @@ sqliteRouter.post('/data', sqliteController.sqliteAddNewRow, (_req: Request, res
   return res.status(200).json(res.locals.newRow);
 });
 
-sqliteRouter.put('/updateRow', sqliteController.sqliteUpdateRow, (_req: Request, res: Response) => {
+sqliteRouter.patch('/updateRow', sqliteController.sqliteUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the sqlite router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
 });

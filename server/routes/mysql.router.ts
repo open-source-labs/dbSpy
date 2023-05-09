@@ -13,7 +13,7 @@ mysqlRouter.post('/data', mysqlController.mysqlAddNewRow, (_req: Request, res: R
   return res.status(200).json(res.locals.newRow);
 });
 
-mysqlRouter.put('/updateRow', mysqlController.mysqlUpdateRow, (_req: Request, res: Response) => {
+mysqlRouter.patch('/updateRow', mysqlController.mysqlUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the mysql router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
 });

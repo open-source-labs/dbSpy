@@ -14,7 +14,7 @@ oracleRouter.post('/data', oracleController.oracleAddNewRow, (_req: Request, res
   return res.status(200).json(res.locals.newRow);
 });
 
-oracleRouter.put('/updateRow', oracleController.oracleUpdateRow, (_req: Request, res: Response) => {
+oracleRouter.patch('/updateRow', oracleController.oracleUpdateRow, (_req: Request, res: Response) => {
   console.log('Returned to the oracle router after updating a row');
   return res.status(200).json(res.locals.updatedRow);
 });
