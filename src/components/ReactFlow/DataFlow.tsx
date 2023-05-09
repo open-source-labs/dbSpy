@@ -22,11 +22,13 @@ export default function DataFlow() {
   const { dataStore } = useDataStore(((state) => state))
   const { schemaStore } = useSchemaStore((state) => state);
 
+  //console.log(dataStore)
+
   // re-render every time dataStore updates
   
   useEffect(() => {  
     reRender(dataStore);
-  }, [dataStore, schemaStore]);
+  }, [dataStore/*, schemaStore*/]);
 
   function reRender(dataStore: DataStore) {
     if (!dataStore || !Object.keys(dataStore).length) return;
@@ -35,7 +37,7 @@ export default function DataFlow() {
     const initialNodes = createDataNodes(dataStore, initialEdges);
     setNodes(initialNodes);
   }
-  
+  //console.log('nodes in dataFlow',nodes) //schema info!!! why???
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>

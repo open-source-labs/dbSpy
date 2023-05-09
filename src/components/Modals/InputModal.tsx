@@ -9,6 +9,19 @@ type InputModalProps = {
   tableNameProp?: string;
 };
 
+interface Column {
+  name: string,
+  type: any,
+  isNullable: boolean,
+  isPrimary: boolean,
+  defaultValue: string | null;
+  }
+
+  type AddTableToDb = {
+  newTableName: string;
+  newColumns: Column[]
+  };
+
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
 
@@ -20,7 +33,7 @@ export default function InputModal({
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
-  const initialTable: string = 'untitled_table';
+  const initialTable: string = 'untitled_table';  //for adding new table
   const initialColumns: ColumnData[] = [
     {
       name: 'id',
@@ -63,9 +76,26 @@ export default function InputModal({
   const handleSubmit = (): boolean => {
     // table must be added to schema first to enable column validity checks
     try {
-      if (mode === 'table') addTableSchema(tableName, columnData);
+      if (mode === 'table') {
+        addTableSchema(tableName, columnData);
+        const dataToSend: AddTableToDb = {
+          newTableName: tableName,
+          newColumns: columnData
+          }
+
+          //req to backend to save new table
+
+          fetch('/api/sql/postgres/saveNewTable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify(dataToSend)
+          })
+          .then((responseData)=> responseData.json())
+          .then((parsedData)=> console.log(parsedData))
+          console.log('tn:',tableName, 'cd:',columnData)
+      }
       else if (mode === 'column') {
-        addColumnSchema(tableName, columnData);
+        addColumnSchema(tableName, columnData);  //same method as addRow for data table
       }
 
       return true;
@@ -84,7 +114,7 @@ export default function InputModal({
     defaultValue: null,
   };
 
-  const addColumn = () => {
+  const addColumn = () => { //addNewRow for data table
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
       return [...prevColumns];
@@ -103,7 +133,6 @@ export default function InputModal({
     property: keyof ColumnData,
     value: string | boolean
   ) => {
-    console.log('handle column chnage')
     setColumnData((prevColumns) => {
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
@@ -139,6 +168,8 @@ export default function InputModal({
       mode={mode}
     />
   ));
+
+  // console.log("columnData", columnData)
 
   return (
     <div id="inputModal" className="input-modal">

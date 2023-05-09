@@ -1,136 +1,54 @@
-//need to finish building this file#####################
-
 import React from 'react';
-import { SQLDataType, RowsOfData } from '../../Types';
-import DataTypeOptions from './DataTypeOptions';
 
-// type ColumnInputProps = {
-//   index: number;
-//   deleteColumn: (index: number) => void;
-//   handleColumnChange: (
-//     index: number,
-//     property: keyof RowsOfData,
-//     value: string | boolean
-//   ) => void;
-//   name: string;
-//   type: SQLDataType;
-//   isNullable: boolean;
-//   isPrimary: boolean;
-//   defaultValue: string | null;
-//   columnCount: number;
-//   mode: 'table' | 'column';
-// };
+type RowInputProps = {
+  currentTable;
+  handleRowChange: (
+    index: number,
+    value: string | boolean
+  ) => void;
+  secondaryColumnNames: string[]
+};
 
-function RowInput({
-  index,
-  deleteColumn,
-  handleColumnChange,
-  name,
-  type,
-  isNullable,
-  isPrimary,
-  defaultValue,
-  columnCount,
-  mode,
-}: ColumnInputProps) {
+function DataRowInput({
+currentTable, handleRowChange, secondaryColumnNames
+}: RowInputProps) {
+  const columns: any = [];
+  const inputs = [];
+  let columnNames: string[];
+  if (!currentTable.length) {
+    columnNames = secondaryColumnNames;
+  } else {
+    columnNames = Object.keys(currentTable[0]);
+  }
+    columnNames.map(each => {
+      columns.push(<label className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
+        {each}
+      </label>);
+    });
+  
+    for (let i = 0; i < columns.length; i++) {
+      inputs.push(
+        <input
+          className='m-2'
+          type="text"
+          required
+          maxLength={63}
+          onChange={(e) => {
+            handleRowChange(i, e.target.value.trim());
+          }}
+        />);
+    }
+
   return (
     <div className="column-input">
       <div>
-        <label
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-          htmlFor={`column-${index}-name`}
-        >
-          Column Name
-        </label>
-        <input
-          type="text"
-          id={`column-${index}-name`}
-          required
-          maxLength={63}
-          value={name}
-          onChange={(e) => {
-            handleColumnChange(index, 'name', e.target.value.trim());
-          }}
-        />
+        {columns}
       </div>
-
       <div>
-        <label
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-          htmlFor={`column-${index}-type`}
-        >
-          Type
-        </label>
-        <select
-          id={`column-${index}-type`}
-          defaultValue={type}
-          onChange={(e) => handleColumnChange(index, 'type', e.target.value)}
-        >
-          <DataTypeOptions />
-        </select>
+        {inputs}
       </div>
-
-      <div>
-        <label
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-          htmlFor={`column-${index}-isNullable`}
-        >
-          Nullable
-        </label>
-        <input
-          type="checkbox"
-          id={`column-${index}-isNullable`}
-          checked={isNullable}
-          onChange={() => handleColumnChange(index, 'isNullable', !isNullable)}
-        />
-      </div>
-
-      <div>
-        <label
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-          htmlFor={`column-${index}-default-val`}
-        >
-          Default Value
-        </label>
-        <input
-          type="text"
-          id={`column-${index}-default-val`}
-          maxLength={63}
-          placeholder="(NULL)"
-          value={defaultValue || ''}
-          onChange={(e) => handleColumnChange(index, 'defaultValue', e.target.value)}
-        />
-      </div>
-
-      {mode === 'table' && (
-        <div>
-          <label
-            className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-            htmlFor={`column-${index}-primary`}
-          >
-            Primary Key
-          </label>
-          <input
-            type="checkbox"
-            id={`column-${index}-primary`}
-            checked={isPrimary}
-            onChange={() => handleColumnChange(index, 'isPrimary', !isPrimary)}
-          />
-        </div>
-      )}
-
-      {columnCount > 1 && (
-        <button
-          type="button"
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
-          onClick={() => deleteColumn(index)}
-        >
-          {/* TODO: ADD X SVG */}X
-        </button>
-      )}
     </div>
   );
-  
 }
 
-export default RowInput;
+export default DataRowInput;

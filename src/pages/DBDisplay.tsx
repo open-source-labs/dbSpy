@@ -39,13 +39,16 @@ const DBDisplay: React.FC = () => {
   const openAddColumnModal = (tableName: string) =>
     setInputModalState(true, 'column', tableName);
 
+  const openAddRowModal = (tableName: string) =>
+    setInputModalState(true, 'row', tableName); //(isOpen? mode? currentTable?)
+
   //create references for HTML elements
   const mySideBarId: any = useRef();
   const mainId: any = useRef();
 
 ////////////OAUTHHHHHHHH//////////////////
 
-useEffect(() :void => { 
+useEffect(() :void => {
 
 
   const windowUrl = window.location.search;
@@ -82,7 +85,10 @@ useEffect(() :void => {
    }
 
 },[])
-
+//TODO: Hide add table on dataview click
+  // const dataOnclick = ():void => {
+  //   const addTableButtonRef = useRef(null);
+  // }
 
   //////////////OAUTHHHHHHH//////////////
   /* Set the width of the side navigation to 250px and add a black background color to body */
@@ -103,7 +109,8 @@ useEffect(() :void => {
     else openNav();
   }
 
-  console.log('isSchema???', isSchema)
+  //console.log('isSchema???', isSchema)
+  //console.log('currentTable???', currentTable)
 
   return (
     <div
@@ -119,6 +126,8 @@ useEffect(() :void => {
           &times;
         </a>
         <Sidebar closeNav={closeNav} />
+
+        {/* "AddReference" => change reference in schema */}
         {editRefMode ? <AddReference /> : <></>}
       </div>
 
@@ -132,7 +141,7 @@ useEffect(() :void => {
           className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={setTableMode}
         >Data</button> */}
-        
+
         {welcome ? (
           <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
             <h3 className="text-center">Welcome to dbSpy!</h3>
@@ -143,7 +152,7 @@ useEffect(() :void => {
           </div>
         ) : (
             // if true, show schema table
-          isSchema? ( 
+          isSchema? (
             <><button id="showSchema"
               className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={setTableMode}
@@ -157,6 +166,7 @@ useEffect(() :void => {
           )
         )}
       </div>
+
       {/* MODALS */}
 
       {/* if isSchema === true => need modal for schema
@@ -171,48 +181,16 @@ useEffect(() :void => {
           />
         ) : (
           <DataInputModal
-            mode={inputModalState.mode}
-            tableNameProp={currentTable}
+            //mode={inputModalState.mode}
+              tableNameProp={currentTable}
             closeInputModal={() => setInputModalState(false)}
           />
-      
+
         )
       ):null}
-      
-
-
-      {/* this is what was working with schema!!!! */}
-      {/* {inputModalState.isOpen && (
-        <InputModal
-          mode={inputModalState.mode}
-          tableNameProp={currentTable}
-          closeInputModal={() => setInputModalState(false)}
-        />
-      )} */}
     </div>
   );
 };
 
 export default DBDisplay;
-
-
-//      {inputModalState.isOpen &&
-  //       isSchema ? 
-        
-  //                  (
-  //       <DataInputModal
-  //         mode={inputModalState.mode}
-  //         tableNameProp={currentTable}
-  //         closeInputModal={() => setInputModalState(false)}
-  //       />
-  // ) : (
-        
-  //           (
-  //       <InputModal
-  //         mode={inputModalState.mode}
-  //         tableNameProp={currentTable}
-  //         closeInputModal={() => setInputModalState(false)}
-  //       />
-  //     ) 
-  //     )}
 

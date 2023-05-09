@@ -6,6 +6,15 @@ import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import { Reference } from '@/Types';
 
+// interface ForeignKeyUpdateType  {
+//     PrimaryKeyTableName: string,
+//     PrimaryKeyColumnName: string,
+//     ForeignKeyTableName: string,
+//     ForeignKeyColumnName:string
+// }
+
+
+
 const AddReference: React.FC = () => {
   const { currentTable, currentColumn, setEditRefMode } = useSettingsStore(
     (state) => state
@@ -50,6 +59,21 @@ const AddReference: React.FC = () => {
        * Process is fast enough to not be noticeable to user
        */
       nullCheck();
+      console.log(formValues)
+      //TODO: Send input from FK form to backend
+      const updatedForeignKey: Reference = {
+        PrimaryKeyTableName: formValues.PrimaryKeyTableName,
+        PrimaryKeyColumnName: formValues.PrimaryKeyName,
+        ForeignKeyTableName: formValues.ReferencesTableName,
+        ForeignKeyColumnName:formValues.ReferencesPropertyName
+      }
+      fetch('/api/sql/postgres/addForeignKey', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedForeignKey)
+      })
       document
         .querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
       addForeignKeySchema(formValues);

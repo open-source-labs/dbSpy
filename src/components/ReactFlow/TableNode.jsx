@@ -1,6 +1,3 @@
-
- 
-
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
@@ -15,11 +12,13 @@ export default function TableNode({ data }) {
   const [tableColumns, setTableColumns] = useState(columnData);
   const { setInputModalState } = useSettingsStore((state) => state);
 
+  //console.log(data)
+
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === tableName) {
+    if (data.edges[i].source === tableName) {  //need to find bug in SOURCE Handles!!!!!
       //make handle placement dynamic, we need to know the column of our source
       let columnNumberSource =
         columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
@@ -32,7 +31,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberSource * 21,
+            top: 77 + columnNumberSource * 12,
             // bottom: 'auto',
           }}
         />
@@ -51,7 +50,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 77 + columnNumberTarget * 21,
+            top: 77 + columnNumberTarget-1 * 12,
             // bottom: 'auto',
           }}
         />
@@ -61,12 +60,18 @@ export default function TableNode({ data }) {
   // renders columns within table
   return (
     <>
-    <div className="table-node transition-colors duration-500" key={tableName}>
-    <div className="flex items-center justify-between table-header bg-[#075985] dark:opacity-75">
-  {/* <NodeResizer minWidth={100} minHeight={30} /> */}
-  {tableHandles}
-  <div>
-    <label htmlFor="text" className="bg-[#075985] dark:opacity-75">
+      <div className="table-node transition-colors duration-500" key={tableName}>
+        <div className="flex items-center justify-between table-header relative bg-[#075985] dark:bg-opacity-75">
+          {/* <NodeResizer minWidth={100} minHeight={30} /> */}
+          {tableHandles}
+          <div>
+            <label
+            htmlFor="text"
+            className="bg-[#075985] text-white text-stroke-black dark:bg-opacity-0"
+            style={{
+             'margin-left': '0px'
+            }}
+          >
       {tableName}
     </label>
   </div>
@@ -81,8 +86,8 @@ export default function TableNode({ data }) {
 </div>
 
 <div
-    style={{overflow: "auto", maxHeight: "400px", maxWidth: "600px" }}
-    className="nowheel"
+    style={{ maxHeight: "400px", maxWidth: "600px" }}
+    className="nowheel overflow-auto"
   >
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
         <table className="transition-colors duration-500 dark:text-[#fbf3de]">

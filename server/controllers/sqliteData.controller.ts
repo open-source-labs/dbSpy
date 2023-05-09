@@ -1,23 +1,36 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-//import { sqliteSchemaQuery } from './queries/sqlite.queries';
+// import { addNewDbRow } from './helperFunctions/universal.helpers'
 import { DataSource } from 'typeorm';
+
+
+const dbConnect = async (req: Request) => {
+  const { db_type, file_path } = req.session;
+  
+  const dbDataSource = new DataSource({
+    type: db_type as "sqlite", // "mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
+    // host: hostname as string,
+    // port: port ? parseInt(port as string) : 1521,
+    // username: username as string,
+    // password: password as string,
+    database: file_path as string,
+    // serviceName: service_name ? service_name as string : undefined,
+    // filePath: file_path as string,
+    synchronize: true,
+    logging: true,
+  });
+  console.log('db_type: ', db_type)
+ //Start connection with the database
+ await dbDataSource.initialize();
+ console.log('Data source has been connected');
+
+ return dbDataSource;
+};
+
+//----------------------------------------------------------------------------
 
 export const sqliteQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { file_path } = req.query;
-  
-     const SqliteDataSource = new DataSource({
-        type: "sqlite",
-        database: file_path as string,
-        logging: true,
-        synchronize: true,
-      });
-
-              //Start connection with the database
-              await SqliteDataSource.initialize();
-              console.log('Data source has been connected');
-
       
       //function organizing data from queries in to the desired format of the front end
       async function sqliteFormatTableSchema(sqliteSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
@@ -37,7 +50,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
         const references = [];
 
           if (foreignKey) {
-            console.log('foreignKey after: ', foreignKey)
+            // console.log('foreignKey after: ', foreignKey)
             references.push({
                 isDestination: false,
                 PrimaryKeyName: foreignKey.from,
@@ -47,7 +60,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
                 constraintName: tableName + '_' + foreignKey.from + '_fkey'
               });
               
-              console.log('[references]: ', [references])
+              // console.log('[references]: ', [references])
             };
       
         tableSchema[columnName] = {
@@ -65,6 +78,7 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
      return tableSchema;
       };
 
+      const SqliteDataSource = await dbConnect(req);
 
         const tables = await SqliteDataSource.query(`SELECT name FROM sqlite_master WHERE type='table'`)
  
@@ -105,5 +119,38 @@ export const sqliteQuery: RequestHandler = async (req: Request, res: Response, n
     } catch (err: unknown) {
         console.log('Error during Data Source: ', err);
         return next(err);
-    }
-}
+    };
+};
+
+//----------------------------------------------------------------------------
+
+export const sqliteAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
+  const dbDataSource = await dbConnect(req)
+  console.log('req.session: ', req.session)
+  try{
+  const newDbRowData: {[key: string]: string } = req.body;
+  const tableName = newDbRowData.tableName;
+  const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+
+        const keys: string = Object.keys(newMysqlRow).join(", ");
+        console.log("keys: ", keys)
+        const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
+        console.log('values: ', values)
+        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+          VALUES (${values})`);
+
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    console.log('dbAddedRow in helper: ', dbAddedRow)
+    return dbAddedRow;
+    
+
+} catch (err: unknown) {
+  console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+  dbDataSource.destroy();
+  console.log('Database has been disconnected');
+  return next(err);
+};
+};
+
+//----------------------------------------------------------------------------

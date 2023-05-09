@@ -1,36 +1,37 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { handleGoogleAuth, getGoogleAuthUrl } from '../controllers/auth.controller';
 import { getGoogleAccesToken, getUserInfo } from '../controllers/oauth.controller';
-import {
-  retrieveSchema,
-  saveSchema,
-  userRegistration,
-  verifyUser,
-} from '../controllers/user.controller';
+import { retrieveSchema, saveSchema, userRegistration, verifyUser } from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
 import { microsoftRouter } from './microsoft.router';
 import { oracleRouter } from './oracle.router';
 import { mysqlRouter } from './mysql.router';
 import { sqliteRouter } from './sqlite.router';
-import session from 'express-session'; // 
-declare module 'express-session' {
-  interface SessionData {
-    user: string;
-  }
-}
 import dotenv from 'dotenv';
 dotenv.config();
 import { getCurrentUser } from '../service/session.service';
 import path from 'path';
 import log from '../logger/index';
-
 import type { DefaultErr } from '../../src/Types';
-// import { DataSource } from 'typeorm'
-// import { Users } from '../entities/user.entity'
+//import session from 'express-session';
 
-const app = express()
-
-app.use('/api/sql/postgres', postgresRouter);
+declare module 'express-session' {
+  interface SessionData {
+    type: string,             // NOTE ON TYPE: When trying to assign a type to 'type' on a data source in the controllers
+    host?: string,            // it can only be one string of the possible databases available to typeORM. This makes
+    hostname?: string,        // trying to dynamically type it based on data from a front end request difficult.
+    port?: string | number,   // Because of that you will see that 'type' is typed as  'db_type as "string of db type"'.
+    username?:string,         
+    password?: string,
+    database?: string,
+    database_name?: string,
+    service_name?: string,
+    synchronize?: boolean,
+    logging?: boolean,
+    db_type?: string,
+    file_path?: string,
+  }
+}
 
 const routes = async (app: Express) => {
 
@@ -42,15 +43,15 @@ const routes = async (app: Express) => {
 
   // app.get('/api/googleAuthUrl', getGoogleAuthUrl);
 
-  app.use('/api/sql/postgres', postgresRouter);
+  app.use('/api/sql/postgres', cookieSession, postgresRouter);
 
-  app.use('/api/sql/mysql', mysqlRouter);
+  app.use('/api/sql/mysql', cookieSession, mysqlRouter);
 
-  app.use('/api/sql/mssql', microsoftRouter);
+  app.use('/api/sql/mssql', cookieSession, microsoftRouter);
 
-  app.use('/api/sql/oracle', oracleRouter);
+  app.use('/api/sql/oracle', cookieSession, oracleRouter);
 
-  app.use('/api/sql/sqlite', sqliteRouter);
+  app.use('/api/sql/sqlite', cookieSession, sqliteRouter);
 
   app.post('/api/saveSchema', saveSchema);
 
@@ -92,5 +93,35 @@ const routes = async (app: Express) => {
     return res.status(errorObj.status).json(errorObj.message);
   });
 };
+
+export const cookieSession = (req: Request, _res: Response, next: NextFunction) => {
+  //app.get('/', (_req: Request, _res: Response, next: NextFunction) => {
+    const { db_type, hostname, password, port, username, database_name, service_name, file_path } = req.query;
+    try {
+      if (typeof db_type === 'string') {
+        req.session.db_type = db_type;
+    } if (typeof hostname === 'string') {
+      req.session.hostname = hostname;
+    } if (typeof password === 'string') {
+      req.session.password = password;
+    }  if (typeof port === 'string') {
+      req.session.port = port;
+    } if (typeof username === 'string') {
+      req.session.username = username;
+    }  if (typeof database_name === 'string') {
+      req.session.database_name = database_name;
+    } if (typeof service_name === 'string') {
+      req.session.service_name = service_name;
+    } if (typeof file_path === 'string') {
+      req.session.file_path === file_path;
+    }
+    console.log('Cookie has been set and is saving session data')
+  } catch (err: unknown) {
+    console.log('error was found in cookeSession: ', err)
+    return next(err);
+  }
+// })
+return next();
+}
 
 export default routes;
