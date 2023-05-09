@@ -32,6 +32,7 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): D
   for (const tableKey in schemaObject) {
     //tableKey is name of the table
     const columnData = schemaObject[tableKey];
+
     nodes.push({
       id: tableKey,
       type: 'table',

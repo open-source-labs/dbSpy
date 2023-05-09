@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
 import {
  FaRegEdit,
@@ -9,68 +9,128 @@ import {
  FaRegWindowClose,
 } from 'react-icons/fa';
 
-export default function DataTableNodeColumn({row}: {row: (string | number)[]}) {
+type RowData = {
+  [key: string]: string | number
+}
+
+export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string)=>void,index:number}) {
 
 //####### for CRUD ##########
-  const { dataStore } = useDataStore(
-   (state) => state
- );
+
+const newRow = JSON.parse(JSON.stringify(row));
+
+const [rowData, setRowData] = useState({ ...newRow });
+const [tempData, setTempData] = useState({ ...newRow });
+
+
+//reset the state when row changes. Specifically for on-delete functionality. 
+useEffect(()=> {
+  setRowData({...newRow})
+  setTempData({...newRow})
+  },[row])
+
 const [mode, setMode] = useState('default');
 
-//####### for CRUD ##########
-  //we need better way to generate unique key
- function uniqueKey(max: number) {
-   return Math.floor(Math.random() * max);
- }
 
- // console.log("row in DataTableNodeColumn", row)
+const rowDataKeys = Object.keys(row)
 
-  {/* When we first got props/states drilled down here, schema info came in and that includes obj.
-  rows cannot render obj =>have to replace object to ""
-  but, it re-render automatically with correct data info. Not sure why we get the schema info at first */}
-  const updatedRow = []
-  for (let i = 0; i < row.length; i++) {
-    if (typeof row[i] === "object") {
-      updatedRow.push('');
-    } else {
-      updatedRow.push(row[i])
-     }
-   }
+interface rowData {
+  [key:string|number]:string|number
+}
+interface tempData {
+  [key:string|number]:string|number
+}
+interface changes{
+  [key:string|number]:string|number|tempData
+}
 
- return (
-    <>
-     <tr>
-       {/* {row.filter((key:string|number) => typeof key !== 'object')?.map((eachData: string|number) => */}
-        {updatedRow.map((eachData: string|number) =>  
-       <td
-           key={uniqueKey(1000000000)}
-           scope="col"
-           className="transition-colors duration-500 dark:text-[#fbf3de]"
-         >{eachData}
-         </td>
-       )}
-       <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] ml-auto">
-         {/* this button should give option to UPDATE/ADD/DELETE elements in row, need to work on onClick function */}
-         <button
-           id={`$rowEditBtn`}
-           // onClick={() => setMode('edit')}
-           className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-           data-testid="edit-column"
-         >
-           <FaRegEdit size={18} />
-         </button>
+
+
+
+const onCancel = () => {
+  setTempData(rowData);
+  setMode('default');
+}
+
+const onSave = async () => {
+  const changes: changes= {};
+  for(let currentKey in tempData ){
+    if(tempData[currentKey] !== rowData[currentKey]){
+      changes[currentKey] =tempData[currentKey]
+    }
+  }
+  changes.DbSpyoriginal= {...rowData}
+
+  
+  setRowData({...tempData});
+  setMode('default');
+  
+
+  const sendChangesRequest = await fetch('/api/changes',{
+    method:'PATCH',
+    headers:{
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(changes)
+  });
+  const data = await sendChangesRequest.json()
+  console.log(data);
+
+}
+
+ // useEffect(()=> {
+//   if(mode === 'default')   console.log("HELLO");
+// },[])
+
+
+return (
+  <tr key={id} className="dark:text-[#f8f4eb]">
+
+    {rowDataKeys.map((element:string|number,ind:number) => 
+        <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} > 
+        { mode === 'edit'?
+        (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element]} 
+        onChange={(e)=>{
+          setTempData((prevData:rowData) =>  ({
+            ...prevData,
+            [element]: e.target.value
+          }))
+        }
+    }
+        ></input>):
+        (rowData[element])
+        }
         </td>
-        <td className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] ml-auto">
-         {/* this button should DELETE the row, need to work on onClick function */}
-         <button
-           id={`dataDeleteBtn`}
-           className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
-           onClick={() => setMode('delete')}
-         >
-           <FaRegTrashAlt size={17} />
-         </button>
-         </td>
-     </tr>
-   </>
+    )}
+    <td>{
+      mode ==='default'?
+            (<button onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+              <FaRegEdit size={17} />
+            </button>):
+          mode==='edit'?
+            (<button  onClick={onSave} 
+              className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+                <FaRegSave size={17} />
+              </button>):
+            (<button onClick={() =>{ deleteRow(rowData,index,id)}}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+              <FaRegCheckSquare size={17} />
+            </button>)
+      }
+    </td>
+    <td>
+      {
+        mode ==='default'?
+        (<button id={`${id}-rowDeleteBtn`} onClick={()=>setMode(id)}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+        <FaRegTrashAlt size={17} />
+      </button>):
+        (<button id={`${id}-cancelBtn`} onClick={onCancel}>   
+              <FaRegWindowClose size={17} />
+        </button>)
+      }
+
+    </td>
+
+  </tr>
+ 
   );
 }
