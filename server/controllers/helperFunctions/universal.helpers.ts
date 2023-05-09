@@ -200,7 +200,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
 
         const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
         ALTER TABLE ${tableName}
-        ADD ${dbType === 'postgres' ? 'COLUMN' : '' } "${addNewColumnData.columnName}" ${addNewColumnData.dataType} ${dbType === 'postgres' ? addNewColumnData.constraintName : null} ${addNewColumnData.constraintExpression}
+        ADD${dbType === 'postgres' ? ' COLUMN' : '' } "${addNewColumnData.columnName}" ${addNewColumnData.dataType} ${dbType === 'postgres' ? addNewColumnData.constraintName : null} ${addNewColumnData.constraintExpression}
         `);
         console.log('addedNewColumn: ', addedNewColumn)
       dbDataSource.destroy();
@@ -327,3 +327,70 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
       return next(err);
   };
 };
+
+//------------------------------------------------------------------------------------------------------------
+
+export const deleteTable: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+  const dbDataSource = await dbConnect(req)
+  console.log('req.session: ', req.session)
+
+  try{
+      const user: string | undefined = req.session.username;    
+      const deleteTableData: {[key: string]: string } = req.body;
+      console.log('req.body: ', req.body)
+
+      //For Oracle, the special database
+      const oracleTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1)
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${oracleTableName}"` : deleteTableData.tableName;
+
+      const deletedTable: Promise<unknown> = await dbDataSource.query(`DROP TABLE ${tableName}`)
+
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('deletedTable in helper: ', deletedTable)
+      return deletedTable; 
+
+  } catch (err: unknown) {
+      console.log('Error occurred in the addNewTable middleware: ', err);
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      return next(err);
+  };
+};
+
+//------------------------------------------------------------------------------------------------------------
+
+export const deleteColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+  const dbDataSource = await dbConnect(req)
+  console.log('req.session: ', req.session)
+
+  try{
+      const dbType: string | undefined = req.session.db_type; 
+      const user: string | undefined = req.session.username;    
+      const deleteColumnData: {[key: string]: string } = req.body;
+      console.log('req.body: ', req.body)
+
+      //For Oracle, the special database
+      const oracleTableName = deleteColumnData.tableName.slice(7, deleteColumnData.tableName.length + 1)
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${oracleTableName}"` : deleteColumnData.tableName;
+
+      const deletedColumn: Promise<unknown> = await dbDataSource.query(`
+      ALTER TABLE ${tableName}
+      DROP${dbType !== 'mysql' ? ' COLUMN' : null} ${deleteColumnData.columnName}
+      `)
+
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('deletedColumn in helper: ', deletedColumn)
+      return deletedColumn; 
+
+  } catch (err: unknown) {
+      console.log('Error occurred in the addNewTable middleware: ', err);
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      return next(err);
+  };
+};
+
+//------------------------------------------------------------------------------------------------------------
+
