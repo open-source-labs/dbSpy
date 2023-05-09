@@ -13,11 +13,11 @@ import { getCurrentUser } from '../service/session.service';
 import path from 'path';
 import log from '../logger/index';
 import type { DefaultErr } from '../../src/Types';
-//import session from 'express-session';
+import session from 'express-session';
 
 declare module 'express-session' {
   interface SessionData {
-    type: string,             // NOTE ON TYPE: When trying to assign a type to 'type' on a data source in the controllers
+    type?: string,             // NOTE ON TYPE: When trying to assign a type to 'type' on a data source in the controllers
     host?: string,            // it can only be one string of the possible databases available to typeORM. This makes
     hostname?: string,        // trying to dynamically type it based on data from a front end request difficult.
     port?: string | number,   // Because of that you will see that 'type' is typed as  'db_type as "string of db type"'.
@@ -96,26 +96,31 @@ const routes = async (app: Express) => {
 
 export const cookieSession = (req: Request, _res: Response, next: NextFunction) => {
   //app.get('/', (_req: Request, _res: Response, next: NextFunction) => {
-    const { db_type, hostname, password, port, username, database_name, service_name, file_path } = req.query;
+    const { db_type, hostname, password, port, username, database_name, service_name } = req.query;
     try {
-      if (typeof db_type === 'string') {
+      if (typeof db_type === 'string' ) {
         req.session.db_type = db_type;
-    } if (typeof hostname === 'string') {
-      req.session.hostname = hostname;
-    } if (typeof password === 'string') {
-      req.session.password = password;
-    }  if (typeof port === 'string') {
-      req.session.port = port;
-    } if (typeof username === 'string') {
-      req.session.username = username;
-    }  if (typeof database_name === 'string') {
-      req.session.database_name = database_name;
-    } if (typeof service_name === 'string') {
-      req.session.service_name = service_name;
-    } if (typeof file_path === 'string') {
-      req.session.file_path === file_path;
-    }
+      } 
+      if (typeof hostname === 'string') {
+        req.session.hostname = hostname;
+      } 
+      if (typeof password === 'string') {
+        req.session.password = password;
+      } 
+      if (typeof port === 'string') {
+        req.session.port = port;
+      } 
+      if (typeof username === 'string') {
+        req.session.username = username;
+      } 
+      if (typeof database_name === 'string') {
+        req.session.database_name = database_name;
+      } 
+      if (typeof service_name === 'string') {
+        req.session.service_name = service_name;
+      } 
     console.log('Cookie has been set and is saving session data')
+    console.log('req.session: ', req.session)
   } catch (err: unknown) {
     console.log('error was found in cookeSession: ', err)
     return next(err);

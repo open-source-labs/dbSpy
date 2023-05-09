@@ -1,37 +1,17 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { TableColumns, TableSchema, ReferenceType, TableColumn } from '@/Types';
+import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-// import { addNewDbRow } from './helperFunctions/universal.helpers'
-import { DataSource } from 'typeorm';
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
+const oracleController = {
+//----------------------------------------------------------------------------------------------
 
-export const dbConnect = async (req: Request) => {
-  const { db_type, hostname, password, port, username, database_name, service_name } = req.session;
-  
-  const dbDataSource = new DataSource({
-    type: db_type as "oracle", //"mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
-    host: hostname as string,
-    port: port ? parseInt(port as string) : 1521,
-    username: username as string,
-    password: password as string,
-    database: database_name as string,
-    serviceName: service_name ? service_name as string : undefined,
-    synchronize: true,
-    logging: true,
-  });
-  console.log('db_type: ', db_type)
- //Start connection with the database
- await dbDataSource.initialize();
- console.log('Data source has been connected');
-
- return dbDataSource;
-};
-
-//----------------------------------------------------------------------------
-
-export const oracleQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+oracleQuery: async (req: Request, res: Response, next: NextFunction) => {
+    const { username } = req.query
+    const OracleDataSource = await dbConnect(req);
 
     try {
+//--------HELPER FUNCTION-----------------------------------
           async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string): Promise<TableColumn> {
             const tableSchema: TableColumn = {};
       
@@ -70,9 +50,7 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
             };
             return tableSchema;
         };
-        const { username } = req.query
-        const OracleDataSource = await dbConnect(req);
-
+//--------HELPER FUNCTION END-----------------------------------
 
         const tables: [{TABLE_NAME: string}] = await OracleDataSource.query(`SELECT table_name FROM user_tables`);
         console.log('tables: ', tables)
@@ -108,59 +86,43 @@ export const oracleQuery: RequestHandler = async (req: Request, res: Response, n
         return next();
     
     } catch(err) {
+        console.log('Error during Data Source: ', err);
+        OracleDataSource.destroy();
+        console.log('Disconnected from the database');
         return next(err);
     };
+},
+
+//----------------------------------------------------------------------------------------------------------------
+
+oracleAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
+    addNewDbRow(req, res, next);
+    return next();
+  },
+  
+//----------------------------------------------------------------------------------------------------------------
+
+oracleUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+oracleDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+    deleteRow(req, res, next);
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+oracleAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+    addForeignKey(req, res, next);
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
 };
 
-//----------------------------------------------------------------------------
-
-export const oracleAddNewRow: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-
-
-    //export 
-    const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-        const dbDataSource = await dbConnect(req)
-        console.log('req.session: ', req.session)
-        try{
-        const newDbRowData: {[key: string]: string } = req.body
-        let tableName: string;
-        if (req.session.db_type === 'oracle') {
-            const tempName: any = req.session.username;
-            tableName = `"${tempName.toUpperCase()}"` + '.' + `"${newDbRowData.tableName}"`
-        } else {
-            tableName = newDbRowData.tableName
-        }
-        const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {} ;
-    
-              const keys: string = Object.keys(newMysqlRow).join(", ");
-              console.log('keys: ', keys)
-              const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-              console.log('values: ', values)
-              const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} ("${keys}")
-                VALUES (${values})`);
-    
-          dbDataSource.destroy();
-          console.log('Database has been disconnected');
-          console.log('dbAddedRow in helper: ', dbAddedRow)
-          return dbAddedRow;
-          
-    
-      } catch (err: unknown) {
-        console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-        dbDataSource.destroy();
-        console.log('Database has been disconnected');
-        return next(err);
-      };
-      };
-
-    // try{
-    //     addNewDbRow(req, res, next);
-    //     console.log('Row was added');
-    //     return next();
-    // } catch (err: unknown) {
-    //   console.log('Error occurred in the microsoftAddNewRow middleware: ', err);
-    //   return next(err);
-    // };
-  };
-  
-  //----------------------------------------------------------------------------
+export default oracleController;

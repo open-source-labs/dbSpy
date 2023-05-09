@@ -42,8 +42,9 @@ export const postgresSchemaQuery = `
         c.is_nullable = 'NO' THEN ' NOT NULL' ELSE '' END ||
     CASE WHEN 
         tc.constraint_type = 'PRIMARY KEY' THEN ' PRIMARY KEY' ELSE '' END ||
-    CASE WHEN 
-        tc.constraint_type = 'FOREIGN KEY' THEN ' FOREIGN KEY REFERENCES ' || ccu.table_name || '(' || ccu.column_name || ')' ELSE '' END as additional_constraints
+        CASE WHEN 
+        tc.constraint_type = 'FOREIGN KEY' THEN ' FOREIGN KEY REFERENCES ' || ccu.table_name || '(' || ccu.column_name || ')' ELSE '' END as additional_constraints,
+        ic.column_name IS NOT NULL as has_identity
     FROM 
         information_schema.columns c
     LEFT OUTER JOIN 
@@ -72,6 +73,18 @@ export const postgresSchemaQuery = `
             tc.constraint_schema = ccu.constraint_schema
         AND 
             tc.constraint_name = ccu.constraint_name
+    LEFT OUTER JOIN
+        information_schema.columns ic
+        ON 
+            c.table_catalog = ic.table_catalog
+        AND 
+            c.table_schema = ic.table_schema
+        AND 
+            c.table_name = ic.table_name
+        AND 
+            c.column_name = ic.column_name
+        AND 
+            ic.is_identity = 'YES'
     WHERE 
         c.table_name = 'tableName'
     ORDER BY 

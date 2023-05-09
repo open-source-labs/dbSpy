@@ -158,7 +158,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
     <label htmlFor="text" 
     className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
     style={{ 
-      'margin-left': '0px'
+      'marginLeft': '0px'
        }}>
       {tableName}
     </label>

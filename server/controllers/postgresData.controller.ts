@@ -1,86 +1,71 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-// import { addNewDbRow } from './helperFunctions/universal.helpers'
-import { DataSource } from 'typeorm';
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
+const postgresController = {
+//------------------------------------------------------------------------------------------------------
 
-const dbConnect = async (req: Request) => {
-  const { db_type, hostname, password, port, username, database_name, service_name, file_path } = req.session;
-  
-  const dbDataSource = new DataSource({
-    type: db_type as "postgres", // "mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
-    host: hostname as string,
-    port: port ? parseInt(port as string) : 1521,
-    username: username as string,
-    password: password as string,
-    database: database_name as string || file_path as string,
-    synchronize: true,
-    logging: true,
-  });
-  console.log('db_type: ', db_type)
- //Start connection with the database
- await dbDataSource.initialize();
- console.log('Data source has been connected');
+postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
+  const PostgresDataSource = await dbConnect(req);
 
- return dbDataSource;
-};
-
-//----------------------------------------------------------------------------
-
-export const postgresQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('cookie?: ', req.session)
-        async function getForeignKeys(): Promise<TableColumn[]> {
-          return await PostgresDataSource.query(postgresForeignKeyQuery);
-        };
-        
-        //function organizing data from queries in to the desired format of the front end
-        async function postgresFormatTableSchema(postgresSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
-        const tableSchema: TableColumn = {};
-        
-        for (const column of postgresSchemaData) {
-          const columnName: any = column.column_name
-          const keyString: any = column.additional_constraints
-        
-          //query for the foreign key data
-          const foreignKeys: any = await getForeignKeys();
-          const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
-          
-          //Creating the format for the Reference property if there is a foreign key
+//--------HELPER FUNCTION----------------------------------- 
+    async function getForeignKeys(): Promise<TableColumn[]> {
+      return await PostgresDataSource.query(postgresForeignKeyQuery);
+    };
 
-          const references = []
-        
-          if (foreignKey){
-            references.push({
-              isDestination: false,
-              PrimaryKeyName: foreignKey.foreign_key_column,
-              PrimaryKeyTableName: 'public.' + tableName,
-              ReferencesPropertyName: foreignKey.referenced_column,
-              ReferencesTableName: foreignKey.referenced_table,
-              constraintName: foreignKey.constraint_name
-            }
-            );
-          };
-        
-          tableSchema[columnName] = {
-            IsForeignKey: keyString.includes('FOREIGN KEY'),
-            IsPrimaryKey: keyString.includes('PRIMARY KEY'),
-            Name: columnName,
-            References: references,
-            TableName: 'public.' + tableName,
-            Value: null,
-            additional_constraints: keyString.includes('NOT NULL') ? 'NOT NULL' : null,
-            data_type: column.data_type,
-            field_name: columnName,
-          };
-        };
-        return tableSchema;
-        };
+//--------HELPER FUNCTION----------------------------------- 
 
+    //function organizing data from queries in to the desired format of the front end
+    async function postgresFormatTableSchema(postgresSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
+    const tableSchema: TableColumn = {};
+    
+    for (const column of postgresSchemaData) {
+      const columnName: any = column.column_name
+      const keyString: any = column.additional_constraints
+      // console.log('column:', column)
+    
+      //query for the foreign key data
+      const foreignKeys: any = await getForeignKeys();
+      const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
+      
+      //Creating the format for the Reference property if there is a foreign key
 
+      const references = []
+    
+      if (foreignKey){
+        references.push({
+          isDestination: false,
+          PrimaryKeyName: foreignKey.foreign_key_column,
+          PrimaryKeyTableName: 'public.' + tableName,
+          ReferencesPropertyName: foreignKey.referenced_column,
+          ReferencesTableName: foreignKey.referenced_table,
+          constraintName: foreignKey.constraint_name
+        }
+        );
+      };
+    
 
-        const PostgresDataSource = await dbConnect(req)
+      const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null
+      const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : ''
+
+      tableSchema[columnName] = {
+        IsForeignKey: keyString.includes('FOREIGN KEY'),
+        IsPrimaryKey: keyString.includes('PRIMARY KEY'),
+        Name: columnName,
+        References: references,
+        TableName: 'public.' + tableName,
+        Value: null,
+        additional_constraints: additionalConstraints + hasIdentity === 'null' ? null : additionalConstraints + hasIdentity,
+        data_type: column.data_type,
+        field_name: columnName,
+      };
+    };
+    return tableSchema;
+    };
+//--------HELPER FUNCTIONS END-----------------------------------
+
         //Retrieve all table names
         const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
         //Declare storage objects with their related interfaces
@@ -102,7 +87,7 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData)
-      // console.log('schema data: ', schema)
+      console.log('schema data: ', schema)
 
 
       // Storage of queried results into res.locals
@@ -117,41 +102,46 @@ export const postgresQuery: RequestHandler = async (req: Request, res: Response,
 
   } catch (err: unknown) {
     console.log('Error during Data Source: ', err);
+    PostgresDataSource.destroy();
+    console.log('Database has been disconnected');
     return next(err);
   };
-}
-//----------------------------------------------------------------------------
+},
+//------------------------------------------------------------------------------------------------------
 
-export const postgresAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
-  const dbDataSource = await dbConnect(req)
-  console.log('req.session: ', req.session)
-  try{
-  const newDbRowData: {[key: string]: string } = req.body;
-  const tableName = newDbRowData.tableName;
-  const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbRow(req, res, next)
+  return next();
+},
 
-        const keys: string = Object.keys(newMysqlRow).join(", ");
-        console.log("keys: ", keys)
-        const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-        console.log('values: ', values)
-        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-          VALUES (${values})`);
+//------------------------------------------------------------------------------------------------------
 
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    console.log('dbAddedRow in helper: ', dbAddedRow)
-    return dbAddedRow;
-    
+postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
+    updateRow(req, res, next);
+    return next();
+  },
 
-} catch (err: unknown) {
-  console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-  dbDataSource.destroy();
-  console.log('Database has been disconnected');
-  return next(err);
+//--------------------------------------------------------------------------------------------------------
+
+postgresDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+  deleteRow(req, res, next);
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+postgresAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  addForeignKey(req, res, next);
+  console.log("postgresAddForeignKey function has concluded")
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
 };
-};
 
-//----------------------------------------------------------------------------
+export default postgresController;
+
 
 // type ColumnSchema = {
 //   table_name: string;

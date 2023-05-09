@@ -1,39 +1,23 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
-// import { addNewDbRow } from './helperFunctions/universal.helpers'
-import { DataSource } from 'typeorm';
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
 
 
-export const dbConnect = async (req: Request) => {
-  const { db_type, hostname, password, port, username, database_name } = req.session;
-  
-  const dbDataSource = new DataSource({
-    type: db_type as "mysql", //"mysql" || "mariadb" || "postgres" || "cockroachdb" || "sqlite" || "mssql" || "sap" || "oracle" || "cordova" || "nativescript" || "react-native" || "sqljs" || "mongodb" || "aurora-mysql" || "aurora-postgres" || "expo" || "better-sqlite3" || "capacitor",
-    host: hostname as string,
-    port: port ? parseInt(port as string) : 1521,
-    username: username as string,
-    password: password as string,
-    database: database_name as string,
-    synchronize: true,
-    logging: true,
-  });
-  console.log('db_type: ', db_type)
- //Start connection with the database
- await dbDataSource.initialize();
- console.log('Data source has been connected');
-
- return dbDataSource;
-};
-
+const mysqlController = {
 //----------------------------------------------------------------------------
 
-export const mysqlQuery: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
 
+  const MysqlDataSource = await dbConnect(req);
+  try {
+
+//--------HELPER FUNCTION-----------------------------------
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
       return await MysqlDataSource.query(mysqlForeignKeyQuery.replace('columnName', columnName).replace('tableName', tableName));
   };
 
+//--------HELPER FUNCTION-----------------------------------
     async function mysqlFormatTableSchema(mysqlSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
   
@@ -76,9 +60,8 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
   
       return tableSchema;
   };
+//--------HELPER FUNCTIONS END-----------------------------------
 
-  const MysqlDataSource = await dbConnect(req);
-  try {
     //Obtain all table names from the database
     const tables: any[] = await MysqlDataSource.query(`SHOW TABLES`);
 
@@ -119,41 +102,44 @@ export const mysqlQuery: RequestHandler = async (req: Request, res: Response, ne
     console.log('Error during Data Source: ', err);
     return next(err);
   };
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbRow(req, res, next)
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
+  updateRow(req, res, next);
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+  deleteRow(req, res, next);
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  addForeignKey(req, res, next);
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+
+
+
+
 };
-
-//----------------------------------------------------------------------------
-
-export const mysqlAddNewRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction) => {
-  const dbDataSource = await dbConnect(req)
-  console.log('req.session: ', req.session)
-  try{
-  const newDbRowData: {[key: string]: string } = req.body;
-  const tableName = newDbRowData.tableName;
-  const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
-
-        const keys: string = Object.keys(newMysqlRow).join(", ");
-        console.log("keys: ", keys)
-        const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-        console.log('values: ', values)
-        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-          VALUES (${values})`);
-
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    console.log('dbAddedRow in helper: ', dbAddedRow)
-    return dbAddedRow;
-    
-
-} catch (err: unknown) {
-  console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-  dbDataSource.destroy();
-  console.log('Database has been disconnected');
-  return next(err);
-};
-};
-
-
-//----------------------------------------------------------------------------
+export default mysqlController;
 
 // // SSL data stored as environment variable for GitHub Actions access
 // // Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables
