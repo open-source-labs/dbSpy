@@ -1,4 +1,5 @@
 import React from 'react';
+import useSchemaStore from '../../store/schemaStore';
 
 type RowInputProps = {
   currentTable;
@@ -12,7 +13,24 @@ type RowInputProps = {
 function DataRowInput({
 currentTable, handleRowChange, secondaryColumnNames
 }: RowInputProps) {
-  const columns: any = [];
+
+  const{schemaStore} = useSchemaStore((state) => state);
+
+  //console.log(schemaStore)
+  
+  let additionalConstraints;
+  //find table name and column name that has additionalConstraints 'NOT NULL HAS_IDENTITY'
+    //input for that table and colmn => placeholder should say "auto generate by DB"
+  for (let eachTable in schemaStore) {
+    for (let eachColumn in schemaStore[eachTable]) {
+      if (eachColumn.additional_constraints === 'NOT NULL HAS_IDENTITY') {
+        additionalConstraints = eachColumn
+      }
+     }
+   }
+
+
+  const columns = [];
   const inputs = [];
   let columnNames: string[];
   if (!currentTable.length) {
@@ -26,7 +44,9 @@ currentTable, handleRowChange, secondaryColumnNames
       </label>);
     });
   
-    for (let i = 0; i < columns.length; i++) {
+  for (let i = 0; i < columns.length; i++) {
+      //if additionalConstraints ===column name
+        //placeholder should say "auto generate by DB"
       inputs.push(
         <input
           key={i+columns[i]}

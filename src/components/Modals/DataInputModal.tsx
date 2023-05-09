@@ -26,7 +26,7 @@ export default function DataInputModal({
   const { dbCredentials } = useCredentialsStore((state) => state);
   const { dataStore, setDataStore } = useDataStore((state) => state);
 
-  console.log("dbCredentials", dbCredentials)
+  //console.log("dbCredentials", dbCredentials)
 
   const updatingDB = (newRow: Array<{}>):void => {
     axios
@@ -36,8 +36,7 @@ export default function DataInputModal({
       })
       .catch((err: ErrorEvent) => { console.error('sending new row error', err) })
   }
-  console.log(schemaStore)
-  
+  //console.log(dataStore)
   
   // const getUpdatedData =  async() => {
   //   const newData = await axios
@@ -53,6 +52,7 @@ export default function DataInputModal({
   // }
 
   const secondaryColumnNames: string[] = Object.keys(schemaStore['public.' + tableName])
+  const currentTable = dataStore[tableName]  
 
   const handleSubmit = (): boolean => { 
     try {
@@ -67,9 +67,11 @@ export default function DataInputModal({
         });
       }
       currentTable.push(additionalRow)
-      //console.log('after update', currentTable)
-      updatingDB(currentTable[currentTable.length-1])
-      // getUpdatedData()
+      console.log('after update', currentTable)
+      console.log('updated dataStore', dataStore)
+      updatingDB(currentTable[currentTable.length - 1])
+      // setDataStore({...dataStore, [tableName]:currentTable})
+      // console.log('updated dataStore', dataStore)
       return true;
     } catch (error) {
       window.alert(error);
@@ -84,6 +86,7 @@ export default function DataInputModal({
     index: number,
     value: string | number | boolean | null
   ) => {
+   
     values.push(value)
     //console.log('entered values', values)
     //console.log(values[values.length - 1], index);
@@ -93,10 +96,9 @@ export default function DataInputModal({
       prevRows[index] = values[values.length - 1]
       return [...prevRows]
     })
+ console.log('before updating?',dataStore)
     //console.log("we just updated rowData", rowData)
   }
-  
-  const currentTable = dataStore[tableName]  
 
   return (
     <div id="inputModal" className="input-modal" >
