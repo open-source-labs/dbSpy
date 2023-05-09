@@ -87,11 +87,11 @@ return (
   <tr key={id} className="dark:text-[#f8f4eb]">
 
     {rowDataKeys.map((element:string|number,ind:number) => 
-        <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} val={`${id}-col${element}`}> 
+        <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} > 
         { mode === 'edit'?
         (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element]} 
         onChange={(e)=>{
-          setTempData((prevData) =>  ({
+          setTempData((prevData:rowData) =>  ({
             ...prevData,
             [element]: e.target.value
           }))
@@ -104,15 +104,15 @@ return (
     )}
     <td>{
       mode ==='default'?
-            (<button val={`${id}-rowEditBtn`} onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            (<button onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
               <FaRegEdit size={17} />
             </button>):
           mode==='edit'?
-            (<button val={`${id}-rowSaveBtn`} onClick={onSave} 
+            (<button  onClick={onSave} 
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
                 <FaRegSave size={17} />
               </button>):
-            (<button val={`${id}-rowCheckBtn`} onClick={() =>{ deleteRow(rowData,index,id)}}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            (<button onClick={() =>{ deleteRow(rowData,index,id)}}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
               <FaRegCheckSquare size={17} />
             </button>)
       }

@@ -27,6 +27,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  const tableName = tableData[0];
  let firstRow =[]
  let restRowsData = []
+ let secondaryFirstRow = []
  let RowData = Object.values(tableData[1]);
 
  //Used to grab the primary key value in the Table
@@ -36,14 +37,19 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
    if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
  }
 
+ if (schemaName !== undefined) {
+  secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
+  //console.log(secondaryFirstRow);
+}
 
  //Filter out Schemas from data
  if(RowData[0] !== undefined){
   if (RowData[0].IsForeignKey === undefined) {
     firstRow = Object.keys(RowData[0]);
     restRowsData = [...RowData];
-
   }
+ }else{
+  firstRow = secondaryFirstRow
  }
 
 //UseEffect set Table when the dataStore is changed after on Delete.
@@ -83,23 +89,13 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   //console.log(schemaStore)
 //  const [dataTableFirstRow, setDataTableFirstRow] = useState(RowData);
 
-  const tableName = data.table[0];
- let firstRow =[]
-  let restRowsData = []
-  let secondaryFirstRow = []
 
-  if (schemaStore['public.' + tableName] !== undefined) {
-    secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
-    //console.log(secondaryFirstRow);
-  }
 
-   const RowData = Object.values(data.table[1]);
-  if (RowData[0] !== undefined) {
-    firstRow = Object.keys(RowData[0]);
-    restRowsData = RowData.map(each => Object.values(each));
-  } else {
-    firstRow = secondaryFirstRow
-   }
+
+
+
+
+
   //console.log('HERE!!!!!!!!',remainingRows)
 //   const remainingRows = Object.values(data.table[1]);
 //  if (RowData[0] !== undefined) {
