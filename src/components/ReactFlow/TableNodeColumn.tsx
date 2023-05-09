@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import {
@@ -27,7 +27,15 @@ export default function TableNodeColumn({
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
 
-  const [columnData, setColumnData] = useState<ColumnSchema>({ ...column });
+  const newColumn = JSON.parse(JSON.stringify(column))
+  const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
+
+  useEffect(()=> {
+    setColumnData({...newColumn})
+  },[column])
+
+
+
 
   const onSave = () => {
     const currentSchema = { ...schemaStore };

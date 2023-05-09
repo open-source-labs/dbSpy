@@ -1,56 +1,38 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 
-export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-    const dbDataSource = await dbConnect(req)
-    try{
-    const newDbRowData: {[key: string]: string } = req.body
-    const tableName: string = newDbRowData.tableName
-    const newMysqlRow = newDbRowData.newRow as any ;
+//----------------------------------------------------------------------------
 
-          const keys = Object.keys(newMysqlRow).join(", ");
-          console.log('keys: ', keys)
-          const values = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
-          console.log('values: ', values)
-          const dbAddedRow = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-            VALUES (${values})`);
+// export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+//     const dbDataSource = await dbConnect(req)
+//     console.log('req.session: ', req.session)
+//     try{
+//     const newDbRowData: {[key: string]: string } = req.body;
+//     const tableName = newDbRowData.tableName;
+//     const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
 
-      dbDataSource.destroy();
-      console.log('Database has been disconnected');
-      console.log('dbAddedRow in helper: ', dbAddedRow)
-      return dbAddedRow;
+//           const keys: string = Object.keys(newMysqlRow).join(", ");
+//           console.log("keys: ", keys)
+//           const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
+//           console.log('values: ', values)
+//           const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
+//             VALUES (${values})`);
+
+//       dbDataSource.destroy();
+//       console.log('Database has been disconnected');
+//       console.log('dbAddedRow in helper: ', dbAddedRow)
+//       return dbAddedRow;
       
 
-  } catch (err: unknown) {
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
-    return next(err);
-  };
-  };
+//   } catch (err: unknown) {
+//     console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+//     dbDataSource.destroy();
+//     console.log('Database has been disconnected');
+//     return next(err);
+//   };
+//   };
 
-//   enum Database {
-//     MySQL = "mysql",
-//     Postgres = "postgres",
-//     CockroachDB = "cockroachdb",
-//     SAP = "sap",
-//     Spanner = "spanner",
-//     MariaDB = "mariadb",
-//     SQLite = "sqlite",
-//     Cordova = "cordova",
-//     ReactNative = "react-native",
-//     NativeScript = "nativescript",
-//     SQLJS = "sqljs",
-//     Oracle = "oracle",
-//     MSSQL = "mssql",
-//     MongoDB = "mongodb",
-//     AuroraMySQL = "aurora-mysql",
-//     AuroraPostgres = "aurora-postgres",
-//     Expo = "expo",
-//     BetterSQLite3 = "better-sqlite3",
-//     Capacitor = "capacitor"
-//   }
-  
+  //----------------------------------------------------------------------------
 
  export const dbConnect = async (req: Request) => {
     const { db_type, hostname, password, port, username, database_name, service_name, file_path } = req.session;
@@ -61,9 +43,9 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
       port: port ? parseInt(port as string) : 1521,
       username: username as string,
       password: password as string,
-      database: database_name as string,
-      serviceName: service_name as string,
-      filePath: file_path as string,
+      database: database_name as string || file_path as string,
+      serviceName: service_name ? service_name as string : undefined,
+      //filePath: file_path as string,
       synchronize: true,
       logging: true,
       options: {
@@ -76,4 +58,6 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
    console.log('Data source has been connected');
 
    return dbDataSource;
-  }
+  };
+
+  //----------------------------------------------------------------------------
