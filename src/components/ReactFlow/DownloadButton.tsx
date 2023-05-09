@@ -5,7 +5,7 @@ import { BsFillCameraFill } from 'react-icons/bs';
 // this creates the custom button in the React Flow Controls panel 
 // that allows you to take a screenshot and download it to your machine
 
-function downloadImage(dataUrl) {
+function downloadImage(dataUrl:string) {
   const a = document.createElement('a');
 
   a.setAttribute('download', 'dbSpy-reactflow.png');
@@ -15,7 +15,7 @@ function downloadImage(dataUrl) {
 
 export default function DownloadButton() {
   const onClick = () => {
-    toPng(document.querySelector('.react-flow'), {
+    toPng(document.querySelector('.react-flow') as HTMLElement, {
       filter: (node) => {
         // we don't want to add the minimap and the controls to the image
         if (

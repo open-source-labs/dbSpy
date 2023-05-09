@@ -48,8 +48,8 @@ const Sidebar = (props: any) => {
     if (values.database_link) {
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
-      console.log('fullLink: ', fullLink)
-      console.log('splitURI: ', splitURI)
+      //console.log('fullLink: ', fullLink)
+      //console.log('splitURI: ', splitURI)
       if (splitURI[0] === 'postgres:') {
         const name_postgres = splitURI[3];
         const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
@@ -106,13 +106,13 @@ const Sidebar = (props: any) => {
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => {
-        console.log('data from back',res.data)
+        //console.log('data from back',res.data)
         return res.data;
       })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
     //update schemaStore and dataStore
-    console.log('schemaFromBackend', dataFromBackend.schema)
-    console.log('dataFromBackend', dataFromBackend.data)
+    //console.log('schemaFromBackend', dataFromBackend.schema)
+    //console.log('dataFromBackend', dataFromBackend.data)
     setSchemaStore(dataFromBackend.schema);
     setDataStore(dataFromBackend.data)
     setWelcome(false);

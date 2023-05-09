@@ -7,21 +7,29 @@ import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
 
-export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
+interface DataTableNodeProps {
+data: {
+table: [string, Array<{}>],
+edges: Array<{ source: string, target: string, sourceHandle: string, targetHandle: string }>
+}
+}
 
+export default function DataTableNode({ data }:DataTableNodeProps) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
+
+  console.log(data)
   const { setInputModalState } = useSettingsStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
 
   const tableName = data.table[0];
- let firstRow =[]
-  let restRowsData = []
-  let secondaryFirstRow = []
+  let firstRow: Array<string|number|boolean|null> =[]
+  let restRowsData: Array<string | number | boolean | null | {}> = []
+  let secondaryFirstRow: Array<string|number|boolean|null> = []
 
   if (schemaStore['public.' + tableName] !== undefined) {
     secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
   }
 
-   const RowData = Object.values(data.table[1]);
+  const RowData: Array<{}> = Object.values(data.table[1]);
   if (RowData[0] !== undefined) {
     firstRow = Object.keys(RowData[0]);
     restRowsData = RowData.map(each => Object.values(each));
@@ -35,16 +43,16 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 //   restRowsData = remainingRows.map(each => Object.values(each));
 //   // console.log(restRowsData)
 //  }
-console.log(tableName)  
-  console.log(data.edges)
-console.log(firstRow)  
+//console.log(tableName)  
+//console.log(data.edges)
+//console.log(firstRow)  
 //cannot make handles for data table dynamic since size of each column can vary
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
-      let columnNumberSource =
+      let columnNumberSource:number =
         firstRow.findIndex((eachColumnName) => eachColumnName === data.edges[i].sourceHandle) + 1;
-      console.log('columnNumberSource',columnNumberSource)
+      //console.log('columnNumberSource',columnNumberSource)
       if (columnNumberSource === 0) columnNumberSource = 1;
       tableHandles.push(
         <Handle
@@ -61,9 +69,9 @@ console.log(firstRow)
       );
     }
     if (data.edges[i].target === tableName) {
-      let columnNumberTarget =
+      let columnNumberTarget:number =
         firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
-      console.log("columnNumberTarget", columnNumberTarget)
+      //console.log("columnNumberTarget", columnNumberTarget)
       if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
         <Handle

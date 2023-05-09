@@ -1,4 +1,4 @@
-import { Edge, DataNode, DataStore } from '@/Types';
+import { Edge, DataNode, DataStore, TableTuple } from '@/Types';
 
 
 //hard-coded xy positioning of each node in the canvas

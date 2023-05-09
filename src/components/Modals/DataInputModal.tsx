@@ -28,7 +28,7 @@ export default function DataInputModal({
 
   console.log("dbCredentials", dbCredentials)
 
-  const updatingDB = (newRow):void => {
+  const updatingDB = (newRow: Array<{}>):void => {
     axios
       .post(`api/sql/${dbCredentials.db_type}/data`, {tableName: tableName, newRow: newRow})
       .then((res) => {
@@ -56,7 +56,7 @@ export default function DataInputModal({
 
   const handleSubmit = (): boolean => { 
     try {
-      const additionalRow:any = {}
+      const additionalRow: {[key:string]:string |number |boolean | null} = {}
       if (!currentTable.length) {
         secondaryColumnNames.forEach((columnName, i) => {
           additionalRow[columnName] = rowData[i];
