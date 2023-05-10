@@ -54,9 +54,6 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
               });
           };
 
-
-         
-  
           //Formation of the schema data
           tableSchema[columnName] = {
               IsForeignKey: keyString.includes('MUL'),
@@ -97,7 +94,7 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
 
     // Console.logs to check what the data looks like
     // console.log("table data: ", data);
-    console.log("schema data: ", schema);
+    // console.log("schema data: ", schema);
 
     // Storage of queried results into res.locals
     res.locals.schema = schema;

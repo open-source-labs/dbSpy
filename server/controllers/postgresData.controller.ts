@@ -46,7 +46,6 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
         );
       };
     
-
       const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null
       const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : ''
 
@@ -89,7 +88,7 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData)
-      console.log('schema data: ', schema)
+      // console.log('schema data: ', schema)
 
 
       // Storage of queried results into res.locals
