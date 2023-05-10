@@ -36,25 +36,14 @@ export default function DataInputModal({
       })
       .catch((err: ErrorEvent) => { console.error('sending new row error', err) })
   }
-  //console.log(dataStore)
-  
-  // const getUpdatedData =  async() => {
-  //   const newData = await axios
-  //     .get(`api/sql/${values.db_type}/schema`, { params: dbCredentials })
-  //     .then((res) => {
-  //       console.log(res)
-  //       return res.data;
-  //     })
-  //     .catch((err: ErrorEvent) => console.error('getSchema error', err));
-  //   //update schemaStore and dataStore
-  //   setSchemaStore(newData.schema);
-  //   setDataStore(newData.data)
-  // }
 
   const secondaryColumnNames: string[] = Object.keys(schemaStore['public.' + tableName])
-  const currentTable = dataStore[tableName]  
+
+  const deepCopyDataStore = JSON.parse(JSON.stringify(dataStore))
+  const currentTable = deepCopyDataStore[tableName]  
 
   const handleSubmit = (): boolean => { 
+    console.log('how about here?', dataStore)
     try {
       const additionalRow: {[key:string]:string |number |boolean | null} = {}
       if (!currentTable.length) {
@@ -66,11 +55,24 @@ export default function DataInputModal({
           additionalRow[columnName] = rowData[i];
         });
       }
+      
       currentTable.push(additionalRow)
-      console.log('after update', currentTable)
-      console.log('updated dataStore', dataStore)
+      //console.log('after update', currentTable)
+      console.log('before updating', dataStore)
       updatingDB(currentTable[currentTable.length - 1])
       // setDataStore({...dataStore, [tableName]:currentTable})
+      console.log('dbCredentials',dbCredentials)
+      const getUpdatedData = axios
+       .get(`api/sql/${dbCredentials.db_type}/schema`, { params: dbCredentials })
+       .then(res => {
+         console.log('refetched', res.data)
+        //  please = res.data
+         setDataStore(res.data.data)
+         return res.data
+       })
+       .catch((err: ErrorEvent) => console.error('getSchema error', err))
+
+      console.log('after updating', dataStore)
       // console.log('updated dataStore', dataStore)
       return true;
     } catch (error) {
