@@ -59,6 +59,7 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
         Value: null,
         additional_constraints: additionalConstraints + hasIdentity === 'null' ? null : additionalConstraints + hasIdentity,
         data_type: column.data_type,
+        default_type: column.default_type,
         field_name: columnName,
       };
     };
@@ -82,6 +83,7 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
 
         // SCHEMAS Create property on schema object with every loop
           const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName))
+          console.log('postgresSchemaData: ', postgresSchemaData)
           schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
         };
 

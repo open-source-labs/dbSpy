@@ -23,8 +23,18 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
   
       for (const column of mysqlSchemaData) {
           const columnName: any = column.Field;
-          //const tableName: any = column.TableName
           const keyString: any = column.Key;
+
+          const defaultTypes = await MysqlDataSource.query(`
+          SELECT EXTRA, COLUMN_DEFAULT
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_SCHEMA = '${MysqlDataSource.options.database}'
+          AND TABLE_NAME = '${tableName}'
+          AND COLUMN_NAME = "${columnName}"
+        `)
+
+        console.log('defaultTypes: ', defaultTypes)
+        console.log(MysqlDataSource.options.database)
           
           //query for the foreign key data
           const foreignKeys: any = await getForeignKeys(columnName, tableName);
@@ -43,6 +53,9 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
                   constraintName: foreignKey.CONSTRAINT_NAME,
               });
           };
+
+
+         
   
           //Formation of the schema data
           tableSchema[columnName] = {
@@ -54,6 +67,7 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
               Value: null,
               additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
               data_type: column.Type,
+              default_type: defaultTypes[0].EXTRA === '' ? null : defaultTypes[0].EXTRA,
               field_name: column.Field,
           };
       };
@@ -83,7 +97,7 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
 
     // Console.logs to check what the data looks like
     // console.log("table data: ", data);
-    // console.log("schema data: ", schema);
+    console.log("schema data: ", schema);
 
     // Storage of queried results into res.locals
     res.locals.schema = schema;
