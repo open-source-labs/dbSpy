@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
+import useCredentialsStore from '../../store/credentialsStore';
 import {
  FaRegEdit,
  FaRegTrashAlt,
@@ -8,6 +9,7 @@ import {
  FaRegCheckSquare,
  FaRegWindowClose,
 } from 'react-icons/fa';
+import { identity } from 'cypress/types/lodash';
 
 type RowData = {
   [key: string]: string | number
@@ -21,7 +23,7 @@ const newRow = JSON.parse(JSON.stringify(row));
 
 const [rowData, setRowData] = useState({ ...newRow });
 const [tempData, setTempData] = useState({ ...newRow });
-
+const { dbCredentials } = useCredentialsStore((state) => state);
 
 //reset the state when row changes. Specifically for on-delete functionality. 
 useEffect(()=> {
@@ -54,19 +56,19 @@ const onCancel = () => {
 
 const onSave = async () => {
   const changes: changes= {};
-  for(let currentKey in tempData ){
-    if(tempData[currentKey] !== rowData[currentKey]){
-      changes[currentKey] =tempData[currentKey]
-    }
-  }
-  changes.DbSpyoriginal= {...rowData}
+  changes.tableName = id
+  changes.newRow= {...tempData}
+  console.log(changes);
 
   
   setRowData({...tempData});
   setMode('default');
   
 
-  const sendChangesRequest = await fetch('/api/changes',{
+
+  const sendChangesRequest = await fetch(`/api/${dbCredentials.db_type}/updateRow`,{
+  
+
     method:'PATCH',
     headers:{
       'Content-Type': 'application/json'
@@ -75,12 +77,15 @@ const onSave = async () => {
   });
   const data = await sendChangesRequest.json()
   console.log(data);
-
 }
 
- // useEffect(()=> {
-//   if(mode === 'default')   console.log("HELLO");
-// },[])
+/////////////////////////////////
+// Patch Request edit Data endpoint: /api/updateRow
+// Body: {
+//  newRow:{new updated row},
+//  tableName: name of the table
+//  }
+////////////
 
 
 return (
