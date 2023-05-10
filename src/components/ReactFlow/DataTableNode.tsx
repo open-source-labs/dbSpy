@@ -6,7 +6,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
-
+import useCredentialsStore from '../../store/credentialsStore';
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
@@ -20,7 +20,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const{schemaStore} = useSchemaStore((state) => state);
 
   const setDataStore = useDataStore((state) => state.setDataStore);
-
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
 
 
@@ -66,7 +66,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   
    setDataStore({...dataStore,[id]:restRowsData});
 
-  const sendDeleteRequest = fetch('/api/delete',{
+  const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
     headers:{
       'Content-Type':'application/json'
