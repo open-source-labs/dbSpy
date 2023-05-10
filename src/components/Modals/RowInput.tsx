@@ -20,8 +20,8 @@ currentTable, handleRowChange, secondaryColumnNames
   } else {
     columnNames = Object.keys(currentTable[0]);
   }
-    columnNames.map(each => {
-      columns.push(<label className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
+    columnNames.map((each, i) => {
+      columns.push(<label key={i+each} className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
         {each}
       </label>);
     });
@@ -29,9 +29,10 @@ currentTable, handleRowChange, secondaryColumnNames
     for (let i = 0; i < columns.length; i++) {
       inputs.push(
         <input
+          key={i+columns[i]}
           className='m-2'
           type="text"
-          required
+          // required
           maxLength={63}
           onChange={(e) => {
             handleRowChange(i, e.target.value.trim());

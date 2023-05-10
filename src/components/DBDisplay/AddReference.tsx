@@ -68,7 +68,7 @@ const AddReference: React.FC = () => {
         ForeignKeyColumnName:formValues.ReferencesPropertyName
       }
       fetch('/api/sql/postgres/addForeignKey', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },

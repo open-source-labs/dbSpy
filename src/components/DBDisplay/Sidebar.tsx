@@ -44,12 +44,13 @@ const Sidebar = (props: any) => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const values: any = formValues;
+    console.log('values: ', values)
     //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link) {
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
-      console.log('fullLink: ', fullLink)
-      console.log('splitURI: ', splitURI)
+      //console.log('fullLink: ', fullLink)
+      //console.log('splitURI: ', splitURI)
       if (splitURI[0] === 'postgres:') {
         const name_postgres = splitURI[3];
         const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
@@ -90,7 +91,7 @@ const Sidebar = (props: any) => {
       }
     } else if (values.file_path) {
       values.db_type = 'sqlite';
-      values.file_path = values.file_path;
+      values.database_name = values.file_path;
     }
 
 
@@ -101,16 +102,18 @@ const Sidebar = (props: any) => {
 
     //change between which getSchema from MySQL to postgres based on db_type
 
+    //console.log('values in Sidebar', values)
+
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => {
-        console.log('data from back',res.data)
+        //console.log('data from back',res.data)
         return res.data;
       })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
     //update schemaStore and dataStore
-    console.log('schemaFromBackend', dataFromBackend.schema)
-    console.log('dataFromBackend', dataFromBackend.data)
+    //console.log('schemaFromBackend', dataFromBackend.schema)
+    //console.log('dataFromBackend', dataFromBackend.data)
     setSchemaStore(dataFromBackend.schema);
     setDataStore(dataFromBackend.data)
     setWelcome(false);
@@ -179,7 +182,7 @@ const Sidebar = (props: any) => {
           />
         </div>
       )}
-      {serviceName === 'oracle' && (
+      {(serviceName === 'oracle') && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
@@ -209,7 +212,7 @@ const Sidebar = (props: any) => {
           </span>
         </div> 
       )}
-      {serviceName === 'sqlite' && (
+      {(serviceName === 'sqlite') && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">

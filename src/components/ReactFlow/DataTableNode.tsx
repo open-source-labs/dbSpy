@@ -103,61 +103,62 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 //   restRowsData = remainingRows.map(each => Object.values(each));
 //   // console.log(restRowsData)
 //  }
-
- // function to generate handles on the table by iterating through all
- // schema edges to match source and target handles of edges to handle id
- const tableHandles = [];
- for (let i = 0; i < data.edges.length; i++) {
-   if (data.edges[i].source === tableName) {
-     //make handle placement dynamic, we need to know the row of our source
-     let columnNumberSource =
-       firstRow.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
-     if (columnNumberSource === 0) columnNumberSource = 1;
-     tableHandles.push(
-       <Handle
-         key={`${data.edges[i]}-source-${[i]}`}
-         type="source"
-         position={Position.Top}
-         id={data.edges[i].sourceHandle}
-         style={{
-           background: 'transparent',
-           left: "60%"
-         }}
-       />
-     );
-   }
-   if (data.edges[i].target === tableName) {
-     //make handle placement dynamic, we need to know the row of our target
-     let columnNumberTarget =
-       firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
-     if (columnNumberTarget === 0) columnNumberTarget = 1;
-     tableHandles.push(
-       <Handle
-         key={`${data.edges[i]}-target-${[i]}`}
-         type="target"
-         position={Position.Bottom}
-         id={data.edges[i].targetHandle}
-         style={{
-           background: 'transparent',
-           left: "5%"  //need to fix this for dynamic handles
-         }}
-       />
-     );
-   }
- }
+//console.log(tableName)  
+//console.log(data.edges)
+//console.log(firstRow)  
+//cannot make handles for data table dynamic since size of each column can vary
+  const tableHandles = [];
+  for (let i = 0; i < data.edges.length; i++) {
+    if (data.edges[i].source === tableName) {
+      let columnNumberSource:number =
+        firstRow.findIndex((eachColumnName) => eachColumnName === data.edges[i].sourceHandle) + 1;
+      //console.log('columnNumberSource',columnNumberSource)
+      if (columnNumberSource === 0) columnNumberSource = 1;
+      tableHandles.push(
+        <Handle
+          key={`${data.edges[i]}-source-${[i]}`}
+          type="source"
+          position={Position.Top}
+          id={data.edges[i].sourceHandle}
+          style={{
+            background: 'transparent',
+            // left: "25%" + ((columnNumberSource - 1) * 30)
+            left: 62 + ((columnNumberSource-1)* 40)
+          }}
+        />
+      );
+    }
+    if (data.edges[i].target === tableName) {
+      let columnNumberTarget:number =
+        firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+      //console.log("columnNumberTarget", columnNumberTarget)
+      if (columnNumberTarget === 0) columnNumberTarget = 1;
+      tableHandles.push(
+        <Handle
+          key={`${data.edges[i]}-target-${[i]}`}
+          type="target"
+          position={Position.Top}
+          id={data.edges[i].targetHandle}
+          style={{
+            background: 'transparent',
+            left: 15
+          }}
+        />
+      );
+    }
+  }
  // renders columns within table
 
  return (
 <>
   <div className="table-node transition-colors duration-500" key={tableName}>
   <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
-  {/* <NodeResizer minWidth={100} minHeight={30} /> */}
   {tableHandles}
   <div>
     <label htmlFor="text" 
     className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
     style={{ 
-      'margin-left': '0px'
+      'marginLeft': '0px'
        }}>
       {tableName}
     </label>
