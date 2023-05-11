@@ -2,6 +2,7 @@ import React from 'react';
 import useSchemaStore from '../../store/schemaStore';
 
 type RowInputProps = {
+  tableName;
   currentTable;
   handleRowChange: (
     index: number,
@@ -11,25 +12,12 @@ type RowInputProps = {
 };
 
 function DataRowInput({
-currentTable, handleRowChange, secondaryColumnNames
+tableName,currentTable, handleRowChange, secondaryColumnNames
 }: RowInputProps) {
 
-  const{schemaStore} = useSchemaStore((state) => state);
-
-  //console.log(schemaStore)
+  const { schemaStore } = useSchemaStore((state) => state);
   
-  let additionalConstraints;
-  //find table name and column name that has additionalConstraints 'NOT NULL HAS_IDENTITY'
-    //input for that table and colmn => placeholder should say "auto generate by DB"
-  for (let eachTable in schemaStore) {
-    for (let eachColumn in schemaStore[eachTable]) {
-      if (eachColumn.additional_constraints === 'NOT NULL HAS_IDENTITY') {
-        additionalConstraints = eachColumn
-      }
-     }
-   }
-
-
+  const arrOfDataType = schemaStore["public." + tableName]
   const columns = [];
   const inputs = [];
   let columnNames: string[];
@@ -43,23 +31,21 @@ currentTable, handleRowChange, secondaryColumnNames
         {each}
       </label>);
     });
-  
   for (let i = 0; i < columns.length; i++) {
-      //if additionalConstraints ===column name
-        //placeholder should say "auto generate by DB"
-      inputs.push(
-        <input
-          key={i+columns[i]}
-          className='m-2'
-          type="text"
-          // required
-          maxLength={63}
-          onChange={(e) => {
-            handleRowChange(i, e.target.value.trim());
-          }}
-        />);
-    }
-
+    inputs.push(
+      <input
+        key={i+columns[i]}
+        className='m-2 w-300'
+        type="text"
+        placeholder={arrOfDataType[columnNames[i]].data_type}
+        // placeholder={arrOfDataType[columnNames[i]].data_type + ", "  +arrOfDataType[columnNames[i]].additional_constraints}
+        maxLength={63}
+        onChange={(e) => {
+          handleRowChange(i, e.target.value.trim());
+        }}
+      />);
+  }
+  
   return (
     <div className="column-input">
       <div>

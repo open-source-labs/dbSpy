@@ -24,7 +24,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 
   const setDataStore = useDataStore((state) => state.setDataStore);
 
-const infoIconStr: string = "Please strictly follow syntax of the database. ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
+const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
 
 
  const tableName = tableData[0];
