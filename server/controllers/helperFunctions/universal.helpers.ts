@@ -130,7 +130,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
       //For Oracle, the special database
         const slicedTableName = updatedDbRowData.tableName.slice(7, updatedDbRowData.tableName.length + 1)
         const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
-          req.session.db_type === 'microsoft' ? `"${schemaName}"."${slicedTableName}"` : updatedDbRowData.tableName;
+          req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : updatedDbRowData.tableName;
   
       const keys = Object.keys(updatedSqlRow);
       const values = Object.values(updatedSqlRow);
@@ -174,7 +174,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
       //For Oracle, the special database
         const slicedTableName = deletedDbRowData.tableName.slice(7, deletedDbRowData.tableName.length + 1)
         const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
-          req.session.db_type === 'microsoft' ? `"${schemaName}"."${slicedTableName}"` : deletedDbRowData.tableName;
+          req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : deletedDbRowData.tableName;
 
         const dbDeletedRow: Promise<unknown> = await dbDataSource.query(`
         DELETE FROM ${tableName} 
@@ -241,11 +241,22 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
         const addForeignKeyData: {[key: string]: string } = req.body;
         console.log('req.body: ', req.body)
 
+
+        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) // for microsoft
+        console.log('SchemaName: ', schemaName[0].SchemaName)
+        
         //For Oracle, the special database
-        const primaryKeyTableName = addForeignKeyData.PrimaryKeyTableName.slice(7, addForeignKeyData.PrimaryKeyTableName.length + 1)
-        const foreignKeyTableName = addForeignKeyData.ForeignKeyTableName.slice(7, addForeignKeyData.ForeignKeyTableName.length + 1)
-        const primaryTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${primaryKeyTableName}"` : addForeignKeyData.PrimaryKeyTableName;
-        const foreignTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` : addForeignKeyData.ForeignKeyTableName;
+        const primaryKeyTableName = addForeignKeyData.PrimaryKeyTableName.slice(7, addForeignKeyData.PrimaryKeyTableName.length + 1);
+        const foreignKeyTableName = addForeignKeyData.ForeignKeyTableName.slice(7, addForeignKeyData.ForeignKeyTableName.length + 1);
+        const microsoftPrimaryTableName = `${schemaName[0].SchemaName}.${primaryKeyTableName}`
+        const microsoftForeignTableName = `${schemaName[0].SchemaName}.${foreignKeyTableName}`
+
+        const primaryTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${primaryKeyTableName}"` :
+          req.session.db_type === 'mssql' ? `${microsoftPrimaryTableName}` : addForeignKeyData.tableName;
+        const foreignTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` : 
+          req.session.db_type === 'mssql' ? `${microsoftForeignTableName}` : addForeignKeyData.tableName;
+
+          
 
         const addedForeignKey: Promise<unknown> = await dbDataSource.query(`
         ALTER TABLE ${foreignTableName}
@@ -284,7 +295,7 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
       //For Oracle, the special database
       const slicedTableName = updateColumnData.tableName.slice(7, updateColumnData.tableName.length + 1)
       const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
-        req.session.db_type === 'microsoft' ? `"${schemaName}"."${slicedTableName}"` : updateColumnData.tableName;
+        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : updateColumnData.tableName;
     
 
       const updatedColumn: Promise<unknown> = await dbDataSource.query(`
