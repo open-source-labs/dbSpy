@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeColumn from './TableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
@@ -9,24 +8,18 @@ export default function TableNode({ data }) {
   const tableName = data.table[0];
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);
-  const [tableColumns, setTableColumns] = useState(columnData);
+  // const [tableColumns, setTableColumns] = useState(columnData);
   const { setInputModalState } = useSettingsStore((state) => state);
-
-  //console.log('columnData', columnData)
-  //console.log('data.edges',data.edges)
 
   // function to generate handles on the table by iterating through all
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === tableName) {  //need to find bug in SOURCE Handles!!!!!
+    if (data.edges[i].source === tableName) {  
       //make handle placement dynamic, we need to know the column of our source
       let columnNumberSource =
         columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
-      //console.log('columnNumberSource',columnNumberSource)
       if (columnNumberSource === 0) columnNumberSource = 1;
-      //console.log(data.edges[i].sourceHandle)
-      //console.log(columnNumberSource)
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -63,7 +56,6 @@ export default function TableNode({ data }) {
     }
   }
 
-  //console.log(tableHandles)
   // renders columns within table
   return (
     <>

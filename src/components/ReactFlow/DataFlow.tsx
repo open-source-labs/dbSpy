@@ -22,8 +22,6 @@ export default function DataFlow() {
   const { dataStore } = useDataStore(((state) => state))
   const { schemaStore } = useSchemaStore((state) => state);
 
-  //console.log(dataStore)
-
   // re-render every time dataStore updates
   
   useEffect(() => {  

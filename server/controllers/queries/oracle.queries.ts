@@ -3,6 +3,7 @@ SELECT
 c.table_name,
 c.column_name,
 c.data_type,
+c.data_default,
 c.char_col_decl_length AS character_maximum_length,
 c.nullable AS is_nullable,
 c.column_id,
