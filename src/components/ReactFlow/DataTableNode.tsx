@@ -11,7 +11,7 @@ import 'tippy.js/dist/tippy.css';
 import informationIcon from '../../../images/informationSqIcon.png'
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-
+  console.log(data)
   const [tableData, setTableData] = useState(data.table)
   const { setInputModalState } = useSettingsStore((state) => state);
   const { dataStore } = useDataStore((state) => state);
@@ -24,7 +24,11 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   let firstRow =[]
   let restRowsData = []
   let secondaryFirstRow = []
-  let RowData = Object.values(tableData[1]);
+  console.log(data)
+  console.log(dataStore)
+    const deepCopyDataStore = JSON.parse(JSON.stringify(dataStore))
+  // let RowData = Object.values(tableData[1]);
+  let RowData = Object.values(deepCopyDataStore[tableName]);
 
  //Used to grab the primary key and foreign keys column in the Table
  let schemaName = schemaStore[`public.${tableName}`];
