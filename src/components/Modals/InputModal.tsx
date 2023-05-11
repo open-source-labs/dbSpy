@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
+import useSettingsStore from '../../store/settingsStore';
 
 type InputModalProps = {
   mode: 'table' | 'column';
@@ -69,11 +70,17 @@ export default function InputModal({
   });
 
   // functions that check validity and add schema to the store
-  const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+  const {  addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
     (state) => state
   );
 
+
+
   const handleSubmit = (): boolean => {
+    //check schema state for the add table onclick
+  // const { isSchema, setTableMode } = useSettingsStore((state) => state)
+  //   console.log('isSchema', isSchema)
+  // if (!isSchema) setTableMode(true)
     // table must be added to schema first to enable column validity checks
     try {
       if (mode === 'table') {
@@ -82,7 +89,6 @@ export default function InputModal({
           newTableName: tableName,
           newColumns: columnData
           }
-
           //req to backend to save new table
 
           fetch('/api/sql/postgres/saveNewTable', {
