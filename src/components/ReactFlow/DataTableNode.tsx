@@ -8,15 +8,17 @@ import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationSqIcon.png'
+import informationIcon from '../../../images/informationSqIcon.png';
+import useCredentialsStore from '../../store/credentialsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-  console.log(data)
+
   const [tableData, setTableData] = useState(data.table)
   const { setInputModalState } = useSettingsStore((state) => state);
   const { dataStore } = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
-  const{ schemaStore } = useSchemaStore((state) => state);
+  const { schemaStore } = useSchemaStore((state) => state);
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
 
@@ -24,11 +26,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   let firstRow =[]
   let restRowsData = []
   let secondaryFirstRow = []
-  console.log(data)
-  console.log(dataStore)
-    const deepCopyDataStore = JSON.parse(JSON.stringify(dataStore))
-  // let RowData = Object.values(tableData[1]);
-  let RowData = Object.values(deepCopyDataStore[tableName]);
+  let RowData = Object.values(tableData[1]);
 
  //Used to grab the primary key and foreign keys column in the Table
  let schemaName = schemaStore[`public.${tableName}`];
