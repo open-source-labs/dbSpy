@@ -67,9 +67,10 @@ for(let i = 0; i < RowData.length; i++){
 
 
  const deleteRow = async (value,index,id) => {
+
  
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
-  if(value[FK]!== null){
+  if(value[FK]!== null && FK !== null){
     alert(`Can't Delete Foreign Key: ${FK}`);
     throw new Error('Duplicate Primary Key');
   }
