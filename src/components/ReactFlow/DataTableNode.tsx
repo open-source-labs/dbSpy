@@ -21,7 +21,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const { dbCredentials } = useCredentialsStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-
+  const { dbCredentials } = useCredentialsStore((state) => state);
+  
   const tableName = tableData[0];
   let firstRow =[]
   let restRowsData = []
@@ -75,7 +76,7 @@ for(let i = 0; i < RowData.length; i++){
    setDataStore({...dataStore,[id]:restRowsData});
 
 
-  const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
+  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
     headers:{
       'Content-Type':'application/json'
