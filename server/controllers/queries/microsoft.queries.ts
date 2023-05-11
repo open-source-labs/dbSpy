@@ -7,14 +7,17 @@ export const microsoftSchemaQuery = `
             c.CHARACTER_MAXIMUM_LENGTH,
             c.COLUMN_DEFAULT,
             c.IS_NULLABLE,
+            COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') AS IS_IDENTITY,
             CASE WHEN k.COLUMN_NAME IS NOT NULL THEN 'YES' ELSE 'NO' END AS IS_PRIMARY_KEY
         FROM 
             INFORMATION_SCHEMA.COLUMNS c
+        INNER JOIN INFORMATION_SCHEMA.TABLES t ON c.TABLE_SCHEMA = t.TABLE_SCHEMA AND c.TABLE_NAME = t.TABLE_NAME
         LEFT JOIN
             INFORMATION_SCHEMA.KEY_COLUMN_USAGE k ON c.TABLE_NAME = k.TABLE_NAME AND c.COLUMN_NAME = k.COLUMN_NAME AND k.CONSTRAINT_NAME LIKE '%PK%'
         WHERE 
             c.TABLE_NAME = 'tableName';
             `;
+
 export const microsoftForeignKeyQuery = `
         SELECT
             fk.name AS constraint_name,

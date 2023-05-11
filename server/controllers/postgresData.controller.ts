@@ -46,7 +46,6 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
         );
       };
     
-
       const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null
       const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : ''
 
@@ -59,6 +58,7 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
         Value: null,
         additional_constraints: additionalConstraints + hasIdentity === 'null' ? null : additionalConstraints + hasIdentity,
         data_type: column.data_type,
+        default_type: column.default_type,
         field_name: columnName,
       };
     };
@@ -82,12 +82,13 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
 
         // SCHEMAS Create property on schema object with every loop
           const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName))
+          console.log('postgresSchemaData: ', postgresSchemaData)
           schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
         };
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData)
-      console.log('schema data: ', schema)
+      // console.log('schema data: ', schema)
 
 
       // Storage of queried results into res.locals
@@ -118,6 +119,7 @@ postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
 
 postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
+    console.log('we are in update row: ', updateRow)
     return next();
   },
 

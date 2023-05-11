@@ -63,6 +63,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
       },
       body:JSON.stringify({tableName : tableName, primaryKey: PK, value: value[PK] })
     })
+
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,

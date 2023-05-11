@@ -58,10 +58,12 @@ export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowDa
 
     setRowData({...tempData});
     setMode('default');
-  
-    const sendChangesRequest = await fetch(`/api/${dbCredentials.db_type}/updateRow`, {
-      method:'PATCH',
-      headers:{
+
+  console.log('dbCredentials: ', dbCredentials)
+
+  const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
+    method:'PATCH',
+    headers:{
       'Content-Type': 'application/json'
       },
       body:JSON.stringify(changes)
