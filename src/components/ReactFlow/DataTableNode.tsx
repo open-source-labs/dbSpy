@@ -33,7 +33,9 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  //Used to grab the primary key value in the Table
  let schemaName = schemaStore[`public.${tableName}`];
  let PK = null;
+ const FK = new Set();
  for(let key in schemaName){
+   if(schemaName[key]['IsForeignKey']) FK.add(schemaName[key].field_name)
    if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
  }
 
@@ -199,6 +201,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
               id={tableName}
               index={index}
               deleteRow={deleteRow}
+              FK={FK}
             />
           )} )}
         </tbody>

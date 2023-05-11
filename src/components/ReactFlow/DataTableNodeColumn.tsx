@@ -15,9 +15,10 @@ type RowData = {
   [key: string]: string | number
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string)=>void,index:number}) {
+export default function DataTableNodeColumn({row,id,deleteRow,index,FK}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string,FK:{})=>void,index:number}) {
 
 //####### for CRUD ##########
+
 
 const newRow = JSON.parse(JSON.stringify(row));
 
@@ -55,6 +56,7 @@ const onCancel = () => {
 }
 
 const onSave = async () => {
+  console.log(FK);
   const changes: changes= {};
   changes.tableName = id
   changes.newRow= {...tempData}
@@ -117,7 +119,10 @@ return (
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
                 <FaRegSave size={17} />
               </button>):
-            (<button onClick={() =>{ deleteRow(rowData,index,id)}}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            (<button onClick={() =>{ 
+              deleteRow(rowData,index,id);
+              setMode('default');
+              }}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
               <FaRegCheckSquare size={17} />
             </button>)
       }
