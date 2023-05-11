@@ -29,13 +29,19 @@ export const postgresForeignKeyQuery = `
     `
 
 export const postgresSchemaQuery = `
-    SELECT 
-        c.column_name, 
-        c.data_type, 
-        c.character_maximum_length,
-        c.is_nullable,
-        c.column_default,
-        CASE WHEN c.column_default LIKE 'nextval%' THEN 'YES' ELSE 'NO' END as is_autoincrement,
+SELECT 
+    c.column_name, 
+    c.data_type, 
+    c.character_maximum_length,
+    c.is_nullable,
+    c.column_default,
+    CASE 
+        WHEN c.column_default LIKE 'nextval%' THEN 'sequence'
+        WHEN c.column_default LIKE '(%::text)::%' THEN 'expression'
+        WHEN c.column_default IS NOT NULL THEN 'constant'
+        WHEN ic.column_name IS NOT NULL THEN 'identity'
+        ELSE ''
+    END as default_type,
     CASE WHEN 
         c.column_default IS NOT NULL THEN 'DEFAULT' ELSE '' END ||
     CASE WHEN 
@@ -43,50 +49,49 @@ export const postgresSchemaQuery = `
     CASE WHEN 
         tc.constraint_type = 'PRIMARY KEY' THEN ' PRIMARY KEY' ELSE '' END ||
         CASE WHEN 
-        tc.constraint_type = 'FOREIGN KEY' THEN ' FOREIGN KEY REFERENCES ' || ccu.table_name || '(' || ccu.column_name || ')' ELSE '' END as additional_constraints,
-        ic.column_name IS NOT NULL as has_identity
-    FROM 
-        information_schema.columns c
-    LEFT OUTER JOIN 
-        information_schema.key_column_usage kcu
-        ON 
-            c.table_catalog = kcu.table_catalog
-        AND 
-            c.table_schema = kcu.table_schema
-        AND 
-            c.table_name = kcu.table_name
-        AND 
-            c.column_name = kcu.column_name
-    LEFT OUTER JOIN 
-        information_schema.table_constraints tc
-        ON 
-            kcu.constraint_catalog = tc.constraint_catalog
-        AND 
-            kcu.constraint_schema = tc.constraint_schema
-        AND 
-            kcu.constraint_name = tc.constraint_name
-    LEFT OUTER JOIN 
-        information_schema.constraint_column_usage ccu
-        ON 
-            tc.constraint_catalog = ccu.constraint_catalog
-        AND 
-            tc.constraint_schema = ccu.constraint_schema
-        AND 
-            tc.constraint_name = ccu.constraint_name
-    LEFT OUTER JOIN
-        information_schema.columns ic
-        ON 
-            c.table_catalog = ic.table_catalog
-        AND 
-            c.table_schema = ic.table_schema
-        AND 
-            c.table_name = ic.table_name
-        AND 
-            c.column_name = ic.column_name
-        AND 
-            ic.is_identity = 'YES'
-    WHERE 
-        c.table_name = 'tableName'
-    ORDER BY 
-        c.ordinal_position;
+        tc.constraint_type = 'FOREIGN KEY' THEN ' FOREIGN KEY REFERENCES ' || ccu.table_name || '(' || ccu.column_name || ')' ELSE '' END as additional_constraints
+FROM 
+    information_schema.columns c
+LEFT OUTER JOIN 
+    information_schema.key_column_usage kcu
+    ON 
+        c.table_catalog = kcu.table_catalog
+    AND 
+        c.table_schema = kcu.table_schema
+    AND 
+        c.table_name = kcu.table_name
+    AND 
+        c.column_name = kcu.column_name
+LEFT OUTER JOIN 
+    information_schema.table_constraints tc
+    ON 
+        kcu.constraint_catalog = tc.constraint_catalog
+    AND 
+        kcu.constraint_schema = tc.constraint_schema
+    AND 
+        kcu.constraint_name = tc.constraint_name
+LEFT OUTER JOIN 
+    information_schema.constraint_column_usage ccu
+    ON 
+        tc.constraint_catalog = ccu.constraint_catalog
+    AND 
+        tc.constraint_schema = ccu.constraint_schema
+    AND 
+        tc.constraint_name = ccu.constraint_name
+LEFT OUTER JOIN
+    information_schema.columns ic
+    ON 
+        c.table_catalog = ic.table_catalog
+    AND 
+        c.table_schema = ic.table_schema
+    AND 
+        c.table_name = ic.table_name
+    AND 
+        c.column_name = ic.column_name
+    AND 
+        ic.is_identity = 'YES'
+WHERE 
+    c.table_name = 'tableName'
+ORDER BY 
+    c.ordinal_position;
     `
