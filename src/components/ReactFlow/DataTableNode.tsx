@@ -9,6 +9,7 @@ import useSchemaStore from '../../store/schemaStore';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import informationIcon from '../../../images/informationSqIcon.png'
+import useCredentialsStore from '../../store/credentialsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
@@ -19,7 +20,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const{ schemaStore } = useSchemaStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-
+  const { dbCredentials } = useCredentialsStore((state) => state);
+  
   const tableName = tableData[0];
   let firstRow =[]
   let restRowsData = []

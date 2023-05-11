@@ -128,27 +128,30 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 
     console.log('updatedDbRowData: ', updatedDbRowData)
 
-    const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`)
+    const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
     //For Oracle, the special database
-      const slicedTableName = updatedDbRowData.tableName.slice(7, updatedDbRowData.tableName.length + 1)
-      console.log('slicedTableName: ', slicedTableName)
-      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
+      //const newTableName = updatedDbRowData.tableName
+      //const slicedTableName = newTableName.slice(7, newTableName.length + 1)
+      //console.log('slicedTableName: ', slicedTableName)
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${updatedDbRowData.tableName}"` : 
         req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${updatedDbRowData.tableName}` : updatedDbRowData.tableName;
 
     const updateKeys = Object.keys(updatedSqlRow);
     const updateValues = Object.values(updatedSqlRow);
-    let keyValueString = ''
+    let oracleKeyValueString = ''
     for (let i = 0; i < updateKeys.length; i++) {
-      keyValueString += `"${updateKeys[i]}" = '${updateValues[i]}'${i < updateKeys.length - 1 ? ', ' : ''}`
+      oracleKeyValueString += `"${updateKeys[i]}" = '${updateValues[i]}'${i < updateKeys.length - 1 ? ', ' : ''}`
     }
+
+    const keyValueString = oracleKeyValueString.replace(/"/g, '');
 
     const primaryKeyName = Object.keys(primaryKeyData);
     const primaryKeyValue = Object.values(primaryKeyData);
 
     const dbUpdatedRow = await dbDataSource.query(`
       UPDATE ${tableName}
-      SET ${keyValueString}
-      WHERE ${primaryKeyName} = ${primaryKeyValue};
+      SET ${req.session.db_type === 'oracle' ? oracleKeyValueString : keyValueString }
+      WHERE ${req.session.db_type === 'oracle' ? `"${primaryKeyName}"` : primaryKeyName} = ${req.session.db_type === 'oracle' || req.session.db_type === 'mysql' ? `'${primaryKeyValue}'` : primaryKeyValue}
      `);
 
     await dbDataSource.destroy();
@@ -173,17 +176,16 @@ export const deleteRow: RequestHandler = async (req: Request, _res: Response, ne
   try{
       const user: string | undefined = req.session.username;   
       const deletedDbRowData: {[key: string]: string } = req.body;
-      // const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${deletedDbRowData.tableName}"` : deletedDbRowData.tableName;
 
-      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`)
-    //For Oracle, the special database
+      const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
+      //For Oracle, the special database
       const slicedTableName = deletedDbRowData.tableName.slice(7, deletedDbRowData.tableName.length + 1)
-      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
-        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : deletedDbRowData.tableName;
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${deletedDbRowData.tableName}"` : 
+        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${deletedDbRowData.tableName}` : deletedDbRowData.tableName;
 
       const dbDeletedRow: Promise<unknown> = await dbDataSource.query(`
       DELETE FROM ${tableName} 
-      WHERE "${deletedDbRowData.primaryKey}" = '${deletedDbRowData.value}'
+      WHERE ${req.session.db_type === 'oracle' ? `"${deletedDbRowData.primaryKey}"` : deletedDbRowData.primaryKey} = ${req.session.db_type === 'oracle' || req.session.db_type === 'mysql' ? `'${deletedDbRowData.value}'` : deletedDbRowData.value}
       `);
 
     dbDataSource.destroy();
@@ -247,7 +249,7 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
       console.log('req.body: ', req.body)
 
 
-      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`)
+      const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
       //For Oracle, the special database
       const slicedTableName = updateColumnData.tableName.slice(7, updateColumnData.tableName.length + 1)
       const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
@@ -357,7 +359,7 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
       const deleteTableData: {[key: string]: string } = req.body;
       console.log('req.body: ', req.body)
 
-      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`)
+      const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
       //For Oracle, the special database
       const slicedTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1)
       const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
@@ -391,7 +393,7 @@ export const addForeignKey: RequestHandler = async (req: Request, _res: Response
       console.log('req.body: ', req.body)
 
 
-      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) // for microsoft
+      const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
       // console.log('SchemaName: ', schemaName[0].SchemaName)
       
       //For Oracle, the special database
@@ -437,7 +439,7 @@ export const removeForeignKey: RequestHandler = async (req: Request, _res: Respo
       console.log('req.body: ', req.body)
 
 
-      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) // for microsoft
+      const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
       
       //For Oracle, the special database
       const foreignKeyTableName = removeForeignKeyData.PrimaryKeyTableName.slice(7, removeForeignKeyData.PrimaryKeyTableName.length + 1);
