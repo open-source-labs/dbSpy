@@ -15,9 +15,10 @@ type RowData = {
   [key: string]: string | number
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string)=>void,index:number}) {
+export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string,PK:{})=>void,index:number}) {
 
 //####### for CRUD ##########
+
 
   const newRow = JSON.parse(JSON.stringify(row));
 
@@ -50,18 +51,40 @@ export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowDa
     setMode('default');
   }
 
-  const onSave = async () => {
-    const changes: changes= {};
-    changes.tableName = id
-    changes.newRow= {...tempData}
-    console.log(changes);
+const onSave = async () => {
 
-    setRowData({...tempData});
-    setMode('default');
+  const changes: changes= {};
+  changes.tableName = id;
+  changes.newRow= {...tempData};
+  const checkConstraints:changes = {}
 
-  console.log('dbCredentials: ', dbCredentials)
+  //iterate through and find the changes between new and old data.
 
-  const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
+  for(let currentKey in tempData ){
+    if(tempData[currentKey] !== rowData[currentKey]){
+      checkConstraints[currentKey] =tempData[currentKey]
+    }
+  }
+
+
+
+  for(let currentKey in checkConstraints ){
+    if(PK[0]===currentKey && PK[1].has(parseInt(checkConstraints[currentKey]))){
+      alert(`Duplicate Primary Key: ${PK[0]}`);
+      setTempData(rowData);
+      setMode('default');
+      throw new Error('Duplicate Primary Key');
+    }
+  }
+  
+  setRowData({...tempData});
+  setMode('default');
+  
+
+
+  const sendChangesRequest = await fetch(`/api/${dbCredentials.db_type}/updateRow`,{
+  
+
     method:'PATCH',
     headers:{
       'Content-Type': 'application/json'
@@ -107,9 +130,11 @@ export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowDa
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
                 <FaRegSave size={17} />
               </button>):
-            (<button onClick={() => { deleteRow(rowData, index, id); }}
-              className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-                <FaRegCheckSquare size={17} />
+            (<button onClick={() =>{ 
+              deleteRow(rowData,index,id);
+              setMode('default');
+              }}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+              <FaRegCheckSquare size={17} />
             </button>)
         }
       </td>
