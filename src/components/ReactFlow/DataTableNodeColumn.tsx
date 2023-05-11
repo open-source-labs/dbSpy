@@ -56,6 +56,8 @@ const onSave = async () => {
   const changes: changes= {};
   changes.tableName = id;
   changes.newRow= {...tempData};
+  changes.primaryKey = {[PK[0]]:changes.newRow[PK[0]]}
+  console.log(changes);
   //delete primary key column from change for fetch request.
   delete changes.newRow[PK[0]]
   console.log(changes);
