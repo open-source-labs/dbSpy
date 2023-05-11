@@ -1,6 +1,5 @@
 // creates an array of all edges in the schema
 import { SchemaStore } from '../../store/schemaStore';
-// import { Edge } from '@/Types';
 
 export type Edge = {
   id: string;
