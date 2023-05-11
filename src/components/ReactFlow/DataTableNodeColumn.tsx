@@ -15,67 +15,85 @@ type RowData = {
   [key: string]: string | number
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string)=>void,index:number}) {
+export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string,PK:{})=>void,index:number}) {
 
 //####### for CRUD ##########
 
-const newRow = JSON.parse(JSON.stringify(row));
 
-const [rowData, setRowData] = useState({ ...newRow });
-const [tempData, setTempData] = useState({ ...newRow });
-const { dbCredentials } = useCredentialsStore((state) => state);
+  const newRow = JSON.parse(JSON.stringify(row));
+
+  const [rowData, setRowData] = useState({ ...newRow });
+  const [tempData, setTempData] = useState({ ...newRow });
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
 //reset the state when row changes. Specifically for on-delete functionality. 
-useEffect(()=> {
-  setRowData({...newRow})
-  setTempData({...newRow})
-  },[row])
+  useEffect(()=> {
+    setRowData({...newRow})
+    setTempData({...newRow})
+    },[row])
 
-const [mode, setMode] = useState('default');
+  const [mode, setMode] = useState('default');
 
+  const rowDataKeys = Object.keys(row)
 
-const rowDataKeys = Object.keys(row)
+  interface rowData {
+    [key:string|number]:string|number
+  }
+  interface tempData {
+    [key:string|number]:string|number
+  }
+  interface changes{
+    [key:string|number]:string|number|tempData
+  }
 
-interface rowData {
-  [key:string|number]:string|number
-}
-interface tempData {
-  [key:string|number]:string|number
-}
-interface changes{
-  [key:string|number]:string|number|tempData
-}
-
-
-
-
-const onCancel = () => {
-  setTempData(rowData);
-  setMode('default');
-}
+  const onCancel = () => {
+    setTempData(rowData);
+    setMode('default');
+  }
 
 const onSave = async () => {
-  const changes: changes= {};
-  changes.tableName = id
-  changes.newRow= {...tempData}
-  console.log(changes);
 
+  const changes: changes= {};
+  changes.tableName = id;
+  changes.newRow= {...tempData};
+  const checkConstraints:changes = {}
+
+  //iterate through and find the changes between new and old data.
+
+  for(let currentKey in tempData ){
+    if(tempData[currentKey] !== rowData[currentKey]){
+      checkConstraints[currentKey] =tempData[currentKey]
+    }
+  }
+
+
+
+  for(let currentKey in checkConstraints ){
+    if(PK[0]===currentKey && PK[1].has(parseInt(checkConstraints[currentKey]))){
+      alert(`Duplicate Primary Key: ${PK[0]}`);
+      setTempData(rowData);
+      setMode('default');
+      throw new Error('Duplicate Primary Key');
+    }
+  }
   
   setRowData({...tempData});
   setMode('default');
   
-  console.log('dbCredentials: ', dbCredentials)
 
-  const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
+
+  const sendChangesRequest = await fetch(`/api/${dbCredentials.db_type}/updateRow`,{
+  
+
     method:'PATCH',
     headers:{
       'Content-Type': 'application/json'
-    },
-    body:JSON.stringify(changes)
-  });
-  const data = await sendChangesRequest.json()
-  console.log(data);
-}
+      },
+      body:JSON.stringify(changes)
+    });
+    const data = await sendChangesRequest.json()
+    console.log(data);
+  }
 
 /////////////////////////////////
 // Patch Request edit Data endpoint: /api/updateRow
@@ -85,55 +103,51 @@ const onSave = async () => {
 //  }
 ////////////
 
-
-return (
-  <tr key={id} className="dark:text-[#f8f4eb]">
-
-    {rowDataKeys.map((element:string|number,ind:number) => 
+  return (
+    <tr key={id} className="dark:text-[#f8f4eb]">
+      {rowDataKeys.map((element:string|number,ind:number) => 
         <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} > 
-        { mode === 'edit'?
-        (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element]} 
-        onChange={(e)=>{
-          setTempData((prevData:rowData) =>  ({
-            ...prevData,
-            [element]: e.target.value
-          }))
-        }
-    }
-        ></input>):
-        (rowData[element])
-        }
+          {mode === 'edit'?
+            (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element]} 
+              onChange={(e)=>{
+                setTempData((prevData:rowData) =>  ({
+                  ...prevData,
+                  [element]: e.target.value
+                }))
+              }}
+            ></input>):
+            (rowData[element])
+          }
         </td>
-    )}
-    <td>{
-      mode ==='default'?
-            (<button onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-              <FaRegEdit size={17} />
-            </button>):
+      )}
+      <td>
+        {mode ==='default'?
+          (<button onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            <FaRegEdit size={17} />
+          </button>):
           mode==='edit'?
             (<button  onClick={onSave} 
               className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
                 <FaRegSave size={17} />
               </button>):
-            (<button onClick={() =>{ deleteRow(rowData,index,id)}}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            (<button onClick={() =>{ 
+              deleteRow(rowData,index,id);
+              setMode('default');
+              }}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
               <FaRegCheckSquare size={17} />
             </button>)
-      }
-    </td>
-    <td>
-      {
-        mode ==='default'?
-        (<button id={`${id}-rowDeleteBtn`} onClick={()=>setMode(id)}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-        <FaRegTrashAlt size={17} />
-      </button>):
-        (<button id={`${id}-cancelBtn`} onClick={onCancel}>   
-              <FaRegWindowClose size={17} />
-        </button>)
-      }
-
-    </td>
-
-  </tr>
- 
+        }
+      </td>
+      <td>
+        {mode ==='default'?
+          (<button id={`${id}-rowDeleteBtn`} onClick={()=>setMode(id)}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+            <FaRegTrashAlt size={17} />
+          </button>):
+          (<button id={`${id}-cancelBtn`} onClick={onCancel}>   
+            <FaRegWindowClose size={17} />
+          </button>)
+        }
+      </td>
+    </tr>
   );
 }
