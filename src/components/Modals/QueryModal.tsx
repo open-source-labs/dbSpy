@@ -24,8 +24,6 @@ export default function QueryModal ({closeQueryModal} : {closeQueryModal : () =>
           Return
         </button>
       </div>
-
     </div>
   )
-
 }

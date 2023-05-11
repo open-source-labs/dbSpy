@@ -1,6 +1,8 @@
 import React from 'react';
+import useSchemaStore from '../../store/schemaStore';
 
 type RowInputProps = {
+  tableName;
   currentTable;
   handleRowChange: (
     index: number,
@@ -10,9 +12,13 @@ type RowInputProps = {
 };
 
 function DataRowInput({
-currentTable, handleRowChange, secondaryColumnNames
+tableName,currentTable, handleRowChange, secondaryColumnNames
 }: RowInputProps) {
-  const columns: any = [];
+
+  const { schemaStore } = useSchemaStore((state) => state);
+  
+  const arrOfDataType = schemaStore["public." + tableName]
+  const columns = [];
   const inputs = [];
   let columnNames: string[];
   if (!currentTable.length) {
@@ -25,21 +31,21 @@ currentTable, handleRowChange, secondaryColumnNames
         {each}
       </label>);
     });
+  for (let i = 0; i < columns.length; i++) {
+    inputs.push(
+      <input
+        key={i+columns[i]}
+        className='m-2'
+        type="text"
+        placeholder={arrOfDataType[columnNames[i]].data_type}
+        // placeholder={arrOfDataType[columnNames[i]].data_type + ", "  +arrOfDataType[columnNames[i]].additional_constraints}
+        maxLength={63}
+        onChange={(e) => {
+          handleRowChange(i, e.target.value.trim());
+        }}
+      />);
+  }
   
-    for (let i = 0; i < columns.length; i++) {
-      inputs.push(
-        <input
-          key={i+columns[i]}
-          className='m-2'
-          type="text"
-          // required
-          maxLength={63}
-          onChange={(e) => {
-            handleRowChange(i, e.target.value.trim());
-          }}
-        />);
-    }
-
   return (
     <div className="column-input">
       <div>

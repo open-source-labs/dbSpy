@@ -3,7 +3,6 @@
 import { DataStore } from '@/Types';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-// import { DataState } from '@/Types';
 
 // type DataRowArray = Array<string | number | boolean | null>
 
