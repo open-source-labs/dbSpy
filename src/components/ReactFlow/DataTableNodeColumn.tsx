@@ -15,7 +15,7 @@ type RowData = {
   [key: string]: string | number
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index,FK}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string,FK:{})=>void,index:number}) {
+export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string,PK:{})=>void,index:number}) {
 
 //####### for CRUD ##########
 
@@ -56,12 +56,30 @@ const onCancel = () => {
 }
 
 const onSave = async () => {
-  console.log(FK);
-  const changes: changes= {};
-  changes.tableName = id
-  changes.newRow= {...tempData}
-  console.log(changes);
 
+  const changes: changes= {};
+  changes.tableName = id;
+  changes.newRow= {...tempData};
+  const checkConstraints:changes = {}
+
+  //iterate through and find the changes between new and old data.
+
+  for(let currentKey in tempData ){
+    if(tempData[currentKey] !== rowData[currentKey]){
+      checkConstraints[currentKey] =tempData[currentKey]
+    }
+  }
+
+
+
+  for(let currentKey in checkConstraints ){
+    if(PK[0]===currentKey && PK[1].has(parseInt(checkConstraints[currentKey]))){
+      alert(`Duplicate Primary Key: ${PK[0]}`);
+      setTempData(rowData);
+      setMode('default');
+      throw new Error('Duplicate Primary Key');
+    }
+  }
   
   setRowData({...tempData});
   setMode('default');

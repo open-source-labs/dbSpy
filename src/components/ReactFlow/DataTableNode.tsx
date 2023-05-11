@@ -30,14 +30,21 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  let secondaryFirstRow = []
  let RowData = Object.values(tableData[1]);
 
- //Used to grab the primary key value in the Table
+ //Used to grab the primary key and foreign keys column in the Table
  let schemaName = schemaStore[`public.${tableName}`];
  let PK = null;
- const FK = new Set();
+ let FK = null
+ let pkVals = new Set();
  for(let key in schemaName){
-   if(schemaName[key]['IsForeignKey']) FK.add(schemaName[key].field_name)
+   if(schemaName[key]['IsForeignKey']) FK = schemaName[key].field_name;
    if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
  }
+ 
+//loop through all of RowData, grab each primary key value and store it in object<pkVals>
+for(let i = 0; i < RowData.length; i++){
+  pkVals.add(RowData[i][PK]);
+}
+
 
  if (schemaName !== undefined) {
   secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
@@ -65,8 +72,12 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
  const deleteRow = async (value,index,id) => {
  
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
-  
+  if(value[FK]!== null){
+    alert(`Can't Delete Foreign Key: ${FK}`);
+    throw new Error('Duplicate Primary Key');
+  }
    setDataStore({...dataStore,[id]:restRowsData});
+
 
   const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
@@ -202,6 +213,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
               index={index}
               deleteRow={deleteRow}
               FK={FK}
+              PK={[PK,pkVals]}
             />
           )} )}
         </tbody>
