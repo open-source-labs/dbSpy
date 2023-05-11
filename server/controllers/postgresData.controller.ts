@@ -119,6 +119,7 @@ postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
 
 postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
+    console.log('we are in update row: ', updateRow)
     return next();
   },
 
