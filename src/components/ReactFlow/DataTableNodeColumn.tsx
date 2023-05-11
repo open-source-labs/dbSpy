@@ -85,7 +85,7 @@ const onSave = async () => {
   
 
 
-  const sendChangesRequest = await fetch(`/api/${dbCredentials.db_type}/updateRow`,{
+  const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
   
 
     method:'PATCH',

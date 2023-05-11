@@ -124,24 +124,32 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
     const updatedDbRowData: { [key: string]: string } = req.body;
     // const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${updatedDbRowData.tableName}"` : updatedDbRowData.tableName;
     const updatedSqlRow: { [key: string]: string } = updatedDbRowData.newRow as {};
+    const primaryKeyData: { [key: string]: string } = updatedDbRowData.primaryKey as {};
+
+    console.log('updatedDbRowData: ', updatedDbRowData)
 
     const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`)
     //For Oracle, the special database
       const slicedTableName = updatedDbRowData.tableName.slice(7, updatedDbRowData.tableName.length + 1)
+      console.log('slicedTableName: ', slicedTableName)
       const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
-        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : updatedDbRowData.tableName;
+        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${updatedDbRowData.tableName}` : updatedDbRowData.tableName;
 
-    const keys = Object.keys(updatedSqlRow);
-    const values = Object.values(updatedSqlRow);
-
+    const updateKeys = Object.keys(updatedSqlRow);
+    const updateValues = Object.values(updatedSqlRow);
     let keyValueString = ''
-    for (let i = 0; i < keys.length; i++) {
-      keyValueString += `"${keys[i]}" = '${values[i]}'${i < keys.length - 1 ? ', ' : ''}`
+    for (let i = 0; i < updateKeys.length; i++) {
+      keyValueString += `"${updateKeys[i]}" = '${updateValues[i]}'${i < updateKeys.length - 1 ? ', ' : ''}`
     }
 
-    const dbUpdatedRow = await dbDataSource.query(
-      `UPDATE ${tableName} SET ${keyValueString}`
-    );
+    const primaryKeyName = Object.keys(primaryKeyData);
+    const primaryKeyValue = Object.values(primaryKeyData);
+
+    const dbUpdatedRow = await dbDataSource.query(`
+      UPDATE ${tableName}
+      SET ${keyValueString}
+      WHERE ${primaryKeyName} = ${primaryKeyValue};
+     `);
 
     await dbDataSource.destroy();
     console.log('Database has been disconnected');

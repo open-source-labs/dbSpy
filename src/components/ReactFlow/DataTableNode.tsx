@@ -73,7 +73,7 @@ for(let i = 0; i < RowData.length; i++){
    setDataStore({...dataStore,[id]:restRowsData});
 
 
-  const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
+  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
     headers:{
       'Content-Type':'application/json'
