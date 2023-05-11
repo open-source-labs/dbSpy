@@ -20,7 +20,6 @@ export type Edge = {
   };
 };
 
-
 export default function createDataEdges(schemaObject: SchemaStore) {
 
   const edges: Edge[] = [];

@@ -94,15 +94,11 @@ const Sidebar = (props: any) => {
       values.database_name = values.file_path;
     }
 
-
-
     //update dbCredentials
     setDbCredentials(values);
     setConnectPressed(true);
 
     //change between which getSchema from MySQL to postgres based on db_type
-
-    //console.log('values in Sidebar', values)
 
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
@@ -111,9 +107,6 @@ const Sidebar = (props: any) => {
         return res.data;
       })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
-    //update schemaStore and dataStore
-    //console.log('schemaFromBackend', dataFromBackend.schema)
-    //console.log('dataFromBackend', dataFromBackend.data)
     setSchemaStore(dataFromBackend.schema);
     setDataStore(dataFromBackend.data)
     setWelcome(false);

@@ -35,7 +35,7 @@ tableName,currentTable, handleRowChange, secondaryColumnNames
     inputs.push(
       <input
         key={i+columns[i]}
-        className='m-2 w-300'
+        className='m-2'
         type="text"
         placeholder={arrOfDataType[columnNames[i]].data_type}
         // placeholder={arrOfDataType[columnNames[i]].data_type + ", "  +arrOfDataType[columnNames[i]].additional_constraints}

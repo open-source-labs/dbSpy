@@ -35,8 +35,6 @@ export default function TableNodeColumn({
   },[column])
 
 
-
-
   const onSave = () => {
     const currentSchema = { ...schemaStore };
     currentSchema[columnData.TableName][columnData.field_name] = {
