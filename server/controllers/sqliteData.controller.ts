@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 
 
 const sqliteController = {
@@ -133,17 +133,67 @@ sqliteAddNewRow: async (req: Request, _res: Response, next: NextFunction) => {
 };
 },
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+sqliteAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbRow(req, res, next)
+  console.log("sqliteAddNewRow function has concluded")
+  return next();
+},
+
+//------------------------------------------------------------------------------------------------------
 
 sqliteUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
+    console.log("sqliteUpdateRow function has concluded")
     return next();
   },
 
 //--------------------------------------------------------------------------------------------------------
 
 sqliteDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
-    deleteRow(req, res, next);
+  deleteRow(req, res, next);
+  console.log("sqliteDeleteRow function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+sqliteAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbColumn(req, res, next);
+  console.log("sqliteAddNewColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+sqliteUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+  updateDbColumn(req, res, next);
+  console.log("sqliteUpdateColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+sqliteDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+  deleteColumn(req, res, next);
+  console.log("sqliteDeleteColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+sqliteAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+  addNewTable(req, res, next);
+  console.log("sqliteAddNewTable function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+sqliteDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+  deleteTable(req, res, next);
+  console.log("sqliteDeleteTable function has concluded")
     return next();
   },
 
@@ -151,6 +201,15 @@ sqliteDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
 
 sqliteAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
   addForeignKey(req, res, next);
+  console.log("sqliteAddForeignKey function has concluded")
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+sqliteRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  removeForeignKey(req, res, next);
+  console.log("sqliteRemoveForeignKey function has concluded")
   return next();
 },
 

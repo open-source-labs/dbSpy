@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 
 const oracleController = {
 //----------------------------------------------------------------------------------------------
@@ -94,35 +94,87 @@ oracleQuery: async (req: Request, res: Response, next: NextFunction) => {
     };
 },
 
-//----------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 oracleAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
-    addNewDbRow(req, res, next);
+    addNewDbRow(req, res, next)
+    console.log("oracleAddNewRow function has concluded")
     return next();
   },
   
-//----------------------------------------------------------------------------------------------------------------
-
-oracleUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
-    updateRow(req, res, next);
-    return next();
-  },
-
-//--------------------------------------------------------------------------------------------------------
-
-oracleDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+  //------------------------------------------------------------------------------------------------------
+  
+  oracleUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
+      updateRow(req, res, next);
+      console.log("oracleUpdateRow function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
     deleteRow(req, res, next);
+    console.log("oracleDeleteRow function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+    addNewDbColumn(req, res, next);
+    console.log("oracleAddNewColumn function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+    updateDbColumn(req, res, next);
+    console.log("oracleUpdateColumn function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+    deleteColumn(req, res, next);
+    console.log("oracleDeleteColumn function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+    addNewTable(req, res, next);
+    console.log("oracleAddNewTable function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+    deleteTable(req, res, next);
+    console.log("oracleDeleteTable function has concluded")
+      return next();
+    },
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+    addForeignKey(req, res, next);
+    console.log("oracleAddForeignKey function has concluded")
     return next();
   },
-
-//--------------------------------------------------------------------------------------------------------
-
-oracleAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
-    addForeignKey(req, res, next);
-  return next();
-},
-
-//--------------------------------------------------------------------------------------------------------
+  
+  //--------------------------------------------------------------------------------------------------------
+  
+  oracleRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+    removeForeignKey(req, res, next);
+    console.log("oracleRemoveForeignKey function has concluded")
+    return next();
+  },
+  
+  //--------------------------------------------------------------------------------------------------------
 
 };
 

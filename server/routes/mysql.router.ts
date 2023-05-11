@@ -5,7 +5,7 @@ const mysqlRouter = Router();
 
 mysqlRouter.get('/schema', mysqlController.mysqlQuery, (_req: Request, res: Response) => {
   console.log('Returned to the mysql router with data');
-  res.status(200).json(res.locals);
+  return res.status(200).json(res.locals);
 });
 
 mysqlRouter.post('/data', mysqlController.mysqlAddNewRow, (_req: Request, res: Response) => {
@@ -23,8 +23,38 @@ mysqlRouter.delete('/deleteRow', mysqlController.mysqlDeleteRow, (_req: Request,
   return res.status(200).json(res.locals.deletedRow);
 });
 
+mysqlRouter.post('/addColumn', mysqlController.mysqlAddNewColumn, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after adding a new column');
+  return res.status(200).json(res.locals.newColumn);
+});
+
+mysqlRouter.patch('/updateColumn', mysqlController.mysqlUpdateColumn, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after updating a column');
+  return res.status(200).json(res.locals.updatedColumn);
+});
+
+mysqlRouter.delete('/deleteColumn', mysqlController.mysqlDeleteColumn, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after deleting a column');
+  return res.status(200).json(res.locals.deletedColumn);
+});
+
+mysqlRouter.post('/saveNewTable', mysqlController.mysqlAddNewTable, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after adding a new table');
+  return res.status(200).json(res.locals.newTable);
+});
+
+mysqlRouter.delete('/deleteTable', mysqlController.mysqlDeleteTable, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after deleting a table');
+  return res.sendStatus(200);
+});
+
 mysqlRouter.put('/addForeignKey', mysqlController.mysqlAddForeignKey, (_req: Request, res: Response) => {
   console.log('Returned to the mysql router after adding a foreign key');
+  return res.sendStatus(200);
+});
+
+mysqlRouter.delete('/removeForeignKey', mysqlController.mysqlRemoveForeignKey, (_req: Request, res: Response) => {
+  console.log('Returned to the mysql router after removing a foreign key');
   return res.status(200).json(res.locals.deletedRow);
 });
 

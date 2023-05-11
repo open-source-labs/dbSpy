@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableColumn, TableSchema, ReferenceType } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 
 const microsoftController = {
 //------------------------------------------------------------------------------------------------------
@@ -105,32 +105,84 @@ microsoftQuery: async (req: Request, res: Response, next: NextFunction) => {
 //------------------------------------------------------------------------------------------------------
 
 microsoftAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
-    addNewDbRow(req, res, next);
-    return next();
-  },
-  
-//-------------------------------------------------------------------------------------------------------
+  addNewDbRow(req, res, next)
+  console.log("microsoftAddNewRow function has concluded")
+  return next();
+},
+
+//------------------------------------------------------------------------------------------------------
 
 microsoftUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
+    console.log("microsoftUpdateRow function has concluded")
     return next();
   },
 
 //--------------------------------------------------------------------------------------------------------
 
 microsoftDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
-    deleteRow(req, res, next);
+  deleteRow(req, res, next);
+  console.log("microsoftDeleteRow function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+microsoftAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbColumn(req, res, next);
+  console.log("microsoftAddNewColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+microsoftUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+  updateDbColumn(req, res, next);
+  console.log("microsoftUpdateColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+microsoftDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+  deleteColumn(req, res, next);
+  console.log("microsoftDeleteColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+microsoftAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+  addNewTable(req, res, next);
+  console.log("microsoftAddNewTable function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+microsoftDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+  deleteTable(req, res, next);
+  console.log("microsoftDeleteTable function has concluded")
     return next();
   },
 
 //--------------------------------------------------------------------------------------------------------
 
 microsoftAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
-    addForeignKey(req, res, next);
-    return next();
-  },
-  
-  //--------------------------------------------------------------------------------------------------------
+  addForeignKey(req, res, next);
+  console.log("microsoftAddForeignKey function has concluded")
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
+
+microsoftRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  removeForeignKey(req, res, next);
+  console.log("microsoftRemoveForeignKey function has concluded")
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
 
 };
 

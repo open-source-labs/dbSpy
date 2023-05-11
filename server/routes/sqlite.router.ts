@@ -3,7 +3,7 @@ import sqliteController from '../controllers/sqliteData.controller';
 
 const sqliteRouter = Router();
 
-// Retrieve Postgres schema from remote db
+// Retrieve sqlite schema from remote db
 sqliteRouter.get('/schema', sqliteController.sqliteQuery, (_req: Request, res: Response) => {
   console.log('Returned to the sqlite router with data');
   return res.status(200).json(res.locals);
@@ -24,8 +24,38 @@ sqliteRouter.delete('/deleteRow', sqliteController.sqliteDeleteRow, (_req: Reque
   return res.status(200).json(res.locals.deletedRow);
 });
 
+sqliteRouter.post('/addColumn', sqliteController.sqliteAddNewColumn, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after adding a new column');
+  return res.status(200).json(res.locals.newColumn);
+});
+
+sqliteRouter.patch('/updateColumn', sqliteController.sqliteUpdateColumn, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after updating a column');
+  return res.status(200).json(res.locals.updatedColumn);
+});
+
+sqliteRouter.delete('/deleteColumn', sqliteController.sqliteDeleteColumn, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after deleting a column');
+  return res.status(200).json(res.locals.deletedColumn);
+});
+
+sqliteRouter.post('/saveNewTable', sqliteController.sqliteAddNewTable, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after adding a new table');
+  return res.status(200).json(res.locals.newTable);
+});
+
+sqliteRouter.delete('/deleteTable', sqliteController.sqliteDeleteTable, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after deleting a table');
+  return res.sendStatus(200);
+});
+
 sqliteRouter.put('/addForeignKey', sqliteController.sqliteAddForeignKey, (_req: Request, res: Response) => {
   console.log('Returned to the sqlite router after adding a foreign key');
+  return res.sendStatus(200);
+});
+
+sqliteRouter.delete('/removeForeignKey', sqliteController.sqliteRemoveForeignKey, (_req: Request, res: Response) => {
+  console.log('Returned to the sqlite router after removing a foreign key');
   return res.status(200).json(res.locals.deletedRow);
 });
 

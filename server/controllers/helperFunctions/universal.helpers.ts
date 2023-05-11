@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 
-  //------------------------------------------------------------------------------------------------------------
+  //---------------CONNECT TO THE DATABASE-----------------------------------------------------------------------------------------
 
  export const dbConnect = async (req: Request) => {
     const { db_type, hostname, password, port, username, database_name, service_name } = req.session;    
@@ -79,8 +79,8 @@ import { DataSource } from 'typeorm';
     } 
  };
 
-
-//------------------------------------------------------------------------------------------------------------
+//-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
+//-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 
 export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
@@ -92,16 +92,15 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
     const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${newDbRowData.tableName}"` : newDbRowData.tableName;
     const newSqlRow: {[key: string]: string} = newDbRowData.newRow as {};
 
-        const keys: string = req.session.db_type === 'oracle' ? Object.keys(newSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(newSqlRow).join(", ");
-        console.log('keys: ', keys)
-        const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
-        console.log('values: ', values)
-        const dbAddedRow: Promise<unknown> = await dbDataSource.query(`INSERT INTO ${tableName} (${keys})
-        VALUES (${values})`);
+      const keys: string = req.session.db_type === 'oracle' ? Object.keys(newSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(newSqlRow).join(", ");
+      const values: string = Object.values(newSqlRow).map(val => `'${val}'`).join(", ");
 
-    
+      const dbAddedRow: Promise<unknown> = await dbDataSource.query(`
+        INSERT INTO ${tableName} (${keys})
+        VALUES (${values})
+      `);
 
-      dbDataSource.destroy();
+      await dbDataSource.destroy();
       console.log('Database has been disconnected');
       console.log('dbAddedRow in helper: ', dbAddedRow)
       return dbAddedRow; 
@@ -114,7 +113,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
   };
   };
 
-  //------------------------------------------------------------------------------------------------------------
+//-----------------UPDATE ROW--------------------------------------------------------------------------------------------------
 
   export const updateRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
@@ -135,15 +134,13 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
       const keys = Object.keys(updatedSqlRow);
       const values = Object.values(updatedSqlRow);
   
-      // const updateString = keys.map((key) => `"${key}" = ?`).join(', ');
-      // const queryParams = [...values];
-      let newString = ''
+      let keyValueString = ''
       for (let i = 0; i < keys.length; i++) {
-        newString += `"${keys[i]}" = '${values[i]}'${i < keys.length - 1 ? ', ' : ''}`
+        keyValueString += `"${keys[i]}" = '${values[i]}'${i < keys.length - 1 ? ', ' : ''}`
       }
   
       const dbUpdatedRow = await dbDataSource.query(
-        `UPDATE ${tableName} SET ${newString}`
+        `UPDATE ${tableName} SET ${keyValueString}`
       );
   
      await dbDataSource.destroy();
@@ -159,7 +156,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
   };
   };
 
-  //------------------------------------------------------------------------------------------------------------
+  //----------------DELETE ROW----------------------------------------------------------------------------------------------------
 
   export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
@@ -194,7 +191,8 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
     };
   };
 
-//------------------------------------------------------------------------------------------------------------
+//-------------------------------------SCHEMA TABLE COLUMNS--------------------------------------------------------------------------------------------
+//----------------ADD NEW COLUMN--------------------------------------------------------------------------------------------------
 
   export const addNewDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
     const dbDataSource = await dbConnect(req)
@@ -208,9 +206,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
 
         //For Oracle, the special database
         const oracleTableName = addNewColumnData.tableName.slice(7, addNewColumnData.tableName.length + 1)
-        //const foreignKeyTableName = addNewColumnData.ForeignKeyTableName.slice(7, addNewColumnData.ForeignKeyTableName.length + 1)
         const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${oracleTableName}"` : addNewColumnData.tableName;
-        //const foreignTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` : addNewColumnData.ForeignKeyTableName;
 
         const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
         ALTER TABLE ${tableName}
@@ -230,55 +226,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
     };
   };
 
-//------------------------------------------------------------------------------------------------------------
-
-   export const addForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-    const dbDataSource = await dbConnect(req)
-    console.log('req.session: ', req.session)
-
-    try{
-        const user: string | undefined = req.session.username;   
-        const addForeignKeyData: {[key: string]: string } = req.body;
-        console.log('req.body: ', req.body)
-
-
-        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) // for microsoft
-        console.log('SchemaName: ', schemaName[0].SchemaName)
-        
-        //For Oracle, the special database
-        const primaryKeyTableName = addForeignKeyData.PrimaryKeyTableName.slice(7, addForeignKeyData.PrimaryKeyTableName.length + 1);
-        const foreignKeyTableName = addForeignKeyData.ForeignKeyTableName.slice(7, addForeignKeyData.ForeignKeyTableName.length + 1);
-        const microsoftPrimaryTableName = `${schemaName[0].SchemaName}.${primaryKeyTableName}`
-        const microsoftForeignTableName = `${schemaName[0].SchemaName}.${foreignKeyTableName}`
-
-        const primaryTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${primaryKeyTableName}"` :
-          req.session.db_type === 'mssql' ? `${microsoftPrimaryTableName}` : addForeignKeyData.tableName;
-        const foreignTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` : 
-          req.session.db_type === 'mssql' ? `${microsoftForeignTableName}` : addForeignKeyData.tableName;
-
-          
-
-        const addedForeignKey: Promise<unknown> = await dbDataSource.query(`
-        ALTER TABLE ${foreignTableName}
-        ADD CONSTRAINT fk_${addForeignKeyData.ForeignKeyColumnName}_to_${addForeignKeyData.PrimaryKeyColumnName}
-        FOREIGN KEY ("${addForeignKeyData.ForeignKeyColumnName}")
-        REFERENCES ${primaryTableName} ("${addForeignKeyData.PrimaryKeyColumnName}")
-        `);
-        console.log('addedForeignKey: ', addedForeignKey)
-      dbDataSource.destroy();
-      console.log('Database has been disconnected');
-      console.log('addedForeignKey in helper: ', addedForeignKey)
-      return addedForeignKey; 
-
-    } catch (err: unknown) {
-        console.log('Error occurred in the addedForeignKey middleware: ', err);
-        dbDataSource.destroy();
-        console.log('Database has been disconnected');
-        return next(err);
-    };
-  };
-
-//------------------------------------------------------------------------------------------------------------
+//-----------------UPDATE COLUMN---------------------------------------------------------------------------------------------
 
 export const updateDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
@@ -302,7 +250,7 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
       ALTER TABLE ${tableName}
       ${dbType === 'postgres' || dbType === 'microsoft' ? 'ALTER COLUMN' : 'MODIFY' } "${updateColumnData.columnName}" ${updateColumnData.dataType} ${dbType === 'postgres' ? updateColumnData.constraintName : null} ${updateColumnData.constraintExpression}
       `);
-      console.log('updatedColumn: ', updatedColumn)
+
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     console.log('addedForeignKey in helper: ', updatedColumn)
@@ -316,7 +264,42 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
   };
 };
 
-//------------------------------------------------------------------------------------------------------------
+//-------------DELETE COLUMN-------------------------------------------------------------------------------------------------
+
+export const deleteColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+  const dbDataSource = await dbConnect(req)
+  console.log('req.session: ', req.session)
+
+  try{
+      const dbType: string | undefined = req.session.db_type; 
+      const user: string | undefined = req.session.username;    
+      const deleteColumnData: {[key: string]: string } = req.body;
+      console.log('req.body: ', req.body)
+
+      //For Oracle, the special database
+      const oracleTableName = deleteColumnData.tableName.slice(7, deleteColumnData.tableName.length + 1)
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${oracleTableName}"` : deleteColumnData.tableName;
+
+      const deletedColumn: Promise<unknown> = await dbDataSource.query(`
+      ALTER TABLE ${tableName}
+      DROP${dbType !== 'mysql' ? ' COLUMN' : null} ${deleteColumnData.columnName}
+      `)
+
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('deletedColumn in helper: ', deletedColumn)
+      return deletedColumn; 
+
+  } catch (err: unknown) {
+      console.log('Error occurred in the addNewTable middleware: ', err);
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      return next(err);
+  };
+};
+
+//---------------------------DATABASE TABLES--------------------------------------------------------------------------------------------------------
+//--------------ADD NEW TABLE--------------------------------------------------------------------------------------------------
 
 export const addNewTable: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
@@ -355,7 +338,7 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
   };
 };
 
-//------------------------------------------------------------------------------------------------------------
+//--------------DELETE TABLE---------------------------------------------------------------------------------------------------
 
 export const deleteTable: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
@@ -366,9 +349,11 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
       const deleteTableData: {[key: string]: string } = req.body;
       console.log('req.body: ', req.body)
 
+      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`)
       //For Oracle, the special database
-      const oracleTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1)
-      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${oracleTableName}"` : deleteTableData.tableName;
+      const slicedTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1)
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
+        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : deleteTableData.tableName;
 
       const deletedTable: Promise<unknown> = await dbDataSource.query(`DROP TABLE ${tableName}`)
 
@@ -385,34 +370,88 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
   };
 };
 
-//------------------------------------------------------------------------------------------------------------
+//------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------
+//--------------ADD NEW FOREIGN KEY----------------------------------------------------------------------------------------------
 
-export const deleteColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+export const addForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
   console.log('req.session: ', req.session)
 
   try{
-      const dbType: string | undefined = req.session.db_type; 
-      const user: string | undefined = req.session.username;    
-      const deleteColumnData: {[key: string]: string } = req.body;
+      const user: string | undefined = req.session.username;   
+      const addForeignKeyData: {[key: string]: string } = req.body;
       console.log('req.body: ', req.body)
 
+
+      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) // for microsoft
+      // console.log('SchemaName: ', schemaName[0].SchemaName)
+      
       //For Oracle, the special database
-      const oracleTableName = deleteColumnData.tableName.slice(7, deleteColumnData.tableName.length + 1)
-      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${oracleTableName}"` : deleteColumnData.tableName;
+      const primaryKeyTableName = addForeignKeyData.PrimaryKeyTableName.slice(7, addForeignKeyData.PrimaryKeyTableName.length + 1);
+      const foreignKeyTableName = addForeignKeyData.ForeignKeyTableName.slice(7, addForeignKeyData.ForeignKeyTableName.length + 1);
+      const microsoftPrimaryTableName = `${schemaName[0].SchemaName}.${primaryKeyTableName}`
+      const microsoftForeignTableName = `${schemaName[0].SchemaName}.${foreignKeyTableName}`
 
-      const deletedColumn: Promise<unknown> = await dbDataSource.query(`
-      ALTER TABLE ${tableName}
-      DROP${dbType !== 'mysql' ? ' COLUMN' : null} ${deleteColumnData.columnName}
-      `)
+      const primaryTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${primaryKeyTableName}"` :
+        req.session.db_type === 'mssql' ? `${microsoftPrimaryTableName}` : addForeignKeyData.tableName;
+      const foreignTableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` : 
+        req.session.db_type === 'mssql' ? `${microsoftForeignTableName}` : addForeignKeyData.tableName;
 
-      dbDataSource.destroy();
-      console.log('Database has been disconnected');
-      console.log('deletedColumn in helper: ', deletedColumn)
-      return deletedColumn; 
+      const addedForeignKey: Promise<unknown> = await dbDataSource.query(`
+      ALTER TABLE ${foreignTableName}
+      ADD CONSTRAINT fk_${addForeignKeyData.ForeignKeyColumnName}_to_${addForeignKeyData.PrimaryKeyColumnName}
+      FOREIGN KEY ("${addForeignKeyData.ForeignKeyColumnName}")
+      REFERENCES ${primaryTableName} ("${addForeignKeyData.PrimaryKeyColumnName}")
+      `);
+      console.log('addedForeignKey: ', addedForeignKey)
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    console.log('addedForeignKey in helper: ', addedForeignKey)
+    return addedForeignKey; 
 
   } catch (err: unknown) {
-      console.log('Error occurred in the addNewTable middleware: ', err);
+      console.log('Error occurred in the addedForeignKey middleware: ', err);
+      dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      return next(err);
+  };
+};
+
+//----------------REMOVE FOREIGN KEY--------------------------------------------------------------------------------------------
+
+export const removeForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
+  const dbDataSource = await dbConnect(req)
+  console.log('req.session: ', req.session)
+
+  try{
+      const user: string | undefined = req.session.username;   
+      const removeForeignKeyData: {[key: string]: string } = req.body;
+      console.log('req.body: ', req.body)
+
+
+      const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) // for microsoft
+      
+      //For Oracle, the special database
+      const foreignKeyTableName = removeForeignKeyData.PrimaryKeyTableName.slice(7, removeForeignKeyData.PrimaryKeyTableName.length + 1);
+      const microsoftPrimaryTableName = `${schemaName[0].SchemaName}.${foreignKeyTableName}`
+
+
+      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${foreignKeyTableName}"` :
+        req.session.db_type === 'mssql' ? `${microsoftPrimaryTableName}` : removeForeignKeyData.tableName;
+
+      const removedForeignKey: Promise<unknown> = await dbDataSource.query(`
+      ALTER TABLE ${tableName}
+      DROP ${req.session.db_type === 'mysql' ? 'FOREIGN KEY' : 'CONSTRAINT'} ${removeForeignKeyData.constraintName}
+      `);
+
+    console.log('removedForeignKey: ', removedForeignKey)
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    console.log('addedForeignKey in helper: ', removedForeignKey)
+    return removedForeignKey; 
+
+  } catch (err: unknown) {
+      console.log('Error occurred in the removedForeignKey middleware: ', err);
       dbDataSource.destroy();
       console.log('Database has been disconnected');
       return next(err);
@@ -420,4 +459,3 @@ export const deleteColumn: RequestHandler = async (req: Request, _res: Response,
 };
 
 //------------------------------------------------------------------------------------------------------------
-

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { TableColumns, TableSchema, TableColumn, ReferenceType } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 
 
 const mysqlController = {
@@ -115,17 +115,19 @@ mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
   };
 },
 
-//--------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 mysqlAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
   addNewDbRow(req, res, next)
+  console.log("mysqlAddNewRow function has concluded")
   return next();
 },
 
-//--------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 mysqlUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
-  updateRow(req, res, next);
+    updateRow(req, res, next);
+    console.log("mysqlUpdateRow function has concluded")
     return next();
   },
 
@@ -133,6 +135,47 @@ mysqlUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
 
 mysqlDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
   deleteRow(req, res, next);
+  console.log("mysqlDeleteRow function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbColumn(req, res, next);
+  console.log("mysqlAddNewColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+  updateDbColumn(req, res, next);
+  console.log("mysqlUpdateColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+  deleteColumn(req, res, next);
+  console.log("mysqlDeleteColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+  addNewTable(req, res, next);
+  console.log("mysqlAddNewTable function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+mysqlDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+  deleteTable(req, res, next);
+  console.log("mysqlDeleteTable function has concluded")
     return next();
   },
 
@@ -140,14 +183,19 @@ mysqlDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
 
 mysqlAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
   addForeignKey(req, res, next);
+  console.log("mysqlAddForeignKey function has concluded")
   return next();
 },
 
 //--------------------------------------------------------------------------------------------------------
 
+mysqlRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  removeForeignKey(req, res, next);
+  console.log("mysqlRemoveForeignKey function has concluded")
+  return next();
+},
 
-
-
+//--------------------------------------------------------------------------------------------------------
 
 };
 export default mysqlController;

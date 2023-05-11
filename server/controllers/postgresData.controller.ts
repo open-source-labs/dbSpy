@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { TableColumns, TableSchema, TableColumn } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 
 const postgresController = {
 //------------------------------------------------------------------------------------------------------
@@ -112,6 +112,7 @@ postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
 
 postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
   addNewDbRow(req, res, next)
+  console.log("postgresAddNewRow function has concluded")
   return next();
 },
 
@@ -119,7 +120,7 @@ postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
 
 postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     updateRow(req, res, next);
-    console.log('we are in update row: ', updateRow)
+    console.log("postgresUpdateRow function has concluded")
     return next();
   },
 
@@ -127,6 +128,47 @@ postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
 
 postgresDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
   deleteRow(req, res, next);
+  console.log("postgresDeleteRow function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+postgresAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+  addNewDbColumn(req, res, next);
+  console.log("postgresAddNewColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+postgresUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+  updateDbColumn(req, res, next);
+  console.log("postgresUpdateColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+postgresDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+  deleteColumn(req, res, next);
+  console.log("postgresDeleteColumn function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+postgresAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+  addNewTable(req, res, next);
+  console.log("postgresAddNewTable function has concluded")
+    return next();
+  },
+
+//--------------------------------------------------------------------------------------------------------
+
+postgresDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+  deleteTable(req, res, next);
+  console.log("postgresDeleteTable function has concluded")
     return next();
   },
 
@@ -140,6 +182,13 @@ postgresAddForeignKey: async (req: Request, res: Response, next: NextFunction) =
 
 //--------------------------------------------------------------------------------------------------------
 
+postgresRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  removeForeignKey(req, res, next);
+  console.log("postgresRemoveForeignKey function has concluded")
+  return next();
+},
+
+//--------------------------------------------------------------------------------------------------------
 };
 
 export default postgresController;
