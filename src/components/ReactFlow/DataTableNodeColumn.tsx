@@ -56,6 +56,9 @@ const onSave = async () => {
   const changes: changes= {};
   changes.tableName = id;
   changes.newRow= {...tempData};
+  //delete primary key column from change for fetch request.
+  delete changes.newRow[PK[0]]
+  console.log(changes);
   const checkConstraints:changes = {}
 
   //iterate through and find the changes between new and old data.
