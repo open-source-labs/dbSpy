@@ -54,6 +54,7 @@ microsoftQuery: async (req: Request, res: Response, next: NextFunction) => {
                 Value: null,
                 additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
                 data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
+                default_type: column.IS_IDENTITY === 1 ? 'identity' : null,
                 field_name: columnName,
         }};
         return tableSchema;

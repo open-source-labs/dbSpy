@@ -45,6 +45,7 @@ oracleQuery: async (req: Request, res: Response, next: NextFunction) => {
                     Value: null,
                     additional_constraints: column.IS_NULLABLE === 'N' ? 'NOT NULL' : null ,
                     data_type: column.DATA_TYPE + `${column.DATA_TYPE.includes('VARCHAR2') ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
+                    data_default: column.DATA_DEFAULT,
                     field_name: column.COLUMN_NAME,
                 };
             };
@@ -72,7 +73,7 @@ oracleQuery: async (req: Request, res: Response, next: NextFunction) => {
 
         // Console.logs to check what the data looks like
         // console.log('table data: ', tableData);
-        // console.log('schema data: ', schema);
+        console.log('schema data: ', schema);
 
         // Storage of queried results into res.locals
         res.locals.schema = schema;

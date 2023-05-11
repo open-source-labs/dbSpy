@@ -29,6 +29,7 @@ export interface TableColumn {
   [key: string]: any;
   update_rule?: string;
   delete_rule?: string;
+  default_type?: string;
 };
 
 export interface TableColumns {

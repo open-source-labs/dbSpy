@@ -66,7 +66,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   
    setDataStore({...dataStore,[id]:restRowsData});
 
-  const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
+  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
     headers:{
       'Content-Type':'application/json'
