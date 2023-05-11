@@ -6,7 +6,10 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
-import useCredentialsStore from '../../store/credentialsStore';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import informationIcon from '../../../images/informationSqIcon.png'
+
 
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
@@ -20,8 +23,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const{schemaStore} = useSchemaStore((state) => state);
 
   const setDataStore = useDataStore((state) => state.setDataStore);
-  const { dbCredentials } = useCredentialsStore((state) => state);
 
+const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
 
 
  const tableName = tableData[0];
@@ -163,14 +166,19 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
       {tableName}
     </label>
   </div>
-    <div className="addRowBtn ml-3 mb-1.5">
-      <button
-        className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
-        onClick={() => setInputModalState(true, 'row', tableName)}
-      >
-        <FaRegPlusSquare size={20} className="text-white" />
-      </button>
+  <div className="addRowBtn ml-3 mb-1.5 flex position">
+    <button
+      className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
+      onClick={() => setInputModalState(true, 'row', tableName)}
+    >
+      <FaRegPlusSquare size={20} className="text-white" />
+    </button>
+    <div className='mt-2 mr-2'>
+      <Tippy content={infoIconStr} placement="top" trigger="mouseenter click">
+        <img src={informationIcon} alt="Information Icon" className="h-3 rounded-full ml-0" />
+      </Tippy>
     </div>
+  </div>
 </div>
   <div
     style={{ maxHeight: "350px", maxWidth: "600px" }}
