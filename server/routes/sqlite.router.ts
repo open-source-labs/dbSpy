@@ -8,6 +8,7 @@ sqliteRouter.get('/schema', sqliteController.sqliteQuery, (_req: Request, res: R
   console.log('Returned to the sqlite router with data');
   return res.status(200).json(res.locals);
 });
+
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 sqliteRouter.post('/data', sqliteController.sqliteAddNewRow, (_req: Request, res: Response) => {
@@ -24,6 +25,7 @@ sqliteRouter.delete('/deleteRow', sqliteController.sqliteDeleteRow, (_req: Reque
   console.log('Returned to the sqlite router after deleting a row');
   return res.sendStatus(200);
 });
+
 //-------------------------------------SCHEMA TABLE COLUMNS--------------------------------------------------------------------------------------------
 //----------------ADD NEW COLUMN--------------------------------------------------------------------------------------------------
 sqliteRouter.post('/addColumn', sqliteController.sqliteAddNewColumn, (_req: Request, res: Response) => {
@@ -40,6 +42,7 @@ sqliteRouter.delete('/deleteColumn', sqliteController.sqliteDeleteColumn, (_req:
   console.log('Returned to the sqlite router after deleting a column');
   return res.sendStatus(200);
 });
+
 //---------------------------DATABASE TABLES--------------------------------------------------------------------------------------------------------
 //--------------ADD NEW TABLE--------------------------------------------------------------------------------------------------
 sqliteRouter.post('/saveNewTable', sqliteController.sqliteAddNewTable, (_req: Request, res: Response) => {
@@ -51,6 +54,7 @@ sqliteRouter.delete('/deleteTable', sqliteController.sqliteDeleteTable, (_req: R
   console.log('Returned to the sqlite router after deleting a table');
   return res.sendStatus(200);
 });
+
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------
 //--------------ADD NEW FOREIGN KEY----------------------------------------------------------------------------------------------
 sqliteRouter.put('/addForeignKey', sqliteController.sqliteAddForeignKey, (_req: Request, res: Response) => {

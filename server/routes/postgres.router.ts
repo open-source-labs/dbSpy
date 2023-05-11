@@ -9,6 +9,7 @@ postgresRouter.get('/schema', postgresController.postgresQuery, (_req: Request, 
   console.log('Returned to the postgres router with data');
   return res.status(200).json(res.locals);
 });
+
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 postgresRouter.post('/data', postgresController.postgresAddNewRow, (_req: Request, res: Response) => {
@@ -25,6 +26,7 @@ postgresRouter.delete('/deleteRow', postgresController.postgresDeleteRow, (_req:
   console.log('Returned to the postgres router after deleting a row');
   return res.sendStatus(200);
 });
+
 //-------------------------------------SCHEMA TABLE COLUMNS--------------------------------------------------------------------------------------------
 //----------------ADD NEW COLUMN--------------------------------------------------------------------------------------------------
 postgresRouter.post('/addColumn', postgresController.postgresAddNewColumn, (_req: Request, res: Response) => {
@@ -41,6 +43,7 @@ postgresRouter.delete('/deleteColumn', postgresController.postgresDeleteColumn, 
   console.log('Returned to the postgres router after deleting a column');
   return res.sendStatus(200);
 });
+
 //---------------------------DATABASE TABLES--------------------------------------------------------------------------------------------------------
 //--------------ADD NEW TABLE--------------------------------------------------------------------------------------------------
 postgresRouter.post('/saveNewTable', postgresController.postgresAddNewTable, (_req: Request, res: Response) => {
@@ -52,6 +55,7 @@ postgresRouter.delete('/deleteTable', postgresController.postgresDeleteTable, (_
   console.log('Returned to the postgres router after deleting a table');
   return res.sendStatus(200);
 });
+
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------
 //--------------ADD NEW FOREIGN KEY----------------------------------------------------------------------------------------------
 postgresRouter.put('/addForeignKey', postgresController.postgresAddForeignKey, (_req: Request, res: Response) => {

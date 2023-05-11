@@ -87,10 +87,10 @@ const sqliteController = {
       console.log('Database has been disconnected');
       return next(err);
     };
-},
+  },
 
-//----------------------------------------------------------------------------
-
+//-------------------------------------DATA TABLE ROWS-------------------------------------------------
+//-------------------ADD NEW ROW-----------------------------------------------------------
   sqliteAddNewRow: async (req: Request, _res: Response, next: NextFunction) => {
     const dbDataSource = await dbConnect(req);
     console.log('req.session: ', req.session);
@@ -119,79 +119,118 @@ const sqliteController = {
     };
   },
 
-//------------------------------------------------------------------------------------------------------
-
-  sqliteUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
+//-----------------UPDATE ROW--------------------------------------------------------------
+sqliteUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     updateRow(req, res, next);
     console.log("sqliteUpdateRow function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteUpdateRow middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+//----------------DELETE ROW---------------------------------------------------------------
+sqliteDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     deleteRow(req, res, next);
     console.log("sqliteDeleteRow function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteDeleteRow middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+//-------------------------------------SCHEMA TABLE COLUMNS------------------------------------------
+//----------------ADD NEW COLUMN----------------------------------------------------------
+sqliteAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     addNewDbColumn(req, res, next);
     console.log("sqliteAddNewColumn function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteAddNewColumn middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+//-----------------UPDATE COLUMN--------------------------------------------------------
+sqliteUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     updateDbColumn(req, res, next);
     console.log("sqliteUpdateColumn function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteUpdateColumn middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+//-------------DELETE COLUMN------------------------------------------------------------
+sqliteDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     deleteColumn(req, res, next);
     console.log("sqliteDeleteColumn function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteDeleteColumn middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+//---------------------------DATABASE TABLES--------------------------------------------------------
+//--------------ADD NEW TABLE-----------------------------------------------------------
+sqliteAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     addNewTable(req, res, next);
     console.log("sqliteAddNewTable function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteAddNewTable middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+//--------------DELETE TABLE------------------------------------------------------------
+sqliteDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     deleteTable(req, res, next);
     console.log("sqliteDeleteTable function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteDeleteTable middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+//------------------------------------------FOREIGN KEYS---------------------------------------------
+//--------------ADD NEW FOREIGN KEY-----------------------------------------------------
+sqliteAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     addForeignKey(req, res, next);
     console.log("sqliteAddForeignKey function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteAddForeignKey middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
-
-  sqliteRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+//----------------REMOVE FOREIGN KEY-----------------------------------------------------------------
+sqliteRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
+  try {
     removeForeignKey(req, res, next);
     console.log("sqliteRemoveForeignKey function has concluded");
     return next();
-  },
+  } catch (err: unknown) {
+    console.log('Error occurred in the sqliteRemoveForeignKey middleware: ', err);
+    return next(err);
+  };
+},
 
-//--------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------
 
 };
 
