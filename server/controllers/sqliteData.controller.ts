@@ -25,11 +25,17 @@ const sqliteController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey) {
           references.push({
+            // isDestination: false,
+            // PrimaryKeyName: foreignKey.from,
+            // PrimaryKeyTableName: 'public.' + tableName,
+            // ReferencesPropertyName: foreignKey.to,
+            // ReferencesTableName: foreignKey.table,
+            // constraintName: tableName + '_' + foreignKey.from + '_fkey'
             isDestination: false,
-            PrimaryKeyName: foreignKey.from,
-            PrimaryKeyTableName: 'public.' + tableName,
-            ReferencesPropertyName: foreignKey.to,
-            ReferencesTableName: foreignKey.table,
+            PrimaryKeyName: foreignKey.to,
+            PrimaryKeyTableName: foreignKey.table,
+            ReferencesPropertyName: foreignKey.from,
+            ReferencesTableName: 'public.' + tableName,
             constraintName: tableName + '_' + foreignKey.from + '_fkey'
           });
         };

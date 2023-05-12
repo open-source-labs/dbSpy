@@ -8,7 +8,8 @@ import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationSqIcon.png'
+import informationIcon from '../../../images/informationSqIcon.png';
+import useCredentialsStore from '../../store/credentialsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
@@ -16,10 +17,12 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const { setInputModalState } = useSettingsStore((state) => state);
   const { dataStore } = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
-  const{ schemaStore } = useSchemaStore((state) => state);
+  const { schemaStore } = useSchemaStore((state) => state);
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-
+  const { dbCredentials } = useCredentialsStore((state) => state);
+  
   const tableName = tableData[0];
   let firstRow =[]
   let restRowsData = []
@@ -73,7 +76,7 @@ for(let i = 0; i < RowData.length; i++){
    setDataStore({...dataStore,[id]:restRowsData});
 
 
-  const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
+  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
     headers:{
       'Content-Type':'application/json'
