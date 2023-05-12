@@ -55,9 +55,9 @@ mysqlRouter.get('/tableNames', mysqlController.mysqlGetTableNames, (_req, res) =
   return res.status(200).json(res.locals.tableNames);
 });
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
-mysqlRouter.delete('/deleteTable', mysqlController.mysqlDeleteTable, (_req: Request, res: Response) => {
+mysqlRouter.delete('/deleteTable', mysqlController.mysqlDeleteTable, mysqlController.mysqlQuery, (_req: Request, res: Response) => {
   console.log('Returned to the mysql router after deleting a table');
-  return res.sendStatus(200);
+  return res.status(200).json(res.locals);
 });
 
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------

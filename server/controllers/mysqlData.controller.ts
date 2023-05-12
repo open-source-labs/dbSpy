@@ -218,7 +218,7 @@ const mysqlController = {
 //--------------DELETE TABLE------------------------------------------------------------
   mysqlDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteTable(req, res, next);
+      await Promise.resolve(deleteTable(req, res, next));
       console.log("mysqlDeleteTable function has concluded");
       return next();
     } catch (err: unknown) {

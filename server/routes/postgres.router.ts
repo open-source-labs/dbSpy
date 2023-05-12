@@ -58,7 +58,6 @@ postgresRouter.get('/tableNames', postgresController.postgresGetTableNames, (_re
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
 postgresRouter.delete('/deleteTable', postgresController.postgresDeleteTable, postgresController.postgresQuery, (_req: Request, res: Response) => {
   console.log('Returned to the postgres router after deleting a table');
-  console.log('res.locals: ', res.locals)
   return res.status(200).json(res.locals);
 });
 

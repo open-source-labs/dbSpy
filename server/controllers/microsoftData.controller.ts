@@ -202,7 +202,7 @@ const microsoftController = {
 //--------------DELETE TABLE------------------------------------------------------------
   microsoftDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteTable(req, res, next);
+      await Promise.resolve(deleteTable(req, res, next));
       console.log("microsoftDeleteTable function has concluded");
       return next();
     } catch (err: unknown) {

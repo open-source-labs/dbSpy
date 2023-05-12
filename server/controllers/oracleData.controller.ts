@@ -200,7 +200,7 @@ const oracleController = {
 //--------------DELETE TABLE------------------------------------------------------------
   oracleDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteTable(req, res, next);
+      await Promise.resolve(deleteTable(req, res, next));
       console.log("oracleDeleteTable function has concluded");
       return next();
     } catch (err: unknown) {

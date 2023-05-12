@@ -55,9 +55,9 @@ oracleRouter.get('/tableNames', oracleController.oracleGetTableNames, (_req, res
   return res.status(200).json(res.locals.tableNames);
 });
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
-oracleRouter.delete('/deleteTable', oracleController.oracleDeleteTable, (_req: Request, res: Response) => {
+oracleRouter.delete('/deleteTable', oracleController.oracleDeleteTable, oracleController.oracleQuery, (_req: Request, res: Response) => {
   console.log('Returned to the oracle router after deleting a table');
-  return res.sendStatus(200);
+  return res.status(200).json(res.locals);
 });
 
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------

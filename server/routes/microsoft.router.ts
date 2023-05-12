@@ -55,9 +55,9 @@ microsoftRouter.get('/tableNames', microsoftController.microsoftGetTableNames, (
   return res.status(200).json(res.locals.tableNames);
 });
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
-microsoftRouter.delete('/deleteTable', microsoftController.microsoftDeleteTable, (_req: Request, res: Response) => {
+microsoftRouter.delete('/deleteTable', microsoftController.microsoftDeleteTable, microsoftController.microsoftQuery, (_req: Request, res: Response) => {
   console.log('Returned to the microsoft router after deleting a table');
-  return res.sendStatus(200);
+  return res.status(200).json(res.locals);
 });
 
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------
