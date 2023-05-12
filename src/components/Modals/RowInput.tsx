@@ -1,9 +1,13 @@
 import React from 'react';
 import useSchemaStore from '../../store/schemaStore';
 
+type EachRow = {
+  [key:string|number]: string| number| boolean| null
+}
+
 type RowInputProps = {
-  tableName;
-  currentTable;
+  tableName: string;
+  currentTable: EachRow[];
   handleRowChange: (
     index: number,
     value: string | boolean
@@ -12,25 +16,31 @@ type RowInputProps = {
 };
 
 function DataRowInput({
-tableName,currentTable, handleRowChange, secondaryColumnNames
+  tableName,
+  currentTable,
+  handleRowChange,
+  secondaryColumnNames
 }: RowInputProps) {
 
   const { schemaStore } = useSchemaStore((state) => state);
   
   const arrOfDataType = schemaStore["public." + tableName]
-  const columns = [];
-  const inputs = [];
+  const columns: JSX.Element[] = [];
+  const inputs: JSX.Element[] = [];
   let columnNames: string[];
+
   if (!currentTable.length) {
     columnNames = secondaryColumnNames;
   } else {
     columnNames = Object.keys(currentTable[0]);
   }
-    columnNames.map((each, i) => {
-      columns.push(<label key={i+each} className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
+  columnNames.forEach((each, i) => {
+    columns.push(
+      <label key={i + each} className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
         {each}
-      </label>);
-    });
+      </label>
+    );
+  });
   for (let i = 0; i < columns.length; i++) {
     inputs.push(
       <input
@@ -43,7 +53,8 @@ tableName,currentTable, handleRowChange, secondaryColumnNames
         onChange={(e) => {
           handleRowChange(i, e.target.value.trim());
         }}
-      />);
+      />
+    );
   }
   
   return (

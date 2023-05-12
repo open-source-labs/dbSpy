@@ -26,11 +26,17 @@ const microsoftController = {
           const references: {[key: string]: string | boolean}[] = []
           if (foreignKey){
             references.push({
+              // isDestination: false,
+              // PrimaryKeyName: foreignKey.column_name,
+              // PrimaryKeyTableName: 'public.' + tableName,
+              // ReferencesPropertyName: foreignKey.referenced_column_name,
+              // ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
+              // constraintName: foreignKey.constraint_name,
               isDestination: false,
-              PrimaryKeyName: foreignKey.column_name,
-              PrimaryKeyTableName: 'public.' + tableName,
-              ReferencesPropertyName: foreignKey.referenced_column_name,
-              ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
+              PrimaryKeyName: foreignKey.referenced_column_name,
+              PrimaryKeyTableName: 'public.' + foreignKey.referenced_table_name,
+              ReferencesPropertyName: foreignKey.column_name,
+              ReferencesTableName: 'public.' + tableName,
               constraintName: foreignKey.constraint_name,
             });
           };

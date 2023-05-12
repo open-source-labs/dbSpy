@@ -18,6 +18,7 @@ import alexTu from '../../assets/contributors/alex_tu.jpg';
 import michaelCostello from '../../assets/contributors/michael_costello.jpeg';
 import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
 import yufaLi from '../../assets/contributors/yufa_li.jpeg';
+import DK from '../../assets/contributors/dk.png';
 
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
@@ -158,6 +159,34 @@ const profileList: profileInfo[] = [
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/yufa-li/',
     githubUrl: 'https://github.com/01001101CK',
+  },
+    {
+    imgUrl: DK,
+    name: 'Das Kang',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/das-kang/',
+    githubUrl: 'https://github.com/dahae0309',
+  },
+  {
+    imgUrl: AG,
+    name: 'Joseph Tejeda',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/atxjtejeda/',
+    githubUrl: 'https://github.com/JosephTejeda',
+  },
+  {
+    imgUrl: AG,
+    name: 'Stephen Havig',
+    title: 'Software Engineer',
+    linkedInUrl: '',
+    githubUrl: '',
+  },  
+  {
+    imgUrl: AG,
+    name: 'Yichung Chiu',
+    title: 'Software Engineer',
+    linkedInUrl: '',
+    githubUrl: '',
   },
 ];
 
