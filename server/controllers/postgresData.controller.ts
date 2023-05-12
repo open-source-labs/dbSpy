@@ -214,7 +214,7 @@ const postgresController = {
 //--------------DELETE TABLE------------------------------------------------------------
   postgresDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteTable(req, res, next);
+      await Promise.resolve(deleteTable(req, res, next));
       console.log("postgresDeleteTable function has concluded");
       return next();
     } catch (err: unknown) {

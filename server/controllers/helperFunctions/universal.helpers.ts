@@ -351,19 +351,53 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
 //--------------GET ALL TABLE NAMES--------------------------------------------------------------------------------------------
 export const getTableNames: RequestHandler = async (req: Request, res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
-  console.log('req.session: ', req.session)
+  const { db_type } = req.session
+
+  interface TableNames {
+    tablename?: string | undefined;
+    Tables_in_user?: string | undefined;
+    TABLE_NAME?: string | undefined;
+    name?: string | undefined;
+  };
 
   try {
-    const tableNameList = await dbDataSource.query(`
-      ${req.session.db_type === 'postgres' ? 'SELECT tableName FROM pg_catalog.pg_tables WHERE schemaname = \'public\'' :
-      req.session.db_type === 'mysql' ? `SHOW TABLES` : 
-      req.session.db_type === 'mssql' ? `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES` :
-      req.session.db_type === 'oracle' ? `SELECT table_name FROM user_tables` : 
-      `SELECT name FROM sqlite_master WHERE type='table'`
-      }
-    `)
-    console.log('tableNameList in the helpers function: ', tableNameList)
-    return tableNameList;
+    let query: string = '';
+    switch(db_type) {
+      case 'postgres':
+        query = 'SELECT tableName FROM pg_catalog.pg_tables WHERE schemaname = \'public\'';
+        break;
+      case 'mysql':
+        query = 'SHOW TABLES';
+        break;
+      case 'mssql':
+        query = 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES';
+        break;
+      case 'oracle':
+        query = 'SELECT table_name FROM user_tables';
+        break;
+      default:
+        query = "SELECT name FROM sqlite_master WHERE type='table'";
+    };
+
+    const tableNameList: TableNames[] = await dbDataSource.query(query)
+
+    const tables: (string | undefined)[] = tableNameList.map((obj: TableNames) => {
+      switch(db_type) {
+        case 'postgres':
+          return obj.tablename;
+        case 'mysql':
+          return obj.Tables_in_user;
+        case 'mssql':
+        case 'oracle':
+          return obj.TABLE_NAME;
+        default:
+          return obj.name; //SQLite
+      };
+    });
+
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    return tables;
     
   } catch (err: unknown) {
     console.log('Error occurred in the addNewTable middleware: ', err);
@@ -378,18 +412,34 @@ export const getTableNames: RequestHandler = async (req: Request, res: Response,
 
 export const deleteTable: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
-  console.log('req.session: ', req.session)
+  const { db_type, username } = req.session
 
   try{
-      const user: string | undefined = req.session.username;    
+      // const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
+      // //For Oracle, the special database
+      // const slicedTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1)
+      // const tableName: string = db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
+      //   db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : deleteTableData.tableName;
+
       const deleteTableData: {[key: string]: string } = req.body;
       console.log('req.body: ', req.body)
 
-      const schemaName = req.session.db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-      //For Oracle, the special database
-      const slicedTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1)
-      const tableName: string = req.session.db_type === 'oracle' ? `"${(user as string).toUpperCase()}"."${slicedTableName}"` : 
-        req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : deleteTableData.tableName;
+      let tableName = '';
+      
+      switch (db_type) {
+        case 'oracle':
+          //const slicedTableName = deleteTableData.tableName.slice(7, deleteTableData.tableName.length + 1);
+          tableName = `"${(username as string).toUpperCase()}"."${deleteTableData.tableName}"`;
+          break;
+        case 'mssql':
+          const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+          tableName = `${schemaName[0].SchemaName}.${deleteTableData.tableName}`;
+          break;
+        default:
+          tableName = deleteTableData.tableName;
+          break;
+      }
+
 
       const deletedTable: Promise<unknown> = await dbDataSource.query(`DROP TABLE ${tableName}`)
 

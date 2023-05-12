@@ -277,11 +277,11 @@ export default function FeatureTab(props: any) {
                 </li>
               ):(null)
               }
+              { isSchema? (
               <li>
                 <a
                   onClick={() => {
                     props.openDeleteTableModal();
-                    
                   }}
                   id="deleteTable"
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
@@ -303,6 +303,8 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
                 </a>
               </li>
+            ):(null)
+            }
               <li>
                 <a
                   onClick={clearCanvas}

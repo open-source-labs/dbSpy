@@ -56,9 +56,10 @@ postgresRouter.get('/tableNames', postgresController.postgresGetTableNames, (_re
   return res.status(200).json(res.locals.tableNames);
 });
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
-postgresRouter.delete('/deleteTable', postgresController.postgresDeleteTable, (_req: Request, res: Response) => {
+postgresRouter.delete('/deleteTable', postgresController.postgresDeleteTable, postgresController.postgresQuery, (_req: Request, res: Response) => {
   console.log('Returned to the postgres router after deleting a table');
-  return res.sendStatus(200);
+  console.log('res.locals: ', res.locals)
+  return res.status(200).json(res.locals);
 });
 
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------

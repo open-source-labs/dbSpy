@@ -32,7 +32,7 @@ const oracleController = {
             isDestination: false,
             PrimaryKeyName: column.R_COLUMN_NAME,
             PrimaryKeyTableName: 'public.' + column.R_TABLE_NAME,
-            ReferencesPropertyName: column.COLUMN_NAMEcolumn.R_COLUMN_NAME,
+            ReferencesPropertyName: column.COLUMN_NAME,
             ReferencesTableName: 'public.' + tableName,
             constraintName: column.CONSTRAINT_NAME,
           });
