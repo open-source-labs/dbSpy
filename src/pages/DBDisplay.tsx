@@ -12,8 +12,6 @@ import DataInputModal from '../components/Modals/DataInputModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
-
-
 const DBDisplay: React.FC = () => {
 
   const { setUser } = useCredentialsStore();
