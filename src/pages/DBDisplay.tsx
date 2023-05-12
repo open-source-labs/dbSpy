@@ -9,6 +9,7 @@ import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
+import DeleteTableModal from '../components/Modals/DeleteTableModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
@@ -24,6 +25,8 @@ const DBDisplay: React.FC = () => {
     editRefMode,
     inputModalState,
     setInputModalState,
+    deleteTableModalState,
+    setDeleteTableModalState,
     currentTable,
     isSchema,
     setTableMode
@@ -35,7 +38,9 @@ const DBDisplay: React.FC = () => {
     mode: 'table' | 'column';
     tableName?: string;
   };
+
   const openAddTableModal = () => setInputModalState(true, 'table');
+  const openDeleteTableModal = () => setDeleteTableModalState(true);
   const openAddColumnModal = (tableName: string) =>
     setInputModalState(true, 'column', tableName);
 
@@ -132,7 +137,7 @@ useEffect(() :void => {
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
-      <FeatureTab handleSidebar={handleSidebar} openAddTableModal={openAddTableModal} />
+      <FeatureTab handleSidebar={handleSidebar} openAddTableModal={openAddTableModal} openDeleteTableModal={openDeleteTableModal} />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
@@ -188,6 +193,12 @@ useEffect(() :void => {
 
         )
       ):null}
+
+      {deleteTableModalState.isOpen ?
+          <DeleteTableModal
+          closeDeleteTableModal={() => setDeleteTableModalState(false)}
+          />
+         : null}
     </div>
   );
 };

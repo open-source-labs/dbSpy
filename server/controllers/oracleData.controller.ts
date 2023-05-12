@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { TableColumns, TableColumn, TableSchema } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
 // Object containing all of the middleware
 const oracleController = {
@@ -174,6 +174,19 @@ const oracleController = {
       return next();
     } catch (err: unknown) {
       console.log('Error occurred in the oracleAddNewTable middleware: ', err);
+      return next(err);
+    };
+  },
+
+//--------------GET ALL TABLE NAMES-------------------------------------------------------------------
+  oracleGetTableNames: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tableNameList = await Promise.resolve(getTableNames(req, res, next));
+      console.log("oracleGetTableNames function has concluded");
+      res.locals.tableNames = tableNameList;
+      return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the oracleDeleteTable middleware: ', err);
       return next(err);
     };
   },

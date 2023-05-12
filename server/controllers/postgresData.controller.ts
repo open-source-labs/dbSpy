@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { TableColumns, TableColumn, TableSchema } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, getTableNames, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { resourceLimits } from 'worker_threads';
 
 // Object containing all of the middleware
 const postgresController = {
@@ -41,6 +42,8 @@ const postgresController = {
             constraintName: foreignKey.constraint_name
           });
         };
+
+        console.log('references: ', references)
     
         const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
@@ -185,6 +188,18 @@ const postgresController = {
       return next();
     } catch (err: unknown) {
       console.log('Error occurred in the postgresAddNewTable middleware: ', err);
+      return next(err);
+    };
+  },
+//--------------GET ALL TABLE NAMES-------------------------------------------------------------------
+  postgresGetTableNames: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tableNameList = await Promise.resolve(getTableNames(req, res, next));
+      console.log("postgresGetTableNames function has concluded");
+      res.locals.tableNames = tableNameList;
+      return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the postgresDeleteTable middleware: ', err);
       return next(err);
     };
   },

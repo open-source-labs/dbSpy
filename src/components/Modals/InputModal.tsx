@@ -3,6 +3,8 @@ import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
 
+//closeInputModal
+
 type InputModalProps = {
   mode: 'table' | 'column';
   closeInputModal: () => void;
@@ -180,7 +182,7 @@ export default function InputModal({
           const isSuccessful: boolean = handleSubmit();
           if (isSuccessful) closeInputModal();
         }}
-        className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+        className="modal-content rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="table-name">
           {mode === 'table' ? (
@@ -209,7 +211,7 @@ export default function InputModal({
           </h1>
           <button
             type="button"
-            className="  text-slate-900 dark:text-[#f8f4eb]"
+            className="text-slate-900 dark:text-[#f8f4eb]"
             onClick={addColumn}
             data-testid="add-table-add-column"
           >
@@ -220,7 +222,7 @@ export default function InputModal({
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
             type="button"
-            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb] border-slate-500"
             onClick={closeInputModal}
             data-testid="modal-cancel"
           >

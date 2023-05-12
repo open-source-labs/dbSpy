@@ -21,7 +21,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const { dbCredentials } = useCredentialsStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-  const { dbCredentials } = useCredentialsStore((state) => state);
+
   
   const tableName = tableData[0];
   let firstRow =[]

@@ -348,6 +348,32 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
   };
 };
 
+//--------------GET ALL TABLE NAMES--------------------------------------------------------------------------------------------
+export const getTableNames: RequestHandler = async (req: Request, res: Response, next: NextFunction,) => {
+  const dbDataSource = await dbConnect(req)
+  console.log('req.session: ', req.session)
+
+  try {
+    const tableNameList = await dbDataSource.query(`
+      ${req.session.db_type === 'postgres' ? 'SELECT tableName FROM pg_catalog.pg_tables WHERE schemaname = \'public\'' :
+      req.session.db_type === 'mysql' ? `SHOW TABLES` : 
+      req.session.db_type === 'mssql' ? `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES` :
+      req.session.db_type === 'oracle' ? `SELECT table_name FROM user_tables` : 
+      `SELECT name FROM sqlite_master WHERE type='table'`
+      }
+    `)
+    console.log('tableNameList in the helpers function: ', tableNameList)
+    return tableNameList;
+    
+  } catch (err: unknown) {
+    console.log('Error occurred in the addNewTable middleware: ', err);
+    dbDataSource.destroy();
+    console.log('Database has been disconnected');
+    return next(err);
+  };
+};
+
+
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
 
 export const deleteTable: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
@@ -366,6 +392,8 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
         req.session.db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : deleteTableData.tableName;
 
       const deletedTable: Promise<unknown> = await dbDataSource.query(`DROP TABLE ${tableName}`)
+
+      console.log('deletedTable response in function: ', deletedTable)
 
       dbDataSource.destroy();
       console.log('Database has been disconnected');

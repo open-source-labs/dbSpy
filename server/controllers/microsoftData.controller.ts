@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { TableColumns, TableColumn, TableSchema } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
 //Object containing all of the middleware
 const microsoftController = {
@@ -176,6 +176,19 @@ const microsoftController = {
       return next();
     } catch (err: unknown) {
       console.log('Error occurred in the microsoftAddNewTable middleware: ', err);
+      return next(err);
+    };
+  },
+
+//--------------GET ALL TABLE NAMES-------------------------------------------------------------------
+  microsoftGetTableNames: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tableNameList = await Promise.resolve(getTableNames(req, res, next));
+      console.log("microsoftGetTableNames function has concluded");
+      res.locals.tableNames = tableNameList;
+      return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the microsoftDeleteTable middleware: ', err);
       return next(err);
     };
   },

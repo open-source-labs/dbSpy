@@ -49,6 +49,11 @@ microsoftRouter.post('/saveNewTable', microsoftController.microsoftAddNewTable, 
   console.log('Returned to the microsoft router after adding a new table');
   return res.status(200).json(res.locals.newTable);
 });
+//--------------GET ALL TABLE NAMES---------------------------------------------------------------------------------------------------
+microsoftRouter.get('/tableNames', microsoftController.microsoftGetTableNames, (_req, res) => {
+  console.log('Returned to the microsoft router after getting all the table names');
+  return res.status(200).json(res.locals.tableNames);
+});
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
 microsoftRouter.delete('/deleteTable', microsoftController.microsoftDeleteTable, (_req: Request, res: Response) => {
   console.log('Returned to the microsoft router after deleting a table');

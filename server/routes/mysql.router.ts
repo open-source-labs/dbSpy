@@ -49,6 +49,11 @@ mysqlRouter.post('/saveNewTable', mysqlController.mysqlAddNewTable, (_req: Reque
   console.log('Returned to the mysql router after adding a new table');
   return res.status(200).json(res.locals.newTable);
 });
+//--------------GET ALL TABLE NAMES---------------------------------------------------------------------------------------------------
+mysqlRouter.get('/tableNames', mysqlController.mysqlGetTableNames, (_req, res) => {
+  console.log('Returned to the mysql router after getting all the table names');
+  return res.status(200).json(res.locals.tableNames);
+});
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
 mysqlRouter.delete('/deleteTable', mysqlController.mysqlDeleteTable, (_req: Request, res: Response) => {
   console.log('Returned to the mysql router after deleting a table');
