@@ -32,6 +32,7 @@ export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:Ro
     setTempData({...newRow})
     },[row])
 
+
   const [mode, setMode] = useState('default');
 
   const rowDataKeys = Object.keys(row)
