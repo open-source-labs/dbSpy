@@ -12,8 +12,8 @@ import informationIcon from '../../../images/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-
-  const [tableData, setTableData] = useState(data.table)
+  const newdata = structuredClone(data);
+  const [tableData, setTableData] = useState(newdata.table)
   const { setInputModalState } = useSettingsStore((state) => state);
   const { dataStore, referenceStore} = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
@@ -22,7 +22,6 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const { dbCredentials } = useCredentialsStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-
   
   const tableName = tableData[0];
   let firstRow =[]
@@ -64,14 +63,15 @@ useEffect(()=>{
           fromForeignKey.add(RowData[i][fromColumnName]);
         }
       }
-
       //assign to the state reference store
-      toForeignKey[toTableName] = {[toColumnName]:fromForeignKey}
-      const currentRef = JSON.parse(JSON.stringify(referenceStore))
-      setReferenceStore({...currentRef,...toForeignKey})
+      toForeignKey[toTableName] = {[toColumnName]:fromForeignKey};
+      const currentRef = structuredClone(referenceStore);
+      setReferenceStore({...currentRef,...toForeignKey});
     }
    }
  },[dataStore])
+
+
 
 
   if (schemaName !== undefined) {
@@ -88,8 +88,9 @@ useEffect(()=>{
     firstRow = secondaryFirstRow
  }
 
+
 //UseEffect set Table when the dataStore is changed after on Delete.
-  useEffect(() => {  
+  useEffect(() => {
     setTableData([tableName,dataStore[tableName]])
   }, [dataStore]);
 
@@ -107,8 +108,13 @@ useEffect(()=>{
     }
   }
 }
+  const newDatastore = structuredClone(dataStore)
+
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
-   setDataStore({...dataStore,[id]:restRowsData});
+  
+  // newDatastore[tableName] = restRowsData
+   setDataStore({...newDatastore,[id]:restRowsData});
+      // setDataStore(restRowData);
 
 
   const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
