@@ -23,11 +23,17 @@ const oracleController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (column.CONSTRAINT_TYPE === 'R'){
           references.push({
+            // isDestination: false,
+            // PrimaryKeyName: column.COLUMN_NAME,
+            // PrimaryKeyTableName: 'public.' + tableName,
+            // ReferencesPropertyName: column.R_COLUMN_NAME,
+            // ReferencesTableName: 'public.' + column.R_TABLE_NAME,
+            // constraintName: column.CONSTRAINT_NAME,
             isDestination: false,
-            PrimaryKeyName: column.COLUMN_NAME,
-            PrimaryKeyTableName: 'public.' + tableName,
-            ReferencesPropertyName: column.R_COLUMN_NAME,
-            ReferencesTableName: 'public.' + column.R_TABLE_NAME,
+            PrimaryKeyName: column.R_COLUMN_NAME,
+            PrimaryKeyTableName: 'public.' + column.R_TABLE_NAME,
+            ReferencesPropertyName: column.COLUMN_NAMEcolumn.R_COLUMN_NAME,
+            ReferencesTableName: 'public.' + tableName,
             constraintName: column.CONSTRAINT_NAME,
           });
         };

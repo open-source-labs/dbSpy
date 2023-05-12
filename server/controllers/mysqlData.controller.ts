@@ -40,11 +40,17 @@ const mysqlController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
           references.push({
+            // isDestination: false,
+            // PrimaryKeyName: foreignKey.COLUMN_NAME,
+            // PrimaryKeyTableName: 'public.' + tableName,
+            // ReferencesPropertyName: foreignKey.REFERENCED_COLUMN_NAME,
+            // ReferencesTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+            // constraintName: foreignKey.CONSTRAINT_NAME,
             isDestination: false,
-            PrimaryKeyName: foreignKey.COLUMN_NAME,
-            PrimaryKeyTableName: 'public.' + tableName,
-            ReferencesPropertyName: foreignKey.REFERENCED_COLUMN_NAME,
-            ReferencesTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+            PrimaryKeyName: foreignKey.REFERENCED_COLUMN_NAME,
+            PrimaryKeyTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+            ReferencesPropertyName: foreignKey.COLUMN_NAME,
+            ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.CONSTRAINT_NAME,
           });
         };

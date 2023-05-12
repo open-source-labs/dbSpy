@@ -34,12 +34,19 @@ const postgresController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
           references.push({
+            // isDestination: false,
+            // PrimaryKeyName: foreignKey.foreign_key_column,
+            // PrimaryKeyTableName: 'public.' + tableName,
+            // ReferencesPropertyName: foreignKey.referenced_column,
+            // ReferencesTableName: foreignKey.referenced_table,
+            // constraintName: foreignKey.constraint_name
             isDestination: false,
-            PrimaryKeyName: foreignKey.foreign_key_column,
-            PrimaryKeyTableName: 'public.' + tableName,
-            ReferencesPropertyName: foreignKey.referenced_column,
-            ReferencesTableName: foreignKey.referenced_table,
+            PrimaryKeyName: foreignKey.referenced_column,
+            PrimaryKeyTableName: foreignKey.referenced_table,
+            ReferencesPropertyName: foreignKey.foreign_key_column,
+            ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
+
           });
         };
 
