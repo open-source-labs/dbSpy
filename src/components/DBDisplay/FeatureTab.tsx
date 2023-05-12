@@ -20,7 +20,7 @@ export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
 
-  const { schemaStore, setSchemaStore, undoHandler, redoHandler, historyCounter } =
+  const { isSchema, schemaStore, setSchemaStore, undoHandler, redoHandler, historyCounter } =
     useSchemaStore((state) => state);
   const { user, setUser } = useCredentialsStore((state: any) => state);
 

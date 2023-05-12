@@ -69,6 +69,7 @@ export default function InputModal({
     else return additionalColumn;
   });
 
+
   // functions that check validity and add schema to the store
   const {  addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
     (state) => state
@@ -77,11 +78,6 @@ export default function InputModal({
 
 
   const handleSubmit = (): boolean => {
-    //check schema state for the add table onclick
-  // const { isSchema, setTableMode } = useSettingsStore((state) => state)
-  //   console.log('isSchema', isSchema)
-  // if (!isSchema) setTableMode(true)
-    // table must be added to schema first to enable column validity checks
     try {
       if (mode === 'table') {
         addTableSchema(tableName, columnData);
@@ -123,8 +119,10 @@ export default function InputModal({
   const addColumn = () => { //addNewRow for data table
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
+
       return [...prevColumns];
     });
+
   };
 
   const deleteColumn = (index: number) => {
@@ -137,8 +135,10 @@ export default function InputModal({
   const handleColumnChange = (
     index: number,
     property: keyof ColumnData,
-    value: string | boolean
+    value: string | boolean,
+
   ) => {
+
     setColumnData((prevColumns) => {
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
@@ -182,6 +182,7 @@ export default function InputModal({
       <form
         autoComplete="off"
         onSubmit={(e) => {
+          console.log('this is a submit button')
           e.preventDefault();
           const isSuccessful: boolean = handleSubmit();
           if (isSuccessful) closeInputModal();
