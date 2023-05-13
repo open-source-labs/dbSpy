@@ -30,6 +30,7 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): D
     });
     i = (i + 1) % 17;
   }
+  console.log('nodes in CDN',nodes)
   return nodes;
 }
 

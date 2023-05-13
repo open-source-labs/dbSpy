@@ -17,7 +17,7 @@ const nodeTypes = {
   table: DataTableNode,
 };
 
-
+//React Flow canvas for DATA TABLES
 export default function DataFlow():JSX.Element {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
@@ -26,7 +26,6 @@ export default function DataFlow():JSX.Element {
   const { schemaStore } = useSchemaStore((state) => state);
 
   // re-render every time dataStore updates
-  
   useEffect(() => {  
     reRender(dataStore);
   }, [dataStore, schemaStore]);
@@ -38,7 +37,7 @@ export default function DataFlow():JSX.Element {
     const initialNodes = createDataNodes(dataStore, initialEdges);
     setNodes(initialNodes);
   }
-  //console.log('nodes in dataFlow',nodes) //schema info!!! why???
+  
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
