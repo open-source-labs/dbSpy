@@ -27,7 +27,7 @@ const useDataStore = create<DataState>()(
         system: 'PostgreSQL',
         setSystem: (system) => 
           set((state) => ({ ...state, system })),
-        setDataStore: (dataInfo) => 
+        setDataStore: (dataInfo) =>
           set((state) => ({ ...state, dataStore: dataInfo })),
         deleteTableData: (tableName) => set((state) => {
           const newState = { ...state };

@@ -1,6 +1,8 @@
 import React from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import DataTypeOptions from './DataTypeOptions';
+import { useState }  from 'react';
+
 
 type ColumnInputProps = {
   index: number;
@@ -31,9 +33,18 @@ function ColumnInput({
   columnCount,
   mode,
 }: ColumnInputProps) {
+const [columnName, setColumnName] = useState('')
+const [columnType, setColumnType] = useState('')
+
+const sendNewColumnToBackend =():void => {
+  console.log('cN', columnName)
+  console.log('cT', columnType)
+}
+
   return (
     <div className="column-input">
       <div>
+
         <label
           className=" text-center text-slate-900 dark:text-[#f8f4eb]"
           htmlFor={`column-${index}-name`}
@@ -47,6 +58,7 @@ function ColumnInput({
           maxLength={63}
           value={name}
           onChange={(e) => {
+            setColumnName(e.target.value)
             handleColumnChange(index, 'name', e.target.value.trim());
           }}
         />
@@ -62,7 +74,10 @@ function ColumnInput({
         <select
           id={`column-${index}-type`}
           defaultValue={type}
-          onChange={(e) => handleColumnChange(index, 'type', e.target.value)}
+          onChange={(e) => {
+            setColumnType(e.target.value)
+            handleColumnChange(index, 'type', e.target.value)}
+          }
         >
           <DataTypeOptions />
         </select>
@@ -114,6 +129,7 @@ function ColumnInput({
             checked={isPrimary}
             onChange={() => handleColumnChange(index, 'isPrimary', !isPrimary)}
           />
+
         </div>
       )}
 

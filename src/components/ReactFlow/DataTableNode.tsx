@@ -44,7 +44,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
    if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
 
  }
- 
+
 //loop through all of RowData, grab each primary key value and store it in object<pkVals>
 
   for(let i = 0; i < RowData.length; i++){
@@ -99,7 +99,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
     secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
   }
 
- //Filter out Schemas from data, not sure why schema data would show sometime. 
+ //Filter out Schemas from data, not sure why schema data would show sometime.
   if(RowData[0] !== undefined){
     if (RowData[0].IsForeignKey === undefined) {
       firstRow = Object.keys(RowData[0]);
@@ -135,7 +135,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
   const newDatastore = structuredClone(dataStore)
 
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
-  
+
   // newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
@@ -148,7 +148,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
     },
     body:JSON.stringify({tableName : tableName, primaryKey: PK, value: value[PK] })
   })
-  
+
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,
@@ -197,7 +197,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
         />
       );
     }
-  } 
+  }
 
   return (
     <>
@@ -205,9 +205,9 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
         <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
           {tableHandles}
           <div>
-            <label htmlFor="text" 
-              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
-              style={{ 
+            <label htmlFor="text"
+              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0"
+              style={{
                 'marginLeft': '0px'
               }}>
               {tableName}
@@ -258,7 +258,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
                       FK={FK}
                       PK={[PK,pkVals]}
                     />
-                  )} 
+                  )}
                 )}
               </tbody>
             </table>

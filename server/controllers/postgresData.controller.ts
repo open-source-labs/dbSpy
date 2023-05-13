@@ -10,26 +10,26 @@ const postgresController = {
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
 
-    
-//--------HELPER FUNCTION 1----------------------------------- 
+
+//--------HELPER FUNCTION 1-----------------------------------
     // function to query and get all information needed for foreign keys
     async function getForeignKeys(): Promise<TableColumn[]> {
       return await PostgresDataSource.query(postgresForeignKeyQuery);
     };
 
-//--------HELPER FUNCTION 2----------------------------------- 
+//--------HELPER FUNCTION 2-----------------------------------
     // function organizing data from queries in to the desired format of the front end
     async function postgresFormatTableSchema(postgresSchemaData: TableColumn[], tableName: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
-    
+
       for (const column of postgresSchemaData) {
         const columnName: any = column.column_name;
         const keyString: any = column.additional_constraints;
-    
+
         //query for the foreign key data
         const foreignKeys: any = await getForeignKeys();
         const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
-      
+
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
@@ -50,8 +50,8 @@ const postgresController = {
           });
         };
 
-        console.log('references: ', references)
-    
+        //console.log('references: ', references)
+
         const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
 
@@ -99,7 +99,7 @@ const postgresController = {
       res.locals.schema = schema;
       res.locals.data = tableData;
 
-      // Disconnecting after data has been received 
+      // Disconnecting after data has been received
       PostgresDataSource.destroy();
       console.log('Database has been disconnected');
       return next();
@@ -117,10 +117,10 @@ const postgresController = {
   postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
       addNewDbRow(req, res, next)
-      console.log("postgresAddNewRow function has concluded");
+      //console.log("postgresAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresAddNewRow middleware: ', err);
+      //console.log('Error occurred in the postgresAddNewRow middleware: ', err);
       return next(err);
     };
   },
@@ -129,10 +129,10 @@ const postgresController = {
   postgresUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
       updateRow(req, res, next);
-      console.log("postgresUpdateRow function has concluded");
+      //console.log("postgresUpdateRow function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresUpdateRow middleware: ', err);
+      //console.log('Error occurred in the postgresUpdateRow middleware: ', err);
       return next(err);
     };
   },
@@ -141,10 +141,10 @@ const postgresController = {
   postgresDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
       deleteRow(req, res, next);
-      console.log("postgresDeleteRow function has concluded");
+      //console.log("postgresDeleteRow function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresDeleteRow middleware: ', err);
+      //console.log('Error occurred in the postgresDeleteRow middleware: ', err);
       return next(err);
     };
   },
@@ -154,10 +154,10 @@ const postgresController = {
   postgresAddNewColumn: async (req: Request, res: Response, next: NextFunction) => {
     try {
       addNewDbColumn(req, res, next);
-      console.log("postgresAddNewColumn function has concluded");
+      //console.log("postgresAddNewColumn function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresAddNewColumn middleware: ', err);
+      //console.log('Error occurred in the postgresAddNewColumn middleware: ', err);
       return next(err);
     };
   },
@@ -166,10 +166,10 @@ const postgresController = {
   postgresUpdateColumn: async (req: Request, res: Response, next: NextFunction) => {
     try {
       updateDbColumn(req, res, next);
-      console.log("postgresUpdateColumn function has concluded");
+      //console.log("postgresUpdateColumn function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresUpdateColumn middleware: ', err);
+      //console.log('Error occurred in the postgresUpdateColumn middleware: ', err);
       return next(err);
     };
   },
@@ -178,10 +178,10 @@ const postgresController = {
   postgresDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
     try {
       deleteColumn(req, res, next);
-      console.log("postgresDeleteColumn function has concluded");
+      //console.log("postgresDeleteColumn function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresDeleteColumn middleware: ', err);
+      //console.log('Error occurred in the postgresDeleteColumn middleware: ', err);
       return next(err);
     };
   },
@@ -191,10 +191,10 @@ const postgresController = {
   postgresAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
       await Promise.resolve(addNewTable(req, res, next));
-      console.log("postgresAddNewTable function has concluded");
+      //console.log("postgresAddNewTable function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresAddNewTable middleware: ', err);
+      //console.log('Error occurred in the postgresAddNewTable middleware: ', err);
       return next(err);
     };
   },
@@ -202,11 +202,11 @@ const postgresController = {
   postgresGetTableNames: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tableNameList = await Promise.resolve(getTableNames(req, res, next));
-      console.log("postgresGetTableNames function has concluded");
+      //console.log("postgresGetTableNames function has concluded");
       res.locals.tableNames = tableNameList;
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresDeleteTable middleware: ', err);
+      //console.log('Error occurred in the postgresDeleteTable middleware: ', err);
       return next(err);
     };
   },
@@ -215,10 +215,10 @@ const postgresController = {
   postgresDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
       await Promise.resolve(deleteTable(req, res, next));
-      console.log("postgresDeleteTable function has concluded");
+      //console.log("postgresDeleteTable function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresDeleteTable middleware: ', err);
+      //console.log('Error occurred in the postgresDeleteTable middleware: ', err);
       return next(err);
     };
   },
@@ -228,10 +228,10 @@ const postgresController = {
   postgresAddForeignKey: async (req: Request, res: Response, next: NextFunction) => {
     try {
       addForeignKey(req, res, next);
-      console.log("postgresAddForeignKey function has concluded");
+      //console.log("postgresAddForeignKey function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresAddForeignKey middleware: ', err);
+      //console.log('Error occurred in the postgresAddForeignKey middleware: ', err);
       return next(err);
     };
   },
@@ -240,10 +240,10 @@ const postgresController = {
   postgresRemoveForeignKey: async (req: Request, res: Response, next: NextFunction) => {
     try {
       removeForeignKey(req, res, next);
-      console.log("postgresRemoveForeignKey function has concluded");
+      //console.log("postgresRemoveForeignKey function has concluded");
       return next();
     } catch (err: unknown) {
-      console.log('Error occurred in the postgresRemoveForeignKey middleware: ', err);
+      //console.log('Error occurred in the postgresRemoveForeignKey middleware: ', err);
       return next(err);
     };
   },
@@ -281,14 +281,14 @@ export default postgresController;
 //     WHERE table_schema = 'public' AND table_name != 'pg_stat_statements'
 //     ORDER BY table_name, ordinal_position;`;
 
-//   const keyQuery: string = `SELECT 
+//   const keyQuery: string = `SELECT
 //       tc.constraint_name,
-//       tc.table_name, 
-//       kcu.column_name, 
+//       tc.table_name,
+//       kcu.column_name,
 //       tc.constraint_type,
 //       ccu.table_name AS foreign_table_name,
 //       ccu.column_name AS foreign_column_name
-//     FROM 
+//     FROM
 //       information_schema.table_constraints tc
 //       JOIN information_schema.key_column_usage kcu
 //         ON tc.constraint_name = kcu.constraint_name
@@ -296,7 +296,7 @@ export default postgresController;
 //         ON tc.constraint_name = rc.constraint_name
 //       LEFT JOIN information_schema.constraint_column_usage ccu
 //         ON rc.unique_constraint_name = ccu.constraint_name
-//     WHERE 
+//     WHERE
 //       tc.constraint_type = 'PRIMARY KEY' OR tc.constraint_type = 'FOREIGN KEY'
 //       AND tc.table_schema = 'public';`;
 
