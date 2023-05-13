@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { TableColumns, TableColumn, TableSchema } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
-import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, getTableNames, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { resourceLimits } from 'worker_threads';
 
 // Object containing all of the middleware
 const postgresController = {
@@ -48,6 +49,8 @@ const postgresController = {
 
           });
         };
+
+        console.log('references: ', references)
     
         const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
@@ -187,7 +190,7 @@ const postgresController = {
 //--------------ADD NEW TABLE-----------------------------------------------------------
   postgresAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewTable(req, res, next);
+      await Promise.resolve(addNewTable(req, res, next));
       console.log("postgresAddNewTable function has concluded");
       return next();
     } catch (err: unknown) {
@@ -195,11 +198,23 @@ const postgresController = {
       return next(err);
     };
   },
+//--------------GET ALL TABLE NAMES-------------------------------------------------------------------
+  postgresGetTableNames: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tableNameList = await Promise.resolve(getTableNames(req, res, next));
+      console.log("postgresGetTableNames function has concluded");
+      res.locals.tableNames = tableNameList;
+      return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the postgresDeleteTable middleware: ', err);
+      return next(err);
+    };
+  },
 
 //--------------DELETE TABLE------------------------------------------------------------
   postgresDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteTable(req, res, next);
+      await Promise.resolve(deleteTable(req, res, next));
       console.log("postgresDeleteTable function has concluded");
       return next();
     } catch (err: unknown) {

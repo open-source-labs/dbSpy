@@ -49,10 +49,15 @@ sqliteRouter.post('/saveNewTable', sqliteController.sqliteAddNewTable, (_req: Re
   console.log('Returned to the sqlite router after adding a new table');
   return res.status(200).json(res.locals.newTable);
 });
+//--------------GET ALL TABLE NAMES---------------------------------------------------------------------------------------------------
+sqliteRouter.get('/tableNames', sqliteController.sqliteGetTableNames, (_req, res) => {
+  console.log('Returned to the sqlite router after getting all the table names');
+  return res.status(200).json(res.locals.tableNames);
+});
 //--------------DELETE TABLE---------------------------------------------------------------------------------------------------
-sqliteRouter.delete('/deleteTable', sqliteController.sqliteDeleteTable, (_req: Request, res: Response) => {
+sqliteRouter.delete('/deleteTable', sqliteController.sqliteDeleteTable, sqliteController.sqliteQuery, (_req: Request, res: Response) => {
   console.log('Returned to the sqlite router after deleting a table');
-  return res.sendStatus(200);
+  return res.status(200).json(res.locals);
 });
 
 //------------------------------------------FOREIGN KEYS----------------------------------------------------------------------------------------------

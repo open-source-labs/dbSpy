@@ -140,7 +140,7 @@ export type RowsOfData = [{
 }];
 
 export type DataStore = {
-  [TableName: string]: RowsOfData[]
+  [TableName: string]: RowsOfData[];
 }
 
 // export type DataState = {
