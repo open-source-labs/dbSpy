@@ -1,6 +1,8 @@
+//-----IMPORTED FILES
 import React from 'react';
 import useSchemaStore from '../../store/schemaStore';
 
+//-----TYPES
 type EachRow = {
   [key:string|number]: string| number| boolean| null
 }
@@ -15,7 +17,8 @@ type RowInputProps = {
   secondaryColumnNames: string[]
 };
 
-function DataRowInput({
+//-----MODAL for new row inputs
+export default function RowInput({
   tableName,
   currentTable,
   handleRowChange,
@@ -29,6 +32,7 @@ function DataRowInput({
   const inputs: JSX.Element[] = [];
   let columnNames: string[];
 
+  // If current table is EMPTY, we are going to use secondaryColumnNames we got from schemaStore in DataInputModal 
   if (!currentTable.length) {
     columnNames = secondaryColumnNames;
   } else {
@@ -48,7 +52,6 @@ function DataRowInput({
         className='m-2'
         type="text"
         placeholder={arrOfDataType[columnNames[i]].data_type}
-        // placeholder={arrOfDataType[columnNames[i]].data_type + ", "  +arrOfDataType[columnNames[i]].additional_constraints}
         maxLength={63}
         onChange={(e) => {
           handleRowChange(i, e.target.value.trim());
@@ -69,4 +72,4 @@ function DataRowInput({
   );
 }
 
-export default DataRowInput;
+
