@@ -189,9 +189,10 @@ const postgresController = {
 //---------------------------DATABASE TABLES--------------------------------------------------------
 //--------------ADD NEW TABLE-----------------------------------------------------------
   postgresAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
+    console.log('req body from postGresAddNewTable', req.body.newColumns)
     try {
       await Promise.resolve(addNewTable(req, res, next));
-      //console.log("postgresAddNewTable function has concluded");
+      console.log("postgresAddNewTable function has concluded");
       return next();
     } catch (err: unknown) {
       //console.log('Error occurred in the postgresAddNewTable middleware: ', err);
