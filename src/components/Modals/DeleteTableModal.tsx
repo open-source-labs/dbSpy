@@ -43,8 +43,8 @@ export default function DeleteTableModal({
         //   deleteTableSchema(tableName);
         //   deleteTableData(tableName);
         .then(resetData => {
-          setSchemaStore(Object.keys(resetData.schema).length >= 1 ? resetData.schema : null);
-          setDataStore(Object.keys(resetData.data).length >= 1 ? resetData.data : null);
+          setSchemaStore(Object.keys(resetData.schema).length >= 1 ? resetData.schema : {});
+          setDataStore(Object.keys(resetData.data).length >= 1 ? resetData.data : {});
         })
         .then(() => {
           setTableName('');

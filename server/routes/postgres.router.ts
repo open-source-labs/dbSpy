@@ -46,9 +46,9 @@ postgresRouter.delete('/deleteColumn', postgresController.postgresDeleteColumn, 
 
 //---------------------------DATABASE TABLES--------------------------------------------------------------------------------------------------------
 //--------------ADD NEW TABLE--------------------------------------------------------------------------------------------------
-postgresRouter.post('/saveNewTable', postgresController.postgresAddNewTable, (_req: Request, res: Response) => {
+postgresRouter.post('/saveNewTable', postgresController.postgresAddNewTable, postgresController.postgresQuery, (_req: Request, res: Response) => {
   console.log('Returned to the postgres router after adding a new table');
-  return res.status(200).json(res.locals.newTable);
+  return res.status(200).json(res.locals);
 });
 //--------------GET ALL TABLE NAMES---------------------------------------------------------------------------------------------------
 postgresRouter.get('/tableNames', postgresController.postgresGetTableNames, (_req, res) => {

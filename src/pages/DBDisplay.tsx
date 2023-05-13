@@ -178,7 +178,7 @@ useEffect(() :void => {
       {inputModalState.isOpen ? (
         isSchema ? (
           <InputModal
-            mode={inputModalState.mode}
+            mode={inputModalState.mode as 'table' | 'column'}
             tableNameProp={currentTable}
             closeInputModal={() => setInputModalState(false)}
           />

@@ -190,7 +190,7 @@ const postgresController = {
 //--------------ADD NEW TABLE-----------------------------------------------------------
   postgresAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewTable(req, res, next);
+      await Promise.resolve(addNewTable(req, res, next));
       console.log("postgresAddNewTable function has concluded");
       return next();
     } catch (err: unknown) {
