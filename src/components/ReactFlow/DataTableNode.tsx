@@ -71,9 +71,6 @@ useEffect(()=>{
    }
  },[dataStore])
 
-
-
-
   if (schemaName !== undefined) {
     secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
   }
@@ -95,24 +92,42 @@ useEffect(()=>{
   }, [dataStore]);
 
 
- const deleteRow = async (value,index,id) => {
+  const deleteRow = async (value,index,id) => {
 
 
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
 
-  // newDatastore[tableName] = restRowsData
+  const newDatastore = structuredClone(dataStore)
+  newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
 
-
-  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
-    method:'DELETE',
-    headers:{
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify({tableName : tableName, primaryKey: PK, value: value[PK] })
-  })
-
+   if (PK !== null && value[PK] !== undefined) {
+     const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
+       method: 'DELETE',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({ tableName: tableName, primaryKey: PK, value: value[PK] })
+     })
+      .then((res) => {
+      console.log("deleting row info sent")
+      })
+      .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
+   } else {
+     console.log('i am here!! there is no PK or value[PK]')
+      const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
+       method: 'DELETE',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({ tableName: tableName, deletedRow: value })
+     })
+        .then((res) => {
+          console.log("deleting row info sent")
+        })
+        .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
+   }
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,
