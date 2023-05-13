@@ -53,8 +53,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
     }
   }
 
-<<<<<<< HEAD
-
 
 /////////////// FOR EDGE CASE CONSTRAINT THAT PREVENT ROW DELETED THAT HAS A FOREIGN KEY REFERENCING TO THAT ROW ////////////
 // UseEffect on Mount to grab all the Foreign Key reference and store it in reference store because of constraint, *cant delete the row that has 
@@ -92,8 +90,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 
 
 //check if
-=======
->>>>>>> origin/dev
   if (schemaName !== undefined) {
     secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
   }
@@ -115,11 +111,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
   }, [dataStore]);
 
 
-<<<<<<< HEAD
  const deleteRow = async (value:RowsOfData,index:number,id:number|string):Promise<void> =>  {
-=======
-  const deleteRow = async (value,index,id) => {
->>>>>>> origin/dev
 
 
 ////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
@@ -139,7 +131,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
 
-  const newDatastore = structuredClone(dataStore)
   newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
@@ -155,10 +146,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
     })
   }
 
-<<<<<<< HEAD
-
-  
-=======
    if (PK !== null && value[PK] !== undefined) {
      const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
        method: 'DELETE',
@@ -185,7 +172,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
         })
         .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
    }
->>>>>>> origin/dev
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,
