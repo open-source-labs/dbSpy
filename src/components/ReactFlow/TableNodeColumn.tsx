@@ -62,7 +62,7 @@ export default function TableNodeColumn({
     // document.querySelector('#main').style.marginRight = '400px';
     setEditRefMode(true, columnData.TableName, columnData.Name);
   };
-  
+
   return (
     <>
       {/* TODO: SEE ABOUT DELETING KEY ATTRIBUTE AND ID ATTRIBUTES */}
