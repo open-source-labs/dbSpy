@@ -91,6 +91,8 @@ export default function InputModal({
 
       if (mode === 'table') {
         addTableSchema(tableName, columnData);
+        console.log('columnData', columnData)
+        console.log('additionalData', additionalColumn)
         const dataToSend: AddTableToDb = {
           newTableName: tableName,
           newColumns: columnData
@@ -107,7 +109,7 @@ export default function InputModal({
             setSchemaStore(parsedData.schema);
             setDataStore(parsedData.data)
           })
-          console.log('tn:',tableName, 'cd:',columnData)
+
       }
       else if (mode === 'column') {
         addColumnSchema(tableName, columnData);
@@ -145,7 +147,6 @@ export default function InputModal({
   };
 
   const addColumn = () => { //addNewRow for data table
-    console.log('inside add column')
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
 
