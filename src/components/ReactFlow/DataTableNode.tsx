@@ -10,11 +10,11 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import informationIcon from '../../../images/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
-import { Edge, DataNode, DataStore,RowsOfData,Data } from '@/Types';
+import { Edge, DataNode, DataStore ,RowsOfData , Data, dbCredentials } from '@/Types';
 
 export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
-
+  
   const newdata = structuredClone(data);
   const [tableData, setTableData] = useState(newdata.table)
   const { setInputModalState } = useSettingsStore((state) => state);
@@ -64,10 +64,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 //   for(let columnKey in schemaName){
 //     if(schemaName[columnKey].References[0]){
 
-//       interface toForeignKey{
-
-//       }
-
 //       const toForeignKey = {};
 //       const fromForeignKey = new Set();
 //       const toTableName:string = schemaName[columnKey].References[0].PrimaryKeyTableName.replace('public.',"");
@@ -112,12 +108,12 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 
 //UseEffect set Table when the dataStore is changed after on Delete.
   useEffect(() => {
-    console.log(dataStore[tableName])
     setTableData([tableName,dataStore[tableName]])
   }, [dataStore]);
 
 
- const deleteRow = async (value,index,id) => {
+ const deleteRow = async (value:RowsOfData,index:number,id:number|string):Promise<void> =>  {
+
 
 ////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
 //loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
@@ -139,16 +135,20 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
   // newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
+  
+
+  if('db_type' in dbCredentials){
+    const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type as string}/deleteRow`,{
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({tableName : tableName, primaryKey: PK, value: PK !== null ? value[PK]:null })
+    })
+  }
 
 
-  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
-    method:'DELETE',
-    headers:{
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify({tableName : tableName, primaryKey: PK, value: value[PK] })
-  })
-
+  
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,
@@ -158,6 +158,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
   ////////////////////////////////////////////
   }
 
+  
 //cannot make handles for data table dynamic since size of each column can vary
 //TODO: is there better way to assign handle?
   const tableHandles = [];
