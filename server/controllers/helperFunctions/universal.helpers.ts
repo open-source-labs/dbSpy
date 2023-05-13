@@ -162,50 +162,24 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type, username } = req.session;
-  const { tableName, primaryKey, value, deletedRow } = req.body
- 
+  const { tableName, primaryKey, value } = req.body
+
   try{
-    let tableNameDelete = '';
-    switch (db_type) {
-      case 'oracle':
-        tableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
-        break;
-      case 'mssql':
-        const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-        tableNameDelete = `${schemaName}.${tableName}`;
-        break;
-      default:
-        tableNameDelete = tableName;
-        break;
-    };
 
-    if (primaryKey){
-      await dbDataSource.query(`
-        DELETE FROM ${tableNameDelete} 
-        WHERE ${db_type === 'oracle' ? `"${primaryKey}"` : primaryKey} = ${db_type === 'oracle' || db_type === 'mysql' ? `'${value}'` : value}
-        `)
+    const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
 
-    } else {
-      const deleteEntries = Object.entries(deletedRow).filter(([_key, value]) => value !== null);
-      const deleteKeys = deleteEntries.map(([key, _value]) => key);
-      const deleteValues = deleteEntries.map(([_key, value]) => value);
+    const tableNameDelete: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${tableName}"` :
+      db_type === 'mssql' ? `${schemaName[0].SchemaName}.${tableName}` : tableName;
 
-      let oracleKeyValueString = '';
-      for (let i = 0; i < deleteKeys.length; i++) {
-        oracleKeyValueString += `"${deleteKeys[i]}" = '${deleteValues[i]}'${i < deleteKeys.length - 1 ? ' AND ' : ''}`
-      };
-      const keyValueString = oracleKeyValueString.replace(/"/g, '');
-
-      await dbDataSource.query(`
-        DELETE FROM ${tableNameDelete} 
-        WHERE ${db_type === 'oracle' ? oracleKeyValueString : keyValueString }
-        `)
-    };
+    const dbDeletedRow: Promise<unknown> = await dbDataSource.query(`
+      DELETE FROM ${tableNameDelete}
+      WHERE ${db_type === 'oracle' ? `"${primaryKey}"` : primaryKey} = ${db_type === 'oracle' || db_type === 'mysql' ? `'${value}'` : value}
+      `);
 
     dbDataSource.destroy();
     console.log('Database has been disconnected');
-    // console.log('deletedRow in helper: ', dbDeletedRow);
-    return; 
+    console.log('deletedRow in helper: ', dbDeletedRow);
+    return dbDeletedRow;
 
   } catch (err: unknown) {
       console.log('Error occurred in the deleteRow middleware: ', err);
