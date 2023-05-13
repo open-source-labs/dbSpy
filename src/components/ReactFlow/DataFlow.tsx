@@ -1,3 +1,4 @@
+//-----IMPORTED FILES/MODULES
 import useFlowStore from '../../store/flowStore';
 import useDataStore from '../../store/dataStore';
 import { DataStore, Edge } from '@/Types'
@@ -11,9 +12,11 @@ import createDataEdges from './createDataEdges';
 import createDataNodes from './createDataNodes';
 import DataTableNode from './DataTableNode';
 
+//-----TYPES
 const nodeTypes = {
   table: DataTableNode,
 };
+
 
 export default function DataFlow():JSX.Element {
   // set up states for nodes and edges
