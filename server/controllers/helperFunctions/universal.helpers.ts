@@ -230,17 +230,26 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
   console.log('inside addNewDbColumn', req.body)
   const dbDataSource = await dbConnect(req);
   const { db_type, username } = req.session;
-  const { defaultValue, isNullable, isPrimary, name, type, tableName } = req.body
-  console.log
-
+  const { defaultValue, isNullable, isPrimary, name, type, tableName } = req.body;
 
   try{
-    const oracleTableName = tableName.slice(7, tableName.length + 1)
-    const tableNameAddColumn: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${oracleTableName}"` : tableName;
+    let tableNameAddColumn = '';
+    switch (db_type) {
+      case 'oracle':
+        tableNameAddColumn = `"${(username as string).toUpperCase()}"."${tableName}"`;
+        break;
+      case 'mssql':
+        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+        tableNameAddColumn = `${schemaName}.${tableName}`;
+        break;
+      default:
+        tableNameAddColumn = tableName;
+        break;
+    };
 
     const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
       ALTER TABLE ${tableNameAddColumn}
-      ADD${db_type === 'postgres' ? ' COLUMN' : '' } "${name}" ${type} ${db_type === 'postgres' ? addNewColumnData.constraintName : null} ${addNewColumnData.constraintExpression}
+      ADD${db_type === 'postgres' ? ' COLUMN' : '' } "${name}" ${type === 'AUTO_INCREMENT' ? 'INT' : type}${isPrimary ? ' PRIMARY KEY' : ''}${isNullable ? '' : 'NOT NULL'}${defaultValue ? ` DEFAULT ${defaultValue}` : ''}${type === ' AUTO_INCREMENT' ? 'AUTO_INCREMENT' : ''}
       `);
 
     dbDataSource.destroy();
