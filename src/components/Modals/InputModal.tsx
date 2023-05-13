@@ -111,20 +111,18 @@ export default function InputModal({
       }
       else if (mode === 'column') {
         addColumnSchema(tableName, columnData);
-        // console.log(columnData)
-        // console.log('tableName:', tableName)
 
-        //column data sent in the post request body
+        //new column data that will be sent in the post request body
         const columnBody = {
           defaultValue: columnData[0].defaultValue,
           isNullable: columnData[0].isNullable,
           isPrimary: columnData[0].isPrimary,
           name: columnData[0].name,
           type: columnData[0].type,
-          tableName: tableName
+          tableName: tableName.substring(tableName.indexOf('.') + 1)
         }
         //adds new column to the selected table
-        fetch('/api/sql/postgres/addNewColumn', {
+        fetch(`/api/sql/${dbCredentials.db_type}/addColumn`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify(columnBody)
