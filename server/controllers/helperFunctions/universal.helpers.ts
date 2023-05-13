@@ -227,7 +227,6 @@ export const deleteRow: RequestHandler = async (req: Request, _res: Response, ne
 //----------------ADD NEW COLUMN--------------------------------------------------------------------------------------------------
 
 export const addNewDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
-  console.log('inside addNewDbColumn', req.body)
   const dbDataSource = await dbConnect(req);
   const { db_type, username } = req.session;
   const { defaultValue, isNullable, isPrimary, name, type, tableName } = req.body;
