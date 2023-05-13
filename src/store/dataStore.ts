@@ -6,6 +6,10 @@ export type DataState = {
   // DATA
   dataStore: DataStore;
   system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite' | DataStore;
+<<<<<<< HEAD
+=======
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
+>>>>>>> dev
   referenceStore: DataStore;
 
   // DATA SETTERS
@@ -24,7 +28,7 @@ const useDataStore = create<DataState>()(
         referenceStore:{},
         dataStore: {},
         system: 'PostgreSQL',
-        setSystem: (system) =>
+        setSystem: (system) => 
           set((state) => ({ ...state, system })),
         setDataStore: (dataInfo) =>
           set((state) => ({ ...state, dataStore: dataInfo })),
@@ -35,6 +39,7 @@ const useDataStore = create<DataState>()(
           delete newState.dataStore[tableName];
           return newState;
         }),
+        setReferencesStore: (dataInfo) => set((state) => ({ ...state, referenceStore: dataInfo })),
       })
     )
   )

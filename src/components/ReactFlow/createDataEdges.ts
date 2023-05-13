@@ -1,26 +1,9 @@
-// creates an array of all edges in the schema
+//-----IMPORTED FILES/MODULES
 import { SchemaStore } from '../../store/schemaStore';
-// import { Edge } from '@/Types';
+import { Edge } from '@/Types';
 
-export type Edge = {
-  id: string;
-  source: string;
-  sourceHandle: string;
-  target: string;
-  targetHandle: string;
-  animated: boolean;
-  label: string;
-  style: { strokeWidth: number; stroke: string };
-  markerEnd: {
-    type: string;
-    orient: string;
-    width: number;
-    height: number;
-    color: string;
-  };
-};
-
-export default function createDataEdges(schemaObject: SchemaStore) {
+//----- Creates an array of all edges in the data table
+export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
 
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
@@ -35,18 +18,11 @@ export default function createDataEdges(schemaObject: SchemaStore) {
           edges.push({
           id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
           source: row.References[0].ReferencesTableName.slice(7),
-          sourceHandle: row.References[0].ReferencesPropertyName,
+          sourceHandle:  row.References[0].ReferencesPropertyName,
           target: row.References[0].PrimaryKeyTableName.slice(7),
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
           label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
-            // id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
-            // target: row.References[0].ReferencesTableName.slice(7),
-            // targetHandle: row.References[0].ReferencesPropertyName,
-            // source: row.References[0].PrimaryKeyTableName.slice(7),
-            // sourceHandle: row.References[0].PrimaryKeyName,
-            // animated: true,
-            // label: `${row.References[0].PrimaryKeyName}-to-${row.References[0].ReferencesPropertyName}`,
             style: {
               strokeWidth: 2,
               stroke: '#085c84',
