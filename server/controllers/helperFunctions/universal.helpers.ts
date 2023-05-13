@@ -346,12 +346,12 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
 
       newColumns.forEach((el: newColumn) => {
         //const updateKeys = Object.keys(el);
-          keyValueString += `${el.name} ${el.type}${newColumns.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}, `
+          keyValueString += `${el.name} ${el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}, `
       })
 
       console.log('keyValueString.slice(0, -1): ', keyValueString.slice(0, -2))
       const newTableColumnString: string = keyValueString.slice(0, -2);
-
+      console.log('ntcs',newTableColumnString)
       const newTable: Promise<unknown> = await dbDataSource.query(`
       CREATE TABLE ${tableName} (
         ${newTableColumnString}
