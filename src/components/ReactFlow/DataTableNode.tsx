@@ -92,12 +92,13 @@ useEffect(()=>{
   }, [dataStore]);
 
 
- const deleteRow = async (value,index,id) => {
+  const deleteRow = async (value,index,id) => {
 
 
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
 
-  // newDatastore[tableName] = restRowsData
+  const newDatastore = structuredClone(dataStore)
+  newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
 
