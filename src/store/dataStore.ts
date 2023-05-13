@@ -5,13 +5,12 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware';
 export type DataState = {
   // DATA
   dataStore: DataStore;
-  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
-  referenceStore: DataStore;
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite' | DataStore;
 
   // DATA SETTERS
   setDataStore: (dataInfo: DataStore) => void;
   setSystem: (system: DataStore) => void;
-  setReferencesStore: (dataInfo: DataStore) => void;
+  deleteTableData: (tableName: string) => void;
 }
 
 const useDataStore = create<DataState>()(
@@ -23,9 +22,15 @@ const useDataStore = create<DataState>()(
         referenceStore:{},
         dataStore: {},
         system: 'PostgreSQL',
-        setSystem: (system) => set((state) => ({ ...state, system })),
-        setDataStore: (dataInfo) => set((state) => ({ ...state, dataStore: dataInfo })),
-        setReferencesStore: (dataInfo) => set((state) => ({ ...state, referenceStore: dataInfo })),
+        setSystem: (system) =>
+          set((state) => ({ ...state, system })),
+        setDataStore: (dataInfo) =>
+          set((state) => ({ ...state, dataStore: dataInfo })),
+        deleteTableData: (tableName) => set((state) => {
+          const newState = { ...state };
+          delete newState.dataStore[tableName];
+          return newState;
+        }),
       })
     )
   )
