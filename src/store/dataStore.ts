@@ -35,7 +35,6 @@ const useDataStore = create<DataState>()(
           delete newState.dataStore[tableName];
           return newState;
         }),
-        setReferencesStore: (dataInfo) => set((state) => ({ ...state, referenceStore: dataInfo })),
       })
     )
   )
