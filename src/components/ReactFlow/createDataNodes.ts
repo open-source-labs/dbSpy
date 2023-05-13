@@ -1,7 +1,7 @@
+//-----IMPORTED FILES/MODULES
 import { Edge, DataNode, DataStore } from '@/Types';
 
-//hard-coded xy positioning of each node in the canvas
-
+//----- Creates an array of all edges in the data table
 export default function createDataNodes(dataObject: DataStore, edges: Edge[]): DataNode[] {
   const nodePositions = [
     { x: 1000, y: 400 },
@@ -19,20 +19,17 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): D
   // renders each table on the React Flow canvas
   const nodes: DataNode[] = [];
   let i = 0;
-  //console.log("dataObject", dataObject)
+
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];
-
     nodes.push({
       id: tableKey,
       type: 'table',
-
       position: nodePositions[i],
       data: { table: [tableKey, rowData], edges }, 
     });
     i = (i + 1) % 17;
   }
- //console.log(nodes)
   return nodes;
 }
 
