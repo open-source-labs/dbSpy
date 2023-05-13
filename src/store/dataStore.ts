@@ -6,10 +6,6 @@ export type DataState = {
   // DATA
   dataStore: DataStore;
   system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite' | DataStore;
-<<<<<<< HEAD
-=======
-  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
->>>>>>> dev
   referenceStore: DataStore;
 
   // DATA SETTERS
