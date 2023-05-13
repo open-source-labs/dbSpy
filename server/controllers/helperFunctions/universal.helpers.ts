@@ -88,7 +88,6 @@ export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, 
   const { newRow, tableName } = req.body;
 
   try{
-  //const newDbRowData: {[key: string]: string } = req.body;
   const tableNameAdd: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${tableName}"` : tableName;
   const newSqlRow: {[key: string]: string} = newRow as {};
 
@@ -121,14 +120,23 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
   const { newRow, tableName, primaryKey } = req.body;
 
   try{
-    const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-
-    const tableNameUpdate: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${tableName}"` : 
-      db_type === 'mssql' ? `${schemaName[0].SchemaName}.${tableName}` : tableName;
+    let tableNameUpdate = '';
+    switch (db_type) {
+      case 'oracle':
+        tableNameUpdate = `"${(username as string).toUpperCase()}"."${tableName}"`;
+        break;
+      case 'mssql':
+        const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
+        tableNameUpdate = `${schemaName}.${tableName}`;
+        break;
+      default:
+        tableNameUpdate = tableName;
+        break;
+    }
 
     const updateKeys = Object.keys(newRow);
     const updateValues = Object.values(newRow);
-    let oracleKeyValueString = ''
+    let oracleKeyValueString = '';
     for (let i = 0; i < updateKeys.length; i++) {
       oracleKeyValueString += `"${updateKeys[i]}" = '${updateValues[i]}'${i < updateKeys.length - 1 ? ', ' : ''}`
     }
@@ -146,7 +154,6 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 
     await dbDataSource.destroy();
     console.log('Database has been disconnected');
-  //   console.log('dbUpdatedRow in helper: ', dbUpdatedRow)
     return dbUpdatedRow; 
 
   } catch (err: unknown) {
@@ -162,24 +169,50 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type, username } = req.session;
-  const { tableName, primaryKey, value } = req.body
+  const { tableName, primaryKey, value, deletedRow } = req.body
+ 
+  try{
+    let tableNameDelete = '';
+    switch (db_type) {
+      case 'oracle':
+        tableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
+        break;
+      case 'mssql':
+        const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
+        tableNameDelete = `${schemaName}.${tableName}`;
+        break;
+      default:
+        tableNameDelete = tableName;
+        break;
+    };
 
-  try{ 
+    if (primaryKey){
+      await dbDataSource.query(`
+        DELETE FROM ${tableNameDelete} 
+        WHERE ${db_type === 'oracle' ? `"${primaryKey}"` : primaryKey} = ${db_type === 'oracle' || db_type === 'mysql' ? `'${value}'` : value}
+        `)
 
-    const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
+    } else {
+      const deleteEntries = Object.entries(deletedRow).filter(([_key, value]) => value !== null);
+      const deleteKeys = deleteEntries.map(([key, _value]) => key);
+      const deleteValues = deleteEntries.map(([_key, value]) => value);
 
-    const tableNameDelete: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${tableName}"` : 
-      db_type === 'mssql' ? `${schemaName[0].SchemaName}.${tableName}` : tableName;
+      let oracleKeyValueString = '';
+      for (let i = 0; i < deleteKeys.length; i++) {
+        oracleKeyValueString += `"${deleteKeys[i]}" = '${deleteValues[i]}'${i < deleteKeys.length - 1 ? ' AND ' : ''}`
+      };
+      const keyValueString = oracleKeyValueString.replace(/"/g, '');
 
-    const dbDeletedRow: Promise<unknown> = await dbDataSource.query(`
-      DELETE FROM ${tableNameDelete} 
-      WHERE ${db_type === 'oracle' ? `"${primaryKey}"` : primaryKey} = ${db_type === 'oracle' || db_type === 'mysql' ? `'${value}'` : value}
-      `);
+      await dbDataSource.query(`
+        DELETE FROM ${tableNameDelete} 
+        WHERE ${db_type === 'oracle' ? oracleKeyValueString : keyValueString }
+        `)
+    };
 
     dbDataSource.destroy();
     console.log('Database has been disconnected');
-    console.log('deletedRow in helper: ', dbDeletedRow);
-    return dbDeletedRow; 
+    // console.log('deletedRow in helper: ', dbDeletedRow);
+    return; 
 
   } catch (err: unknown) {
       console.log('Error occurred in the deleteRow middleware: ', err);
@@ -301,14 +334,13 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
   }
 
   try{   
-      const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-
       let tableName = '';
       switch (db_type) {
         case 'oracle':
           tableName = `"${(username as string).toUpperCase()}"."${newTableName}"`;
           break;
         case 'mssql':
+          const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
           tableName = `${schemaName}.${newTableName}`;
           break;
         default:
@@ -317,7 +349,6 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
       }
 
       let keyValueString: string = '';
-
       newColumns.forEach((el: newColumn) => {
         //const updateKeys = Object.keys(el);
           keyValueString += `${el.name} ${el.type}${newColumns.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}, `
