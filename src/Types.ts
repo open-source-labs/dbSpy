@@ -10,6 +10,12 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
+
+export interface Data{
+  edges: RowsOfData[];
+  table: [string, RowsOfData[]];
+}
+
 export interface TableColumn {
   Field?: string;
   Type?: string;
@@ -122,11 +128,11 @@ export type Reference = {
   };
 };
 
-export type ColumnSchema = {
+export interface ColumnSchema{
   Name: string;
   Value: string | null;
   TableName: string;
-  References: Reference[];
+  References: Reference;
   IsPrimaryKey: boolean;
   IsForeignKey: boolean;
   field_name: string;
@@ -135,9 +141,9 @@ export type ColumnSchema = {
 };
 
 // these are for data tables ######################
-export type RowsOfData = [{
+export type RowsOfData = {
   [key: string | number]: string | number | boolean | null,
-}];
+};
 
 export type DataStore = {
   [TableName: string]: RowsOfData[];
