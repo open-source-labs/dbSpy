@@ -20,7 +20,7 @@ export type Edge = {
   };
 };
 
-export default function createDataEdges(schemaObject: SchemaStore) {
+export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
 
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
@@ -35,18 +35,11 @@ export default function createDataEdges(schemaObject: SchemaStore) {
           edges.push({
           id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
           source: row.References[0].ReferencesTableName.slice(7),
-          sourceHandle: row.References[0].ReferencesPropertyName,
+          sourceHandle:  row.References[0].ReferencesPropertyName ,
           target: row.References[0].PrimaryKeyTableName.slice(7),
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
           label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
-            // id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
-            // target: row.References[0].ReferencesTableName.slice(7),
-            // targetHandle: row.References[0].ReferencesPropertyName,
-            // source: row.References[0].PrimaryKeyTableName.slice(7),
-            // sourceHandle: row.References[0].PrimaryKeyName,
-            // animated: true,
-            // label: `${row.References[0].PrimaryKeyName}-to-${row.References[0].ReferencesPropertyName}`,
             style: {
               strokeWidth: 2,
               stroke: '#085c84',

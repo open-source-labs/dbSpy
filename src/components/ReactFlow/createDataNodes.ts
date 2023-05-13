@@ -19,7 +19,7 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): D
   // renders each table on the React Flow canvas
   const nodes: DataNode[] = [];
   let i = 0;
-  console.log("dataObject", dataObject)
+  //console.log("dataObject", dataObject)
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];
 
