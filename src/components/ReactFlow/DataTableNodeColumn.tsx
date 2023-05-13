@@ -20,7 +20,7 @@ export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:Ro
 //####### for CRUD ##########
 
 
-  const newRow = JSON.parse(JSON.stringify(row));
+  const newRow = structuredClone(row);
 
   const [rowData, setRowData] = useState({ ...newRow });
   const [tempData, setTempData] = useState({ ...newRow });
@@ -31,6 +31,7 @@ export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:Ro
     setRowData({...newRow})
     setTempData({...newRow})
     },[row])
+
 
   const [mode, setMode] = useState('default');
 
@@ -60,7 +61,6 @@ const onSave = async () => {
   console.log(changes);
   //delete primary key column from change for fetch request.
   delete changes.newRow[PK[0]]
-  console.log(changes);
   const checkConstraints:changes = {}
 
   //iterate through and find the changes between new and old data.
@@ -87,7 +87,7 @@ const onSave = async () => {
   
 
 
-  const sendChangesRequest = await fetch(`/api/${dbCredentials.db_type}/updateRow`,{
+  const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
   
 
     method:'PATCH',

@@ -12,16 +12,17 @@ import informationIcon from '../../../images/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
 
 export default function DataTableNode({ data }) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-
-  const [tableData, setTableData] = useState(data.table)
+  const newdata = structuredClone(data);
+  const [tableData, setTableData] = useState(newdata.table)
   const { setInputModalState } = useSettingsStore((state) => state);
-  const { dataStore } = useDataStore((state) => state);
+  const { dataStore, referenceStore} = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
+  const setReferenceStore = useDataStore((state) => state.setReferencesStore);
   const { schemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-
+  
   const tableName = tableData[0];
   let firstRow =[]
   let restRowsData = []
@@ -42,13 +43,42 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
 for(let i = 0; i < RowData.length; i++){
   pkVals.add(RowData[i][PK]);
 }
+// UseEffect on Mount to grab all the Foreign Key reference and store it in reference store because of constraint, *cant delete the row that has 
+// a foreign key referenced to it.
+useEffect(()=>{
+
+  //loop through all of the schemastore in current table to grab all the schema info referencing foreignkey
+  for(let columnKey in schemaName){
+    if(schemaName[columnKey].References[0]){
+      const toForeignKey = {};
+      const fromForeignKey = new Set();
+      const toTableName = schemaName[columnKey].References[0].ReferencesTableName.replace('public.',"");
+      const toColumnName = schemaName[columnKey].References[0].ReferencesPropertyName;
+      const fromTableName = schemaName[columnKey].References[0].PrimaryKeyTableName.replace('public.',"");
+      const fromColumnName = schemaName[columnKey].References[0].PrimaryKeyName;
+
+      //loop throw all of the Rowdata and grab data if there is a corresponding foreign key
+      for(let i = 0; i < RowData.length; i++){
+        if(RowData[i][fromColumnName] !== null){
+          fromForeignKey.add(RowData[i][fromColumnName]);
+        }
+      }
+      //assign to the state reference store
+      toForeignKey[toTableName] = {[toColumnName]:fromForeignKey};
+      const currentRef = structuredClone(referenceStore);
+      setReferenceStore({...currentRef,...toForeignKey});
+    }
+   }
+ },[dataStore])
+
+
 
 
   if (schemaName !== undefined) {
     secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
   }
 
- //Filter out Schemas from data
+ //Filter out Schemas from data, not sure why schema data would show sometime. 
   if(RowData[0] !== undefined){
     if (RowData[0].IsForeignKey === undefined) {
       firstRow = Object.keys(RowData[0]);
@@ -58,24 +88,36 @@ for(let i = 0; i < RowData.length; i++){
     firstRow = secondaryFirstRow
  }
 
+
 //UseEffect set Table when the dataStore is changed after on Delete.
-  useEffect(() => {  
+  useEffect(() => {
     setTableData([tableName,dataStore[tableName]])
   }, [dataStore]);
 
 
  const deleteRow = async (value,index,id) => {
 
- 
-  restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
-  if(value[FK]!== null && FK !== null){
-    alert(`Can't Delete Foreign Key: ${FK}`);
-    throw new Error('Duplicate Primary Key');
+//loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
+  for(let col in value){
+  if(referenceStore[id] !== undefined ){
+    if(referenceStore[id][col] !== undefined ){
+      if(referenceStore[id][col].has(value[col])){
+        alert(`Can't Delete Foreign Key: ${col}`);
+        throw new Error(`Can't Delete Foreign Key: ${col}`);
+      }
+    }
   }
-   setDataStore({...dataStore,[id]:restRowsData});
+}
+  const newDatastore = structuredClone(dataStore)
+
+  restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
+  
+  // newDatastore[tableName] = restRowsData
+   setDataStore({...newDatastore,[id]:restRowsData});
+      // setDataStore(restRowData);
 
 
-  const sendDeleteRequest = fetch(`/api/${dbCredentials.db_type}/deleteRow`,{
+  const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`,{
     method:'DELETE',
     headers:{
       'Content-Type':'application/json'

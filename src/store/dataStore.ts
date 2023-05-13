@@ -6,10 +6,12 @@ export type DataState = {
   // DATA
   dataStore: DataStore;
   system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
+  referenceStore: DataStore;
 
   // DATA SETTERS
   setDataStore: (dataInfo: DataStore) => void;
   setSystem: (system: DataStore) => void;
+  setReferencesStore: (dataInfo: DataStore) => void;
 }
 
 const useDataStore = create<DataState>()(
@@ -18,10 +20,12 @@ const useDataStore = create<DataState>()(
     // devtools middleware allows use of Redux devtool in chrome
     devtools(
       (set) => ({
+        referenceStore:{},
         dataStore: {},
         system: 'PostgreSQL',
         setSystem: (system) => set((state) => ({ ...state, system })),
         setDataStore: (dataInfo) => set((state) => ({ ...state, dataStore: dataInfo })),
+        setReferencesStore: (dataInfo) => set((state) => ({ ...state, referenceStore: dataInfo })),
       })
     )
   )
