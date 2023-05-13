@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { TableColumns, TableColumn, TableSchema } from '@/Types';
-import { dbConnect, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
+import { dbConnect, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
 // Object containing all of the middleware
 const sqliteController = {
@@ -103,10 +103,10 @@ const sqliteController = {
     try{
       const newDbRowData: {[key: string]: string } = req.body;
       const tableName = newDbRowData.tableName;
-      const newMysqlRow: {[key: string]: string} = newDbRowData.newRow as {};
+      const newSqliteRow: {[key: string]: string} = newDbRowData.newRow as {};
 
-      const keys: string = Object.keys(newMysqlRow).join(", ");
-      const values: string = Object.values(newMysqlRow).map(val => `'${val}'`).join(", ");
+      const keys: string = Object.keys(newSqliteRow).join(", ");
+      const values: string = Object.values(newSqliteRow).map(val => `'${val}'`).join(", ");
       const dbAddedRow: Promise<unknown> = await dbDataSource.query(`
         INSERT INTO ${tableName} (${keys})
         VALUES (${values})
@@ -118,7 +118,7 @@ const sqliteController = {
       return dbAddedRow;
       
     } catch (err: unknown) {
-      console.log('Error occurred in the mysqlAddNewRow middleware: ', err);
+      console.log('Error occurred in the sqliteAddNewRow middleware: ', err);
       dbDataSource.destroy();
       console.log('Database has been disconnected');
       return next(err);
@@ -199,10 +199,23 @@ sqliteAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
   };
 },
 
+//--------------GET ALL TABLE NAMES-------------------------------------------------------------------
+  sqliteGetTableNames: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tableNameList = await Promise.resolve(getTableNames(req, res, next));
+      console.log("sqliteGetTableNames function has concluded");
+      res.locals.tableNames = tableNameList;
+      return next();
+    } catch (err: unknown) {
+      console.log('Error occurred in the sqliteDeleteTable middleware: ', err);
+      return next(err);
+    };
+  },
+
 //--------------DELETE TABLE------------------------------------------------------------
 sqliteDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
   try {
-    deleteTable(req, res, next);
+    await Promise.resolve(deleteTable(req, res, next));
     console.log("sqliteDeleteTable function has concluded");
     return next();
   } catch (err: unknown) {

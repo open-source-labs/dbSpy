@@ -38,6 +38,14 @@ let settingsStore = (
     }))
   },
 
+  deleteTableModalState: { isOpen: false },
+  setDeleteTableModalState: (isOpen: boolean) => {
+    set((state) => ({
+      ...state,
+      deleteTableModalState: { isOpen },
+    }))
+  },
+
   isSchema: true,
   setTableMode: (input:any) =>
     set((state: {isSchema: any}) => ({ ...state, isSchema: !state.isSchema })),

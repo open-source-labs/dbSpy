@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
+import useDataStore from '../../store/dataStore';
+import useCredentialsStore from '../../store/credentialsStore';
+
+//closeInputModal
 
 type InputModalProps = {
   mode: 'table' | 'column';
@@ -33,11 +37,15 @@ export default function InputModal({
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
+  const { dbCredentials } = useCredentialsStore((state) => state);
+  const { setSchemaStore } = useSchemaStore((state) => state);
+  const { setDataStore } = useDataStore((state) => state);
+
   const initialTable: string = 'untitled_table';  //for adding new table
   const initialColumns: ColumnData[] = [
     {
       name: 'id',
-      type: 'AUTO_INCREMENT',
+      type: 'INT',
       isNullable: false,
       isPrimary: true,
       defaultValue: null,
@@ -85,13 +93,16 @@ export default function InputModal({
 
           //req to backend to save new table
 
-          fetch('/api/sql/postgres/saveNewTable', {
+          fetch(`/api/sql/${dbCredentials.db_type}/saveNewTable`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify(dataToSend)
           })
           .then((responseData)=> responseData.json())
-          .then((parsedData)=> console.log(parsedData))
+          .then((parsedData)=> {
+            setSchemaStore(parsedData.schema);
+            setDataStore(parsedData.data)
+          })
           console.log('tn:',tableName, 'cd:',columnData)
       }
       else if (mode === 'column') {
@@ -180,7 +191,7 @@ export default function InputModal({
           const isSuccessful: boolean = handleSubmit();
           if (isSuccessful) closeInputModal();
         }}
-        className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+        className="modal-content rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="table-name">
           {mode === 'table' ? (
@@ -209,7 +220,7 @@ export default function InputModal({
           </h1>
           <button
             type="button"
-            className="  text-slate-900 dark:text-[#f8f4eb]"
+            className="text-slate-900 dark:text-[#f8f4eb]"
             onClick={addColumn}
             data-testid="add-table-add-column"
           >
@@ -220,7 +231,7 @@ export default function InputModal({
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
             type="button"
-            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb] border-slate-500"
             onClick={closeInputModal}
             data-testid="modal-cancel"
           >
