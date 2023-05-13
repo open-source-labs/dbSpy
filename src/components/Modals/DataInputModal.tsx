@@ -1,6 +1,6 @@
 //-----IMPORTED FILES/MODULES
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useDataStore from '../../store/dataStore';
 import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
@@ -85,12 +85,12 @@ export default function DataInputModal({
       return false;
     }
   };
+ 
 
   const handleRowChange = (
     index: number,
     value: string | number | boolean | null
   ) => {
-
     //updating rowData (row of inputs for each column)
     setRowData((prevRows) => {
       prevRows[index] = value;
