@@ -20,9 +20,9 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const { schemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);
 
-  const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-  const { dbCredentials } = useCredentialsStore((state) => state);
-  
+  const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax."
+  // const { dbCredentials } = useCredentialsStore((state) => state);
+
   const tableName = tableData[0];
   let firstRow =[]
   let restRowsData = []
@@ -38,7 +38,7 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
    if(schemaName[key]['IsForeignKey']) FK = schemaName[key].field_name;
    if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
  }
- 
+
 //loop through all of RowData, grab each primary key value and store it in object<pkVals>
 for(let i = 0; i < RowData.length; i++){
   pkVals.add(RowData[i][PK]);
@@ -60,14 +60,14 @@ for(let i = 0; i < RowData.length; i++){
  }
 
 //UseEffect set Table when the dataStore is changed after on Delete.
-  useEffect(() => {  
+  useEffect(() => {
     setTableData([tableName,dataStore[tableName]])
   }, [dataStore]);
 
 
  const deleteRow = async (value,index,id) => {
 
- 
+
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
   if(value[FK]!== null && FK !== null){
     alert(`Can't Delete Foreign Key: ${FK}`);
@@ -83,7 +83,7 @@ for(let i = 0; i < RowData.length; i++){
     },
     body:JSON.stringify({tableName : tableName, primaryKey: PK, value: value[PK] })
   })
-  
+
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,
@@ -132,7 +132,7 @@ for(let i = 0; i < RowData.length; i++){
         />
       );
     }
-  } 
+  }
 
   return (
     <>
@@ -140,9 +140,9 @@ for(let i = 0; i < RowData.length; i++){
         <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
           {tableHandles}
           <div>
-            <label htmlFor="text" 
-              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
-              style={{ 
+            <label htmlFor="text"
+              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0"
+              style={{
                 'marginLeft': '0px'
               }}>
               {tableName}
@@ -193,7 +193,7 @@ for(let i = 0; i < RowData.length; i++){
                       FK={FK}
                       PK={[PK,pkVals]}
                     />
-                  )} 
+                  )}
                 )}
               </tbody>
             </table>

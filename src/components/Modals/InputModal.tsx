@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
@@ -22,6 +22,7 @@ interface Column {
   newTableName: string;
   newColumns: Column[]
   };
+
 
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
@@ -60,6 +61,8 @@ export default function InputModal({
       defaultValue: null,
     },
   ];
+
+
   const [tableName, setTableName] = useState<string>(() => {
     if (!tableNameProp) return initialTable;
     else return tableNameProp;
@@ -76,9 +79,9 @@ export default function InputModal({
   );
 
 
-
   const handleSubmit = (): boolean => {
     try {
+
       if (mode === 'table') {
         addTableSchema(tableName, columnData);
         const dataToSend: AddTableToDb = {
@@ -97,9 +100,26 @@ export default function InputModal({
           console.log('tn:',tableName, 'cd:',columnData)
       }
       else if (mode === 'column') {
-        addColumnSchema(tableName, columnData);  //same method as addRow for data table
-      }
+        addColumnSchema(tableName, columnData);
+        // console.log(columnData)
+        // console.log('tableName:', tableName)
 
+        //column data sent in the post request body
+        const columnBody = {
+          defaultValue: columnData[0].defaultValue,
+          isNullable: columnData[0].isNullable,
+          isPrimary: columnData[0].isPrimary,
+          name: columnData[0].name,
+          type: columnData[0].type,
+          tableName: tableName
+        }
+        //adds new column to the selected table
+        fetch('/api/sql/postgres/addNewColumn', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify(columnBody)
+        })
+      }
       return true;
     } catch (error) {
       window.alert(error);
@@ -117,6 +137,7 @@ export default function InputModal({
   };
 
   const addColumn = () => { //addNewRow for data table
+    console.log('inside add column')
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
 
@@ -175,14 +196,13 @@ export default function InputModal({
     />
   ));
 
-  // console.log("columnData", columnData)
+
 
   return (
     <div id="inputModal" className="input-modal">
       <form
         autoComplete="off"
         onSubmit={(e) => {
-          console.log('this is a submit button')
           e.preventDefault();
           const isSuccessful: boolean = handleSubmit();
           if (isSuccessful) closeInputModal();
