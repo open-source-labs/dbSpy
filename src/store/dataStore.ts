@@ -24,8 +24,17 @@ const useDataStore = create<DataState>()(
         referenceStore:{},
         dataStore: {},
         system: 'PostgreSQL',
-        setSystem: (system) => set((state) => ({ ...state, system })),
-        setDataStore: (dataInfo) => set((state) => ({ ...state, dataStore: dataInfo })),
+        setSystem: (system) =>
+          set((state) => ({ ...state, system })),
+        setDataStore: (dataInfo) =>
+          set((state) => ({ ...state, dataStore: dataInfo })),
+        setReferencesStore: (dataInfo) =>
+          set((state) => ({ ...state, dataStore: dataInfo })),
+        deleteTableData: (tableName) => set((state) => {
+          const newState = { ...state };
+          delete newState.dataStore[tableName];
+          return newState;
+        }),
       })
     )
   )

@@ -21,8 +21,8 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
   const { schemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);
 
-  const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-  
+  const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax."
+
   const tableName = tableData[0];
   let firstRow =[]
   let restRowsData = []
@@ -38,12 +38,12 @@ export default function DataTableNode({ data }) {  //this 'data' is created and 
    if(schemaName[key]['IsForeignKey']) FK = schemaName[key].field_name;
    if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
  }
- 
+
 //loop through all of RowData, grab each primary key value and store it in object<pkVals>
 for(let i = 0; i < RowData.length; i++){
   pkVals.add(RowData[i][PK]);
 }
-// UseEffect on Mount to grab all the Foreign Key reference and store it in reference store because of constraint, *cant delete the row that has 
+// UseEffect on Mount to grab all the Foreign Key reference and store it in reference store because of constraint, *cant delete the row that has
 // a foreign key referenced to it.
 useEffect(()=>{
 
@@ -78,7 +78,7 @@ useEffect(()=>{
     secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);
   }
 
- //Filter out Schemas from data, not sure why schema data would show sometime. 
+ //Filter out Schemas from data, not sure why schema data would show sometime.
   if(RowData[0] !== undefined){
     if (RowData[0].IsForeignKey === undefined) {
       firstRow = Object.keys(RowData[0]);
@@ -97,21 +97,9 @@ useEffect(()=>{
 
  const deleteRow = async (value,index,id) => {
 
-//loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
-  for(let col in value){
-  if(referenceStore[id] !== undefined ){
-    if(referenceStore[id][col] !== undefined ){
-      if(referenceStore[id][col].has(value[col])){
-        alert(`Can't Delete Foreign Key: ${col}`);
-        throw new Error(`Can't Delete Foreign Key: ${col}`);
-      }
-    }
-  }
-}
-  const newDatastore = structuredClone(dataStore)
 
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
-  
+
   // newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
@@ -124,7 +112,7 @@ useEffect(()=>{
     },
     body:JSON.stringify({tableName : tableName, primaryKey: PK, value: value[PK] })
   })
-  
+
   ////////////////// Fetch path: /api/delete ///////////////////
   // {
   //  tableName: name of table,
@@ -173,7 +161,7 @@ useEffect(()=>{
         />
       );
     }
-  } 
+  }
 
   return (
     <>
@@ -181,9 +169,9 @@ useEffect(()=>{
         <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
           {tableHandles}
           <div>
-            <label htmlFor="text" 
-              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0" 
-              style={{ 
+            <label htmlFor="text"
+              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0"
+              style={{
                 'marginLeft': '0px'
               }}>
               {tableName}
@@ -234,7 +222,7 @@ useEffect(()=>{
                       FK={FK}
                       PK={[PK,pkVals]}
                     />
-                  )} 
+                  )}
                 )}
               </tbody>
             </table>
