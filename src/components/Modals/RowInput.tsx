@@ -1,4 +1,4 @@
-//-----IMPORTED FILES
+//-----IMPORTED FILES/MODULES
 import React from 'react';
 import useSchemaStore from '../../store/schemaStore';
 
