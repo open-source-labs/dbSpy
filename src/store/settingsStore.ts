@@ -6,11 +6,11 @@ import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 let settingsStore = (
-  set: (arg0: { (state: any): any; (state: any): any; (state: any): any }) => any
+  set: (arg0: { (state: any): any; (state: any): any; (state: any): any; }) => any
 ) => ({
   darkMode: true,
   setDarkMode: () =>
-    set((state: { darkMode: any }) => ({ ...state, darkMode: !state.darkMode })),
+    set((state: { darkMode: any; }) => ({ ...state, darkMode: !state.darkMode })),
 
   sidebarDisplayState: false,
 
@@ -35,7 +35,7 @@ let settingsStore = (
       ...state,
       currentTable,
       inputModalState: { isOpen, mode },
-    }))
+    }));
   },
 
   deleteTableModalState: { isOpen: false },

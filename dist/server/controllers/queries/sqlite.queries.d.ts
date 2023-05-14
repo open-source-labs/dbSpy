@@ -1,0 +1,2 @@
+export declare const sqliteSchemaQuery = "SELECT \n    name AS column_name,\n    type AS data_type,\n    CASE WHEN pk = 1 THEN 'PRIMARY KEY' END AS constraint_type,\n    (SELECT \n        GROUP_CONCAT(table || '.' || from || ' -> ' || to)\n    FROM \n        pragma_foreign_key_list(name)\n    ) AS foreign_keys\nFROM \n    pragma_table_info('tableName')";
+//# sourceMappingURL=sqlite.queries.d.ts.map

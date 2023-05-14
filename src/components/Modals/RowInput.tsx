@@ -8,7 +8,7 @@ type EachRow = {
 }
 
 type RowInputProps = {
-  tableName: string;
+  tableName: string | undefined;
   currentTable: EachRow[];
   handleRowChange: (
     index: number,
@@ -48,7 +48,7 @@ export default function RowInput({
   for (let i = 0; i < columns.length; i++) {
     inputs.push(
       <input
-        key={i+columns[i]}
+        key={i}
         className='m-2'
         type="text"
         placeholder={arrOfDataType[columnNames[i]].data_type}
