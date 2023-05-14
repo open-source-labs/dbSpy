@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, HandleProps } from 'reactflow';
 import DataTableNodeColumn from './DataTableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
 import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
+
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import informationIcon from '../../../images/informationSqIcon.png';
@@ -127,7 +128,8 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 //   }
 // }
 /////////////////////////////////////////////////////////////////////////
-  const newDatastore = structuredClone(dataStore)
+  
+const newDatastore = structuredClone(dataStore)
 
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
 
@@ -218,7 +220,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
             background: 'transparent',
             left: 15
           }}
-        />
+        /> 
       );
     }
   }
@@ -279,7 +281,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
                       id={tableName}
                       index={index}
                       deleteRow={deleteRow}
-                      FK={FK}
                       PK={[PK,pkVals]}
                     />
                   )}
