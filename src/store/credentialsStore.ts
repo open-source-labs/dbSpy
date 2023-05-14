@@ -17,7 +17,7 @@ let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) =
 
 
   //dbCredentials state
-  dbCredentials: {} as ({}|dbCredentials),
+  dbCredentials: {} as dbCredentials,
   //dbFormInput is an object
   setDbCredentials: (dbFormInput: any) =>
     set((state: any) => ({ ...state, dbCredentials: dbFormInput })),
