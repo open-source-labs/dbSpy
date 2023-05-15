@@ -159,7 +159,7 @@ npm run cert:linux
 3. Input your database URI information OR database connection credentials and click on "Connect".
 4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
 
-<img src="dbSpy-v5.0.png">
+<img src="dbSpyV5.png">
 
 ### Uploading your database's SQL file
 
