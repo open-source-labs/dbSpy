@@ -1,4 +1,4 @@
-import { TableColumn, TableColumns, TableSchema } from '@/Types'
+import { TableColumn, TableColumns, TableSchema, RefObj } from '@/Types'
 import { property } from 'cypress/types/lodash';
 
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
@@ -42,15 +42,6 @@ const objSchema = (testdata: Table[]): TableSchema => {
   // PATCH TO RENAME SOME DATA FIELDS
   //
 
-  interface RefObj {
-    isDestination: boolean,
-    PrimaryKeyName: string,
-    PrimaryKeyTableName: string,
-    ReferencesPropertyName: string,
-    ReferencesTableName: string,
-    constraintName: string,
-  }
-
   Object.keys(results).forEach((table) => {
     Object.keys(results[table]).forEach((prop:string) => {
       let propObj:TableColumn = results[table][prop];
@@ -79,7 +70,7 @@ const objSchema = (testdata: Table[]): TableSchema => {
 //// SQL PARSER ////
 ////////////////////
 interface TableModel {
-  Name: string | null;
+  Name: string | number | null;
   Properties: PropertyModel[];
 }
 function TableModel(this:TableModel):void {
@@ -89,7 +80,7 @@ function TableModel(this:TableModel):void {
 
 // Handles all columns of a table
 interface PropertyModel {
-  Name: string | null;
+  Name: string | number | null;
   Value: any | null;
   TableName: string | null;
   References: ForeignKeyModel[];
@@ -238,7 +229,7 @@ function parseSQLServerForeignKey(name:string, currentTableModel:TableModel, pro
   currentTableModel.Properties.push(propertyModel);
 }
 
-function parseMySQLForeignKey(name:string |number, currentTableModel:Table, constraintName = null) {
+function parseMySQLForeignKey(name:string | number, currentTableModel:Table, constraintName = null) {
   name = name.replace(/\"/g, '');
 
   let foreignKeyName = name

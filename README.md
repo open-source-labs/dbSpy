@@ -15,15 +15,24 @@
 
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
-<p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具。</p>
+<!-- <p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具。</p> -->
+
+### New Features with Version 5.0
+
+- More options for SQL databases.
+- Visualized data tables.
+- Full CRUD functionality to add, update, and delete columns for SCHEMA tables and rows for DATA tables in database.
+- Ability to delete tables.
+- Google and GitHub OAuth log-ins.
+
 
 ### Use Cases
 
-- Connecting to an existing remote PostgreSQL and MySQL database
-  - Renders an ER diagram of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
+- Connecting to an existing remote PostgreSQL, MySQL,  MicroSoftSQL, OracleSQL, and SQLite3  database
+  - Renders an ER diagram for SCHEMA and DATA of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
 - Uploading your database's SQL file
   - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
-- Seamlessly visualize relational databases
+- Seamlessly visualize relational databases (both SCHEMA and DATA)
   - After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
 - Creating a database + ER diagram from scratch
   - Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
@@ -150,7 +159,7 @@ npm run cert:linux
 3. Input your database URI information OR database connection credentials and click on "Connect".
 4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
 
-<img src="images/Canvas%20renders.png">
+<img src="dbSpy-v5.0.png">
 
 ### Uploading your database's SQL file
 
@@ -162,17 +171,24 @@ npm run cert:linux
 1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will render the canvas for you to create your database schema.
 2. Click on "Add Table" to name the first table and start building your database.
 
-## Adding column(s) to a table
+## Adding column(s) to a SCHEMA table or row(s) to a DATA table
 
-1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column in the table in edit mode.
+1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column/row in the table in edit mode.
    <img src="images/Create%20tables.png">
+   <img src="images/addRow.png">
 
-### Editing an existing column in a table
+### Editing an existing column to a SCHEMA table or row to a DATA table
 
 1. Click on the edit icon of the specific column that you want to edit.
 2. You can make changes to column fields based on the selections provided.
 3. Click on the save icon to keep your changes.
 4. Click on the cancel icon to cancel your changes.
+
+## Deleting an column to a SCHEMA table or row to a DATA table
+
+1. Click on the delete icon of the specific column that you want to delete.
+2. Click on the confirm icon to delete the column.
+3. Click on the cancel icon to cancel the deletion.
 
 ### Adding a foreign key reference to a column
 
@@ -181,11 +197,6 @@ npm run cert:linux
 3. Click save or cancel to proceed.
 4. Click on the save icon to keep your changes or click on the cancel icon to cancel your changes.
 
-## Deleting an existing column in a table
-
-1. Click on the delete icon of the specific column that you want to delete.
-2. Click on the confirm icon to delete the column.
-3. Click on the cancel icon to cancel the deletion.
 
 ### Navigating the canvas
 
@@ -207,7 +218,10 @@ npm run cert:linux
 ---
 
 ### Credits/Contributors
-
+- Yichung Chiu • [LinkedIn] • [Github]
+- Joseph Tejeda • [LinkedIn] • [Github]
+- Stephen Havig • [LinkedIn] • [Github]
+- Das Kang • [LinkedIn](https://www.linkedin.com/in/das-kang/) • [Github](https://github.com/dahae0309)
 - Alexander Tu • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
 - Michael Costello • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
 - Steven Geiger • [LinkedIn](https://www.linkedin.com/in/sgeiger9/) • [Github](https://github.com/geistnine)
