@@ -70,6 +70,7 @@ const microsoftController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName: string = table.TABLE_NAME;
+        console.log('tableName: ', tableName)
         const tableDataQuery = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
         tableData[tableName] = tableDataQuery;
 

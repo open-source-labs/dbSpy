@@ -1,6 +1,24 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 
+// const tableNameFormat = (req: Request, dbDataSource: DataSource, tableNameFormat: string) => {
+//   const { db_type, username } = req.session
+// let tableName = '';
+// switch (db_type) {
+//   case 'oracle':
+//     tableName = `"${(username as string).toUpperCase()}"."${deleteTableData.tableName}"`;
+//     break;
+//   case 'mssql':
+//     const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+//     tableName = `${schemaName[0].SchemaName}.${deleteTableData.tableName}`;
+//     break;
+//   default:
+//     tableName = deleteTableData.tableName;
+//     break;
+// };
+// return tableName
+// }
+
 //---------------CONNECT TO THE DATABASE-----------------------------------------------------------------------------------------
 
 export const dbConnect = async (req: Request) => {
@@ -126,8 +144,8 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
         tableNameUpdate = `"${(username as string).toUpperCase()}"."${tableName}"`;
         break;
       case 'mssql':
-        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        tableNameUpdate = `${schemaName}.${tableName}`;
+        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+        tableNameUpdate = `${schemaName[0].SchemaName}.${tableName}`;
         break;
       default:
         tableNameUpdate = tableName;
@@ -178,8 +196,8 @@ export const deleteRow: RequestHandler = async (req: Request, _res: Response, ne
         tableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
         break;
       case 'mssql':
-        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        tableNameDelete = `${schemaName}.${tableName}`;
+        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+        tableNameDelete = `${schemaName[0].SchemaName}.${tableName}`;
         break;
       default:
         tableNameDelete = tableName;
@@ -238,8 +256,8 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
         tableNameAddColumn = `"${(username as string).toUpperCase()}"."${tableName}"`;
         break;
       case 'mssql':
-        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        tableNameAddColumn = `${schemaName}.${tableName}`;
+        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+        tableNameAddColumn = `${schemaName[0].SchemaName}.${tableName}`;
         break;
       default:
         tableNameAddColumn = tableName;
@@ -311,8 +329,8 @@ export const deleteColumn: RequestHandler = async (req: Request, _res: Response,
         columnTableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
         break;
       case 'mssql':
-        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        columnTableNameDelete = `${schemaName}.${tableName}`;
+        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+        columnTableNameDelete = `${schemaName[0].SchemaName}.${tableName}`;
         break;
       default:
         columnTableNameDelete = tableName;
@@ -361,7 +379,7 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
           break;
         case 'mssql':
           const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-          tableName = `${schemaName}.${newTableName}`;
+          tableName = `${schemaName[0].SchemaName}.${newTableName}`;
           break;
         default:
           tableName = newTableName;
@@ -469,7 +487,7 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
         tableName = `"${(username as string).toUpperCase()}"."${deleteTableData.tableName}"`;
         break;
       case 'mssql':
-        const schemaName = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
         tableName = `${schemaName[0].SchemaName}.${deleteTableData.tableName}`;
         break;
       default:
