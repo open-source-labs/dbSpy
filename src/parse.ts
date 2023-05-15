@@ -12,11 +12,11 @@ let exportedTables:number = 0;
  * Iterates through testdata array of tables and * Iterates through properties array and assigns field name as key for properties.
  */
 interface Property {
-  [key:string]:string|number|boolean
+  [key:string]: string | number | boolean
 }
 interface Table {
   Name: string;
-  Properties:Property[]
+  Properties: Property[]
 }
 
 const objSchema = (testdata: Table[]): TableSchema => {
@@ -44,7 +44,7 @@ const objSchema = (testdata: Table[]): TableSchema => {
 
   Object.keys(results).forEach((table) => {
     Object.keys(results[table]).forEach((prop:string) => {
-      let propObj:TableColumn = results[table][prop];
+      let propObj: TableColumn = results[table][prop];
       propObj.Name = prop;
       const ref: RefObj[]= propObj.References;
       if (ref.length > 0)
@@ -55,9 +55,9 @@ const objSchema = (testdata: Table[]): TableSchema => {
             refObj.ReferencesPropertyName.indexOf(' ')
           );
         });
-      if (propObj.data_type.includes('character varying')) propObj.data_type = 'varchar';
-      if (propObj.data_type.includes('bigint')) propObj.data_type = 'integer';
-      if (propObj.data_type.includes('boolean')) propObj.data_type = 'boolean';
+      if ((propObj.data_type as string).includes('character varying')) propObj.data_type = 'varchar';
+      if ((propObj.data_type as string).includes('bigint')) propObj.data_type = 'integer';
+      if ((propObj.data_type as string).includes('boolean')) propObj.data_type = 'boolean';
     });
   });
   //
