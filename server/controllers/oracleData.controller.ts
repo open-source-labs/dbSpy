@@ -7,7 +7,7 @@ import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbC
 const oracleController = {
 //----------Function to collect all schema and data from database-----------------------------------------------------------------
   oracleQuery: async (req: Request, res: Response, next: NextFunction) => {
-    const { username } = req.query
+    const { username } = req.session
     const OracleDataSource = await dbConnect(req);
 
 //--------HELPER FUNCTION-----------------------------------
@@ -65,14 +65,14 @@ const oracleController = {
       const schema: TableSchema = {};
 
       for (const table of tables) {
-        const tableName: string = table.TABLE_NAME
-        const user: string = username as string
+        const tableName: string = table.TABLE_NAME;
+        const user = (username as string).toUpperCase();
 
         // DATA Create property on tableData object with every loop
-        const tableDataQuery = await OracleDataSource.query(`SELECT * FROM "${user.toUpperCase()}"."${tableName}"`);
+        const tableDataQuery = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
         tableData[tableName] = tableDataQuery;
         // SCHEMA Create property on schema object with every loop
-        const oracleSchema = await OracleDataSource.query(oracleSchemaQuery.replace('user', user.toUpperCase()).replace('tableName', tableName));
+        const oracleSchema = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));
         schema['public.' + tableName] = await oracleFormatTableSchema(oracleSchema, tableName);
       };
 
@@ -175,7 +175,7 @@ const oracleController = {
 //--------------ADD NEW TABLE-----------------------------------------------------------
   oracleAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewTable(req, res, next);
+      await Promise.resolve(addNewTable(req, res, next));
       console.log("oracleAddNewTable function has concluded");
       return next();
     } catch (err: unknown) {

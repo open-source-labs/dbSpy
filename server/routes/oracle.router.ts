@@ -45,9 +45,9 @@ oracleRouter.delete('/deleteColumn', oracleController.oracleDeleteColumn, (_req:
 
 //---------------------------DATABASE TABLES--------------------------------------------------------------------------------------------------------
 //--------------ADD NEW TABLE--------------------------------------------------------------------------------------------------
-oracleRouter.post('/saveNewTable', oracleController.oracleAddNewTable, (_req: Request, res: Response) => {
+oracleRouter.post('/saveNewTable', oracleController.oracleAddNewTable, oracleController.oracleQuery, (_req: Request, res: Response) => {
   console.log('Returned to the oracle router after adding a new table');
-  return res.status(200).json(res.locals.newTable);
+  return res.status(200).json(res.locals);
 });
 //--------------GET ALL TABLE NAMES---------------------------------------------------------------------------------------------------
 oracleRouter.get('/tableNames', oracleController.oracleGetTableNames, (_req, res) => {

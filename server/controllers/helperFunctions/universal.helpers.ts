@@ -393,16 +393,15 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
 
       const newTableColumnString: string = keyValueString.slice(0, -2); 
 
-      const newTable: Promise<unknown> = await dbDataSource.query(`
+      await dbDataSource.query(`
         CREATE TABLE ${tableName} (
-          ${newTableColumnString}
-          )`
+        ${newTableColumnString}
+        )`
       );
 
-    dbDataSource.destroy();
+    await dbDataSource.destroy();
     console.log('Database has been disconnected');
-    console.log('newTable in helper: ', newTable)
-    return newTable;
+    return;
 
   } catch (err: unknown) {
     console.log('Error occurred in the addNewTable middleware: ', err);

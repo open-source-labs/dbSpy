@@ -178,7 +178,7 @@ const microsoftController = {
 //--------------ADD NEW TABLE-----------------------------------------------------------
   microsoftAddNewTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewTable(req, res, next);
+      await Promise.resolve(addNewTable(req, res, next));
       console.log("microsoftAddNewTable function has concluded");
       return next();
     } catch (err: unknown) {
