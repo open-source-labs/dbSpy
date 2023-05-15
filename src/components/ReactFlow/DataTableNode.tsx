@@ -185,13 +185,10 @@ const newDatastore = structuredClone(dataStore)
 
   
 //cannot make handles for data table dynamic since size of each column can vary
-//TODO: is there better way to assign handle?
+//TODO: is there better way to assign handle? more dynamic?
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
-      // let columnNumberSource:number =
-      //   firstRow.findIndex((eachColumnName) => eachColumnName === data.edges[i].sourceHandle) + 1;
-      // if (columnNumberSource === 0) columnNumberSource = 1;
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -200,17 +197,12 @@ const newDatastore = structuredClone(dataStore)
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            // left: "25%" + ((columnNumberSource - 1) * 30)
-            // left: 62 + ((columnNumberSource-1)* 40)
             left: "70%"
           }}
         />
       );
     }
     if (data.edges[i].target === tableName) {
-      // let columnNumberTarget:number =
-      //   firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
-      // if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
