@@ -44,7 +44,6 @@ const Sidebar = (props: any) => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const values: any = formValues;
-    console.log('values: ', values)
     //parsing postgres database URL defers from parsing mySQL database URL
     if (values.database_link) {
       const fullLink = values.database_link;
@@ -103,7 +102,7 @@ const Sidebar = (props: any) => {
     const dataFromBackend = await axios
       .get(`api/sql/${values.db_type}/schema`, { params: values })
       .then((res) => {
-        console.log('data from back',res.data)
+        //console.log('data from back',res.data)
         return res.data;
       })
       .catch((err: ErrorEvent) => console.error('getSchema error', err));
