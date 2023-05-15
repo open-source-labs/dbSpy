@@ -189,9 +189,9 @@ const newDatastore = structuredClone(dataStore)
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
-      let columnNumberSource:number =
-        firstRow.findIndex((eachColumnName) => eachColumnName === data.edges[i].sourceHandle) + 1;
-      if (columnNumberSource === 0) columnNumberSource = 1;
+      // let columnNumberSource:number =
+      //   firstRow.findIndex((eachColumnName) => eachColumnName === data.edges[i].sourceHandle) + 1;
+      // if (columnNumberSource === 0) columnNumberSource = 1;
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-source-${[i]}`}
@@ -201,15 +201,16 @@ const newDatastore = structuredClone(dataStore)
           style={{
             background: 'transparent',
             // left: "25%" + ((columnNumberSource - 1) * 30)
-            left: 62 + ((columnNumberSource-1)* 40)
+            // left: 62 + ((columnNumberSource-1)* 40)
+            left: "70%"
           }}
         />
       );
     }
     if (data.edges[i].target === tableName) {
-      let columnNumberTarget:number =
-        firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
-      if (columnNumberTarget === 0) columnNumberTarget = 1;
+      // let columnNumberTarget:number =
+      //   firstRow.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
+      // if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
         <Handle
           key={`${data.edges[i]}-target-${[i]}`}
@@ -218,7 +219,7 @@ const newDatastore = structuredClone(dataStore)
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            left: 15
+            left: "4%"
           }}
         /> 
       );
