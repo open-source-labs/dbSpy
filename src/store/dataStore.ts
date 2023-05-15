@@ -28,12 +28,13 @@ const useDataStore = create<DataState>()(
           set((state) => ({ ...state, system })),
         setDataStore: (dataInfo) =>
           set((state) => ({ ...state, dataStore: dataInfo })),
+        setReferencesStore: (dataInfo) =>
+          set((state) => ({ ...state, dataStore: dataInfo })),
         deleteTableData: (tableName) => set((state) => {
           const newState = { ...state };
           delete newState.dataStore[tableName];
           return newState;
         }),
-        setReferencesStore: (dataInfo) => set((state) => ({ ...state, referenceStore: dataInfo })),
       })
     )
   )
