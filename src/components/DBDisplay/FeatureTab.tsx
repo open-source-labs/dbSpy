@@ -247,6 +247,7 @@ export default function FeatureTab(props: any) {
               <br />
               <p className="text-slate-900 dark:text-[#f8f4eb]">Edit</p>
               <hr />
+              { isSchema? (
                 <li>
                   <a
                     onClick={() => {
@@ -274,6 +275,7 @@ export default function FeatureTab(props: any) {
                     <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
                   </a>
                 </li>
+                ):null}
               { Object.keys(schemaStore).length? (
               <li>
                 <a

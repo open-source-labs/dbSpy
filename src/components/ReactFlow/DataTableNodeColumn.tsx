@@ -27,8 +27,6 @@ type DataTableNodeColumnProp = {
 export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTableNodeColumnProp) {
 
 
-//####### for CRUD ##########
-
 // we need a tempData and rowData as seperate states because if the edit was canceled need to revert back to original state prior to change.
   const newRow = structuredClone(row);
   const [rowData, setRowData] = useState({ ...newRow });
