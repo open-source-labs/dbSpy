@@ -14,6 +14,7 @@ import useCredentialsStore from '../../store/credentialsStore';
 import { Edge, DataNode, DataStore ,RowsOfData , Data, dbCredentials } from '@/Types';
 
 export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
+
   
   const newdata = structuredClone(data);
   const [tableData, setTableData] = useState(newdata.table)
