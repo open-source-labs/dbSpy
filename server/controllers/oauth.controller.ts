@@ -3,10 +3,7 @@ import dotenv from 'dotenv';
 import log from '../logger/index';
 dotenv.config(); 
 
-
-
-
-export const getGoogleAccesToken: RequestHandler =  (req: Request, res:Response, next:NextFunction)=> {
+export const getGoogleAccesToken: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
     
     type code = string;
     type state = string|null;
@@ -21,16 +18,16 @@ export const getGoogleAccesToken: RequestHandler =  (req: Request, res:Response,
     } 
 
 type Options = {
-    code:string,
-    client_id:string,
-    client_secret:string ,
-    redirect_uri:string,
-    grant_type:string
+    code: string,
+    client_id: string,
+    client_secret: string ,
+    redirect_uri: string,
+    grant_type: string,
 }
 
 
-    const options:Options = {
-        code:code,
+    const options: Options = {
+        code: code,
         client_id: process.env[`${type}_OAUTH_CLIENT_ID`] as string,
         client_secret: process.env[`${type}_OAUTH_CLIENT_SECRET`] as string,
         redirect_uri:process.env[`${type}_OAUTH_REDIRECT_URI`] as string,
@@ -76,7 +73,7 @@ type Options = {
 export const getUserInfo:RequestHandler = async (req:Request, res:Response, next:NextFunction) => {
     const {access_token, expires_in, refresh_token, token_type, id_token,type} = res.locals.token;
     try{
-        let data:any;
+        let data: any;
         // For Github Oauth
         let userInfo:{};
         if(type === 'GITHUB'){
@@ -105,13 +102,6 @@ export const getUserInfo:RequestHandler = async (req:Request, res:Response, next
             log:`error exist in oauth.controller.ts in getUserInfo middleware:  ${err}`,
             status: 500,
             message:`error occurred ${err}`
-    })
-    }
-
-
-
-
-
-
-
-}
+    });
+    };
+};
