@@ -169,7 +169,7 @@ export default function InputModal({
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
         // TODO: LEARN WHY TS IS YELLING
-        prevColumns[index][property] = value;
+        (prevColumns[index][property] as string | boolean | null | SQLDataType) = value;
         return [...prevColumns];
       }
       // Disables unchecking pk

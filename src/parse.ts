@@ -5,37 +5,39 @@ import { property } from 'cypress/types/lodash';
 let foreignKeyList: ForeignKeyModel[] = [];
 let primaryKeyList: PrimaryKeyModel[]  = [];
 let primaryKeyListArray: Array<PrimaryKeyModel>[]  = [];
-let tableList: Table[]  = [];
+let tableList: Record<string, Table> = {};;
 let exportedTables:number = 0;
 /**
  * objSchema
  * Iterates through testdata array of tables and * Iterates through properties array and assigns field name as key for properties.
  */
 interface Property {
-  [key:string]: string | number | boolean
+  [key: string]: string | number | boolean | ForeignKeyModel[] | null;
+  IsForeignKey: boolean;
 }
 interface Table {
   Name: string;
-  Properties: Property[]
+  Properties: Property[];
+  [key: string]: any;
 }
 
-const objSchema = (testdata: Table[]): TableSchema => {
-  const results:TableSchema = {};
+const objSchema = (testData: Table[]): TableSchema => {
+  const results: TableSchema = {};
   // Iterate through the testdata Array
   // Grab name property for each element of array - Table Name
   // Assign properties to name property of the table within new obj
   // iterate through the Properties Array
   // Assign field name as key for properties....
 
-  for (let i = 0; i < testdata.length; i++) {
+  for (let i = 0; i < testData.length; i++) {
     // this outer loop will iterate through tables within testdata
-    const properties= {};
-    for (let k = 0; k < testdata[i].Properties.length; k++) {
-      let key = testdata[i].Properties[k].field_name;
-      properties[key] = testdata[i].Properties[k];
+    const properties: TableColumns = {};
+    for (let k = 0; k < testData[i].Properties.length; k++) {
+      let key = testData[i].Properties[k].field_name;
+      properties[key as string] = testData[i].Properties[k];
     }
 
-    results[testdata[i].Name] = properties;
+    results[testData[i].Name] = properties;
   }
 
   //
@@ -46,8 +48,8 @@ const objSchema = (testdata: Table[]): TableSchema => {
     Object.keys(results[table]).forEach((prop:string) => {
       let propObj: TableColumn = results[table][prop];
       propObj.Name = prop;
-      const ref: RefObj[]= propObj.References;
-      if (ref.length > 0)
+      const ref: RefObj[] | undefined = propObj.References;
+      if (ref && ref.length > 0)
         ref.forEach((refObj) => {
           refObj.PrimaryKeyName = prop;
           refObj.ReferencesPropertyName = refObj.ReferencesPropertyName.slice(
@@ -69,68 +71,108 @@ const objSchema = (testdata: Table[]): TableSchema => {
 ////////////////////
 //// SQL PARSER ////
 ////////////////////
-interface TableModel {
-  Name: string | number | null;
-  Properties: PropertyModel[];
-}
-function TableModel(this:TableModel):void {
-  this.Name = null;
-  this.Properties = [];
+// interface TableModel {
+//   Name: string | number | null;
+//   Properties: PropertyModel[];
+// }
+class TableModel {
+  Name: string | number | null | undefined;
+  Properties: PropertyModel[] | null | undefined;
+  
+  constructor(
+    name?: string | number,
+    properties?: PropertyModel[],
+  ) {
+    this.Name = name;
+    this.Properties = properties;
+  }
 }
 
 // Handles all columns of a table
-interface PropertyModel {
-  Name: string | number | null;
-  Value: any | null;
-  TableName: string | null;
-  References: ForeignKeyModel[];
-  IsPrimaryKey: boolean | null;
-  IsForeignKey: boolean | null;
- }
-function PropertyModel(this:PropertyModel):void {
-  this.Name = null;
-  this.Value = null;
-  this.TableName = null;
-  this.References = [];
-  this.IsPrimaryKey = false;
-  this.IsForeignKey = false;
-}
+class PropertyModel {
+  Name: string | number | null | undefined;
+  Value: any | null | undefined;
+  TableName: string | null | undefined;
+  References: ForeignKeyModel[] | undefined;
+  IsPrimaryKey: boolean | null | undefined;
+  IsForeignKey: boolean | null | undefined;
 
-interface ForeignKeyModel {
-  PrimaryKeyName: string | null;
-  ReferencesPropertyName: string | null;
-  PrimaryKeyTableName: string | null;
-  ReferencesTableName: string | null;
-  IsDestination: boolean;
-  constraintName?: string | null
-}
-function ForeignKeyModel(this:ForeignKeyModel):void {
-  this.PrimaryKeyName = null;
-  this.ReferencesPropertyName = null;
-  this.PrimaryKeyTableName = null;
-  this.ReferencesTableName = null;
-  this.IsDestination = false;
-}
+  constructor(
+    name?: string | number,
+    value?: any | null,
+    tableName?: string | null,
+    references?: ForeignKeyModel[],
+    isPrimaryKey?: boolean | null,
+    isForeignKey?: boolean | null,
+  ) {
+    this.Name = name;
+    this.Value = value;
+    this.TableName = tableName;
+    this.References = references;
+    this.IsPrimaryKey = isPrimaryKey;
+    this.IsForeignKey = isForeignKey;
+    };
+ };
+// function PropertyModel(this:PropertyModel):void {
+//   this.Name = null;
+//   this.Value = null;
+//   this.TableName = null;
+//   this.References = [];
+//   this.IsPrimaryKey = false;
+//   this.IsForeignKey = false;
+// }
 
-interface PrimaryKeyModel {
-  PrimaryKeyName: string | null;
-  PrimaryKeyTableName: string | null;
-}
-function PrimaryKeyModel(this: PrimaryKeyModel):void {
-  this.PrimaryKeyName = null;
-  this.PrimaryKeyTableName = null;
+class ForeignKeyModel {
+  PrimaryKeyName: string | null | undefined;
+  ReferencesPropertyName: string | null | undefined;
+  PrimaryKeyTableName: string | null | undefined;
+  ReferencesTableName: string | null | undefined;
+  IsDestination: boolean | null | undefined;
+  ConstraintName?: string | null | undefined;
+
+  constructor(
+    primaryKeyName?: string | null,
+    referencesPropertyName?: string | null,
+    primaryKeyTableName?: string | null,
+    referencesTableName?: string | null,
+    isDestination?: boolean | null,
+    constraintName?: string | null,
+  ) {
+    this.PrimaryKeyName = primaryKeyName;
+    this.ReferencesPropertyName = referencesPropertyName;
+    this.PrimaryKeyTableName = primaryKeyTableName;
+    this.ReferencesTableName = referencesTableName;
+    this.IsDestination = isDestination;
+    this.ConstraintName = constraintName;
+}};
+
+// interface PrimaryKeyModel {
+//   PrimaryKeyName: string | null;
+//   PrimaryKeyTableName: string | null;
+// }
+class PrimaryKeyModel {
+  PrimaryKeyName: string | null | undefined;
+  PrimaryKeyTableName: string | null |undefined;
+  constructor(
+    primaryKeyName?:string,
+    primaryKeyTableName?:string,
+  ) {
+  this.PrimaryKeyName = primaryKeyName;
+  this.PrimaryKeyTableName = primaryKeyTableName;
+   }
+
 }
 
 // Creating global empty arrays to hold foreign keys, primary keys, and tableList
 foreignKeyList = [];
 primaryKeyList = [];
-tableList = [];
+tableList = {};
 
 /*  Function Section   */
 
 // Creates propertyModel and assigns properties to arguments passed in
 function createProperty(name: string | number, tableName: string, foreignKey: string | boolean | null, isPrimaryKey: boolean) {
-  const property:PropertyModel = new PropertyModel();
+  const property: PropertyModel = new PropertyModel();
   const isForeignKey = foreignKey !== undefined && foreignKey !== null;
   property.Name = name;
   property.TableName = tableName;
@@ -140,8 +182,8 @@ function createProperty(name: string | number, tableName: string, foreignKey: st
 }
 
 // Creates a new table with name property assigned to argument passed in
-function createTable(name:string | number):TableModel {
-  const table:TableModel = new TableModel();
+function createTable(name: string | number): TableModel {
+  const table: TableModel = new TableModel();
   table.Name = name;
   // Increment exported tables count
   exportedTables++;
@@ -156,7 +198,7 @@ function createForeignKey(
   referencesTableName: string,
   isDestination: boolean
 ) {
-  const foreignKey:ForeignKeyModel = new ForeignKeyModel();
+  const foreignKey: ForeignKeyModel = new ForeignKeyModel();
   foreignKey.PrimaryKeyTableName = primaryKeyTableName;
   foreignKey.PrimaryKeyName = primaryKeyName;
   foreignKey.ReferencesPropertyName = referencesPropertyName;
@@ -175,13 +217,13 @@ function createPrimaryKey(primaryKeyName:string, primaryKeyTableName:string) {
 }
 
 // Parses foreign key with SQL Server syntax
-function parseSQLServerForeignKey(name:string, currentTableModel:TableModel, propertyType:string) {
+function parseSQLServerForeignKey(name: string, currentTableModel: TableModel, propertyType: string) {
   // Regex expression to find referenced foreign table
   const referencesIndex = name.match(/(?<=REFERENCES\s)([a-zA-Z_]+)(\([a-zA-Z_]*\))/);
 
   // Match element at index 1 references table names
-  const referencedTableName = referencesIndex[1];
-  const referencedPropertyName = referencesIndex[2].replace(/\(|\)/g, '');
+  const referencedTableName = (referencesIndex as RegExpMatchArray)[1];
+  const referencedPropertyName = (referencesIndex as RegExpMatchArray)[2].replace(/\(|\)/g, '');
 
   // Remove everything after 'foreign key' from line
   const foreignKeyLabelIndex = name.toLowerCase().indexOf('foreign key');
@@ -196,7 +238,7 @@ function parseSQLServerForeignKey(name:string, currentTableModel:TableModel, pro
   // Create ForeignKey with IsDestination = false
   const foreignKeyOriginModel = createForeignKey(
     foreignKey,
-    currentTableModel.Name,
+    currentTableModel.Name as string,
     referencedPropertyName,
     referencedTableName,
     false
@@ -210,7 +252,7 @@ function parseSQLServerForeignKey(name:string, currentTableModel:TableModel, pro
     referencedPropertyName,
     referencedTableName,
     foreignKey,
-    currentTableModel.Name,
+    currentTableModel.Name as string,
     true
   );
 
@@ -218,7 +260,7 @@ function parseSQLServerForeignKey(name:string, currentTableModel:TableModel, pro
   foreignKeyList.push(foreignKeyDestinationModel);
 
   // Create Property
-  const propertyModel = createProperty(foreignKey, currentTableModel.Name, null, false);
+  const propertyModel = createProperty(foreignKey, currentTableModel.Name as string, null, false);
 
   // If property is both primary key and foreign key, set IsPrimaryKey property to true
   if (propertyType === 'SQLServer both') {
@@ -226,45 +268,46 @@ function parseSQLServerForeignKey(name:string, currentTableModel:TableModel, pro
   }
 
   // Add Property to table
-  currentTableModel.Properties.push(propertyModel);
+  (currentTableModel.Properties as PropertyModel[]).push(propertyModel);
 }
 
-function parseMySQLForeignKey(name:string | number, currentTableModel:Table, constraintName = null) {
-  name = name.replace(/\"/g, '');
+function parseMySQLForeignKey(name: string | number, currentTableModel:Table, constraintName = null) {
+  name = (name as string).replace(/\"/g, '');
 
-  let foreignKeyName = name
-    .match(/(?<=FOREIGN\sKEY\s)(\([A-Za-z0-9_]+\))(?=\sREFERENCES\s)/)[0]
-    .replace(/\(|\)/g, '');
-  const referencedTableName = name.match(
-    /(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_]+)+/
-  )[0];
+  
+  let foreignKeyName = (name.match(/(?<=FOREIGN\sKEY\s)(\([A-Za-z0-9_]+\))(?=\sREFERENCES\s)/) ?? [])[0];
+  if (foreignKeyName) {
+    foreignKeyName = foreignKeyName.replace(/\(|\)/g, '');
+  }
+  
+  const referencedTableName = (name.match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_]+)+/) ?? [])[0];
   // let constraintname = name.match(/(?<=CONSTRAINT\s)([A-Za-z0-9_]+)/)[0];
-  let referencedPropertyName = name
-    .match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_()]+)+/)[0]
-    .match(/\(([^()]+)\)/g)[0]
-    .replace(/\(|\)/g, '');
+  let referencedPropertyName = (name.match(/(?<=REFERENCES\s)([A-Za-z0-9_]+\.[A-Za-z0-9_()]+)+/) ?? [])[0];
+  if (referencedPropertyName) {
+    referencedPropertyName = referencedPropertyName.match(/\(([^()]+)\)/g)?.[0]?.replace(/\(|\)/g, '');
+  }
 
   // Look through current table and reassign isForeignKey prop to true, reassign foreignKeyName to include type
-  currentTableModel.Properties.forEach((property)=> {
-    if (property.Name.split(' ')[0] === foreignKeyName) {
+  currentTableModel.Properties.forEach((property) => {
+    if ((property.Name as string).split(' ')[0] === foreignKeyName) {
       property.IsForeignKey = true;
-      foreignKeyName = property.Name;
+      foreignKeyName = property.Name as string;
     }
   });
+  
+  let primaryTableModel: Table | null = null;
 
-  let primaryTableModel = null;
-
-  const tlKeys:string[] = Object.keys(tableList);
+  const tlKeys: string[] | number[] = Object.keys(tableList);
   for (let i = 0; i < tlKeys.length; i++) {
-    if (tableList[tlKeys[i]].Name === referencedTableName) {
+    if ((tableList[tlKeys[i]] as Table).Name === referencedTableName) {
       primaryTableModel = tableList[tlKeys[i]];
       break;
     }
   }
-
-  const ptmKeys = Object.keys(primaryTableModel);
+  if (primaryTableModel !== null) {
+  const ptmKeys = Object.keys(primaryTableModel) as string[];
   for (let i = 0; i < ptmKeys.length; i++) {
-    const ptmSubKeys = Object.keys(primaryTableModel[ptmKeys[i]]);
+    const ptmSubKeys = Object.keys(primaryTableModel[ptmKeys[i]]) as string[];
     for (let j = 0; j < ptmSubKeys.length; j++) {
       if (
         primaryTableModel[ptmKeys[i]][ptmSubKeys[j]].Name !== undefined &&
@@ -277,20 +320,20 @@ function parseMySQLForeignKey(name:string | number, currentTableModel:Table, con
       }
     }
   }
-
+  }
   // Add PrimaryKey Origin
   // foreignKeyList.push(primaryKeyOriginModel);
 
   // Create ForeignKey
   let foreignKeyDestinationModel = createForeignKey(
-    referencedPropertyName,
-    referencedTableName,
-    foreignKeyName,
+    referencedPropertyName as string,
+    referencedTableName as string,
+    foreignKeyName as string,
     currentTableModel.Name,
     false
   );
 
-  foreignKeyDestinationModel.constraintName = constraintName;
+  foreignKeyDestinationModel.ConstraintName = constraintName;
   // Add ForeignKey Destination
   foreignKeyList.push(foreignKeyDestinationModel);
 }
@@ -299,7 +342,7 @@ function parseMySQLForeignKey(name:string | number, currentTableModel:Table, con
 // If primaryKeyList.Name === propertyModel.Name, set IsPrimaryKey property to true
 function processPrimaryKey() {
   primaryKeyList.forEach(function (primaryModel) {
-    tableList.forEach(function (tableModel) {
+    Object.values(tableList).forEach(function (tableModel) {
       if (tableModel.Name === primaryModel.PrimaryKeyTableName) {
         tableModel.Properties.forEach(function (propertyModel) {
           if (propertyModel.Name === primaryModel.PrimaryKeyName) {
@@ -315,35 +358,35 @@ function processPrimaryKey() {
 // If propertyModel's name equals what the foreignKeyModel is referencing, set propertyModel.IsForeignKey to true and add foreignKeyModel to propertyModel.References array
 function processForeignKey() {
   foreignKeyList.forEach(function (foreignKeyModel) {
-    tableList.forEach(function (tableModel) {
+    Object.values(tableList).forEach(function (tableModel) {
       if (tableModel.Name === foreignKeyModel.ReferencesTableName) {
         tableModel.Properties.forEach(function (propertyModel) {
           if (propertyModel.Name === foreignKeyModel.ReferencesPropertyName) {
             propertyModel.IsForeignKey = true;
-            propertyModel.References.push(foreignKeyModel);
+            (propertyModel.References as ForeignKeyModel[]).push(foreignKeyModel);
           }
         });
       }
       if (tableModel.Name == foreignKeyModel.PrimaryKeyTableName) {
         tableModel.Properties.forEach(function (propertyModel) {
           if (propertyModel.Name === foreignKeyModel.PrimaryKeyName) {
-            propertyModel.References.push({
+            (propertyModel.References as ForeignKeyModel[]).push({
               PrimaryKeyName: foreignKeyModel.PrimaryKeyName,
               ReferencesPropertyName: foreignKeyModel.ReferencesPropertyName,
               PrimaryKeyTableName: foreignKeyModel.PrimaryKeyTableName,
               ReferencesTableName: foreignKeyModel.ReferencesTableName,
               IsDestination: true,
-              constraintName: foreignKeyModel.constraintName,
+              ConstraintName: foreignKeyModel.ConstraintName,
             });
           }
         });
       }
     });
   });
-}
+};
 
 // Parses table name from CREATE TABLE line
-function parseSQLServerName(name:string, property:string) {
+function parseSQLServerName(name:string, property: any) {
   name = name.replace('[dbo].[', '');
   name = name.replace('](', '');
   name = name.replace('].[', '.');
@@ -375,15 +418,15 @@ function parseTableName(name:string) {
     name = parseSQLServerName(name, property);
   }
   return name;
-}
+};
 
 function parseAlterTable(tableName:string, constraint:string) {
   const regexConstraint = /(?<=CONSTRAINT\s)([a-zA-Z_]+)/;
   const constraintName = constraint.match(regexConstraint);
 
   tableName = tableName.trim();
-  let currentTableModel: Table;
-  tableList.forEach((tableModel) => {
+  let currentTableModel: Table | null = null;
+  Object.values(tableList).forEach((tableModel) => {
     if (tableModel.Name === tableName) {
       currentTableModel = tableModel;
     }
@@ -396,17 +439,17 @@ function parseAlterTable(tableName:string, constraint:string) {
     );
     parseMySQLForeignKey(
       name,
-      currentTableModel,
-      constraintName !== null ? constraintName[0] : null
+      currentTableModel!,
+      constraintName !== null ? constraintName[0] : null as any
     );
   } else if (constraint.indexOf('PRIMARY KEY') !== -1) {
     const name = constraint.substring(
       constraint.indexOf('PRIMARY KEY'),
       constraint.length - 1
     );
-    parseMYSQLPrimaryKey(name, currentTableModel);
-  }
-}
+    parseMYSQLPrimaryKey(name, currentTableModel as any);
+  };
+};
 
 function parseSQLServerPrimaryKey(name:string, currentTableModel:Table, propertyType:string) {
   const primaryKey = name
@@ -428,17 +471,17 @@ function parseSQLServerPrimaryKey(name:string, currentTableModel:Table, property
   // Add Property to table if not both primary key and foreign key
   // If both, property is added when parsing foreign key
   if (propertyType !== 'SQLServer both') {
-    currentTableModel.Properties.push(propertyModel);
+    currentTableModel.Properties.push(propertyModel as any);
   }
 }
 
 function parseMYSQLPrimaryKey(name:string, currentTableModel:TableModel) {
   const primaryKeyName = name.slice(13).replace(')', '').replace(/\"/g, '');
 
-  currentTableModel.Properties.forEach((property:PropertyModel) => {
-    if (property.Name.split(' ')[0] === primaryKeyName) {
+  (currentTableModel.Properties as PropertyModel[]).forEach((property:PropertyModel) => {
+    if ((property.Name as string).split(' ')[0] === primaryKeyName) {
       property.IsPrimaryKey = true;
-      primaryKeyList.push(property);
+      primaryKeyList.push(property as any);
     }
   });
 }
@@ -449,7 +492,7 @@ export default function parseSql(text:string) {
   let tableCell = null;
   let cells = [];
   exportedTables = 0;
-  tableList = [];
+  tableList = {};
   foreignKeyList = [];
   primaryKeyList = [];
 
@@ -464,7 +507,7 @@ export default function parseSql(text:string) {
     const propertyRow = tmp.substring(0, 12).toLowerCase().trim();
 
     if (currentTableModel !== null && tmp.includes(');')) {
-      tableList.push(currentTableModel);
+      Object.values(tableList).push(currentTableModel as any);
       currentTableModel = null;
     }
 
@@ -484,7 +527,7 @@ export default function parseSql(text:string) {
       let alterQuerySplit = tmp.toLowerCase().trim();
       let tname = null;
 
-      for (let i = 0; i < tableList.length; i++) {
+      for (let i = 0; i < Object.values(tableList).length; i++) {
         if (alterQuerySplit.indexOf(tableList[i].Name) !== -1) {
           tname = tableList[i].Name;
         }
@@ -564,16 +607,10 @@ export default function parseSql(text:string) {
         name = name.replace(/\"/g, '');
 
         // Create Property
-        let propertyModel = createProperty(
-          name,
-          currentTableModel.Name,
-          null,
-          false,
-          false
-        );
+        let propertyModel = createProperty(name, currentTableModel.Name as string, null, false,);
 
         // Add Property to table
-        currentTableModel.Properties.push(propertyModel);
+        (currentTableModel.Properties as PropertyModel[]).push(propertyModel);
       }
 
       // Parse Primary Key
@@ -588,7 +625,7 @@ export default function parseSql(text:string) {
           propertyType === 'SQLServer both'
         ) {
           if (name.indexOf('PRIMARY KEY') !== -1 && name.indexOf('CLUSTERED') === -1) {
-            parseSQLServerPrimaryKey(name, currentTableModel, propertyType);
+            parseSQLServerPrimaryKey(name, currentTableModel as any, propertyType);
           }
 
           // Parsing primary key from MySQL syntax
@@ -622,7 +659,7 @@ export default function parseSql(text:string) {
           }
           parseSQLServerForeignKey(completeRow, currentTableModel, propertyType);
         } else {
-          parseMySQLForeignKey(name, currentTableModel);
+          parseMySQLForeignKey(name, currentTableModel as any);
         }
       }
     }
@@ -637,7 +674,7 @@ export default function parseSql(text:string) {
   for (let i in tableList) {
     for (let k in tableList[i].Properties) {
       if (tableList[i].Properties[k] !== undefined) {
-        let composite = tableList[i].Properties[k].Name.match(/^(\S+)\s(.*)/).slice(1);
+        let composite = (tableList[i].Properties[k].Name as any).match(/^(\S+)\s(.*)/).slice(1) as any;
 
         let value = composite[1].search(/NOT/i);
         if (value > 0) {
@@ -658,14 +695,14 @@ export default function parseSql(text:string) {
     }
   }
 
-  return objSchema(tableList);
+  return objSchema(Object.values(tableList));
 }
 
 /*  Function 
       Section   */
 
 function createTableUI() {
-  tableList.forEach(function (tableModel) {
+  Object.values(tableList).forEach(function (tableModel) {
     // Push in string code to d3tables array to render table name as a row
     for (let ref in tableModel.Properties);
   });
