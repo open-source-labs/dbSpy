@@ -1,6 +1,6 @@
 //-----IMPORTED FILES/MODULES
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import useDataStore from '../../store/dataStore';
 import useCredentialsStore from '../../store/credentialsStore';
 import useSchemaStore from '../../store/schemaStore';
@@ -41,7 +41,7 @@ export default function DataInputModal({
 
   //entire rows we currently have
   const deepCopyDataStore = JSON.parse(JSON.stringify(dataStore)) 
-  const currentTable = deepCopyDataStore[tableName]
+  const currentTable = deepCopyDataStore[tableName as string]
   
   // we get the column names from schemaStore IN CASE current table is EMPTY (because if table is EMPTY, it will
   // not pass in the column names) 

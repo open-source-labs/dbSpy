@@ -10,6 +10,15 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
+export interface dbCredentials{
+  database_name: string|number|null;
+  username: string|number|null;
+  password: string|number|null;
+  hostname: string|number|null;
+  port: string|number|null;
+  database_link: string|number|null;
+  db_type: string;
+}
 
 export interface Data{
   edges: RowsOfData[];
@@ -87,8 +96,8 @@ export type DataNode = {
 };
 
 export type TableTuple = 
-[TableKey: string, 
-  ColumnData: { [ColumnName: string]: ColumnDataForDataTable; }];
+[ TableKey: string, 
+  ColumnData: { [ColumnName: string]: ColumnDataForDataTable }];
 
   export interface dataSourceConnection {
     type: string,

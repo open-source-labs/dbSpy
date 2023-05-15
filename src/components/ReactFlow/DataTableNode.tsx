@@ -19,7 +19,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
   const newdata = structuredClone(data);
   const [tableData, setTableData] = useState(newdata.table)
   const { setInputModalState } = useSettingsStore((state) => state);
-  const { dataStore, referenceStore} = useDataStore((state) => state);
+  const { dataStore, referenceStore } = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
   const setReferenceStore = useDataStore((state) => state.setReferencesStore);
   const { schemaStore } = useSchemaStore((state) => state);
