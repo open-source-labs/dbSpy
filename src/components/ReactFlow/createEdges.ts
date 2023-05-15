@@ -49,6 +49,5 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
-  //console.log('edges: ', edges)
   return edges;
 }
