@@ -178,8 +178,8 @@ const profileList: profileInfo[] = [
     imgUrl: AG,
     name: 'Stephen Havig',
     title: 'Software Engineer',
-    linkedInUrl: '',
-    githubUrl: '',
+    linkedInUrl: 'https://www.linkedin.com/in/stephen-havig-199340145/',
+    githubUrl: 'https://github.com/Stephen-Havig',
   },  
   {
     imgUrl: AG,
