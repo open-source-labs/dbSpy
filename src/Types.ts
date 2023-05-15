@@ -25,6 +25,15 @@ export interface Data{
   table: [string, RowsOfData[]];
 }
 
+export interface RefObj {
+    isDestination: boolean,
+    PrimaryKeyName: string,
+    PrimaryKeyTableName: string,
+    ReferencesPropertyName: string,
+    ReferencesTableName: string,
+    constraintName: string,
+  }
+
 export interface TableColumn {
   Field?: string;
   Type?: string;
@@ -32,7 +41,7 @@ export interface TableColumn {
   Key?: string;
   Default?: any;
   Extra?: string;
-  References?: any[];
+  References?: RefObj[];
   TableName?: string;
   IsForeignKey?: boolean;
   IsPrimaryKey?: boolean;
