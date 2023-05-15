@@ -10,18 +10,27 @@ import {
  FaRegWindowClose,
 } from 'react-icons/fa';
 import { identity } from 'cypress/types/lodash';
+import { RowsOfData } from '@/Types';
 
 type RowData = {
   [key: string]: string | number
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:RowData, id:string|number,deleteRow:(rowData:RowData,index:number,id:string,PK:{})=>void,index:number}) {
+type DataTableNodeColumnProp = {
+  row:RowsOfData,
+  id?: string|number,
+  deleteRow:(rowData:RowsOfData,index:number,id?:string|number)=>void,
+  index:number,
+  PK:[string|number|null,Set<unknown>|null]
+}
+
+export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTableNodeColumnProp) {
+
 
 //####### for CRUD ##########
 
-
+// we need a tempData and rowData as seperate states because if the edit was canceled need to revert back to original state prior to change.
   const newRow = structuredClone(row);
-
   const [rowData, setRowData] = useState({ ...newRow });
   const [tempData, setTempData] = useState({ ...newRow });
   const { dbCredentials } = useCredentialsStore((state) => state);
@@ -38,13 +47,15 @@ export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:Ro
   const rowDataKeys = Object.keys(row)
 
   interface rowData {
-    [key:string|number]:string|number
+    [key:string|number]:string|number|boolean|null
   }
   interface tempData {
-    [key:string|number]:string|number
+    [key:string|number]:string|number|boolean|null
   }
   interface changes{
-    [key:string|number]:string|number|tempData
+    newRow?: tempData;
+    primaryKey?: tempData;
+    tableName?: string|number;
   }
 
   const onCancel = () => {
@@ -52,35 +63,53 @@ export default function DataTableNodeColumn({row,id,deleteRow,index,PK}: {row:Ro
     setMode('default');
   }
 
-const onSave = async () => {
 
-  const changes: changes= {};
+
+//on save suppose to save changes to edits on data row.
+const onSave = async () => {
+  
+  //create changes object to store all the data needed to send to the backend
+  const changes: changes = {};
   changes.tableName = id;
   changes.newRow= {...tempData};
-  changes.primaryKey = {[PK[0]]:changes.newRow[PK[0]]}
-  console.log(changes);
-  //delete primary key column from change for fetch request.
-  delete changes.newRow[PK[0]]
-  const checkConstraints:changes = {}
+  //if statement necessary for typing correction
+  if(PK[0] !== null && changes.newRow!== undefined){
+    changes.primaryKey = {[PK[0]]:changes.newRow[PK[0]]}
+  }
+  //delete primary key column from change for fetch request row.
+  if(PK[0]) delete changes.newRow[PK[0]]
+ 
 
   //iterate through and find the changes between new and old data.
-
+  const checkConstraints:tempData = {}
   for(let currentKey in tempData ){
     if(tempData[currentKey] !== rowData[currentKey]){
       checkConstraints[currentKey] =tempData[currentKey]
     }
   }
 
-
-
-  for(let currentKey in checkConstraints ){
-    if(PK[0]===currentKey && PK[1].has(parseInt(checkConstraints[currentKey]))){
-      alert(`Duplicate Primary Key: ${PK[0]}`);
-      setTempData(rowData);
-      setMode('default');
-      throw new Error('Duplicate Primary Key');
+  //High level idea is to prevent edits into a matching primary key of the same table.
+  //Change all values in set into string in order to check if changed values(string) exist in primary key constraints(string)
+  if(PK[1]){
+    const tempObj = []
+    for(const setItem of PK[1]){
+      if(typeof setItem === 'number'){
+        tempObj.push(setItem.toString());
+        PK[1].delete(setItem);
+      }
+    }
+    tempObj.forEach((curr)=> PK[1]?.add(curr))
+  
+    for(let currentKey in checkConstraints ){
+      if(PK[0] === currentKey && PK[1].has(checkConstraints[currentKey])){
+        alert(`Duplicate Primary Key: ${PK[0]}`);
+        setTempData(rowData);
+        setMode('default');
+        throw new Error('Duplicate Primary Key');
+      }
     }
   }
+
   
   setRowData({...tempData});
   setMode('default');
@@ -108,12 +137,13 @@ const onSave = async () => {
 //  }
 ////////////
 
+//setTemp data at the current column element to its value based whenever changed.
   return (
     <tr key={id} className="dark:text-[#f8f4eb]">
       {rowDataKeys.map((element:string|number,ind:number) => 
         <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} > 
           {mode === 'edit'?
-            (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element]} 
+            (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element] as string|number|undefined} 
               onChange={(e)=>{
                 setTempData((prevData:rowData) =>  ({
                   ...prevData,
@@ -145,7 +175,7 @@ const onSave = async () => {
       </td>
       <td>
         {mode ==='default'?
-          (<button id={`${id}-rowDeleteBtn`} onClick={()=>setMode(id)}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+          (<button id={`${id}-rowDeleteBtn`} onClick={()=>setMode('trash')}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
             <FaRegTrashAlt size={17} />
           </button>):
           (<button id={`${id}-cancelBtn`} onClick={onCancel}>   
