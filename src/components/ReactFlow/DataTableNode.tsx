@@ -29,16 +29,16 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
   
   //split up the table into different parts based on how the data is structured.
   const tableName = tableData[0];
-  let firstRow : string[] = []
-  let restRowsData : RowsOfData[]|[] = []
-  let secondaryFirstRow : string[] = []
+  let firstRow : string[] = [];
+  let restRowsData : RowsOfData[]|[] = [];
+  let secondaryFirstRow : string[] = [];
   let RowData:(RowsOfData[]) = Object.values(tableData[1]);
 
 
  //Used to grab the primary key and foreign keys column in the Table
  let schemaName = schemaStore[`public.${tableName}`];
- let PK :(string|number|null) = null
- let FK :(string|number|null) = null
+ let PK :(string|number|null) = null;
+ let FK :(string|number|null) = null;
  let pkVals = new Set();
  for(let key in schemaName){
    if(schemaName[key]['IsForeignKey']) FK = schemaName[key].field_name;
@@ -102,13 +102,13 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
       restRowsData = [...RowData];
     }
  }else{
-    firstRow = secondaryFirstRow
+    firstRow = secondaryFirstRow;
  }
 
 
 //UseEffect set Table when the dataStore is changed after on Delete.
   useEffect(() => {
-    setTableData([tableName,dataStore[tableName]])
+    setTableData([tableName,dataStore[tableName]]);
   }, [dataStore]);
 
 
@@ -129,11 +129,11 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 // }
 /////////////////////////////////////////////////////////////////////////
   
-const newDatastore = structuredClone(dataStore)
+const newDatastore = structuredClone(dataStore);
 
-  restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length))
+  restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length));
 
-  newDatastore[tableName] = restRowsData
+  newDatastore[tableName] = restRowsData;
    setDataStore({...newDatastore,[id]:restRowsData});
       // setDataStore(restRowData);
   
@@ -158,7 +158,7 @@ const newDatastore = structuredClone(dataStore)
      })
       .then((res) => {
       //console.log("deleting row info sent")
-        return res
+        return res;
       })
       .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
    } else {
@@ -171,7 +171,7 @@ const newDatastore = structuredClone(dataStore)
      })
         .then((res) => {
           //console.log("deleting row info sent")
-          return res
+          return res;
         })
         .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
    }
