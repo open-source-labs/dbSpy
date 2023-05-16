@@ -21,7 +21,7 @@
 
 - Enhanced support for SQL databases with expanded options.
 - Introduction of visualized DATA tables for improved data analysis.
-- Full CRUD functionality enabling the addition, modification, and deletion of columns in SCHEMA tables and rows in DATA tables within the database.
+- Full CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
 - Capability to remove tables as needed.
 - Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
 
@@ -57,7 +57,7 @@
 
 8. **User Sessions:** Sign up/Log in securely with either Google OAuth or JWTs/Bcrypt
 
-9. **Save/Load:** Store and reload recent database sessions through your user account *CURRENTLY UNDER UPDATE*
+9. **Save/Load:** Store and reload recent database sessions through your user account *-CURRENTLY UNDER UPDATE*
 
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
@@ -173,7 +173,7 @@ npm run cert:linux
 
 ## Adding column(s) to a SCHEMA table or row(s) to a DATA table
 
-1. To add a new column in a table, click on the add icon on the top right of the table node. This will render a new column/row in the table in edit mode.
+1. To add a new column/row in a table, click on the add icon on the top right of the table node. This will render a new column/row in the table in edit mode. The changes made in DATA table will be updated in your database.
    <img src="images/Create%20tables.png">
    <img src="images/addRow.png">
 
