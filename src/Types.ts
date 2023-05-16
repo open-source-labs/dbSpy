@@ -106,7 +106,7 @@ export type DataNode = {
 
 export type TableTuple = 
 [ TableKey: string, 
-  ColumnData: { [ColumnName: string]: ColumnDataForDataTable }];
+  ColumnData: { [ColumnName: string]: ColumnSchema }];
 
   export interface dataSourceConnection {
     type: string,
