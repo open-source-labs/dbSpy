@@ -36,26 +36,24 @@ export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTa
 
   const [mode, setMode] = useState('default');
 
-  const rowDataKeys = Object.keys(row)
+  const rowDataKeys = Object.keys(row);
 
   interface rowData {
     [key:string|number]:string|number|boolean|null
-  }
+  };
   interface tempData {
     [key:string|number]:string|number|boolean|null
-  }
+  };
   interface changes{
     newRow?: tempData;
     primaryKey?: tempData;
     tableName?: string|number;
-  }
+  };
 
   const onCancel = () => {
     setTempData(rowData);
     setMode('default');
-  }
-
-
+  };
 
 //on save suppose to save changes to edits on data row.
 const onSave = async () => {

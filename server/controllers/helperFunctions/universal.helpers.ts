@@ -187,7 +187,7 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 
     await dbDataSource.destroy();
     console.log('Database has been disconnected');
-    return dbUpdatedRow; 
+    return dbUpdatedRow;
 
   } catch (err: unknown) {
     console.log('Error occurred in the updatedRow middleware: ', err);
@@ -202,35 +202,25 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type } = req.session;
-  const { primaryKey, value, deletedRow } = req.body
+  const { value } = req.body
  
   try{
     const tableNameDelete = await Promise.resolve(tableNameFormat(req, dbDataSource));
 
-    if (primaryKey){
-      // Deleting a row that has a PK 
-      await dbDataSource.query(`
-        DELETE FROM ${tableNameDelete} 
-        WHERE ${db_type === 'oracle' ? `"${primaryKey}"` : primaryKey} = ${db_type === 'oracle' || db_type === 'mysql' ? `'${value}'` : value}
-        `)
+    const deleteEntries = Object.entries(value).filter(([_key, value]) => value !== null);
+    const deleteKeys = deleteEntries.map(([key, _value]) => key);
+    const deleteValues = deleteEntries.map(([_key, value]) => value);
 
-    } else {
-      // Deleting a row that does NOT have a PK
-      const deleteEntries = Object.entries(deletedRow).filter(([_key, value]) => value !== null);
-      const deleteKeys = deleteEntries.map(([key, _value]) => key);
-      const deleteValues = deleteEntries.map(([_key, value]) => value);
-
-      let oracleKeyValueString = '';
-      for (let i = 0; i < deleteKeys.length; i++) {
-        oracleKeyValueString += `"${deleteKeys[i]}" = '${deleteValues[i]}'${i < deleteKeys.length - 1 ? ' AND ' : ''}`
-      };
-      const keyValueString = oracleKeyValueString.replace(/"/g, '');
-
-      await dbDataSource.query(`
-        DELETE FROM ${tableNameDelete} 
-        WHERE ${db_type === 'oracle' ? oracleKeyValueString : keyValueString }
-        `)
+    let oracleKeyValueString = '';
+    for (let i = 0; i < deleteKeys.length; i++) {
+      oracleKeyValueString += `"${deleteKeys[i]}" = '${deleteValues[i]}'${i < deleteKeys.length - 1 ? ' AND ' : ''}`
     };
+    const keyValueString = oracleKeyValueString.replace(/"/g, '');
+
+    await dbDataSource.query(`
+      DELETE FROM ${tableNameDelete} 
+      WHERE ${db_type === 'oracle' ? oracleKeyValueString : keyValueString }
+      `)
 
     dbDataSource.destroy();
     console.log('Database has been disconnected');
@@ -280,7 +270,7 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
       newColumnString = keyValueString.slice(0, -1); 
     } else {
       newColumnString = keyValueString.slice(0, -2); 
-    }
+    };
 
     if (db_type === 'mssql' || db_type === 'oracle') {
       const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
@@ -315,26 +305,22 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
 export const updateDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type, username } = req.session;
+  const { tableName, columnName, schemaData, columnData } = req.body;
 
   try{
-    const updateColumnData: {[key: string]: string } = req.body;
+    const tableNameUpdateColumn = await Promise.resolve(tableNameFormat(req, dbDataSource));
+    console.log('schemaData: ', schemaData)
+    console.log('columnData: ', columnData)
 
-    const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-
-    const slicedTableName = updateColumnData.tableName.slice(7, updateColumnData.tableName.length + 1);
-    const tableName: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${slicedTableName}"` :
-      db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : updateColumnData.tableName;
-
-
-    const updatedColumn: Promise<unknown> = await dbDataSource.query(`
-      ALTER TABLE ${tableName}
-      ${db_type === 'postgres' || db_type === 'microsoft' ? 'ALTER COLUMN' : 'MODIFY' } "${updateColumnData.columnName}" ${updateColumnData.dataType} ${db_type === 'postgres' ? updateColumnData.constraintName : null} ${updateColumnData.constraintExpression}
-      `);
+    // const updatedColumn: Promise<unknown> = await dbDataSource.query(`
+    //   ALTER TABLE ${tableNameUpdateColumn}
+    //   ${db_type === 'postgres' || db_type === 'microsoft' ? 'ALTER COLUMN' : 'MODIFY' } "${columnName}" ${db_type} ${db_type === 'postgres' ? updateColumnData.constraintName : null} ${updateColumnData.constraintExpression}
+    //   `);
 
     dbDataSource.destroy();
     console.log('Database has been disconnected');
-    console.log('addedForeignKey in helper: ', updatedColumn);
-    return updatedColumn;
+    // console.log('addedForeignKey in helper: ', updatedColumn);
+    // return updatedColumn;
 
   } catch (err: unknown) {
     console.log('Error occurred in the addedForeignKey middleware: ', err);

@@ -26,14 +26,23 @@ export default function TableNodeColumn({
 
   const newColumn = JSON.parse(JSON.stringify(column))
   const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
-  
+  const [selectedConstraint, setSelectedConstraint] = useState('NA');
+
+    const handleConstraintChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      e.preventDefault();
+      setSelectedConstraint(e.target.value);
+    };
 
   useEffect(()=> {
     setColumnData({...newColumn})
   },[column])
   
-  const onSave = () => {
+  const onSave = async () => {
     const currentSchema = { ...schemaStore };
+    const tableRef = columnData.TableName;
+    const colRef = columnData.field_name;
+    const colData = columnData
+    const tableName = tableRef.substring(tableRef.indexOf('.') + 1);
     currentSchema[columnData.TableName][columnData.field_name] = {
       ...columnData,
       // References was updated by AddReference modal, this avoids that change being overwritten
@@ -43,6 +52,13 @@ export default function TableNodeColumn({
     if (column.field_name !== columnData.field_name) {
       delete currentSchema[column.TableName][column.field_name];
     }
+    await fetch(`/api/sql/${dbCredentials.db_type}/updateColumn`, {
+      method:'PATCH',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({tableName: tableName,  columnName: colRef, schemaData: currentSchema[tableRef][colRef], columnData: colData})
+    })
     setSchemaStore(currentSchema);
     setMode('default');
   };
@@ -110,6 +126,8 @@ export default function TableNodeColumn({
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
+              value={selectedConstraint}
+              onChange={handleConstraintChange}
             >
               {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
               <option value="NA">NA</option>
