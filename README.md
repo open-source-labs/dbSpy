@@ -21,14 +21,14 @@
 
 - Enhanced support for SQL databases with expanded options.
 - Introduction of visualized DATA tables for improved data analysis.
-- Full CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
-- Capability to remove tables as needed.
+- Robust CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
+- Capability to remove and add tables as needed.
 - Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
 
 
 ### Use Cases
 
-- Connecting to an existing remote PostgreSQL, MySQL,  MicroSoftSQL, OracleSQL, and SQLite3  database
+- Connecting to an existing remote PostgreSQL, MySQL, MicroSoftSQL, OracleSQL databases
   - Renders an ER diagram for SCHEMA and DATA of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
 - Uploading your database's SQL file
   - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
@@ -158,6 +158,7 @@ npm run cert:linux
 2. Select the database type from the dropdown.
 3. Input your database URI information OR database connection credentials and click on "Connect".
 4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
+    * OracleSQL requires the download of the OCI - [here](https://www.oracle.com/cloud/free/)
 
 <img src="images/withDataButton.png">
 
@@ -173,18 +174,23 @@ npm run cert:linux
 
 ## Adding column(s) to a SCHEMA table or row(s) to a DATA table
 
-1. To add a new column/row in a table, click on the add icon on the top right of the table node. This will render a new column/row in the table in edit mode. The changes made in DATA table will be updated in your database.
+1. To add a new column/row in a table, click on the add/plus icon on the top right of the table node. 
+2. This will render a new column/row in the table in edit mode. 
+3. Add in the data you would like in each column/row. 
+4. Click on the confirm icon to save the column/row. 
+5. The changes made in DATA table will be updated in your database. 
+6. Click on the cancel icon to cancel the addition.
    <img src="images/Create%20tables.png">
    <img src="images/addRow.png">
 
-### Editing an existing column to a SCHEMA table or row to a DATA table
+### Editing an existing row of a DATA table
 
 1. Click on the edit icon of the specific column that you want to edit.
 2. You can make changes to column fields based on the selections provided.
 3. Click on the save icon to keep your changes.
 4. Click on the cancel icon to cancel your changes.
 
-## Deleting an column to a SCHEMA table or row to a DATA table
+### Deleting a column to a SCHEMA table or row of a DATA table
 
 1. Click on the delete icon of the specific column that you want to delete.
 2. Click on the confirm icon to delete the column.
@@ -197,6 +203,18 @@ npm run cert:linux
 3. Click save or cancel to proceed.
 4. Click on the save icon to keep your changes or click on the cancel icon to cancel your changes.
 
+### Adding a table to a database
+
+1. When on the display page, click the 'Add Table' icon after you have either connected to a database or clicked 'Build Database'.
+2. Fill in the required information about the first column of your table along with a name.
+3. If you would like to include additional columns, click the 'Add Column' button in the top right corner.
+3. Click confirm to create your table.
+
+### Deleting a table from a database
+
+1. After you have either connected to a database or started a new database, the 'Delete Table' icon will appear on the left side of the display page
+2. This will open a pop out with a list of tables from the database.
+3. Select which table that you would like to have removed, and confirm to have it deleted.
 
 ### Navigating the canvas
 
@@ -218,9 +236,9 @@ npm run cert:linux
 ---
 
 ### Credits/Contributors
-- Yichung Chiu • [LinkedIn] • [Github]
-- Joseph Tejeda • [LinkedIn] • [Github]
-- Stephen Havig • [LinkedIn] • [Github]
+- Yichung Chiu • [LinkedIn](https://www.linkedin.com/in/yichung-chiu-b14a94272/) • [Github](https://github.com/ychiu5896)
+- Joseph Tejeda • [LinkedIn](https://www.linkedin.com/in/atxjtejeda/) • [Github](https://github.com/JosephTejeda)
+- Stephen Havig • [LinkedIn](https://www.linkedin.com/in/stephen-havig-199340145/) • [Github](https://github.com/Stephen-Havig)
 - Das Kang • [LinkedIn](https://www.linkedin.com/in/das-kang/) • [Github](https://github.com/dahae0309)
 - Alexander Tu • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
 - Michael Costello • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)

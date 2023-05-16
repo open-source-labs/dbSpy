@@ -2,6 +2,7 @@ import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 
 
+// HELPER FUNCTIONS FOR THE HELPER FUNCTIONS
 
 const tableNameFormat = async (req: Request, dbDataSource: DataSource) => {
   const { db_type, username } = req.session;
@@ -304,18 +305,19 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
 
 export const updateDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
-  const { db_type, username } = req.session;
-  const { tableName, columnName, schemaData, columnData } = req.body;
+  const { db_type } = req.session;
+  const { columnName, schemaData, columnData } = req.body;
 
   try{
     const tableNameUpdateColumn = await Promise.resolve(tableNameFormat(req, dbDataSource));
     console.log('schemaData: ', schemaData)
     console.log('columnData: ', columnData)
 
-    // const updatedColumn: Promise<unknown> = await dbDataSource.query(`
-    //   ALTER TABLE ${tableNameUpdateColumn}
-    //   ${db_type === 'postgres' || db_type === 'microsoft' ? 'ALTER COLUMN' : 'MODIFY' } "${columnName}" ${db_type} ${db_type === 'postgres' ? updateColumnData.constraintName : null} ${updateColumnData.constraintExpression}
-    //   `);
+
+      await dbDataSource.query(`
+      UPDATE ${tableNameUpdateColumn}
+      ${db_type === 'postgres' || db_type === 'microsoft' ? 'ALTER COLUMN' : 'MODIFY' } "${columnName}" ${db_type} ${ columnData.additional_constraint ? columnData.additional_constraint : ''};
+      `);
 
     dbDataSource.destroy();
     console.log('Database has been disconnected');
