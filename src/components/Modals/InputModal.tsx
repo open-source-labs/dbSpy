@@ -91,8 +91,6 @@ export default function InputModal({
 
       if (mode === 'table') {
         addTableSchema(tableName, columnData);
-        console.log('columnData', columnData)
-        console.log('additionalData', additionalColumn)
         const dataToSend: AddTableToDb = {
           tableName: tableName,
           newColumns: columnData
