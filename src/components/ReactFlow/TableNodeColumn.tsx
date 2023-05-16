@@ -22,7 +22,7 @@ export default function TableNodeColumn({
 
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
-  const [checked, setChecked] = useState(false);
+
 
   const newColumn = JSON.parse(JSON.stringify(column))
   const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
@@ -37,12 +37,13 @@ export default function TableNodeColumn({
     setColumnData({...newColumn})
   },[column])
   
+  // THIS IS WHERE YOU CAN FINISH UP THE FUNCTION TO UPDATE COLUMNS
   const onSave = async () => {
     const currentSchema = { ...schemaStore };
-    const tableRef = columnData.TableName;
-    const colRef = columnData.field_name;
-    const colData = columnData
-    const tableName = tableRef.substring(tableRef.indexOf('.') + 1);
+    // const tableRef = columnData.TableName;
+    // const colRef = columnData.field_name;
+    // columnData.additional_constraints = selectedConstraint as "NULL" | "NOT NULL" | "PRIMARY" | "UNIQUE";
+    // const tableName = tableRef.substring(tableRef.indexOf('.') + 1);
     currentSchema[columnData.TableName][columnData.field_name] = {
       ...columnData,
       // References was updated by AddReference modal, this avoids that change being overwritten
@@ -52,13 +53,13 @@ export default function TableNodeColumn({
     if (column.field_name !== columnData.field_name) {
       delete currentSchema[column.TableName][column.field_name];
     }
-    await fetch(`/api/sql/${dbCredentials.db_type}/updateColumn`, {
-      method:'PATCH',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({tableName: tableName,  columnName: colRef, schemaData: currentSchema[tableRef][colRef], columnData: colData})
-    })
+    // await fetch(`/api/sql/${dbCredentials.db_type}/updateColumn`, {
+    //   method:'PATCH',
+    //   headers:{
+    //     'Content-Type':'application/json'
+    //   },
+    //   body:JSON.stringify({tableName: tableName,  columnName: colRef, schemaData: { ...schemaStore }[tableRef][colRef], columnData: columnData})
+    // })
     setSchemaStore(currentSchema);
     setMode('default');
   };
@@ -73,7 +74,7 @@ export default function TableNodeColumn({
         'Content-Type':'application/json'
       },
       body:JSON.stringify({tableName: tableRef.substring(tableRef.indexOf('.') + 1), columnName: colRef})
-    })
+    });
     deleteColumnSchema(tableRef, colRef);
   };
 
@@ -92,6 +93,9 @@ export default function TableNodeColumn({
             <input
               className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
               value={columnData.field_name}
+              // Currently unable to update column info if the name is changed.
+              disabled
+              // Need an additional query before to change the name before updating column
               onChange={(e) =>
                 setColumnData((prevData) => ({
                   ...prevData,
@@ -130,7 +134,7 @@ export default function TableNodeColumn({
               onChange={handleConstraintChange}
             >
               {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
-              <option value="NA">NA</option>
+              <option value={undefined}>N/A</option>
               <option value="NOT NULL">NOT NULL</option>
               <option value="PRIMARY">PRIMARY</option>
               <option value="UNIQUE">UNIQUE</option>

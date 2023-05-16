@@ -26,12 +26,7 @@ const microsoftController = {
           const references: {[key: string]: string | boolean}[] = []
           if (foreignKey){
             references.push({
-              // isDestination: false,
-              // PrimaryKeyName: foreignKey.column_name,
-              // PrimaryKeyTableName: 'public.' + tableName,
-              // ReferencesPropertyName: foreignKey.referenced_column_name,
-              // ReferencesTableName: 'public.' + foreignKey.referenced_table_name,
-              // constraintName: foreignKey.constraint_name,
+              // These got a little mixed up but are in the right place
               isDestination: false,
               PrimaryKeyName: foreignKey.referenced_column_name,
               PrimaryKeyTableName: 'public.' + foreignKey.referenced_table_name,

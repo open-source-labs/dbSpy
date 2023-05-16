@@ -21,6 +21,7 @@ import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
 import yufaLi from '../../assets/contributors/yufa_li.jpeg';
 import DK from '../../assets/contributors/dk.png';
 import SH from '../../assets/contributors/SH.jpg';
+import JT from '../../assets/contributors/joseph_360.png';
 
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
@@ -170,7 +171,7 @@ const profileList: profileInfo[] = [
     githubUrl: 'https://github.com/dahae0309',
   },
   {
-    imgUrl: AG,
+    imgUrl: JT,
     name: 'Joseph Tejeda',
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/atxjtejeda/',
@@ -187,15 +188,16 @@ const profileList: profileInfo[] = [
     imgUrl: YC,
     name: 'Yichung Chiu',
     title: 'Software Engineer',
-    linkedInUrl: 'https://www.linkedin.com/feed/',
-    githubUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
+    linkedInUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
+    githubUrl: 'https://github.com/ychiu5896',
   },
 ];
 
 export default function Contributors() {
   const profiles = [] as React.ReactNode[];
-  profileList.reverse(); // Recent contributors first
-  profileList.forEach((profile, i) => profiles.push(<Profile props={profile} key={`contributor${i}`} />))
+  for (let i = profileList.length - 1; i >= 0; i--) {
+    profiles.push(<Profile props={profileList[i]} key={`contributor${i}`} />)
+   };
   
   return (
     <div className="contributors container my-24 mx-auto px-6">
@@ -207,4 +209,4 @@ export default function Contributors() {
       </section>
     </div>
   );
-}
+};
