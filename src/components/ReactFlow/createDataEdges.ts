@@ -4,7 +4,6 @@ import { Edge } from '@/Types';
 
 //----- Creates an array of all edges in the data table
 export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
-console.log(schemaObject)
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
     const table = schemaObject[tableKey];

@@ -157,11 +157,11 @@ const newDatastore = structuredClone(dataStore)
        body: JSON.stringify({ tableName: tableName, primaryKey: PK, value: value[PK] })
      })
       .then((res) => {
-      console.log("deleting row info sent")
+      //console.log("deleting row info sent")
+        return res
       })
       .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
    } else {
-     console.log('i am here!! there is no PK or value[PK]')
       const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
        method: 'DELETE',
        headers: {
@@ -170,7 +170,8 @@ const newDatastore = structuredClone(dataStore)
        body: JSON.stringify({ tableName: tableName, deletedRow: value })
      })
         .then((res) => {
-          console.log("deleting row info sent")
+          //console.log("deleting row info sent")
+          return res
         })
         .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
    }
