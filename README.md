@@ -62,6 +62,8 @@
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
 ## <img src="images/Darkmode.png">
+## <img src="images/LandingPageDemo.gif">
+## <img src="images/MakingEditsDemo.gif">
 
 ### Getting started
 

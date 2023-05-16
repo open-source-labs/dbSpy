@@ -13,7 +13,7 @@ import { identity } from 'cypress/types/lodash';
 import { RowsOfData } from '@/Types';
 
 type RowData = {
-  [key: string]: string | number
+  [key: string]: string | number;
 }
 
 type DataTableNodeColumnProp = {
@@ -35,14 +35,14 @@ export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTa
 
 //reset the state when row changes. Specifically for on-delete functionality. 
   useEffect(()=> {
-    setRowData({...newRow})
-    setTempData({...newRow})
+    setRowData({...newRow});
+    setTempData({...newRow});
     },[row])
 
 
   const [mode, setMode] = useState('default');
 
-  const rowDataKeys = Object.keys(row)
+  const rowDataKeys = Object.keys(row);
 
   interface rowData {
     [key:string|number]:string|number|boolean|null
@@ -72,31 +72,31 @@ const onSave = async () => {
   changes.newRow= {...tempData};
   //if statement necessary for typing correction
   if(PK[0] !== null && changes.newRow!== undefined){
-    changes.primaryKey = {[PK[0]]:changes.newRow[PK[0]]}
+    changes.primaryKey = {[PK[0]]:changes.newRow[PK[0]]};
   }
   //delete primary key column from change for fetch request row.
-  if(PK[0]) delete changes.newRow[PK[0]]
+  if(PK[0]) delete changes.newRow[PK[0]];
  
 
   //iterate through and find the changes between new and old data.
   const checkConstraints:tempData = {}
   for(let currentKey in tempData ){
     if(tempData[currentKey] !== rowData[currentKey]){
-      checkConstraints[currentKey] =tempData[currentKey]
+      checkConstraints[currentKey] =tempData[currentKey];
     }
   }
 
   //High level idea is to prevent edits into a matching primary key of the same table.
   //Change all values in set into string in order to check if changed values(string) exist in primary key constraints(string)
   if(PK[1]){
-    const tempObj = []
+    const tempObj = [];
     for(const setItem of PK[1]){
       if(typeof setItem === 'number'){
         tempObj.push(setItem.toString());
         PK[1].delete(setItem);
       }
     }
-    tempObj.forEach((curr)=> PK[1]?.add(curr))
+    tempObj.forEach((curr)=> PK[1]?.add(curr));
   
     for(let currentKey in checkConstraints ){
       if(PK[0] === currentKey && PK[1].has(checkConstraints[currentKey])){

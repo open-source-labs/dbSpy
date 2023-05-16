@@ -186,8 +186,8 @@ const profileList: profileInfo[] = [
     imgUrl: YC,
     name: 'Yichung Chiu',
     title: 'Software Engineer',
-    linkedInUrl: 'https://www.linkedin.com/feed/',
-    githubUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
+    linkedInUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
+    githubUrl: 'https://github.com/ychiu5896',
   },
 ];
 
