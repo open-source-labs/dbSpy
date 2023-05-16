@@ -2,15 +2,10 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import {
-  FaRegEdit,
-  FaRegTrashAlt,
-  FaRegSave,
-  FaRegCheckSquare,
-  FaRegWindowClose,
-} from 'react-icons/fa';
+import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose, } from 'react-icons/fa';
 import DataTypeOptions from '../Modals/DataTypeOptions';
 import { ColumnSchema, SQLDataType } from '@/Types';
+import useCredentialsStore from '../../store/credentialsStore';
 
 export default function TableNodeColumn({
   column,
@@ -23,6 +18,7 @@ export default function TableNodeColumn({
     (state) => state
   );
   const { setEditRefMode } = useSettingsStore((state) => state);
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
@@ -30,23 +26,23 @@ export default function TableNodeColumn({
 
   const newColumn = JSON.parse(JSON.stringify(column))
   const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
-  
+  const [selectedConstraint, setSelectedConstraint] = useState('NA');
+
+    const handleConstraintChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      e.preventDefault();
+      setSelectedConstraint(e.target.value);
+    };
 
   useEffect(()=> {
     setColumnData({...newColumn})
   },[column])
-
-  useEffect(() => {
-    if (checked === false) {
-      setChecked(true)
-    } else {
-      setChecked(false)
-    };
-  },[checked]);
-
-
-  const onSave = () => {
+  
+  const onSave = async () => {
     const currentSchema = { ...schemaStore };
+    const tableRef = columnData.TableName;
+    const colRef = columnData.field_name;
+    const colData = columnData
+    const tableName = tableRef.substring(tableRef.indexOf('.') + 1);
     currentSchema[columnData.TableName][columnData.field_name] = {
       ...columnData,
       // References was updated by AddReference modal, this avoids that change being overwritten
@@ -56,14 +52,28 @@ export default function TableNodeColumn({
     if (column.field_name !== columnData.field_name) {
       delete currentSchema[column.TableName][column.field_name];
     }
+    await fetch(`/api/sql/${dbCredentials.db_type}/updateColumn`, {
+      method:'PATCH',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({tableName: tableName,  columnName: colRef, schemaData: currentSchema[tableRef][colRef], columnData: colData})
+    })
     setSchemaStore(currentSchema);
     setMode('default');
   };
 
-  const onDelete = () => {
+  const onDelete = async () => {
     //declare prior values
     const tableRef = columnData.TableName;
     const colRef = columnData.field_name;
+    await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({tableName: tableRef.substring(tableRef.indexOf('.') + 1), columnName: colRef})
+    })
     deleteColumnSchema(tableRef, colRef);
   };
 
@@ -116,6 +126,8 @@ export default function TableNodeColumn({
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
+              value={selectedConstraint}
+              onChange={handleConstraintChange}
             >
               {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
               <option value="NA">NA</option>
@@ -169,7 +181,8 @@ export default function TableNodeColumn({
           ) : mode === 'delete' ? (
             <button
               id={`${id}-confirmBtn`}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 onDelete();
                 setMode('default');
               }}
