@@ -197,7 +197,7 @@ export default function Contributors() {
   const profiles = [] as React.ReactNode[];
   for (let i = profileList.length - 1; i >= 0; i--) {
     profiles.push(<Profile props={profileList[i]} key={`contributor${i}`} />)
-   }
+   };
   
   return (
     <div className="contributors container my-24 mx-auto px-6">
@@ -209,4 +209,4 @@ export default function Contributors() {
       </section>
     </div>
   );
-}
+};
