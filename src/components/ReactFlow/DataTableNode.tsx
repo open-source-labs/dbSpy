@@ -115,8 +115,6 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 
 
  const deleteRow = async (value:RowsOfData,index:number,id:number|string):Promise<void> =>  {
-
-
 ////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
 //loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
 //   for(let col in value){
@@ -129,12 +127,9 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 //     }
 //   }
 // }
-/////////////////////////////////////////////////////////////////////////
-  
+////////////////////////////////////////////////////////////////////////
 const newDatastore = structuredClone(dataStore);
-
   restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length));
-
   newDatastore[tableName] = restRowsData;
    setDataStore({...newDatastore,[id]:restRowsData});
      await fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
@@ -149,28 +144,7 @@ const newDatastore = structuredClone(dataStore);
         return res;
       })
       .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
-   } else {
-      const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
-       method: 'DELETE',
-       headers: {
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify({ tableName: tableName, deletedRow: value })
-     })
-        .then((res) => {
-          //console.log("deleting row info sent")
-          return res;
-        })
-        .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
-   }
-  ////////////////// Fetch path: /api/delete ///////////////////
-  // {
-  //  tableName: name of table,
-  //  primaryKey: primary key,
-  //  value: corresponding value of the primary key
-  // }
-  ////////////////////////////////////////////
-  }
+  };
 
 
   
