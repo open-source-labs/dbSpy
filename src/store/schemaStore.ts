@@ -26,7 +26,7 @@ export type SchemaState = {
   addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
-  deleteColumnSchema: (tableRef: string, rowRef: string) => void;
+  deleteColumnSchema: (tableRef: string, columnRef: string) => void;
   _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
@@ -160,10 +160,10 @@ const useSchemaStore = create<SchemaState>()(
           });
         },
         //---------------------------------
-        deleteColumnSchema: (tableRef, rowRef) =>
+        deleteColumnSchema: (tableRef, columnRef) =>
           set((state) => {
             const newState = JSON.parse(JSON.stringify(state));
-            delete newState.schemaStore[tableRef][rowRef];
+            delete newState.schemaStore[tableRef][columnRef];
             get()._addHistory(newState);
             return newState;
           }),

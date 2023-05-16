@@ -165,7 +165,7 @@ const microsoftController = {
 //-------------DELETE COLUMN------------------------------------------------------------
   microsoftDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteColumn(req, res, next);
+      await Promise.resolve(deleteColumn(req, res, next));
       console.log("microsoftDeleteColumn function has concluded");
       return next();
     } catch (err: unknown) {

@@ -7,13 +7,6 @@ const tableNameFormat = async (req: Request, dbDataSource: DataSource) => {
   const { db_type, username } = req.session;
   const { tableName } = req.body;
 
-  // let newTableName = '';
-  // if (tableName.substring(0, 7) === '.public') {
-  //   newTableName = tableName.slice(7)
-  // } else {
-  //   newTableName = tableName
-  // };
-
   let tableNameFormat = '';
   switch (db_type) {
     case 'oracle':
@@ -212,20 +205,6 @@ export const deleteRow: RequestHandler = async (req: Request, _res: Response, ne
   const { primaryKey, value, deletedRow } = req.body
  
   try{
-    // let tableNameDelete = '';
-    // switch (db_type) {
-    //   case 'oracle':
-    //     tableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
-    //     break;
-    //   case 'mssql':
-    //     const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-    //     tableNameDelete = `${schemaName[0].SchemaName}.${tableName}`;
-    //     break;
-    //   default:
-    //     tableNameDelete = tableName;
-    //     break;
-    // };
-
     const tableNameDelete = await Promise.resolve(tableNameFormat(req, dbDataSource));
 
     if (primaryKey){
@@ -279,26 +258,33 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
     console.log('tableNameAddColumn: ', tableNameAddColumn)
 
     let keyValueString: string = '';
-    let repeatingKeyValueString: string = '';
     let newColumnString: string = ''
 
     columnData.forEach((el: NewColumn) => {
-      if (db_type === 'mssql' || db_type === 'oracle') {
-        repeatingKeyValueString += `ALTER TABLE ${tableNameAddColumn} ADD "${el.name}" ${el.type === 'AUTO_INCREMENT' ? 'INT' : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}; `
-      } else {
+      if (db_type === 'mssql') {
+        keyValueString += `ALTER TABLE ${tableNameAddColumn} ADD "${el.name}" ${el.type === 'AUTO_INCREMENT' ? 'INT' : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}; `
+      } else if(db_type === 'oracle') {
+        let number: string = '';
+        if (el.type.includes('VARCHAR')) {
+          const regex = /\((\d+)\)/;
+          const match = el.type.match(regex)
+          number = (match as RegExpMatchArray)[1]
+        }
+        keyValueString += `ALTER TABLE ${tableNameAddColumn} ADD(${el.name} ${el.type.includes('VARCHAR') ? `VARCHAR2(${+number})` : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}))`
+     } else {
         keyValueString += `ADD${db_type === 'postgres' ? ' COLUMN' : '' } ${ db_type === 'mysql' ? `${el.name}` : `"${el.name}"`} ${el.type === 'AUTO_INCREMENT' ? 'INT' : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}, `
       };
     });
 
     if (db_type === 'mssql' || db_type === 'oracle') {
-      newColumnString = repeatingKeyValueString.slice(0, -1); 
+      newColumnString = keyValueString.slice(0, -1); 
     } else {
       newColumnString = keyValueString.slice(0, -2); 
     }
 
-    if (db_type === 'mssql') {
+    if (db_type === 'mssql' || db_type === 'oracle') {
       const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
-        ${repeatingKeyValueString}
+        ${newColumnString}
         `);
 
       await dbDataSource.destroy();
@@ -364,13 +350,13 @@ export const deleteColumn: RequestHandler = async (req: Request, _res: Response,
   const dbDataSource = await dbConnect(req)
   const { db_type } = req.session
   const { columnName } = req.body
-
+console.log('we are in the helper functions: ', req.body)
   try{  
     const columnTableNameDelete = await Promise.resolve(tableNameFormat(req, dbDataSource));
 
     const deletedColumn: Promise<unknown> = await dbDataSource.query(`
     ALTER TABLE ${columnTableNameDelete}
-    DROP${db_type !== 'mysql' ? ' COLUMN' : null} ${columnName}
+    DROP${db_type !== 'mysql' ? ' COLUMN' : ''} ${columnName}
     `)
 
     dbDataSource.destroy();

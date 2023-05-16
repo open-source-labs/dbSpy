@@ -2,15 +2,10 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import {
-  FaRegEdit,
-  FaRegTrashAlt,
-  FaRegSave,
-  FaRegCheckSquare,
-  FaRegWindowClose,
-} from 'react-icons/fa';
+import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose, } from 'react-icons/fa';
 import DataTypeOptions from '../Modals/DataTypeOptions';
 import { ColumnSchema, SQLDataType } from '@/Types';
+import useCredentialsStore from '../../store/credentialsStore';
 
 export default function TableNodeColumn({
   column,
@@ -23,6 +18,7 @@ export default function TableNodeColumn({
     (state) => state
   );
   const { setEditRefMode } = useSettingsStore((state) => state);
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
@@ -35,16 +31,7 @@ export default function TableNodeColumn({
   useEffect(()=> {
     setColumnData({...newColumn})
   },[column])
-
-  useEffect(() => {
-    if (checked === false) {
-      setChecked(true)
-    } else {
-      setChecked(false)
-    };
-  },[checked]);
-
-
+  
   const onSave = () => {
     const currentSchema = { ...schemaStore };
     currentSchema[columnData.TableName][columnData.field_name] = {
@@ -60,10 +47,17 @@ export default function TableNodeColumn({
     setMode('default');
   };
 
-  const onDelete = () => {
+  const onDelete = async () => {
     //declare prior values
     const tableRef = columnData.TableName;
     const colRef = columnData.field_name;
+    await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({tableName: tableRef.substring(tableRef.indexOf('.') + 1), columnName: colRef})
+    })
     deleteColumnSchema(tableRef, colRef);
   };
 
@@ -169,7 +163,8 @@ export default function TableNodeColumn({
           ) : mode === 'delete' ? (
             <button
               id={`${id}-confirmBtn`}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 onDelete();
                 setMode('default');
               }}

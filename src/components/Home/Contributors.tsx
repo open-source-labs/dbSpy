@@ -19,6 +19,7 @@ import michaelCostello from '../../assets/contributors/michael_costello.jpeg';
 import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
 import yufaLi from '../../assets/contributors/yufa_li.jpeg';
 import DK from '../../assets/contributors/dk.png';
+import SH from '../../assets/contributors/SH.jpg';
 
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
@@ -175,7 +176,7 @@ const profileList: profileInfo[] = [
     githubUrl: 'https://github.com/JosephTejeda',
   },
   {
-    imgUrl: AG,
+    imgUrl: SH,
     name: 'Stephen Havig',
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/stephen-havig-199340145/',
