@@ -11,6 +11,7 @@ Below is a list of features and improvements to which you can contribute. If you
 - Expand compatibility with other SQL database such as Oracle SQL, Microsoft SQL, IBM Db2, etc.
 - Add additional themes and graphical options to canvas and tables
 - Live query feedback so users can see what their changes to the canvas look like as queries.
+- Create login feature to save multiple databases to user account and be able to load multiple past databases.
 
 Known bugs/issues
 
