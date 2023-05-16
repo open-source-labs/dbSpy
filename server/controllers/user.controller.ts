@@ -73,36 +73,36 @@ export const verifyUser: RequestHandler = async (req: Request, res: Response, ne
      const {id, email, verified_email, name, picture, type} = res.locals.userInfo;
     
     const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-    const hashedPw = await bcrypt.hash(id,saltRounds)
+    const hashedPw = id.toString();
     if(verified_email){
-      const addUser = await pool.query(queryStr,[name, email, hashedPw, picture,type])
+      const addUser = await pool.query(queryStr,[name, email, hashedPw, picture,type]);
       log.info('verified or added Oauth User');
       const foundUser = (await findUser(email)) as RowDataPacket[][];
-      log.info('found user')
+      log.info('found user');
       res.locals.user = foundUser[0][0];
-      console.log(res.locals.user)
+      console.log(res.locals.user);
       return res.status(200).json(res.locals.user);
     }
     else{
-      log.error('Error in verifyUser OAUTH')
-      next(`Email not verified`)
+      log.error('Error in verifyUser OAUTH');
+      next(`Email not verified`);
     } 
   }else{// for GITHUB
     const {login,id,url,avatar_url,type} = res.locals.userInfo;
     const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-    let hashedPw:string
+    let hashedPw:string;
     //fix bcrypt bug
     if(id) {
-       hashedPw = await bcrypt.hash(id.toString(),saltRounds)
+       hashedPw = id.toString();
       }else {
         hashedPw = 'default'};
     console.log(hashedPw);
     const addUser = await pool.query(queryStr,[login, url, hashedPw, avatar_url,type]);
     log.info('verified or added Oauth User');
     const foundUser = (await findUser(url)) as RowDataPacket[][];
-    log.info('found user')
+    log.info('found user');
     res.locals.user = foundUser[0][0];
-    console.log(res.locals.user)
+    console.log(res.locals.user);
     return res.status(200).json(res.locals.user);
   }
 
