@@ -14,6 +14,7 @@ import AR from '../../assets/contributors/ar.jpg';
 import AA from '../../assets/contributors/aa.jpg';
 import SG from '../../assets/contributors/sg.jpg';
 import KW from '../../assets/contributors/kw.jpg';
+import YC from '../../assets/contributors/yc.jpg';
 import alexTu from '../../assets/contributors/alex_tu.jpg';
 import michaelCostello from '../../assets/contributors/michael_costello.jpeg';
 import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
@@ -182,11 +183,11 @@ const profileList: profileInfo[] = [
     githubUrl: 'https://github.com/Stephen-Havig',
   },  
   {
-    imgUrl: AG,
+    imgUrl: YC,
     name: 'Yichung Chiu',
     title: 'Software Engineer',
-    linkedInUrl: '',
-    githubUrl: '',
+    linkedInUrl: 'https://www.linkedin.com/feed/',
+    githubUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
   },
 ];
 
