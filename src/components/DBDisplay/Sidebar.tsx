@@ -3,7 +3,7 @@ import React, { useState, ReactNode } from 'react';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationSqIcon.png'
+import informationIcon from '../../../images/informationIcon2.png'
 
 // Components Imported;
 import useCredentialsStore from '../../store/credentialsStore';

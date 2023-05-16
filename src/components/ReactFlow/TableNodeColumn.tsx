@@ -26,13 +26,23 @@ export default function TableNodeColumn({
 
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
+  const [checked, setChecked] = useState(false);
 
   const newColumn = JSON.parse(JSON.stringify(column))
   const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
+  
 
   useEffect(()=> {
     setColumnData({...newColumn})
   },[column])
+
+  useEffect(() => {
+    if (checked === false) {
+      setChecked(true)
+    } else {
+      setChecked(false)
+    };
+  },[checked]);
 
 
   const onSave = () => {
