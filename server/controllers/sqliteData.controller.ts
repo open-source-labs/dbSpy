@@ -25,12 +25,7 @@ const sqliteController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey) {
           references.push({
-            // isDestination: false,
-            // PrimaryKeyName: foreignKey.from,
-            // PrimaryKeyTableName: 'public.' + tableName,
-            // ReferencesPropertyName: foreignKey.to,
-            // ReferencesTableName: foreignKey.table,
-            // constraintName: tableName + '_' + foreignKey.from + '_fkey'
+            // These got a little mixed up but are in the right place
             isDestination: false,
             PrimaryKeyName: foreignKey.to,
             PrimaryKeyTableName: foreignKey.table,

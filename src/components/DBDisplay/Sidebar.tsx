@@ -146,8 +146,9 @@ const Sidebar = (props: any) => {
           <option value="postgres">PostgreSQL</option>
           <option value="mysql">MySQL</option>
           <option value="mssql">Microsoft SQL</option>
-          <option value="oracle">Oracle SQL (requires OIC)</option>
-          <option value="sqlite">SQLite3</option>
+          <option value="oracle">Oracle SQL (requires OCI)</option>
+          
+          {/* <option value="sqlite">SQLite3</option> */}
         </select>
       </span>
       <br></br>

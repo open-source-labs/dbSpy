@@ -42,7 +42,7 @@ export default function Home() {
             <br />
             {user ? (
               <div className="text-3xl font-bold">
-                Welcome back, {user.full_name.slice(0, user.full_name.indexOf(' '))}
+                Welcome back, {user.full_name.includes(' ') ? user.full_name.slice(0, user.full_name.indexOf(' ')) : user.full_name}!
               </div>
             ) : (
               <NavLink

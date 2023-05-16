@@ -2,13 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import useDataStore from '../../store/dataStore';
 import useCredentialsStore from '../../store/credentialsStore';
-import {
- FaRegEdit,
- FaRegTrashAlt,
- FaRegSave,
- FaRegCheckSquare,
- FaRegWindowClose,
-} from 'react-icons/fa';
+import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose } from 'react-icons/fa';
 import { identity } from 'cypress/types/lodash';
 import { RowsOfData } from '@/Types';
 
@@ -21,7 +15,7 @@ type DataTableNodeColumnProp = {
   id?: string|number,
   deleteRow:(rowData:RowsOfData,index:number,id?:string|number)=>void,
   index:number,
-  PK:[string|number|null,Set<unknown>|null]
+  PK:[string|number|null,Set<unknown>|null],
 }
 
 export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTableNodeColumnProp) {
@@ -46,22 +40,20 @@ export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTa
 
   interface rowData {
     [key:string|number]:string|number|boolean|null
-  }
+  };
   interface tempData {
     [key:string|number]:string|number|boolean|null
-  }
+  };
   interface changes{
     newRow?: tempData;
     primaryKey?: tempData;
     tableName?: string|number;
-  }
+  };
 
   const onCancel = () => {
     setTempData(rowData);
     setMode('default');
-  }
-
-
+  };
 
 //on save suppose to save changes to edits on data row.
 const onSave = async () => {
@@ -104,9 +96,9 @@ const onSave = async () => {
         setTempData(rowData);
         setMode('default');
         throw new Error('Duplicate Primary Key');
-      }
-    }
-  }
+      };
+    };
+  };
 
   
   setRowData({...tempData});
@@ -115,8 +107,6 @@ const onSave = async () => {
 
 
   const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
-  
-
     method:'PATCH',
     headers:{
       'Content-Type': 'application/json'
@@ -125,7 +115,7 @@ const onSave = async () => {
     });
     const data = await sendChangesRequest.json()
     console.log(data);
-  }
+  };
 
 /////////////////////////////////
 // Patch Request edit Data endpoint: /api/updateRow

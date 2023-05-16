@@ -155,7 +155,7 @@ export interface ColumnSchema{
   IsForeignKey: boolean;
   field_name: string;
   data_type: SQLDataType;
-  additional_constraints: 'NULL' | 'NOT NULL' | null;
+  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' ;
 };
 
 // these are for data tables ######################
