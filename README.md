@@ -57,7 +57,7 @@
 
 8. **User Sessions:** Sign up/Log in securely with either Google OAuth or JWTs/Bcrypt
 
-9. **Save/Load:** Store and reload recent database sessions through your user account
+9. **Save/Load:** Store and reload recent database sessions through your user account *CURRENTLY UNDER UPDATE*
 
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
