@@ -195,8 +195,9 @@ const profileList: profileInfo[] = [
 
 export default function Contributors() {
   const profiles = [] as React.ReactNode[];
-  profileList.reverse(); // Recent contributors first
-  profileList.forEach((profile, i) => profiles.push(<Profile props={profile} key={`contributor${i}`} />))
+  for (let i = profileList.length - 1; i >= 0; i--) {
+    profiles.push(<Profile props={profileList[i]} key={`contributor${i}`} />)
+   }
   
   return (
     <div className="contributors container my-24 mx-auto px-6">
