@@ -19,11 +19,11 @@
 
 ### New Features with Version 5.0
 
-- More options for SQL databases.
-- Visualized data tables.
-- Full CRUD functionality to add, update, and delete columns for SCHEMA tables and rows for DATA tables in database.
-- Ability to delete tables.
-- Google and GitHub OAuth log-ins.
+- Enhanced support for SQL databases with expanded options.
+- Introduction of visualized DATA tables for improved data analysis.
+- Full CRUD functionality enabling the addition, modification, and deletion of columns in SCHEMA tables and rows in DATA tables within the database.
+- Capability to remove tables as needed.
+- Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
 
 
 ### Use Cases
