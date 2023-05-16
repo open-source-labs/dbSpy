@@ -143,7 +143,7 @@ const mysqlController = {
 //----------------DELETE ROW---------------------------------------------------------------
   mysqlDeleteRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      deleteRow(req, res, next);
+      await Promise.resolve(deleteRow(req, res, next));
       console.log("mysqlDeleteRow function has concluded");
       return next();
     } catch (err: unknown) {

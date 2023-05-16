@@ -11,7 +11,9 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import informationIcon from '../../../images/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
-import { Edge, DataNode, DataStore ,RowsOfData , Data, dbCredentials } from '@/Types';
+import { Edge, DataNode, DataStore, RowsOfData, Data, dbCredentials } from '@/Types';
+
+
 
 export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
@@ -27,7 +29,7 @@ export default function DataTableNode({ data} : {data:Data} ) {  //this 'data' i
 
   const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
   
-  //split up the table into different parts based on how the data is structured.
+  //split up the table into different parts based on how the data is structured. fetch
   const tableName = tableData[0];
   let firstRow : string[] = []
   let restRowsData : RowsOfData[]|[] = []
@@ -135,54 +137,19 @@ const newDatastore = structuredClone(dataStore)
 
   newDatastore[tableName] = restRowsData
    setDataStore({...newDatastore,[id]:restRowsData});
-      // setDataStore(restRowData);
-  
-
-  if('db_type' in dbCredentials){
-    const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type as string}/deleteRow`,{
-      method:'DELETE',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({tableName : tableName, primaryKey: PK, value: PK !== null ? value[PK]:null })
-    })
-  }
-
-   if (PK !== null && value[PK] !== undefined) {
-     const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
+     await fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
        method: 'DELETE',
        headers: {
          'Content-Type': 'application/json'
        },
-       body: JSON.stringify({ tableName: tableName, primaryKey: PK, value: value[PK] })
+       body: JSON.stringify({ tableName: tableName, value: value })
      })
       .then((res) => {
       //console.log("deleting row info sent")
         return res
       })
       .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
-   } else {
-      const sendDeleteRequest = fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
-       method: 'DELETE',
-       headers: {
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify({ tableName: tableName, deletedRow: value })
-     })
-        .then((res) => {
-          //console.log("deleting row info sent")
-          return res
-        })
-        .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
-   }
-  ////////////////// Fetch path: /api/delete ///////////////////
-  // {
-  //  tableName: name of table,
-  //  primaryKey: primary key,
-  //  value: corresponding value of the primary key
-  // }
-  ////////////////////////////////////////////
-  }
+  };
 
   
 //cannot make handles for data table dynamic since size of each column can vary
