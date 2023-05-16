@@ -22,7 +22,7 @@ interface Column {
   }
 
   type AddTableToDb = {
-  newTableName: string;
+  tableName: string;
   newColumns: Column[]
   };
 
@@ -51,19 +51,19 @@ export default function InputModal({
       isPrimary: true,
       defaultValue: null,
     },
-    {
-      name: 'created_at',
-      type: 'TIMESTAMP',
-      isNullable: false,
-      isPrimary: false,
-      defaultValue: 'NOW()',
-    },
+    // {
+    //   name: 'created_at',
+    //   type: 'TIMESTAMP',
+    //   isNullable: false,
+    //   isPrimary: false,
+    //   defaultValue: 'NOW()',
+    // },
   ];
   const additionalColumn: ColumnData[] = [
     {
       name: 'column_1',
       type: 'VARCHAR(255)',
-      isNullable: false,
+      isNullable: true,
       isPrimary: false,
       defaultValue: null,
     },
@@ -92,7 +92,7 @@ export default function InputModal({
       if (mode === 'table') {
         addTableSchema(tableName, columnData);
         const dataToSend: AddTableToDb = {
-          newTableName: tableName,
+          tableName: tableName,
           newColumns: columnData
           }
           //req to backend to save new table
@@ -110,22 +110,18 @@ export default function InputModal({
 
       }
       else if (mode === 'column') {
-        addColumnSchema(tableName, columnData);
-
-        //new column data that will be sent in the post request body
-        const columnBody = {
-          defaultValue: columnData[0].defaultValue,
-          isNullable: columnData[0].isNullable,
-          isPrimary: columnData[0].isPrimary,
-          name: columnData[0].name,
-          type: columnData[0].type,
-          tableName: tableName.substring(tableName.indexOf('.') + 1)
-        }
+      addColumnSchema(tableName, columnData);
+      console.log('columnData: ', columnData)
+      //new column data that will be sent in the post request body
+      const dataToSend = {
+        tableName: tableName.substring(tableName.indexOf('.') + 1),
+        columnData: columnData,
+      };
         //adds new column to the selected table
         fetch(`/api/sql/${dbCredentials.db_type}/addColumn`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify(columnBody)
+          body: JSON.stringify(dataToSend)
         })
       }
       return true;
@@ -139,7 +135,7 @@ export default function InputModal({
   const newColumn: ColumnData = {
     name: `column_${columnData.length + 1}`,
     type: 'VARCHAR(255)',
-    isNullable: false,
+    isNullable: true,
     isPrimary: false,
     defaultValue: null,
   };
@@ -171,7 +167,7 @@ export default function InputModal({
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
         // TODO: LEARN WHY TS IS YELLING
-        prevColumns[index][property] = value;
+        (prevColumns[index][property] as string | boolean | null | SQLDataType) = value;
         return [...prevColumns];
       }
       // Disables unchecking pk
@@ -241,14 +237,16 @@ export default function InputModal({
           <h1 className="  text-slate-900 dark:text-[#f8f4eb]">
             {mode === 'table' ? 'Columns' : 'New Columns'}
           </h1>
-          <button
-            type="button"
-            className="text-slate-900 dark:text-[#f8f4eb]"
-            onClick={addColumn}
-            data-testid="add-table-add-column"
-          >
-            Add Column
-          </button>
+          {dbCredentials.db_type !== 'oracle' ? (
+            <button
+              type="button"
+              className="text-slate-900 dark:text-[#f8f4eb]"
+              onClick={addColumn}
+              data-testid="add-table-add-column"
+            >
+              Add Column
+            </button>
+          ) : null}
         </div>
         {columnInputs}
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">

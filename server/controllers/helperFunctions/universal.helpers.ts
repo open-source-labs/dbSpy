@@ -1,23 +1,42 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 
-// const tableNameFormat = (req: Request, dbDataSource: DataSource, tableNameFormat: string) => {
-//   const { db_type, username } = req.session
-// let tableName = '';
-// switch (db_type) {
-//   case 'oracle':
-//     tableName = `"${(username as string).toUpperCase()}"."${deleteTableData.tableName}"`;
-//     break;
-//   case 'mssql':
-//     const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-//     tableName = `${schemaName[0].SchemaName}.${deleteTableData.tableName}`;
-//     break;
-//   default:
-//     tableName = deleteTableData.tableName;
-//     break;
-// };
-// return tableName
-// }
+
+
+const tableNameFormat = async (req: Request, dbDataSource: DataSource) => {
+  const { db_type, username } = req.session;
+  const { tableName } = req.body;
+
+  // let newTableName = '';
+  // if (tableName.substring(0, 7) === '.public') {
+  //   newTableName = tableName.slice(7)
+  // } else {
+  //   newTableName = tableName
+  // };
+
+  let tableNameFormat = '';
+  switch (db_type) {
+    case 'oracle':
+      tableNameFormat = `"${(username as string).toUpperCase()}"."${tableName}"`;
+      break;
+    case 'mssql':
+      const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+      tableNameFormat = `${schemaName[0].SchemaName}.${tableName}`;
+      break;
+    default:
+      tableNameFormat = tableName;
+      break;
+  };
+  return tableNameFormat;
+};
+
+interface NewColumn {
+  name: string,
+  type: string,
+  isNullable: boolean,
+  isPrimary: boolean,
+  defaultValue: any,
+};
 
 //---------------CONNECT TO THE DATABASE-----------------------------------------------------------------------------------------
 
@@ -102,11 +121,12 @@ export const dbConnect = async (req: Request) => {
 
 export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
-  const { db_type, username } = req.session;
-  const { newRow, tableName } = req.body;
+  const { db_type } = req.session;
+  const { newRow } = req.body;
 
   try{
-  const tableNameAdd: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${tableName}"` : tableName;
+  // const tableNameAdd: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${tableName}"` : tableName;
+  const tableNameAdd = await Promise.resolve(tableNameFormat(req, dbDataSource));
   const newSqlRow: {[key: string]: string} = newRow as {};
 
     const keys: string = db_type === 'oracle' ? Object.keys(newSqlRow).map(key => `"${key}"`).join(", ") : Object.keys(newSqlRow).join(", ");
@@ -152,6 +172,8 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
         break;
     };
 
+    //const tableNameUpdate = await Promise.resolve(tableNameFormat(req, dbDataSource));
+
     const updateKeys = Object.keys(newRow);
     const updateValues = Object.values(newRow);
     let oracleKeyValueString = '';
@@ -186,23 +208,25 @@ export const updateRow: RequestHandler = async (req: Request, _res: Response, ne
 
 export const deleteRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
-  const { db_type, username } = req.session;
-  const { tableName, primaryKey, value, deletedRow } = req.body
+  const { db_type } = req.session;
+  const { primaryKey, value, deletedRow } = req.body
  
   try{
-    let tableNameDelete = '';
-    switch (db_type) {
-      case 'oracle':
-        tableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
-        break;
-      case 'mssql':
-        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        tableNameDelete = `${schemaName[0].SchemaName}.${tableName}`;
-        break;
-      default:
-        tableNameDelete = tableName;
-        break;
-    };
+    // let tableNameDelete = '';
+    // switch (db_type) {
+    //   case 'oracle':
+    //     tableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
+    //     break;
+    //   case 'mssql':
+    //     const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
+    //     tableNameDelete = `${schemaName[0].SchemaName}.${tableName}`;
+    //     break;
+    //   default:
+    //     tableNameDelete = tableName;
+    //     break;
+    // };
+
+    const tableNameDelete = await Promise.resolve(tableNameFormat(req, dbDataSource));
 
     if (primaryKey){
       // Deleting a row that has a PK 
@@ -246,34 +270,52 @@ export const deleteRow: RequestHandler = async (req: Request, _res: Response, ne
 
 export const addNewDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
-  const { db_type, username } = req.session;
-  const { defaultValue, isNullable, isPrimary, name, type, tableName } = req.body;
+  const { db_type } = req.session;
+  const { columnData } = req.body;
+  console.log('req.body: ', req.body)
 
   try{
-    let tableNameAddColumn = '';
-    switch (db_type) {
-      case 'oracle':
-        tableNameAddColumn = `"${(username as string).toUpperCase()}"."${tableName}"`;
-        break;
-      case 'mssql':
-        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        tableNameAddColumn = `${schemaName[0].SchemaName}.${tableName}`;
-        break;
-      default:
-        tableNameAddColumn = tableName;
-        break;
-    };
+    const tableNameAddColumn = await Promise.resolve(tableNameFormat(req, dbDataSource));
+    console.log('tableNameAddColumn: ', tableNameAddColumn)
 
-    const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
-      ALTER TABLE ${tableNameAddColumn}
-      ADD${db_type === 'postgres' ? ' COLUMN' : '' } "${name}" ${type === 'AUTO_INCREMENT' ? 'INT' : type}${isPrimary ? ' PRIMARY KEY' : ''}${isNullable ? '' : 'NOT NULL'}${defaultValue ? ` DEFAULT ${defaultValue}` : ''}${type === ' AUTO_INCREMENT' ? 'AUTO_INCREMENT' : ''}
-      `);
+    let keyValueString: string = '';
+    let repeatingKeyValueString: string = '';
+    let newColumnString: string = ''
 
-    dbDataSource.destroy();
-    console.log('Database has been disconnected');
-    console.log('addedForeignKey in helper: ', addedNewColumn);
-    return addedNewColumn;
+    columnData.forEach((el: NewColumn) => {
+      if (db_type === 'mssql' || db_type === 'oracle') {
+        repeatingKeyValueString += `ALTER TABLE ${tableNameAddColumn} ADD "${el.name}" ${el.type === 'AUTO_INCREMENT' ? 'INT' : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}; `
+      } else {
+        keyValueString += `ADD${db_type === 'postgres' ? ' COLUMN' : '' } ${ db_type === 'mysql' ? `${el.name}` : `"${el.name}"`} ${el.type === 'AUTO_INCREMENT' ? 'INT' : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}, `
+      };
+    });
 
+    if (db_type === 'mssql' || db_type === 'oracle') {
+      newColumnString = repeatingKeyValueString.slice(0, -1); 
+    } else {
+      newColumnString = keyValueString.slice(0, -2); 
+    }
+
+    if (db_type === 'mssql') {
+      const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
+        ${repeatingKeyValueString}
+        `);
+
+      await dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('addedForeignKey in helper: ', addedNewColumn);
+      return addedNewColumn;
+    } else {
+      const addedNewColumn: Promise<unknown> = await dbDataSource.query(`
+        ALTER TABLE ${tableNameAddColumn}
+        ${newColumnString}
+        `);
+
+      await dbDataSource.destroy();
+      console.log('Database has been disconnected');
+      console.log('addedForeignKey in helper: ', addedNewColumn);
+      return addedNewColumn;
+    }
   } catch (err: unknown) {
       console.log('Error occurred in the addedForeignKey middleware: ', err);
       dbDataSource.destroy();
@@ -297,6 +339,7 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
     const tableName: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${slicedTableName}"` :
       db_type === 'mssql' ? `${schemaName[0].SchemaName}.${slicedTableName}` : updateColumnData.tableName;
 
+
     const updatedColumn: Promise<unknown> = await dbDataSource.query(`
       ALTER TABLE ${tableName}
       ${db_type === 'postgres' || db_type === 'microsoft' ? 'ALTER COLUMN' : 'MODIFY' } "${updateColumnData.columnName}" ${updateColumnData.dataType} ${db_type === 'postgres' ? updateColumnData.constraintName : null} ${updateColumnData.constraintExpression}
@@ -319,23 +362,11 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
 
 export const deleteColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
-  const { db_type, username } = req.session
-  const { tableName, columnName } = req.body
+  const { db_type } = req.session
+  const { columnName } = req.body
 
   try{  
-    let columnTableNameDelete = '';
-    switch (db_type) {
-      case 'oracle':
-        columnTableNameDelete = `"${(username as string).toUpperCase()}"."${tableName}"`;
-        break;
-      case 'mssql':
-        const schemaName: {[SchemaName: string]: string}[] = await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`);
-        columnTableNameDelete = `${schemaName[0].SchemaName}.${tableName}`;
-        break;
-      default:
-        columnTableNameDelete = tableName;
-        break;
-    };
+    const columnTableNameDelete = await Promise.resolve(tableNameFormat(req, dbDataSource));
 
     const deletedColumn: Promise<unknown> = await dbDataSource.query(`
     ALTER TABLE ${columnTableNameDelete}
@@ -360,31 +391,11 @@ export const deleteColumn: RequestHandler = async (req: Request, _res: Response,
 
 export const addNewTable: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
-  const { db_type, username } = req.session
-  const { newTableName, newColumns } = req.body
-
-  interface NewColumn {
-    name: string,
-    type: string,
-    isNullable: boolean,
-    isPrimary: boolean,
-    defaultValue: any,
-  };
+  const { newColumns } = req.body
 
   try{   
-      let tableName = '';
-      switch (db_type) {
-        case 'oracle':
-          tableName = `"${(username as string).toUpperCase()}"."${newTableName}"`;
-          break;
-        case 'mssql':
-          const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-          tableName = `${schemaName[0].SchemaName}.${newTableName}`;
-          break;
-        default:
-          tableName = newTableName;
-          break;
-      }
+    const tableNameNewTable = await Promise.resolve(tableNameFormat(req, dbDataSource));
+
 
       let keyValueString: string = '';
       newColumns.forEach((el: NewColumn) => {
@@ -394,7 +405,7 @@ export const addNewTable: RequestHandler = async (req: Request, _res: Response, 
       const newTableColumnString: string = keyValueString.slice(0, -2); 
 
       await dbDataSource.query(`
-        CREATE TABLE ${tableName} (
+        CREATE TABLE ${tableNameNewTable} (
         ${newTableColumnString}
         )`
       );
@@ -570,21 +581,14 @@ export const addForeignKey: RequestHandler = async (req: Request, _res: Response
 
 export const removeForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
-  const { db_type, username } = req.session;
+  const { db_type } = req.session;
 
   try{
+    const removeForeignKeyTableName = await Promise.resolve(tableNameFormat(req, dbDataSource));
     const removeForeignKeyData: {[key: string]: string } = req.body;
 
-    const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-    
-    const foreignKeyTableName = removeForeignKeyData.PrimaryKeyTableName.slice(7, removeForeignKeyData.PrimaryKeyTableName.length + 1);
-    const microsoftPrimaryTableName = `${schemaName[0].SchemaName}.${foreignKeyTableName}`;
-
-    const tableName: string = db_type === 'oracle' ? `"${(username as string).toUpperCase()}"."${foreignKeyTableName}"` :
-      db_type === 'mssql' ? `${microsoftPrimaryTableName}` : removeForeignKeyData.tableName;
-
     const removedForeignKey: Promise<unknown> = await dbDataSource.query(`
-      ALTER TABLE ${tableName}
+      ALTER TABLE ${removeForeignKeyTableName}
       DROP ${db_type === 'mysql' ? 'FOREIGN KEY' : 'CONSTRAINT'} ${removeForeignKeyData.constraintName}
       `);
 
