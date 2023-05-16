@@ -34,7 +34,8 @@ export default function DataInputModal({
     axios
       .post(`api/sql/${dbCredentials.db_type}/data`, {tableName: tableName, newRow: newRow})
       .then((res) => {
-        console.log('data has been sent to DB');
+        //console.log('data has been sent to DB');
+        return res
       })
       .catch((err: ErrorEvent) => { console.error('sending new row error', err) })
   }
