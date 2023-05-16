@@ -14,6 +14,7 @@ import AR from '../../assets/contributors/ar.jpg';
 import AA from '../../assets/contributors/aa.jpg';
 import SG from '../../assets/contributors/sg.jpg';
 import KW from '../../assets/contributors/kw.jpg';
+import YC from '../../assets/contributors/yc.jpg';
 import alexTu from '../../assets/contributors/alex_tu.jpg';
 import michaelCostello from '../../assets/contributors/michael_costello.jpeg';
 import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
@@ -183,23 +184,19 @@ const profileList: profileInfo[] = [
     githubUrl: 'https://github.com/Stephen-Havig',
   },  
   {
-    imgUrl: AG,
+    imgUrl: YC,
     name: 'Yichung Chiu',
     title: 'Software Engineer',
-    linkedInUrl: '',
-    githubUrl: '',
+    linkedInUrl: 'https://www.linkedin.com/feed/',
+    githubUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
   },
 ];
 
 export default function Contributors() {
-  const profiles = [];
+  const profiles = [] as React.ReactNode[];
   profileList.reverse(); // Recent contributors first
-  let i = 0;
-  for (const prof of profileList) {
-    profiles.push(<Profile props={prof} key={`contributor${i}`} />);
-    i += 1;
-  }
-
+  profileList.forEach((profile, i) => profiles.push(<Profile props={profile} key={`contributor${i}`} />))
+  
   return (
     <div className="contributors container my-24 mx-auto px-6">
       <section className="mb-32 text-center text-gray-800">
