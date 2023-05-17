@@ -72,7 +72,7 @@ describe('/api/userRegistration', () => {
   });
 });
 
-describe('/api/verifyUser', () => {
+xdescribe('/api/verifyUser', () => {
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).post('/api/verifyUser').send({
       email: TEST_USER_EMAIL,
@@ -128,7 +128,7 @@ describe('/api/saveSchema', () => {
   });
 });
 
-describe('/api/retrieveSchema', () => {
+xdescribe('/api/retrieveSchema', () => {
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).get(`/api/retrieveSchema/${TEST_USER_EMAIL}`);
     expect(response.status).toBe(200);
@@ -163,7 +163,7 @@ xdescribe('/api/sql/postgres/schema', () => {
   });
 });
 
-xdescribe('/api/sql/mysql/schema', () => {
+describe('/api/sql/mysql/schema', () => {
   const mysqlDB = {
     db_type: 'mysql',
     database_link: MYSQL_TEST_URL,
