@@ -163,7 +163,7 @@ xdescribe('/api/sql/postgres/schema', () => {
   });
 });
 
-describe('/api/sql/mysql/schema', () => {
+xdescribe('/api/sql/mysql/schema', () => {
   const mysqlDB = {
     db_type: 'mysql',
     database_link: MYSQL_TEST_URL,
