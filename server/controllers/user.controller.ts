@@ -121,7 +121,7 @@ else{
   // verify user exists in db
   if (!foundUser[0][0]) {
     log.error('Email address not found');
-    return res.status(403).json({ err: 'Email address not found' });
+    return res.status(401).json({ err: 'Email address not found' });
   }
   // check for pw match
   const hashedPW: string = foundUser[0][0]?.password;
