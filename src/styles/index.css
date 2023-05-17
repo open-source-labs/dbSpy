@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
 
 /* Home Page contributor card stylings  */
 .heroCard {
@@ -684,6 +685,7 @@ select:focus {
   justify-content: space-between;
   border-bottom: 1px solid gray;
   padding: 10px 0px;
+  width: 100%
 }
 
 .column-input > div {
@@ -693,8 +695,12 @@ select:focus {
 
 .column-input input,
 .column-input select {
-  max-width: 150px;
+  /* max-width: 300px; */
+  width: 100%;
+  height: 25px;
 }
+
+
 .column-input select {
   font-size: 0.9rem;
   background-color: white;

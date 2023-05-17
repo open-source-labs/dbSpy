@@ -357,9 +357,7 @@ exports[`unit testing schemaStore schemaState shape matches the snapshot 1`] = `
   "addTableSchema": [Function],
   "deleteColumnSchema": [Function],
   "deleteTableSchema": [Function],
-  "history": [
-    {},
-  ],
+  "history": [],
   "historyCounter": 0,
   "redoHandler": [Function],
   "schemaStore": {},

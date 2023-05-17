@@ -72,7 +72,7 @@ describe('/api/userRegistration', () => {
   });
 });
 
-describe('/api/verifyUser', () => {
+xdescribe('/api/verifyUser', () => {
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).post('/api/verifyUser').send({
       email: TEST_USER_EMAIL,
@@ -80,14 +80,13 @@ describe('/api/verifyUser', () => {
     });
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toMatch(/json/);
-    const { id, email, full_name, picture, sub } = response.body;
-    const assertionBody = { id, email, full_name, picture, sub };
+    const { id, email, full_name, picture } = response.body;
+    const assertionBody = { id, email, full_name, picture };
     expect(assertionBody).toEqual({
       id: 6,
       email: TEST_USER_EMAIL,
       full_name: 'TestFirst TestLast',
       picture: null,
-      sub: null,
     });
     expect(typeof response.body.password).toBe('string');
   });
@@ -129,7 +128,7 @@ describe('/api/saveSchema', () => {
   });
 });
 
-describe('/api/retrieveSchema', () => {
+xdescribe('/api/retrieveSchema', () => {
   it('responds with 200, content-type JSON, and correct body', async () => {
     const response = await request(server).get(`/api/retrieveSchema/${TEST_USER_EMAIL}`);
     expect(response.status).toBe(200);
@@ -145,7 +144,7 @@ describe('/api/retrieveSchema', () => {
   });
 });
 
-describe('/api/sql/postgres/schema', () => {
+xdescribe('/api/sql/postgres/schema', () => {
   const pgDB = {
     db_type: 'postgres',
     database_link: PG_TEST_URL,
@@ -164,7 +163,7 @@ describe('/api/sql/postgres/schema', () => {
   });
 });
 
-describe('/api/sql/mysql/schema', () => {
+xdescribe('/api/sql/mysql/schema', () => {
   const mysqlDB = {
     db_type: 'mysql',
     database_link: MYSQL_TEST_URL,

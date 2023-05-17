@@ -4,7 +4,7 @@
 
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { ColumnData, ColumnSchema, Reference } from '../Types';
+import { ColumnData, ColumnSchema, Reference } from '@/Types';
 
 interface RestrictedNames {
   [name: string]: boolean;
@@ -17,7 +17,7 @@ export type SchemaStore = {
 export type SchemaState = {
   // DATA
   schemaStore: SchemaStore;
-  system: 'PostgreSQL' | 'MySQL';
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
   history: SchemaStore[];
   historyCounter: number;
 
@@ -26,12 +26,12 @@ export type SchemaState = {
   addTableSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
   deleteTableSchema: (tableName: string) => void;
   addColumnSchema: (tableName: string, columnDataArr: ColumnData[]) => void;
-  deleteColumnSchema: (tableRef: string, rowRef: string) => void;
+  deleteColumnSchema: (tableRef: string, columnRef: string) => void;
   _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
   addForeignKeySchema: (referenceData: Reference) => void;
-  setSystem: (system: 'PostgreSQL' | 'MySQL') => void;
+  setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL') => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
@@ -49,7 +49,7 @@ export type SchemaState = {
   _restrictedMySqlNames: RestrictedNames;
   _restrictedPgNames: RestrictedNames;
 };
-
+//StateCreator
 // For Zustand to work nicely with TS, just include store interface as a generic for `create()`
 // see https://www.npmjs.com/package/zustand#typescript-usage
 const useSchemaStore = create<SchemaState>()(
@@ -62,7 +62,7 @@ const useSchemaStore = create<SchemaState>()(
         //schemaStore state
         schemaStore: {},
         system: 'PostgreSQL',
-        history: [{}],
+        history: [],
         historyCounter: 0,
         setSystem: (system) => set((state) => ({ ...state, system })),
         setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
@@ -159,10 +159,11 @@ const useSchemaStore = create<SchemaState>()(
             return newState;
           });
         },
-        deleteColumnSchema: (tableRef, rowRef) =>
+        //---------------------------------
+        deleteColumnSchema: (tableRef, columnRef) =>
           set((state) => {
             const newState = JSON.parse(JSON.stringify(state));
-            delete newState.schemaStore[tableRef][rowRef];
+            delete newState.schemaStore[tableRef][columnRef];
             get()._addHistory(newState);
             return newState;
           }),

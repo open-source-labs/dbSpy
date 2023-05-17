@@ -1,16 +1,11 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import {
-  FaRegEdit,
-  FaRegTrashAlt,
-  FaRegSave,
-  FaRegCheckSquare,
-  FaRegWindowClose,
-} from 'react-icons/fa';
+import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose, } from 'react-icons/fa';
 import DataTypeOptions from '../Modals/DataTypeOptions';
 import { ColumnSchema, SQLDataType } from '@/Types';
+import useCredentialsStore from '../../store/credentialsStore';
 
 export default function TableNodeColumn({
   column,
@@ -23,14 +18,32 @@ export default function TableNodeColumn({
     (state) => state
   );
   const { setEditRefMode } = useSettingsStore((state) => state);
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
 
-  const [columnData, setColumnData] = useState<ColumnSchema>({ ...column });
 
-  const onSave = () => {
+  const newColumn = JSON.parse(JSON.stringify(column))
+  const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
+  const [selectedConstraint, setSelectedConstraint] = useState('NA');
+
+    const handleConstraintChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      e.preventDefault();
+      setSelectedConstraint(e.target.value);
+    };
+
+  useEffect(()=> {
+    setColumnData({...newColumn})
+  },[column])
+  
+  // THIS IS WHERE YOU CAN FINISH UP THE FUNCTION TO UPDATE COLUMNS
+  const onSave = async () => {
     const currentSchema = { ...schemaStore };
+    // const tableRef = columnData.TableName;
+    // const colRef = columnData.field_name;
+    // columnData.additional_constraints = selectedConstraint as "NULL" | "NOT NULL" | "PRIMARY" | "UNIQUE";
+    // const tableName = tableRef.substring(tableRef.indexOf('.') + 1);
     currentSchema[columnData.TableName][columnData.field_name] = {
       ...columnData,
       // References was updated by AddReference modal, this avoids that change being overwritten
@@ -40,20 +53,34 @@ export default function TableNodeColumn({
     if (column.field_name !== columnData.field_name) {
       delete currentSchema[column.TableName][column.field_name];
     }
+    // await fetch(`/api/sql/${dbCredentials.db_type}/updateColumn`, {
+    //   method:'PATCH',
+    //   headers:{
+    //     'Content-Type':'application/json'
+    //   },
+    //   body:JSON.stringify({tableName: tableName,  columnName: colRef, schemaData: { ...schemaStore }[tableRef][colRef], columnData: columnData})
+    // })
     setSchemaStore(currentSchema);
     setMode('default');
   };
 
-  const onDelete = () => {
+  const onDelete = async () => {
     //declare prior values
     const tableRef = columnData.TableName;
     const colRef = columnData.field_name;
+    await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({tableName: tableRef.substring(tableRef.indexOf('.') + 1), columnName: colRef})
+    });
     deleteColumnSchema(tableRef, colRef);
   };
 
   const openAddReferenceModal = () => {
-    document.querySelector('#mySideNav').style.width = '400px';
-    document.querySelector('#main').style.marginRight = '400px';
+    // document.querySelector('#mySideNav').style.width = '400px';
+    // document.querySelector('#main').style.marginRight = '400px';
     setEditRefMode(true, columnData.TableName, columnData.Name);
   };
 
@@ -66,6 +93,9 @@ export default function TableNodeColumn({
             <input
               className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black"
               value={columnData.field_name}
+              // Currently unable to update column info if the name is changed.
+              disabled
+              // Need an additional query before to change the name before updating column
               onChange={(e) =>
                 setColumnData((prevData) => ({
                   ...prevData,
@@ -100,16 +130,11 @@ export default function TableNodeColumn({
           {mode === 'edit' ? (
             <select
               className="bg-[#f8f4eb] dark:text-black"
-              value={columnData.additional_constraints}
-              onChange={(e) =>
-                setColumnData((prevData) => ({
-                  ...prevData,
-                  additional_constraints: e.target.value,
-                }))
-              }
+              value={selectedConstraint}
+              onChange={handleConstraintChange}
             >
               {/* TODO: CHANGE TO NULLABLE BOOLEAN */}
-              <option value="NA">NA</option>
+              <option value={undefined}>N/A</option>
               <option value="NOT NULL">NOT NULL</option>
               <option value="PRIMARY">PRIMARY</option>
               <option value="UNIQUE">UNIQUE</option>
@@ -119,7 +144,7 @@ export default function TableNodeColumn({
           )}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsPrimaryKey`}>
-          {columnData.IsPrimaryKey.toString()}
+          {`${columnData.IsPrimaryKey}`}
         </td>
         <td className="dark:text-[#f8f4eb]" id={`${id}-IsForeignKey`}>
           {mode === 'edit' ? (
@@ -134,7 +159,6 @@ export default function TableNodeColumn({
                     'Must have more than one table to create foreign key constraints'
                   );
                 }
-
                 setColumnData((prevData) => {
                   return {
                     ...prevData,
@@ -146,7 +170,7 @@ export default function TableNodeColumn({
               }}
             />
           ) : (
-            columnData.IsForeignKey.toString()
+              `${columnData.IsForeignKey}`
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">
@@ -161,7 +185,8 @@ export default function TableNodeColumn({
           ) : mode === 'delete' ? (
             <button
               id={`${id}-confirmBtn`}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 onDelete();
                 setMode('default');
               }}

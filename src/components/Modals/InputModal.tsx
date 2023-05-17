@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
+import useDataStore from '../../store/dataStore';
+import useCredentialsStore from '../../store/credentialsStore';
+
+//closeInputModal
 
 type InputModalProps = {
   mode: 'table' | 'column';
   closeInputModal: () => void;
   tableNameProp?: string;
 };
+
+interface Column {
+  name: string,
+  type: any,
+  isNullable: boolean,
+  isPrimary: boolean,
+  defaultValue: string | null;
+  }
+
+  type AddTableToDb = {
+  tableName: string;
+  newColumns: Column[]
+  };
+
 
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
@@ -20,32 +38,38 @@ export default function InputModal({
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
-  const initialTable: string = 'untitled_table';
+  const { dbCredentials } = useCredentialsStore((state) => state);
+  const { setSchemaStore } = useSchemaStore((state) => state);
+  const { setDataStore } = useDataStore((state) => state);
+
+  const initialTable: string = 'untitled_table';  //for adding new table
   const initialColumns: ColumnData[] = [
     {
       name: 'id',
-      type: 'AUTO_INCREMENT',
+      type: 'INT',
       isNullable: false,
       isPrimary: true,
       defaultValue: null,
     },
-    {
-      name: 'created_at',
-      type: 'TIMESTAMP',
-      isNullable: false,
-      isPrimary: false,
-      defaultValue: 'NOW()',
-    },
+    // {
+    //   name: 'created_at',
+    //   type: 'TIMESTAMP',
+    //   isNullable: false,
+    //   isPrimary: false,
+    //   defaultValue: 'NOW()',
+    // },
   ];
   const additionalColumn: ColumnData[] = [
     {
       name: 'column_1',
       type: 'VARCHAR(255)',
-      isNullable: false,
+      isNullable: true,
       isPrimary: false,
       defaultValue: null,
     },
   ];
+
+
   const [tableName, setTableName] = useState<string>(() => {
     if (!tableNameProp) return initialTable;
     else return tableNameProp;
@@ -55,19 +79,51 @@ export default function InputModal({
     else return additionalColumn;
   });
 
+
   // functions that check validity and add schema to the store
-  const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+  const {  addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
     (state) => state
   );
 
-  const handleSubmit = (): boolean => {
-    // table must be added to schema first to enable column validity checks
-    try {
-      if (mode === 'table') addTableSchema(tableName, columnData);
-      else if (mode === 'column') {
-        addColumnSchema(tableName, columnData);
-      }
 
+  const handleSubmit = (): boolean => {
+    try {
+
+      if (mode === 'table') {
+        addTableSchema(tableName, columnData);
+        const dataToSend: AddTableToDb = {
+          tableName: tableName,
+          newColumns: columnData
+          }
+          //req to backend to save new table
+
+          fetch(`/api/sql/${dbCredentials.db_type}/saveNewTable`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify(dataToSend)
+          })
+          .then((responseData)=> responseData.json())
+          .then((parsedData)=> {
+            setSchemaStore(parsedData.schema);
+            setDataStore(parsedData.data)
+          })
+
+      }
+      else if (mode === 'column') {
+      addColumnSchema(tableName, columnData);
+      console.log('columnData: ', columnData)
+      //new column data that will be sent in the post request body
+      const dataToSend = {
+        tableName: tableName.substring(tableName.indexOf('.') + 1),
+        columnData: columnData,
+      };
+        //adds new column to the selected table
+        fetch(`/api/sql/${dbCredentials.db_type}/addColumn`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify(dataToSend)
+        })
+      }
       return true;
     } catch (error) {
       window.alert(error);
@@ -79,16 +135,18 @@ export default function InputModal({
   const newColumn: ColumnData = {
     name: `column_${columnData.length + 1}`,
     type: 'VARCHAR(255)',
-    isNullable: false,
+    isNullable: true,
     isPrimary: false,
     defaultValue: null,
   };
 
-  const addColumn = () => {
+  const addColumn = () => { //addNewRow for data table
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
+
       return [...prevColumns];
     });
+
   };
 
   const deleteColumn = (index: number) => {
@@ -101,13 +159,15 @@ export default function InputModal({
   const handleColumnChange = (
     index: number,
     property: keyof ColumnData,
-    value: string | boolean
+    value: string | boolean,
+
   ) => {
+
     setColumnData((prevColumns) => {
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
         // TODO: LEARN WHY TS IS YELLING
-        prevColumns[index][property] = value;
+        (prevColumns[index][property] as string | boolean | null | SQLDataType) = value;
         return [...prevColumns];
       }
       // Disables unchecking pk
@@ -139,6 +199,8 @@ export default function InputModal({
     />
   ));
 
+
+
   return (
     <div id="inputModal" className="input-modal">
       <form
@@ -148,7 +210,7 @@ export default function InputModal({
           const isSuccessful: boolean = handleSubmit();
           if (isSuccessful) closeInputModal();
         }}
-        className="modal-content  rounded-md  bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+        className="modal-content rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="table-name">
           {mode === 'table' ? (
@@ -175,20 +237,22 @@ export default function InputModal({
           <h1 className="  text-slate-900 dark:text-[#f8f4eb]">
             {mode === 'table' ? 'Columns' : 'New Columns'}
           </h1>
-          <button
-            type="button"
-            className="  text-slate-900 dark:text-[#f8f4eb]"
-            onClick={addColumn}
-            data-testid="add-table-add-column"
-          >
-            Add Column
-          </button>
+          {dbCredentials.db_type !== 'oracle' ? (
+            <button
+              type="button"
+              className="text-slate-900 dark:text-[#f8f4eb]"
+              onClick={addColumn}
+              data-testid="add-table-add-column"
+            >
+              Add Column
+            </button>
+          ) : null}
         </div>
         {columnInputs}
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
             type="button"
-            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb] border-slate-500"
             onClick={closeInputModal}
             data-testid="modal-cancel"
           >
