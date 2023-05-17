@@ -14,6 +14,7 @@ export default function Login() {
   const [loginStatus, setLoginStatus] = useState(true);
   //END: STATE DECLARATION
 
+  console.log()
   //Regular login using JWTs without OAuth
   const handleLogin = (e: React.FormEvent): void => {
     e.preventDefault();
