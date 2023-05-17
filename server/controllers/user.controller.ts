@@ -164,8 +164,9 @@ export const retrieveSchema: RequestHandler = async (req: Request, res: Response
   try {
     const updateColQuery: string = `SELECT pg_schema FROM users WHERE email = '${req.params.email}';`;
     const data = (await pool.query(updateColQuery)) as RowDataPacket[][];
-    if (data[0][0].pg_schema) return res.status(200).json(data[0][0].pg_schema);
-    else return res.sendStatus(204);
+    if(data[0][0]){
+      if (data[0][0].pg_schema) return res.status(200).json(data[0][0].pg_schema);
+    } else return res.sendStatus(204);
   } catch (err: unknown) {
     return next(err);
   }
