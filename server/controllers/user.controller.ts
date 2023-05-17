@@ -7,6 +7,17 @@ const saltRounds = 5;
 import dotenv from 'dotenv';
 dotenv.config();
 
+const {
+  TEST_USER_EMAIL,
+  TEST_USER_PW,
+  PG_TEST_URL,
+  PG_TEST_USERNAME,
+  PG_TEST_PW,
+  MYSQL_TEST_URL,
+  MYSQL_TEST_USERNAME,
+  MYSQL_TEST_PW,
+} = process.env;
+
 // find user via email
 export const findUser = async (email: string) => {
   log.info('Finding user (helper function)');
@@ -30,7 +41,6 @@ export const createUser = async (user: string[]) => {
 
 // Register w/o OAuth
 export const userRegistration: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  
 
   log.info('Registering user (middleware)');
 
@@ -66,6 +76,7 @@ export const userRegistration: RequestHandler = async (req: Request, res: Respon
 
 export const verifyUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   log.info('Verifying user (middleware)');
+
 
   //check if login is from Oauth2 and add to database
   if(typeof req.body.code === 'string'){
@@ -121,7 +132,7 @@ else{
   // verify user exists in db
   if (!foundUser[0][0]) {
     log.error('Email address not found');
-    return res.status(401).json({ err: 'Email address not found' });
+    return res.status(402).json({ err: 'Email address not found' });
   }
   // check for pw match
   const hashedPW: string = foundUser[0][0]?.password;
@@ -133,7 +144,7 @@ else{
     return res.status(200).json(res.locals.user);
   } else {
     log.error('Incorrect password');
-    return res.redirect(401, '/login');
+    return res.redirect(403, '/login');
   }
 }
 
