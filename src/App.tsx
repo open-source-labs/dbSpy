@@ -8,8 +8,9 @@ import Shared from "./pages/Shared";
 import useCredentialsStore from "./store/credentialsStore";
 import "./styles/index.css"
 
-export default function App() {
+const App: React.FC = () => {
   //STATE DECLARATION (dbSpy3.0)
+  
   const user = useCredentialsStore(state => state.user);
   
   //END: STATE DECLARATION
@@ -37,3 +38,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+export default App;

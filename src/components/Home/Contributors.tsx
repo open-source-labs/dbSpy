@@ -14,10 +14,14 @@ import AR from '../../assets/contributors/ar.jpg';
 import AA from '../../assets/contributors/aa.jpg';
 import SG from '../../assets/contributors/sg.jpg';
 import KW from '../../assets/contributors/kw.jpg';
+import YC from '../../assets/contributors/yc.jpg';
 import alexTu from '../../assets/contributors/alex_tu.jpg';
 import michaelCostello from '../../assets/contributors/michael_costello.jpeg';
 import stevenGeiger from '../../assets/contributors/steven_geiger.jpg';
 import yufaLi from '../../assets/contributors/yufa_li.jpeg';
+import DK from '../../assets/contributors/dk.png';
+import SH from '../../assets/contributors/SH.jpg';
+import JT from '../../assets/contributors/joseph_360.png';
 
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
@@ -159,17 +163,42 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'https://www.linkedin.com/in/yufa-li/',
     githubUrl: 'https://github.com/01001101CK',
   },
+    {
+    imgUrl: DK,
+    name: 'Das Kang',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/das-kang/',
+    githubUrl: 'https://github.com/dahae0309',
+  },
+  {
+    imgUrl: JT,
+    name: 'Joseph Tejeda',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/atxjtejeda/',
+    githubUrl: 'https://github.com/JosephTejeda',
+  },
+  {
+    imgUrl: SH,
+    name: 'Stephen Havig',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/stephen-havig-199340145/',
+    githubUrl: 'https://github.com/Stephen-Havig',
+  },  
+  {
+    imgUrl: YC,
+    name: 'Yichung Chiu',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
+    githubUrl: 'https://github.com/ychiu5896',
+  },
 ];
 
 export default function Contributors() {
-  const profiles = [];
-  profileList.reverse(); // Recent contributors first
-  let i = 0;
-  for (const prof of profileList) {
-    profiles.push(<Profile props={prof} key={`contributor${i}`} />);
-    i += 1;
-  }
-
+  const profiles = [] as React.ReactNode[];
+  for (let i = profileList.length - 1; i >= 0; i--) {
+    profiles.push(<Profile props={profileList[i]} key={`contributor${i}`} />)
+   };
+  
   return (
     <div className="contributors container my-24 mx-auto px-6">
       <section className="mb-32 text-center text-gray-800">
@@ -180,4 +209,4 @@ export default function Contributors() {
       </section>
     </div>
   );
-}
+};

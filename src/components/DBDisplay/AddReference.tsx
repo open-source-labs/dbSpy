@@ -6,7 +6,16 @@ import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import { Reference } from '@/Types';
 
-const AddReference = () => {
+// interface ForeignKeyUpdateType  {
+//     PrimaryKeyTableName: string,
+//     PrimaryKeyColumnName: string,
+//     ForeignKeyTableName: string,
+//     ForeignKeyColumnName:string
+// }
+
+
+
+const AddReference: React.FC = () => {
   const { currentTable, currentColumn, setEditRefMode } = useSettingsStore(
     (state) => state
   );
@@ -16,7 +25,7 @@ const AddReference = () => {
     // For whatever reason, PrimaryKeyName and PrimaryKeyTableName refer to other table
     PrimaryKeyName: '',
     PrimaryKeyTableName: '',
-    // ReferencesProprtyName and ReferencesTableName refer to the table we are adding the fk to
+    // ReferencesPropertyName and ReferencesTableName refer to the table we are adding the fk to
     ReferencesPropertyName: currentColumn,
     ReferencesTableName: currentTable,
     IsDestination: false,
@@ -28,19 +37,45 @@ const AddReference = () => {
   //END: STATE DECLARATION
 
   //form state hooks
-  const [formValues, setFormValues] = useState(initialReference);
+  const [formValues, setFormValues] = useState<Reference>(initialReference);
+
+  //HELPERS HELPER FUNCTION
+  const nullCheck = () => {
+    const mySideNav = document.getElementById('mySideNav') as HTMLDivElement | null;
+    const main = document.getElementById('main') as HTMLDivElement | null;
+    if (mySideNav !== null && main !== null){
+    mySideNav.style.width = '0px';
+    main.style.marginRight = '50px';
+    }
+  }
 
   //HELPER FUNCTIONS
-  const onSave = (e: any) => {
+  const onSave = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     try {
       /**React Flow hack.
        * Problem: Viewports larger than 1197x1197px prevent edges from rendering
        * Hacky Solution: Minify RF. Send resize-func to task queue so RF only returns to normal once edge rendering is complete
        * Process is fast enough to not be noticeable to user
        */
-      document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
+      nullCheck();
+      console.log(formValues)
+      //TODO: Send input from FK form to backend
+      const updatedForeignKey: Reference = {
+        PrimaryKeyTableName: formValues.PrimaryKeyTableName,
+        PrimaryKeyColumnName: formValues.PrimaryKeyName,
+        ForeignKeyTableName: formValues.ReferencesTableName,
+        ForeignKeyColumnName:formValues.ReferencesPropertyName
+      }
+      fetch('/api/sql/postgres/addForeignKey', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedForeignKey)
+      })
+      document
+        .querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
       addForeignKeySchema(formValues);
       setEditRefMode(false);
       setTimeout(
@@ -50,14 +85,25 @@ const AddReference = () => {
             ?.setAttribute('style', 'height: 80%; width: 95%;'),
         0
       );
-    } catch (err) {
+    } catch (err: unknown) {
       window.alert(err);
       console.error(err);
     }
   };
+
+  const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      nullCheck();
+      setEditRefMode(false);
+    } catch (err: unknown) {
+      window.alert(err);
+      console.error(err);
+    }
+}
   //END: HELPER FUNCTIONS
 
-  const tableOptions = [<option key="---">---</option>];
+  const tableOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const table in schemaStore) {
     if (table !== formValues.ReferencesTableName) {
       tableOptions.push(
@@ -68,7 +114,7 @@ const AddReference = () => {
     }
   }
 
-  const columnOptions = [<option key="---">---</option>];
+  const columnOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const col in schemaStore[formValues.PrimaryKeyTableName]) {
     columnOptions.push(
       <option key={col} value={col}>
@@ -161,22 +207,14 @@ const AddReference = () => {
         <button
           className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
           id="save"
-          onClick={(e) => {
-            document.querySelector('#mySideNav').style.width = '0px';
-            document.querySelector('#main').style.marginRight = '50px';
-            onSave(e);
-          }}
+          onClick={onSave}
         >
           Save
         </button>
         <button
           className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
           id="cancel"
-          onClick={() => {
-            document.querySelector('#mySideNav').style.width = '0px';
-            document.querySelector('#main').style.marginRight = '50px';
-            setEditRefMode(false);
-          }}
+          onClick={onCancel}
         >
           Cancel
         </button>

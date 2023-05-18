@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { RequestHandler } from 'express';
 import log from '../logger/index';
@@ -14,23 +15,24 @@ const client_url =
     ? process.env.DEV_CLIENT_ENDPOINT
     : process.env.CLIENT_ENDPOINT;
 
-export const handleGoogleAuth: RequestHandler = async (req, res) => {
+export const handleGoogleAuth: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   // get code from qs
   const code = req.query.code as string;
 
   try {
     // get the id and access token w/ the code
-    const { id_token, access_token } = await getGoogleAuthToken({ code });
+    const { id_token, access_token }: {id_token: string, access_token: string} = await getGoogleAuthToken({ code });
+
+    console.log(`We also have the access token: ${access_token}, but it is not used for anything?`)
 
     //get user with tokens
     const decodedUser = jwt.decode(id_token) as JwtPayload;
 
     if (!decodedUser.email_verified) {
-      req.session.destroy((err) => {
+      req.session.destroy((err: ErrorEvent) => {
         // res.redirect('localhost:8080/')
-        return res
-          .status(403)
-          .send('Unable to authorize, google account is not verified.');
+          res.status(403).send('Unable to authorize, google account is not verified.');
+          return next(err)
       });
     }
 
@@ -45,9 +47,9 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
         decodedUser.picture,
       ]);
     }
-    const newUser = await findUser(decodedUser.email);
+    const newUser: any = await findUser(decodedUser.email);
 
-    const user = (await foundUser) || newUser;
+    const user: any = (await foundUser) || newUser;
 
     // create an access token to be provided on every call user makes to backend
     // expires in 1 day
@@ -64,18 +66,18 @@ export const handleGoogleAuth: RequestHandler = async (req, res) => {
 
     log.info('Login successful, redirecting...');
 
-    const queryStr = 'true';
+    const queryStr: string = 'true';
 
     log.info(client_url);
     res.redirect(301, `${client_url}/?success=` + queryStr);
-  } catch (error) {
+  } catch (error: unknown) {
     log.info(error, 'User authorization failed');
     return res.redirect(301, `${client_url}/login`);
   }
 };
 
-export const getGoogleAuthUrl: RequestHandler = (req, res) => {
-  const base = 'https://accounts.google.com/o/oauth2/v2/auth';
+export const getGoogleAuthUrl: RequestHandler = (_req, res) => {
+  const base: string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
   const options = {
     redirect_uri: process.env.GOOGLE_AUTH_CALLBACK as string,

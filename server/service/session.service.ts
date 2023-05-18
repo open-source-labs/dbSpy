@@ -15,10 +15,10 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
     const decoded = jwt.verify(
       accessToken as string,
       process.env.TOKEN_KEY as string,
-      (err: any, user: any) => {
+      (_err: unknown, user: any) => {
         if (user.user) return user.user;
       }
-    );
+    )
     res.status(200).json(decoded);
   }
 };

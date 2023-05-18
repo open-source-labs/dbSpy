@@ -19,6 +19,7 @@ export default function Home() {
   /* Retrieve user data from server*/
   useEffect(() => {
     const getUserData = async () => {
+
       const response = await axios(`/api/me`, {
         withCredentials: true,
       });
@@ -41,7 +42,7 @@ export default function Home() {
             <br />
             {user ? (
               <div className="text-3xl font-bold">
-                Welcome back, {user.full_name.slice(0, user.full_name.indexOf(' '))}
+                Welcome back, {user.full_name.includes(' ') ? user.full_name.slice(0, user.full_name.indexOf(' ')) : user.full_name}!
               </div>
             ) : (
               <NavLink
@@ -81,7 +82,7 @@ export default function Home() {
                     open-source tool
                   </a>{' '}
                   to facilitate relational database development.
-                  <br /> Visualize, modify, and build your database, all in one place.
+                  <br /> Visualize, modify, and build your various SQL databases, all in one place.
                 </p>
 
                 <div className="grid gap-x-6 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
@@ -113,7 +114,7 @@ export default function Home() {
                           d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"
                         ></path>
                       </svg>
-                      Schema Modification
+                      Schema & Data Modification
                     </p>
                   </div>
 

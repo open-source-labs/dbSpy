@@ -4,15 +4,20 @@
 
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import {dbCredentials} from  '../Types';
 
-let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any) => ({
+
+let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any) => (
+  {
   //user state
   user: null,
   //user
   setUser: (userObject: any) => set((state: any) => ({ ...state, user: userObject })),
 
+
+
   //dbCredentials state
-  dbCredentials: null,
+  dbCredentials: {} as dbCredentials,
   //dbFormInput is an object
   setDbCredentials: (dbFormInput: any) =>
     set((state: any) => ({ ...state, dbCredentials: dbFormInput })),
@@ -30,6 +35,8 @@ export default useCredentialsStore;
 //  password: null,
 //  host: null,
 //  port: null
+//  database_link: null,
+//  database_name: null
 // }
 
 //Example usage in component:
