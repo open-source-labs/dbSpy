@@ -9,7 +9,7 @@ import useSchemaStore from '../../store/schemaStore';
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationSqIcon.png';
+import informationIcon from '../../../src/assets/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
 import { Edge, DataNode, DataStore, RowsOfData, Data, dbCredentials } from '@/Types';
 
