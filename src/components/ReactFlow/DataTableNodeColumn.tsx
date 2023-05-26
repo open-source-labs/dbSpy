@@ -5,9 +5,9 @@ import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose
 import { RowsOfData } from '@/Types';
 import useSchemaStore from '../../store/schemaStore';
 
-type RowData = {
-  [key: string]: string | number;
-}
+// type RowData = {
+//   [key: string]: string | number;
+// }
 
 type DataTableNodeColumnProp = {
   row: RowsOfData,
@@ -15,7 +15,7 @@ type DataTableNodeColumnProp = {
   deleteRow: (rowData:RowsOfData,index:number,id?:string|number)=>void,
   index: number,
   PK: [string|number|null,Set<unknown>|null],
-}
+};
 
 export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: DataTableNodeColumnProp) {
 

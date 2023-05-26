@@ -2,7 +2,7 @@
 import { SchemaStore } from '../../store/schemaStore';
 import { Edge } from '@/Types';
 
-//----- Creates an array of all edges in the data table
+//----- Creates an array of all edges in the data view
 export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
@@ -14,6 +14,7 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
       if (row.IsForeignKey) {
 
         if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
+
           edges.push({
           id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
           source: row.References[0].ReferencesTableName,
@@ -34,9 +35,9 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
               color: '#085c84',
             },
           });
-        }
-      }
-    }
-  }
+        };
+      };
+    };
+  };
   return edges;
-}
+};

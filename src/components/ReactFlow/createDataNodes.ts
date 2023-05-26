@@ -16,12 +16,13 @@ export default function createDataNodes(dataObject: DataStore, edges: Edge[]): D
     { x: 1000, y: 800 },
     { x: 0, y: 1050 },
   ];
-  // renders each table on the React Flow canvas
+  // renders each table on the React Flow data canvas
   const nodes: DataNode[] = [];
   let i = 0;
 
   for (const tableKey in dataObject) {
     const rowData = dataObject[tableKey];
+
     nodes.push({
       id: tableKey,
       type: 'table',

@@ -13,7 +13,7 @@ const nodeTypes = {
   table: TableNode,
 };
 
-export default function Flow() {
+export default function Flow(): JSX.Element {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);

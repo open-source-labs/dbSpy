@@ -1,17 +1,8 @@
+//-----IMPORTED FILES/MODULES
 import { SchemaStore } from '@/store/schemaStore';
 import { Edge, DataNode } from '@/Types';
 
-// type Node = {
-//   id: string;
-//   type: 'table';
-//   position: { x: number; y: number };
-//   data: {
-//     table: TableTuple;
-//     edges: Edge[];
-//   };
-// };
-// type TableTuple = [TableKey: string, ColumnData: { [ColumnName: string]: ColumnSchema }];
-//hard-coded xy positioning of each node in the canvas
+//hard-coded x & y positioning of each node in the canvas
 export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): DataNode[] {
   const nodePositions = [
     { x: 1000, y: 400 },
@@ -26,9 +17,10 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): D
     { x: 1000, y: 800 },
     { x: 0, y: 1050 },
   ];
-  // renders each table on the React Flow canvas
+  // renders each table on the React Flow schema canvas
   const nodes: DataNode[] = [];
   let i = 0;
+
   for (const tableKey in schemaObject) {
     //tableKey is name of the table
     const columnData = schemaObject[tableKey];
@@ -36,7 +28,6 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): D
     nodes.push({
       id: tableKey,
       type: 'table',
-
       position: nodePositions[i],
       data: { table: [tableKey, columnData], edges },
     });

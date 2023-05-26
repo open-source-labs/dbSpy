@@ -23,10 +23,9 @@ const oracleController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (column.CONSTRAINT_TYPE === 'R'){
           references.push({
-            // These got a little mixed up but are in the right place
             isDestination: false,
-            PrimaryKeyName: column.R_COLUMN_NAME,
-            PrimaryKeyTableName: `"${user}"."${column.R_TABLE_NAME}"`,
+            PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: `"${user}"."${column.R_PRIMARY_KEY_TABLE}"`,
             ReferencesPropertyName: column.COLUMN_NAME,
             ReferencesTableName: `"${user}"."${tableName}"`,
             constraintName: column.CONSTRAINT_NAME,

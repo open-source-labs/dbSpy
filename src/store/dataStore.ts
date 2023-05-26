@@ -1,4 +1,4 @@
-import { DataStore, RowsOfData, DataRowArray } from '@/Types';
+import { DataStore } from '@/Types';
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 

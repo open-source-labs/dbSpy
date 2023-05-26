@@ -3,10 +3,10 @@ export const postgresForeignKeyQuery = `
     SELECT 
         kcu.table_schema || '.' || kcu.table_name AS table_with_foreign_key, 
         kcu.column_name AS foreign_key_column, 
-        rel_tco.table_schema || '.' || rel_tco.table_name AS referenced_table, 
+        rel_tco.table_schema || '.' || rel_tco.table_name AS primary_key_table, 
         rco.update_rule, 
         rco.delete_rule,
-        rel_kcu.column_name AS referenced_column,
+        rel_kcu.column_name AS primary_key_column,
         tco.constraint_name AS constraint_name
     FROM 
         information_schema.table_constraints tco 

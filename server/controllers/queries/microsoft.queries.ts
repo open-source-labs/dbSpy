@@ -24,8 +24,8 @@ export const microsoftForeignKeyQuery = `
         fk.name AS constraint_name,
         OBJECT_NAME(fk.parent_object_id) AS table_name,
         COL_NAME(fkc.parent_object_id, fkc.parent_column_id) AS column_name,
-        OBJECT_NAME(fk.referenced_object_id) AS referenced_table_name,
-        COL_NAME(fkc.referenced_object_id, fkc.referenced_column_id) AS referenced_column_name
+        OBJECT_NAME(fk.referenced_object_id) AS primary_key_table,
+        COL_NAME(fkc.referenced_object_id, fkc.referenced_column_id) AS primary_key_column
     FROM
         sys.foreign_keys AS fk
     INNER JOIN

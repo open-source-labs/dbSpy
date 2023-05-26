@@ -43,11 +43,11 @@ const mysqlController = {
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
+          console.log('foreignKey: ', foreignKey)
           references.push({
-            // These got a little mixed up but are in the right place
             isDestination: false,
-            PrimaryKeyName: foreignKey.REFERENCED_COLUMN_NAME,
-            PrimaryKeyTableName: foreignKey.REFERENCED_TABLE_NAME,
+            PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: foreignKey.PRIMARY_KEY_TABLE,
             ReferencesPropertyName: foreignKey.COLUMN_NAME,
             ReferencesTableName: tableName,
             constraintName: foreignKey.CONSTRAINT_NAME,

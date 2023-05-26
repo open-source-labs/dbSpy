@@ -121,7 +121,7 @@ export type DataNode = {
 
 export type TableTuple = 
 [ TableKey: string, 
-  ColumnData: { [ColumnName: string]: ColumnSchema }];
+  ColumnData: { [ColumnName: string]: ColumnSchema } | RowsOfData[] | RowsOfData];
 
   export interface dataSourceConnection {
     type: string,
@@ -181,6 +181,12 @@ export type RowsOfData = {
 export type DataStore = {
   [TableName: string]: RowsOfData[];
 }
+
+export type SchemaStore = {
+  [TableName: string]: {
+    [ColumnName: string]: ColumnSchema;
+  };
+};
 
 export type DataRowArray = Array<string | number | boolean>
 
