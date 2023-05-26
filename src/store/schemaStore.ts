@@ -114,7 +114,6 @@ const useSchemaStore = create<SchemaState>()(
             get()._addHistory(newState);
             return newState;
           }),
-
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION

@@ -4,8 +4,8 @@ import useSchemaStore from '../../store/schemaStore';
 
 //-----TYPES
 type EachRow = {
-  [key:string|number]: string| number| boolean| null
-}
+  [key: string | number]: string | number | boolean | null
+};
 
 type RowInputProps = {
   tableName: string | undefined;
@@ -27,7 +27,7 @@ export default function RowInput({
 
   const { schemaStore } = useSchemaStore((state) => state);
   
-  const arrOfDataType = schemaStore["public." + tableName]
+  const arrOfDataType = schemaStore[tableName as string]
   const columns: JSX.Element[] = [];
   const inputs: JSX.Element[] = [];
   let columnNames: string[];

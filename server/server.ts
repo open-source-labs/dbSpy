@@ -6,8 +6,6 @@ import path from 'path';
 import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser'
-// import { DataSource } from 'typeorm';
-// import { User, UserPost } from './entities/user.entity'
 dotenv.config();
 
 const port = process.env.PORT || 3000;

@@ -42,7 +42,7 @@ const postgresController = {
             // constraintName: foreignKey.constraint_name
             isDestination: false,
             PrimaryKeyName: foreignKey.referenced_column,
-            PrimaryKeyTableName: foreignKey.referenced_table,
+            PrimaryKeyTableName: 'public.' + foreignKey.referenced_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,
             ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
@@ -83,11 +83,13 @@ const postgresController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName = table.tablename;
-        const tableDataQuery = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
-        tableData[tableName] = tableDataQuery;
+        const tableDataQuery: Promise<{[key: string]: [] | {}[]}> = await PostgresDataSource.query(`SELECT * FROM ${'public.' + tableName}`);
+        console.log('tableDataQuery: ', tableDataQuery)
+        tableData['public.' + tableName] = tableDataQuery;
 
         // SCHEMAS Create property on schema object with every loop
         const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName));
+        console.log('postgresSchemaData: ', postgresSchemaData)
         schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
       };
 
@@ -116,11 +118,11 @@ const postgresController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
-      //console.log("postgresAddNewRow function has concluded");
+      addNewDbRow(req, res, next);
+      console.log("postgresAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {
-      //console.log('Error occurred in the postgresAddNewRow middleware: ', err);
+      console.log('Error occurred in the postgresAddNewRow middleware: ', err);
       return next(err);
     };
   },

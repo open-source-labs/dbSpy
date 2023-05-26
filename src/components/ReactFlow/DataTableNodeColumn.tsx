@@ -1,24 +1,23 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import useDataStore from '../../store/dataStore';
 import useCredentialsStore from '../../store/credentialsStore';
 import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose } from 'react-icons/fa';
-import { identity } from 'cypress/types/lodash';
 import { RowsOfData } from '@/Types';
+import useSchemaStore from '../../store/schemaStore';
 
 type RowData = {
   [key: string]: string | number;
 }
 
 type DataTableNodeColumnProp = {
-  row:RowsOfData,
+  row: RowsOfData,
   id?: string|number,
-  deleteRow:(rowData:RowsOfData,index:number,id?:string|number)=>void,
-  index:number,
-  PK:[string|number|null,Set<unknown>|null],
+  deleteRow: (rowData:RowsOfData,index:number,id?:string|number)=>void,
+  index: number,
+  PK: [string|number|null,Set<unknown>|null],
 }
 
-export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTableNodeColumnProp) {
+export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: DataTableNodeColumnProp) {
 
 
 // we need a tempData and rowData as seperate states because if the edit was canceled need to revert back to original state prior to change.
@@ -26,12 +25,13 @@ export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTa
   const [rowData, setRowData] = useState({ ...newRow });
   const [tempData, setTempData] = useState({ ...newRow });
   const { dbCredentials } = useCredentialsStore((state) => state);
+  const { schemaStore } = useSchemaStore((state) => state);
 
 //reset the state when row changes. Specifically for on-delete functionality. 
   useEffect(()=> {
     setRowData({...newRow});
     setTempData({...newRow});
-    },[row])
+    }, [row])
 
 
   const [mode, setMode] = useState('default');
@@ -39,10 +39,10 @@ export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTa
   const rowDataKeys = Object.keys(row);
 
   interface rowData {
-    [key:string|number]:string|number|boolean|null
+    [key: string | number]: string | number | boolean | null
   };
   interface tempData {
-    [key:string|number]:string|number|boolean|null
+    [key: string | number]: string | number | boolean | null
   };
   interface changes{
     newRow?: tempData;
@@ -56,66 +56,49 @@ export default function DataTableNodeColumn({row,id,deleteRow,index, PK}: DataTa
   };
 
 //on save suppose to save changes to edits on data row.
-const onSave = async () => {
-  
-  //create changes object to store all the data needed to send to the backend
-  const changes: changes = {};
-  changes.tableName = id;
-  changes.newRow= {...tempData};
-  //if statement necessary for typing correction
-  if(PK[0] !== null && changes.newRow!== undefined){
-    changes.primaryKey = {[PK[0]]:changes.newRow[PK[0]]};
-  }
-  //delete primary key column from change for fetch request row.
-  if(PK[0]) delete changes.newRow[PK[0]];
- 
+  const onSave = async () => {
+    
+    //create changes object to store all the data needed to send to the backend
+    const changes: changes = {};
+    changes.tableName = id;
+    changes.newRow = {...tempData};
 
-  //iterate through and find the changes between new and old data.
-  const checkConstraints:tempData = {}
-  for(let currentKey in tempData ){
-    if(tempData[currentKey] !== rowData[currentKey]){
-      checkConstraints[currentKey] =tempData[currentKey];
-    }
-  }
-
-  //High level idea is to prevent edits into a matching primary key of the same table.
-  //Change all values in set into string in order to check if changed values(string) exist in primary key constraints(string)
-  if(PK[1]){
-    const tempObj = [];
-    for(const setItem of PK[1]){
-      if(typeof setItem === 'number'){
-        tempObj.push(setItem.toString());
-        PK[1].delete(setItem);
+    let primaryKeyData: {[key: string | number]: (string | number | boolean | null)} | null = null;
+    if (schemaStore.hasOwnProperty(id!)) {
+      const tableData = schemaStore[id!];
+      for (const columnName in tableData) {
+        const column = tableData[columnName];
+        if (column.IsPrimaryKey) {
+          primaryKeyData = {[columnName]: changes.newRow[columnName]}
+          delete changes.newRow[columnName];
+        }
       }
+    } else {
+      console.log('Table not found in schemaStore');
+      console.error('The Table Does not have a Primary Key, Cannot update without one')
+      return;
     }
-    tempObj.forEach((curr)=> PK[1]?.add(curr));
-  
-    for(let currentKey in checkConstraints ){
-      if(PK[0] === currentKey && PK[1].has(checkConstraints[currentKey])){
-        alert(`Duplicate Primary Key: ${PK[0]}`);
-        setTempData(rowData);
-        setMode('default');
-        throw new Error('Duplicate Primary Key');
-      };
+
+    changes.primaryKey = primaryKeyData!
+    setRowData({...tempData});
+    setMode('default');
+
+    await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
+      method:'PATCH',
+      headers:{
+        'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(changes)
+      })
+      .then((data) => data.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log('ERROR: ', err);
+      }
+      )
     };
-  };
-
-  
-  setRowData({...tempData});
-  setMode('default');
-  
-
-
-  const sendChangesRequest = await fetch(`/api/sql/${dbCredentials.db_type}/updateRow`,{
-    method:'PATCH',
-    headers:{
-      'Content-Type': 'application/json'
-      },
-      body:JSON.stringify(changes)
-    });
-    const data = await sendChangesRequest.json()
-    console.log(data);
-  };
 
 /////////////////////////////////
 // Patch Request edit Data endpoint: /api/updateRow

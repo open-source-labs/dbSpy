@@ -73,7 +73,7 @@ export default function TableNodeColumn({
       headers:{
         'Content-Type':'application/json'
       },
-      body:JSON.stringify({tableName: tableRef.substring(tableRef.indexOf('.') + 1), columnName: colRef})
+      body:JSON.stringify({tableName: tableRef, columnName: colRef})
     });
     deleteColumnSchema(tableRef, colRef);
   };

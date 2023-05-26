@@ -12,7 +12,7 @@ const microsoftController = {
     
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
-    async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
+    async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string, schemaName: string): Promise<TableColumns> {
       const tableSchema: TableColumn = {};
 
       for (const column of microsoftSchemaData) {
@@ -29,9 +29,9 @@ const microsoftController = {
               // These got a little mixed up but are in the right place
               isDestination: false,
               PrimaryKeyName: foreignKey.referenced_column_name,
-              PrimaryKeyTableName: 'public.' + foreignKey.referenced_table_name,
+              PrimaryKeyTableName: `${schemaName}.`+ foreignKey.referenced_table_name,
               ReferencesPropertyName: foreignKey.column_name,
-              ReferencesTableName: 'public.' + tableName,
+              ReferencesTableName: `${schemaName}.${tableName}`,
               constraintName: foreignKey.constraint_name,
             });
           };
@@ -42,7 +42,7 @@ const microsoftController = {
             IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
             Name: column.COLUMN_NAME,
             References: references,
-            TableName: 'public.' + tableName,
+            TableName: `${schemaName}.${tableName}`,
             Value: null,
             additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
             data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
@@ -56,7 +56,14 @@ const microsoftController = {
 
     try{
       // Query to retrieve all table names
-      const tables: [{TABLE_NAME: string}] = await MicrosoftDataSource.query(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES`);
+      const tables: [{SchemaName: string, TABLE_NAME: string}] = await MicrosoftDataSource.query(`
+        SELECT
+          SCHEMA_NAME() AS SchemaName,
+          TABLE_NAME 
+        FROM 
+          INFORMATION_SCHEMA.TABLES
+        `);
+        console.log('tables: ', tables)
       // Declare constants to store results we get back from queries
       const tableData: TableColumns = {};
       const schema: TableSchema = {};
@@ -65,13 +72,14 @@ const microsoftController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName: string = table.TABLE_NAME;
+        const schemaName: string = table.SchemaName
         console.log('tableName: ', tableName)
         const tableDataQuery = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
-        tableData[tableName] = tableDataQuery;
+        tableData[`${schemaName}.${tableName}`] = tableDataQuery;
 
         // SCHEMA Create property on schema object with every loop
         const microsoftSchemaData = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
-        schema['public.' + tableName] = await microsoftFormatTableSchema(microsoftSchemaData, tableName);
+        schema[`${schemaName}.${tableName}`] = await microsoftFormatTableSchema(microsoftSchemaData, tableName, schemaName);
       }
 
       // Console.logs to check what the data looks like
@@ -99,7 +107,7 @@ const microsoftController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   microsoftAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
+      addNewDbRow(req, res, next);
       console.log("microsoftAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {
@@ -111,7 +119,7 @@ const microsoftController = {
 //-----------------UPDATE ROW--------------------------------------------------------------
   microsoftUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      updateRow(req, res, next);
+      await Promise.resolve(updateRow(req, res, next));
       console.log("microsoftUpdateRow function has concluded");
       return next();
     } catch (err: unknown) {

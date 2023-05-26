@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, OracleSchema } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
@@ -12,7 +12,7 @@ const oracleController = {
 
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
-    async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string): Promise<TableColumn> {
+    async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string, user: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
     
       for (const column of oracleSchema) {
@@ -26,9 +26,9 @@ const oracleController = {
             // These got a little mixed up but are in the right place
             isDestination: false,
             PrimaryKeyName: column.R_COLUMN_NAME,
-            PrimaryKeyTableName: 'public.' + column.R_TABLE_NAME,
+            PrimaryKeyTableName: `"${user}"."${column.R_TABLE_NAME}"`,
             ReferencesPropertyName: column.COLUMN_NAME,
-            ReferencesTableName: 'public.' + tableName,
+            ReferencesTableName: `"${user}"."${tableName}"`,
             constraintName: column.CONSTRAINT_NAME,
           });
         };
@@ -39,7 +39,7 @@ const oracleController = {
           IsPrimaryKey: keyString ? keyString.includes('P') ? true : false : false,
           Name: column.COLUMN_NAME,
           References: column.CONSTRAINT_TYPE === 'R' ? references : [],
-          TableName: 'public.' + tableName,
+          TableName: `"${user}"."${tableName}"`,
           Value: null,
           additional_constraints: column.IS_NULLABLE === 'N' ? 'NOT NULL' : null ,
           data_type: column.DATA_TYPE + `${column.DATA_TYPE.includes('VARCHAR2') ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
@@ -64,11 +64,11 @@ const oracleController = {
         const user = (username as string).toUpperCase();
 
         // DATA Create property on tableData object with every loop
-        const tableDataQuery = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
-        tableData[tableName] = tableDataQuery;
+        const tableDataQuery: Promise<{[key: string]: [] | {}[]}> = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
+        tableData[`"${user}"."${tableName}"`] = tableDataQuery;
         // SCHEMA Create property on schema object with every loop
-        const oracleSchema = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));
-        schema['public.' + tableName] = await oracleFormatTableSchema(oracleSchema, tableName);
+        const oracleSchema: OracleSchema[] = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));
+        schema[`"${user}"."${tableName}"`] = await oracleFormatTableSchema(oracleSchema, tableName, user);
       };
 
       // Console.logs to check what the data looks like
@@ -96,7 +96,7 @@ const oracleController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   oracleAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
+      addNewDbRow(req, res, next);
       console.log("oracleAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {

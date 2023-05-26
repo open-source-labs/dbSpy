@@ -38,6 +38,15 @@ let settingsStore = (
     }));
   },
 
+  inputDataModalState: { isOpen: false, mode: '' },
+  setDataInputModalState: (isOpen: boolean, mode: string = '', currentTable: string = '') => {
+    set((state) => ({
+      ...state,
+      currentTable,
+      inputDataModalState: { isOpen, mode },
+    }));
+  },
+
   deleteTableModalState: { isOpen: false },
   setDeleteTableModalState: (isOpen: boolean) => {
     set((state) => ({

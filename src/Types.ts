@@ -56,6 +56,21 @@ export interface TableColumn {
   default_type?: string;
 };
 
+export interface OracleSchema {
+TABLE_NAME: string,
+COLUMN_NAME: string,
+DATA_TYPE: string,
+DATA_DEFAULT: string | null,
+CHARACTER_MAXIMUM_LENGTH: string | number | null,
+IS_NULLABLE: string,
+COLUMN_ID: number,
+CONSTRAINT_NAME: string,
+CONSTRAINT_TYPE: string,
+R_TABLE_OWNER: string | null,
+R_TABLE_NAME: string | null,
+R_COLUMN_NAME: string | null
+}
+
 export interface TableColumns {
   [columnName: string]: TableColumn;
 };
@@ -166,6 +181,8 @@ export type RowsOfData = {
 export type DataStore = {
   [TableName: string]: RowsOfData[];
 }
+
+export type DataRowArray = Array<string | number | boolean>
 
 // export type DataState = {
 //   // DATA

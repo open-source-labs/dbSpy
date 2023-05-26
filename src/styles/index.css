@@ -655,10 +655,10 @@ select:focus {
   display: flex;
 }
 
-.table-name input {
+/* .table-name input {
   flex: 1;
   margin-left: 10px;
-}
+} */
 
 .input-modal .column-header {
   display: flex;

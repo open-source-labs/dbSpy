@@ -114,7 +114,7 @@ const mysqlController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   mysqlAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
+      addNewDbRow(req, res, next);
       console.log("mysqlAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {

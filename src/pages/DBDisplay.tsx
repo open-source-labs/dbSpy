@@ -23,6 +23,8 @@ const DBDisplay: React.FC = () => {
     editRefMode,
     inputModalState,
     setInputModalState,
+    inputDataModalState,
+    setDataInputModalState,
     deleteTableModalState,
     setDeleteTableModalState,
     currentTable,
@@ -39,6 +41,7 @@ const DBDisplay: React.FC = () => {
 
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
+  const openAddRowDataModal = () => setDataInputModalState(true);
   const openAddColumnModal = (tableName: string) =>
     setInputModalState(true, 'column', tableName);
 
@@ -176,21 +179,20 @@ useEffect(() :void => {
       if isSchema === false => need modal for data */}
 
       {inputModalState.isOpen ? (
-        isSchema ? (
           <InputModal
             mode={inputModalState.mode as 'table' | 'column'}
             tableNameProp={currentTable}
             closeInputModal={() => setInputModalState(false)}
           />
-        ) : (
+        ) : null } 
+        
+      {inputDataModalState.isOpen ? (
           <DataInputModal
-            //mode={inputModalState.mode}
-              tableNameProp={currentTable}
-            closeInputModal={() => setInputModalState(false)}
+            mode={inputModalState.mode}
+            tableNameProp={currentTable}
+            closeDataInputModal={() => setDataInputModalState(false)}
           />
-
-        )
-      ):null}
+      ) : null }
 
       {deleteTableModalState.isOpen ?
           <DeleteTableModal
