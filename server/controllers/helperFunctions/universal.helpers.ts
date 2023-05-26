@@ -447,42 +447,15 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
 export const addForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type, username } = req.session;
-
+  const { PrimaryKeyTableName, PrimaryKeyColumnName, ForeignKeyTableName, ForeignKeyColumnName } = req.body;
 
   try{
-    const addForeignKeyData: {[key: string]: string } = req.body;
-
-    const schemaName = db_type === 'mssql' ? await dbDataSource.query(`SELECT SCHEMA_NAME() AS SchemaName;`) : '';
-
-    const primaryKeyTableNameFK = addForeignKeyData.PrimaryKeyTableName.slice(7, addForeignKeyData.PrimaryKeyTableName.length + 1);
-    const foreignKeyTableNameFK = addForeignKeyData.ForeignKeyTableName.slice(7, addForeignKeyData.ForeignKeyTableName.length + 1);
-
-    const microsoftPrimaryTableName = `${schemaName[0].SchemaName}.${primaryKeyTableNameFK}`;
-    const microsoftForeignTableName = `${schemaName[0].SchemaName}.${foreignKeyTableNameFK}`;
-
-    let primaryTableName: string = '';
-    let foreignTableName: string = '';
-
-    switch (db_type) {
-      case 'oracle':
-        primaryTableName = `"${(username as string).toUpperCase()}"."${primaryKeyTableNameFK}"`;
-        foreignTableName = `"${(username as string).toUpperCase()}"."${foreignKeyTableNameFK}"`;
-        break;
-      case 'mssql':
-        primaryTableName = `${microsoftPrimaryTableName}`;
-        foreignTableName = `${microsoftForeignTableName}`;
-        break;
-      default:
-        primaryTableName = addForeignKeyData.tableName;
-        foreignTableName = addForeignKeyData.tableName;
-        break;
-    };
 
     const addedForeignKey: Promise<unknown> = await dbDataSource.query(`
-      ALTER TABLE ${foreignTableName}
-      ADD CONSTRAINT fk_${addForeignKeyData.ForeignKeyColumnName}_to_${addForeignKeyData.PrimaryKeyColumnName}
-      FOREIGN KEY ("${addForeignKeyData.ForeignKeyColumnName}")
-      REFERENCES ${primaryTableName} ("${addForeignKeyData.PrimaryKeyColumnName}")
+      ALTER TABLE ${ForeignKeyTableName}
+      ADD CONSTRAINT fk_${ForeignKeyColumnName}_to_${PrimaryKeyColumnName}
+      FOREIGN KEY (${db_type === 'mssql' || db_type === 'oracle' ? `"${ForeignKeyColumnName}"` : `${ForeignKeyColumnName}`})
+      REFERENCES ${PrimaryKeyTableName} (${ db_type === 'mssql' || db_type === 'oracle' ? `"${PrimaryKeyColumnName}"` : `${PrimaryKeyColumnName}`})
       `);
 
     dbDataSource.destroy();

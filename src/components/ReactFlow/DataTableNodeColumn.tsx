@@ -96,8 +96,7 @@ export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: Dat
       })
       .catch((err) => {
         console.log('ERROR: ', err);
-      }
-      )
+      })
     };
 
 /////////////////////////////////

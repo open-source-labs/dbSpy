@@ -25,11 +25,15 @@ const mysqlController = {
         const keyString: any = column.Key;
 
         const defaultTypes = await MysqlDataSource.query(`
-          SELECT EXTRA, COLUMN_DEFAULT
-          FROM INFORMATION_SCHEMA.COLUMNS
-          WHERE TABLE_SCHEMA = '${MysqlDataSource.options.database}'
-          AND TABLE_NAME = '${tableName}'
-          AND COLUMN_NAME = "${columnName}"
+          SELECT 
+            EXTRA, 
+            COLUMN_DEFAULT
+          FROM 
+            INFORMATION_SCHEMA.COLUMNS
+          WHERE 
+            TABLE_SCHEMA = '${MysqlDataSource.options.database}'
+            AND TABLE_NAME = '${tableName}'
+            AND COLUMN_NAME = "${columnName}"
         `);
           
         //query for the foreign key data
@@ -43,9 +47,9 @@ const mysqlController = {
             // These got a little mixed up but are in the right place
             isDestination: false,
             PrimaryKeyName: foreignKey.REFERENCED_COLUMN_NAME,
-            PrimaryKeyTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+            PrimaryKeyTableName: foreignKey.REFERENCED_TABLE_NAME,
             ReferencesPropertyName: foreignKey.COLUMN_NAME,
-            ReferencesTableName: 'public.' + tableName,
+            ReferencesTableName: tableName,
             constraintName: foreignKey.CONSTRAINT_NAME,
           });
         };
@@ -56,7 +60,7 @@ const mysqlController = {
           IsPrimaryKey: keyString.includes('PRI'),
           Name: column.Field,
           References: references,
-          TableName: 'public.' + tableName,
+          TableName: tableName,
           Value: null,
           additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
           data_type: column.Type,
@@ -86,7 +90,7 @@ const mysqlController = {
 
         // SCHEMA Create property on tableData object with every loop
         const mysqlSchemaData = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
-        schema['public.' + tableName] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
+        schema[tableName] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
       };
 
       // Console.logs to check what the data looks like
