@@ -275,7 +275,7 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
 };
 
 //-----------------UPDATE COLUMN---------------------------------------------------------------------------------------------
-//Currently Does not work
+// Currently does not work
 export const updateDbColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type } = req.session;
@@ -472,7 +472,7 @@ export const addForeignKey: RequestHandler = async (req: Request, _res: Response
 };
 
 //----------------REMOVE FOREIGN KEY--------------------------------------------------------------------------------------------
-
+// This does not currently work
 export const removeForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type } = req.session;
