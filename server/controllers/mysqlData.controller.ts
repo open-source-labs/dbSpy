@@ -35,6 +35,8 @@ const mysqlController = {
             AND TABLE_NAME = '${tableName}'
             AND COLUMN_NAME = "${columnName}"
         `);
+
+        console.log('MysqlDataSource.options.database: ',  MysqlDataSource.options.database)
           
         //query for the foreign key data
         const foreignKeys: any = await getForeignKeys(columnName, tableName);
@@ -47,12 +49,13 @@ const mysqlController = {
           references.push({
             isDestination: false,
             PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
-            PrimaryKeyTableName: foreignKey.PRIMARY_KEY_TABLE,
+            PrimaryKeyTableName: `${MysqlDataSource.options.database}.${foreignKey.PRIMARY_KEY_TABLE}`,
             ReferencesPropertyName: foreignKey.COLUMN_NAME,
-            ReferencesTableName: tableName,
+            ReferencesTableName: `${MysqlDataSource.options.database}.${tableName}`,
             constraintName: foreignKey.CONSTRAINT_NAME,
           });
         };
+        console.log('references: ', references)
 
         //Formation of the schema data
         tableSchema[columnName] = {
@@ -60,7 +63,7 @@ const mysqlController = {
           IsPrimaryKey: keyString.includes('PRI'),
           Name: column.Field,
           References: references,
-          TableName: tableName,
+          TableName: `${MysqlDataSource.options.database}.${tableName}`,
           Value: null,
           additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
           data_type: column.Type,
@@ -68,7 +71,7 @@ const mysqlController = {
           field_name: column.Field,
         };
       };
-  
+      console.log('tableSchema: ', tableSchema)
       return tableSchema;
   };
 //--------HELPER FUNCTIONS END-----------------------------------
@@ -86,11 +89,11 @@ const mysqlController = {
 
         // DATA Create property on tableData object with every loop
         const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
-        data[tableName] = tableData;
+        data[`${MysqlDataSource.options.database}.${tableName}`] = tableData;
 
         // SCHEMA Create property on tableData object with every loop
         const mysqlSchemaData = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
-        schema[tableName] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
+        schema[`${MysqlDataSource.options.database}.${tableName}`] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
       };
 
       // Console.logs to check what the data looks like

@@ -4,7 +4,7 @@
 
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { ColumnData, ColumnSchema, Reference } from '@/Types';
+import { ColumnData, ColumnSchema, Reference, InnerReference } from '@/Types';
 
 interface RestrictedNames {
   [name: string]: boolean;
@@ -30,7 +30,7 @@ export type SchemaState = {
   _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
-  addForeignKeySchema: (referenceData: Reference) => void;
+  addForeignKeySchema: (referenceData: InnerReference) => void;
   setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL') => void;
 
   // VALIDATION HELPER METHODS
@@ -117,9 +117,9 @@ const useSchemaStore = create<SchemaState>()(
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION
-            const originTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const originTable: string = referenceData.ReferencesTableName;
             const originColumn: string = referenceData.ReferencesPropertyName;
-            const destinationTable: keyof SchemaStore = referenceData.PrimaryKeyTableName;
+            const destinationTable: string = referenceData.PrimaryKeyTableName;
             const destinationColumn: string = referenceData.PrimaryKeyName;
 
             const newState = {

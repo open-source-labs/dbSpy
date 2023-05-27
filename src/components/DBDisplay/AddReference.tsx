@@ -4,53 +4,41 @@ import React, { useState } from 'react';
 // Components Imported;
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import { Reference } from '@/Types';
+import { Reference, InnerReference } from '@/Types';
 
-// interface ForeignKeyUpdateType  {
-//     PrimaryKeyTableName: string,
-//     PrimaryKeyColumnName: string,
-//     ForeignKeyTableName: string,
-//     ForeignKeyColumnName:string
-// }
-
-
-
-const AddReference: React.FC = () => {
-  const { currentTable, currentColumn, setEditRefMode } = useSettingsStore(
-    (state) => state
-  );
+const AddReference: React.FC = (): JSX.Element => {
+  const { currentTable, currentColumn, setEditRefMode } = useSettingsStore((state) => state);
   const { schemaStore, addForeignKeySchema } = useSchemaStore((state) => state);
+  const [primaryKeyTable, setPrimaryKeyTable] = useState<string>('');
+  const [primaryKeyColumn, setPrimaryKeyColumn] = useState<string>('');
 
-  const initialReference: Reference = {
-    // For whatever reason, PrimaryKeyName and PrimaryKeyTableName refer to other table
-    PrimaryKeyName: '',
-    PrimaryKeyTableName: '',
-    // ReferencesPropertyName and ReferencesTableName refer to the table we are adding the fk to
-    ReferencesPropertyName: currentColumn,
-    ReferencesTableName: currentTable,
-    IsDestination: false,
-    constraintName: `${currentTable}_fk${
-      schemaStore[currentTable][currentColumn].References.length + 1
-    }`,
+  const initialReference: InnerReference = {
+
+      PrimaryKeyName: '',
+      PrimaryKeyTableName: '',
+      ReferencesPropertyName: currentColumn,
+      ReferencesTableName: currentTable,
+      IsDestination: false,
+      constraintName: '',
+
   };
-  //STATE DECLARATION (dbSpy3.0)
-  //END: STATE DECLARATION
 
-  //form state hooks
-  const [formValues, setFormValues] = useState<Reference>(initialReference);
-
+  const [formValues, setFormValues] = useState<InnerReference>(initialReference);
+  const [tableSelected, setTableSelected] = useState<boolean>(false);
+  const [columnSelected, setColumnSelected] = useState<boolean>(false);
+  
   //HELPERS HELPER FUNCTION
   const nullCheck = () => {
     const mySideNav = document.getElementById('mySideNav') as HTMLDivElement | null;
     const main = document.getElementById('main') as HTMLDivElement | null;
     if (mySideNav !== null && main !== null){
-    mySideNav.style.width = '0px';
-    main.style.marginRight = '50px';
-    }
-  }
+      mySideNav.style.width = '0px';
+      main.style.marginRight = '50px';
+    };
+  };
 
   //HELPER FUNCTIONS
-  const onSave = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       /**React Flow hack.
@@ -60,36 +48,38 @@ const AddReference: React.FC = () => {
        */
       nullCheck();
       console.log(formValues)
-      //TODO: Send input from FK form to backend
-      const updatedForeignKey: Reference = {
+      const updatedForeignKey = {
         PrimaryKeyTableName: formValues.PrimaryKeyTableName,
         PrimaryKeyColumnName: formValues.PrimaryKeyName,
         ForeignKeyTableName: formValues.ReferencesTableName,
-        ForeignKeyColumnName:formValues.ReferencesPropertyName
-      }
-      fetch('/api/sql/postgres/addForeignKey', {
+        ForeignKeyColumnName: formValues.ReferencesPropertyName,
+        constraintName: formValues.constraintName
+      };
+
+      await fetch('/api/sql/postgres/addForeignKey', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(updatedForeignKey)
       })
-      document
-        .querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
+
+      document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
       addForeignKeySchema(formValues);
       setEditRefMode(false);
       setTimeout(
-        () =>
-          document
-            .querySelector('.flow')
-            ?.setAttribute('style', 'height: 80%; width: 95%;'),
-        0
-      );
+        () => document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;'
+        ), 0);
+        return;
+
     } catch (err: unknown) {
+      setTimeout(
+        () => document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;'
+        ), 0);
       window.alert(err);
       console.error(err);
-    }
-  };
+      };
+    };
 
   const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -100,19 +90,19 @@ const AddReference: React.FC = () => {
       window.alert(err);
       console.error(err);
     }
-}
+  };
   //END: HELPER FUNCTIONS
 
   const tableOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const table in schemaStore) {
-    if (table !== formValues.ReferencesTableName) {
+    if (table !== currentTable) {
       tableOptions.push(
         <option key={table} value={table}>
           {table}
         </option>
       );
-    }
-  }
+    };
+  };
 
   const columnOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const col in schemaStore[formValues.PrimaryKeyTableName]) {
@@ -121,7 +111,7 @@ const AddReference: React.FC = () => {
         {col}
       </option>
     );
-  }
+  };
 
   return (
     <div id="addReference" className="bg-[#fbf3de] dark:bg-slate-700">
@@ -131,16 +121,15 @@ const AddReference: React.FC = () => {
       <br></br>
       <span className="form-item">
         <p className="dark:text-white">
-          Table: <strong>{formValues.ReferencesTableName}</strong>
+          Table: <strong>{currentTable}</strong>
         </p>
       </span>
       <br></br>
       <span className="form-item">
         <p className="dark:text-white">
-          Column: <strong>{formValues.ReferencesPropertyName}</strong>
+          Column: <strong>{currentColumn}</strong>
         </p>
       </span>
-
       <br></br>
       <span className="form-item">
         <label htmlFor="db_type" className="dark:text-white">
@@ -152,17 +141,21 @@ const AddReference: React.FC = () => {
           name="ptablename"
           // defaultValue={reference[0].PrimaryKeyTableName}
           defaultValue={formValues.PrimaryKeyTableName}
-          onChange={(e) => {
+          onChange={async (e) => {
             if (e.target.value === '---') return;
-            setFormValues({ ...formValues, PrimaryKeyTableName: e.target.value });
+            setPrimaryKeyTable(e.target.value);
+            setFormValues({
+              ...formValues,
+              PrimaryKeyTableName: e.target.value
+            });
+            setTableSelected(true);
           }}
         >
           {tableOptions}
         </select>
       </span>
-
       <br></br>
-      {formValues.PrimaryKeyTableName.length > 0 && (
+      {tableSelected ? (
         <>
           {' '}
           <span className="form-item">
@@ -177,7 +170,12 @@ const AddReference: React.FC = () => {
               // defaultValue={reference[0].PrimaryKeyName}
               onChange={(e) => {
                 if (e.target.value === '---') return;
-                setFormValues({ ...formValues, PrimaryKeyName: e.target.value });
+                setPrimaryKeyColumn(e.target.value);
+                setFormValues({
+                  ...formValues,
+                  PrimaryKeyName: e.target.value
+                });
+                setColumnSelected(true);
               }}
             >
               {columnOptions}
@@ -185,8 +183,8 @@ const AddReference: React.FC = () => {
           </span>
           <br></br>
         </>
-      )}
-
+      ) : null}
+      {columnSelected ? (
       <span className="form-item">
         <label htmlFor="db_type" className="dark:text-white">
           Constraint Name
@@ -196,12 +194,16 @@ const AddReference: React.FC = () => {
           type="text"
           id="constraintname"
           name="constraintname"
-          value={formValues.constraintName}
+          value={`fk_${currentColumn}_of_${currentTable}_to_${primaryKeyColumn}_of_${primaryKeyTable}`}
           onChange={(e) =>
-            setFormValues({ ...formValues, constraintName: e.target.value })
+            setFormValues({
+              ...formValues,
+              constraintName: e.target.value
+            })
           }
         />
       </span>
+      ): null}
       <br></br>
       <span className="add-ref-btn">
         <button

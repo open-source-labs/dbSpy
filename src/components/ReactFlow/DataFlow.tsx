@@ -30,8 +30,8 @@ export default function DataFlow(): JSX.Element {
     reRender(dataStore, schemaStore);
   }, [dataStore, schemaStore]);
 
-  function reRender(dataStore: DataStore, schemaStore: SchemaStore):void {
-    if (!schemaStore || !Object.keys(schemaStore).length) return;
+  function reRender(dataStore: DataStore, schemaStore: SchemaStore): void {
+    if (!dataStore || !Object.keys(dataStore).length) return;
     const initialEdges = createDataEdges(schemaStore);
     setEdges(initialEdges);
     const initialNodes = createDataNodes(dataStore, initialEdges);

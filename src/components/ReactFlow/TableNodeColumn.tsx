@@ -68,12 +68,13 @@ export default function TableNodeColumn({
     //declare prior values
     const tableRef = columnData.TableName;
     const colRef = columnData.field_name;
+    const constraintName = columnData.References[0].constraintName
     await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
       method:'DELETE',
       headers:{
         'Content-Type':'application/json'
       },
-      body:JSON.stringify({tableName: tableRef, columnName: colRef})
+      body:JSON.stringify({tableName: tableRef, columnName: colRef, constraintName: constraintName})
     });
     deleteColumnSchema(tableRef, colRef);
   };

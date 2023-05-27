@@ -158,14 +158,30 @@ export type Reference = {
     ReferencesTableName: string;
     IsDestination: boolean;
     constraintName: string;
-  };
+  }
 };
+
+export type ForeignKeyData = {
+  PrimaryKeyTableName: string,
+  PrimaryKeyColumnName: string,
+  ForeignKeyTableName: string,
+  ForeignKeyColumnName: string
+}
+
+export type InnerReference = {
+  PrimaryKeyName: string;
+  PrimaryKeyTableName: string;
+  ReferencesPropertyName: string;
+  ReferencesTableName: string;
+  IsDestination: boolean;
+  constraintName: string;
+}
 
 export interface ColumnSchema{
   Name: string;
   Value: string | null;
   TableName: string;
-  References: Reference;
+  References: InnerReference[];
   IsPrimaryKey: boolean;
   IsForeignKey: boolean;
   field_name: string;

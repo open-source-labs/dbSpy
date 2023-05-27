@@ -36,14 +36,14 @@ const postgresController = {
           references.push({
             isDestination: false,
             PrimaryKeyName: foreignKey.primary_key_column,
-            PrimaryKeyTableName: 'public.' + foreignKey.primary_key_table,
+            PrimaryKeyTableName: foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,
             ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
           });
         };
 
-        //console.log('references: ', references)
+        console.log('references: ', references)
 
         const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
@@ -61,6 +61,7 @@ const postgresController = {
           field_name: columnName,
         };
       };
+      console.log('tableSchema: ', tableSchema)
       return tableSchema;
     };
 //--------HELPER FUNCTIONS END-----------------------------------
@@ -77,12 +78,10 @@ const postgresController = {
         // DATA Create property on tableData object with every loop
         const tableName = table.tablename;
         const tableDataQuery: Promise<{[key: string]: [] | {}[]}> = await PostgresDataSource.query(`SELECT * FROM ${'public.' + tableName}`);
-        console.log('tableDataQuery: ', tableDataQuery)
         tableData['public.' + tableName] = tableDataQuery;
 
         // SCHEMAS Create property on schema object with every loop
         const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName));
-        console.log('postgresSchemaData: ', postgresSchemaData)
         schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
       };
 

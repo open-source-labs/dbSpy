@@ -227,7 +227,7 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
     columnData.forEach((el: NewColumn) => {
       if (db_type === 'mssql') {
         keyValueString += `ALTER TABLE ${tableName} ADD "${el.name}" ${el.type === 'AUTO_INCREMENT' ? 'INT' : el.type}${el.isPrimary ? ' PRIMARY KEY' : ''}${el.isNullable ? '' : ' NOT NULL'}${el.defaultValue ? ` DEFAULT ${el.defaultValue}` : ''}${el.type === 'AUTO_INCREMENT' ? ' AUTO_INCREMENT' : ''}; `
-      } else if(db_type === 'oracle') {
+      } else if (db_type === 'oracle') {
         let number: string = '';
         if (el.type.includes('VARCHAR')) {
           const regex = /\((\d+)\)/;
@@ -304,14 +304,22 @@ export const updateDbColumn: RequestHandler = async (req: Request, _res: Respons
 export const deleteColumn: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req)
   const { db_type } = req.session
-  const { columnName, tableName } = req.body
+  const { columnName, tableName, constraintName } = req.body
 
   try{
-    const deletedColumn: Promise<unknown> = await dbDataSource.query(`
-    ALTER TABLE ${tableName}
-    DROP${db_type !== 'mysql' ? ' COLUMN' : ''} ${columnName}
-    `)
 
+    if (constraintName) {
+      await dbDataSource.query(`
+        ALTER TABLE ${tableName} 
+        DROP ${db_type === 'mysql' ? 'FOREIGN KEY' : 'CONSTRAINT'} ${constraintName};
+        `)
+    };
+
+    const deletedColumn: Promise<unknown> = await dbDataSource.query(`
+      ALTER TABLE ${tableName}
+      DROP COLUMN ${columnName};
+      `)
+      
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     console.log('deletedColumn in helper: ', deletedColumn)
@@ -446,14 +454,15 @@ export const deleteTable: RequestHandler = async (req: Request, _res: Response, 
 
 export const addForeignKey: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
-  const { db_type, username } = req.session;
-  const { PrimaryKeyTableName, PrimaryKeyColumnName, ForeignKeyTableName, ForeignKeyColumnName } = req.body;
+  const { db_type } = req.session;
+  const { PrimaryKeyTableName, PrimaryKeyColumnName, ForeignKeyTableName, ForeignKeyColumnName, constraintName } = req.body;
+  console.log('req.body: ', req.body)
 
   try{
 
     const addedForeignKey: Promise<unknown> = await dbDataSource.query(`
       ALTER TABLE ${ForeignKeyTableName}
-      ADD CONSTRAINT fk_${ForeignKeyColumnName}_to_${PrimaryKeyColumnName}
+      ADD CONSTRAINT ${constraintName}
       FOREIGN KEY (${db_type === 'mssql' || db_type === 'oracle' ? `"${ForeignKeyColumnName}"` : `${ForeignKeyColumnName}`})
       REFERENCES ${PrimaryKeyTableName} (${ db_type === 'mssql' || db_type === 'oracle' ? `"${PrimaryKeyColumnName}"` : `${PrimaryKeyColumnName}`})
       `);
