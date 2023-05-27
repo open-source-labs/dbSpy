@@ -17,7 +17,7 @@ export type SchemaStore = {
 export type SchemaState = {
   // DATA
   schemaStore: SchemaStore;
-  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite';
   history: SchemaStore[];
   historyCounter: number;
 
@@ -31,7 +31,7 @@ export type SchemaState = {
   undoHandler: () => void;
   redoHandler: () => void;
   addForeignKeySchema: (referenceData: InnerReference) => void;
-  setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL') => void;
+  setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite') => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
