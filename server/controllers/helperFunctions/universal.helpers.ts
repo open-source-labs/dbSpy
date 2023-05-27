@@ -107,7 +107,7 @@ export const addNewDbRow: RequestHandler = async (req: Request, res: Response, n
     console.log('values: ', values)
 
     const dbAddedRow: Promise<unknown> = await dbDataSource.query(`
-      INSERT INTO ${tableName} (${keys})
+      INSERT INTO ${tableName} (${db_type === 'postgres' ? keys.toLowerCase() : keys })
       VALUES (${values})
     `);
 
@@ -319,7 +319,7 @@ export const deleteColumn: RequestHandler = async (req: Request, _res: Response,
       ALTER TABLE ${tableName}
       DROP COLUMN ${columnName};
       `)
-      
+
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     console.log('deletedColumn in helper: ', deletedColumn)
