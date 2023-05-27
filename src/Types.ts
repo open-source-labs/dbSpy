@@ -165,7 +165,8 @@ export type ForeignKeyData = {
   PrimaryKeyTableName: string,
   PrimaryKeyColumnName: string,
   ForeignKeyTableName: string,
-  ForeignKeyColumnName: string
+  ForeignKeyColumnName: string,
+  constraintName: string
 }
 
 export type InnerReference = {
