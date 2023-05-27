@@ -4,7 +4,7 @@
 
 import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { ColumnData, ColumnSchema, Reference, InnerReference } from '@/Types';
+import { ColumnData, ColumnSchema, InnerReference } from '@/Types';
 
 interface RestrictedNames {
   [name: string]: boolean;
@@ -121,7 +121,6 @@ const useSchemaStore = create<SchemaState>()(
             const originColumn: string = referenceData.ReferencesPropertyName;
             const destinationTable: string = referenceData.PrimaryKeyTableName;
             const destinationColumn: string = referenceData.PrimaryKeyName;
-
             const newState = {
               ...state,
               schemaStore: {
