@@ -15,8 +15,7 @@ const nodeTypes = {
 
 export default function Flow(): JSX.Element {
   // set up states for nodes and edges
-  const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
-    useFlowStore((state) => state);
+  const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } = useFlowStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
   
   // re-render every time schemaStore updates

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema, OracleSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, OracleSchema, RefObj } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
@@ -14,7 +14,7 @@ const oracleController = {
     * Used for storing Primary Key table and column names that are
     *  part of Foreign Keys to adjust IsDestination to be true.
     */
-    const foreignKeyReferenced: {[key: string]: string} = {};
+    const foreignKeyReferenced: RefObj[] = [];
 
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
@@ -28,7 +28,14 @@ const oracleController = {
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (column.CONSTRAINT_TYPE === 'R'){
-          foreignKeyReferenced[`"${user}"."${column.R_PRIMARY_KEY_TABLE}"`] = column.R_PRIMARY_KEY_COLUMN;
+          foreignKeyReferenced.push({
+            isDestination: true,
+            PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: `"${user}"."${column.R_PRIMARY_KEY_TABLE}"`,
+            ReferencesPropertyName: column.COLUMN_NAME,
+            ReferencesTableName: `"${user}"."${tableName}"`,
+            constraintName: column.CONSTRAINT_NAME,
+          });
           references.push({
             isDestination: false,
             PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
@@ -53,7 +60,6 @@ const oracleController = {
           data_type: column.DATA_TYPE + `${column.DATA_TYPE.includes('VARCHAR2') ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
           data_default: column.DATA_DEFAULT,
           field_name: column.COLUMN_NAME,
-          IsConnectedToForeignKey: false
         };
       };
       
@@ -81,9 +87,9 @@ const oracleController = {
       };
 
       // Changing the isDestination value for the Foreign Keys
-      if (Object.entries(foreignKeyReferenced).length !== 0) {
-        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
-          schema[tableName][columnName].IsConnectedToForeignKey = true;
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
         };
       };
 

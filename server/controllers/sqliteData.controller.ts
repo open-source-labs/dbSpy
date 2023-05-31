@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { dbConnect, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
 // Object containing all of the middleware
@@ -12,7 +12,7 @@ const sqliteController = {
     * Used for storing Primary Key table and column names that are
     *  part of Foreign Keys to adjust IsDestination to be true.
     */
-    const foreignKeyReferenced: {[key: string]: string} = {};
+    const foreignKeyReferenced: RefObj[] = [];
   
 //--------HELPER FUNCTION-----------------------------------   
     //function organizing data from queries in to the desired format of the front end
@@ -30,7 +30,14 @@ const sqliteController = {
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey) {
-          foreignKeyReferenced[foreignKey.table] = foreignKey.to;
+          foreignKeyReferenced.push({
+            isDestination: true,
+            PrimaryKeyName: foreignKey.to,
+            PrimaryKeyTableName: foreignKey.table,
+            ReferencesPropertyName: foreignKey.from,
+            ReferencesTableName: 'public.' + tableName,
+            constraintName: tableName + '_' + foreignKey.from + '_fkey'
+          });
           references.push({
             isDestination: false,
             PrimaryKeyName: foreignKey.to,
@@ -77,9 +84,9 @@ const sqliteController = {
       };
 
       // Changing the isDestination value for the Foreign Keys
-      if (Object.entries(foreignKeyReferenced).length !== 0) {
-        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
-          schema[tableName][columnName].IsConnectedToForeignKey = true;
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
         };
       };
 

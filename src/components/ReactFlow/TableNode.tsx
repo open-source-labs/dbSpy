@@ -6,7 +6,7 @@ import useSettingsStore from '../../store/settingsStore';
 import { DataNodeData } from '@/Types'
 
 
-export default function TableNode( data: DataNodeData ) {
+export default function TableNode({ data }) {
   const tableName = data.table[0];
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);

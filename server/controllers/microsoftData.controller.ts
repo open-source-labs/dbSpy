@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
@@ -14,7 +14,7 @@ const microsoftController = {
     * Used for storing Primary Key table and column names that are
     *  part of Foreign Keys to adjust IsDestination to be true.
     */
-    const foreignKeyReferenced: {[key: string]: string} = {};
+    const foreignKeyReferenced: RefObj[] = [];
     
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
@@ -31,7 +31,14 @@ const microsoftController = {
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = []
         if (foreignKey){
-          foreignKeyReferenced[`${schemaName}.`+ foreignKey.primary_key_table] = foreignKey.primary_key_column;
+          foreignKeyReferenced.push({
+            isDestination: true,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
+            ReferencesPropertyName: foreignKey.column_name,
+            ReferencesTableName: `${schemaName}.${tableName}`,
+            constraintName: foreignKey.constraint_name,
+          });
           references.push({
             isDestination: false,
             PrimaryKeyName: foreignKey.primary_key_column,
@@ -90,9 +97,9 @@ const microsoftController = {
       };
 
       // Changing the isDestination value for the Foreign Keys
-      if (Object.entries(foreignKeyReferenced).length !== 0) {
-        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
-          schema[tableName][columnName].IsConnectedToForeignKey = true;
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
         };
       };
 

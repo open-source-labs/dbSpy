@@ -53,13 +53,6 @@ const AddReference: React.FC = (): JSX.Element => {
   const onSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      
-      // Preventing Errors on client side to stop quires that result in error on the server side
-      if (schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName].IsConnectedToForeignKey === true) {
-        window.alert(`The Primary Key of table ${formValues.PrimaryKeyTableName} is already connected by a Foreign Key from column ${formValues.ReferencesPropertyName} on table ${formValues.ReferencesTableName}.`);
-        console.error(`The Primary Key of table ${formValues.PrimaryKeyTableName} is already connected by a Foreign Key from column ${formValues.ReferencesPropertyName} on table ${formValues.ReferencesTableName}.`);
-        return;
-      }
       /**React Flow hack.
        * Problem: Viewports larger than 1197x1197px prevent edges from rendering
        * Hacky Solution: Minify RF. Send resize-func to task queue so RF only returns to normal once edge rendering is complete
@@ -82,18 +75,28 @@ const AddReference: React.FC = (): JSX.Element => {
         body: JSON.stringify(updatedForeignKey)
       })
 
-      document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
-      addForeignKeySchema(formValues);
-      setSchemaStore({
+      await Promise.resolve(setSchemaStore({
         ...schemaStore,
         [formValues.PrimaryKeyTableName]: {
           ...schemaStore[formValues.PrimaryKeyTableName],
           [formValues.PrimaryKeyName]: {
             ...schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName],
-            IsConnectedToForeignKey: true
+            References: [
+              ...schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName].References,
+              {
+                isDestination: true,
+                PrimaryKeyName: formValues.PrimaryKeyName,
+                PrimaryKeyTableName: formValues.PrimaryKeyTableName,
+                ReferencesPropertyName: formValues.ReferencesPropertyName,
+                ReferencesTableName: formValues.ReferencesTableName,
+                constraintName: formValues.constraintName.replace(/[^a-zA-Z0-9_]/g, "")
+              },
+            ],
           },
         },
-      });
+      }));
+      document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
+      addForeignKeySchema(formValues);
       console.log('schemaStore', schemaStore)
       setEditRefMode(false);
       setTimeout(

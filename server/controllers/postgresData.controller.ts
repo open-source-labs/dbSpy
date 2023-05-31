@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, getTableNames, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 import { resourceLimits } from 'worker_threads';
@@ -13,8 +13,8 @@ const postgresController = {
     /* 
     * Used for storing Primary Key table and column names that are
     *  part of Foreign Keys to adjust IsDestination to be true.
-    */
-    const foreignKeyReferenced: {[key: string]: string} = {};
+    */ 
+    const foreignKeyReferenced: RefObj[] = [];
 
 //--------HELPER FUNCTION 1-----------------------------------
     // function to query and get all information needed for foreign keys
@@ -36,20 +36,28 @@ const postgresController = {
         const foreignKey = foreignKeys.find((fk: TableColumn) => fk.foreign_key_column === columnName);
 
         //Creating the format for the Reference property if there is a foreign key
-        const references: {[key: string]: string | boolean}[] = [];
-        if (foreignKey){
-          foreignKeyReferenced[foreignKey.primary_key_table] = foreignKey.foreign_key_column;
-          references.push({
-            isDestination: false,
+        
+        const references: RefObj[] = [];
+        if (foreignKey) {
+          foreignKeyReferenced.push({
+            isDestination: true,
             PrimaryKeyName: foreignKey.primary_key_column,
-            PrimaryKeyTableName: 'public.' + foreignKey.primary_key_table,
+            PrimaryKeyTableName: foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,
             ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
           });
+          references.push({
+            isDestination: false,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: foreignKey.primary_key_table,
+            ReferencesPropertyName: foreignKey.foreign_key_column,
+            ReferencesTableName: 'public.' + tableName,
+            constraintName: foreignKey.constraint_name
+          });
+          //foreignKeyReferenced.push(references[0])
         };
-
-        console.log('references: ', references)
+        
 
         const additionalConstraints: string | null = keyString!.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
@@ -65,10 +73,8 @@ const postgresController = {
           data_type: column.data_type,
           default_type: column.default_type,
           field_name: columnName,
-          IsConnectedToForeignKey: false,
         };
       };
-      console.log('tableSchema: ', tableSchema)
       return tableSchema;
     };
 //--------HELPER FUNCTIONS END-----------------------------------
@@ -94,15 +100,15 @@ const postgresController = {
       };
 
       // Changing the isDestination value for the Foreign Keys
-      if (Object.entries(foreignKeyReferenced).length !== 0) {
-        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
-          schema[tableName][columnName].IsConnectedToForeignKey = true;
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
         };
       };
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData)
-      console.log('schema data: ', schema)
+      // console.log('schema data: ', schema)
 
       // Storage of queried results into res.locals
       res.locals.schema = schema;

@@ -15,9 +15,9 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
 
         if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
           edges.push({
-          id: row.References[0].constraintName,
+          id: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
           source: row.References[0].ReferencesTableName,
-          sourceHandle:  row.References[0].ReferencesPropertyName,
+          sourceHandle: row.References[0].ReferencesPropertyName,
           target: row.References[0].PrimaryKeyTableName,
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,

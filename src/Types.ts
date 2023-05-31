@@ -164,6 +164,10 @@ export type Reference = {
   }
 };
 
+// export type PrimaryKeyReference = {
+//   [tableName: string]: RowsOfData
+// }
+
 export type ForeignKeyData = {
   PrimaryKeyTableName: string,
   PrimaryKeyColumnName: string,
