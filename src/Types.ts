@@ -45,6 +45,7 @@ export interface TableColumn {
   TableName?: string;
   IsForeignKey?: boolean;
   IsPrimaryKey?: boolean;
+  IsConnectedToForeignKey?: boolean;
   Value?: null;
   additional_constraints?: string | null;
   data_type?: string;
@@ -113,11 +114,13 @@ export type DataNode = {
   id: string;
   type: 'table';
   position: { x: number; y: number };
-  data: {
-    table: TableTuple;
-    edges: Edge[];
-  };
+  data: DataNodeData;
 };
+
+export interface DataNodeData {
+  table: TableTuple;
+  edges: Edge[];
+}
 
 export type TableTuple = 
 [ TableKey: string, 
@@ -156,7 +159,7 @@ export type Reference = {
     PrimaryKeyTableName: string;
     ReferencesPropertyName: string;
     ReferencesTableName: string;
-    IsDestination: boolean;
+    isDestination: boolean;
     constraintName: string;
   }
 };
@@ -174,7 +177,7 @@ export type InnerReference = {
   PrimaryKeyTableName: string;
   ReferencesPropertyName: string;
   ReferencesTableName: string;
-  IsDestination: boolean;
+  isDestination: boolean;
   constraintName: string;
 }
 
@@ -188,6 +191,7 @@ export interface ColumnSchema{
   field_name: string;
   data_type: SQLDataType;
   additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' ;
+  IsConnectedToForeignKey: boolean;
 };
 
 // these are for data tables ######################

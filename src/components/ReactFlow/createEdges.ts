@@ -12,15 +12,14 @@ export default function createEdges(schemaObject: SchemaStore) {
       const row = table[rowKey];
 
       if (row.IsForeignKey) {
-
         edges.push({
-          id: `${row.References[0].PrimaryKeyTableName}-to-${row.References[0].ReferencesTableName}`,
+          id: row.References[0].constraintName,
           source: row.References[0].ReferencesTableName,
           sourceHandle: row.References[0].ReferencesPropertyName,
           target: row.References[0].PrimaryKeyTableName,
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
-          label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+          label: row.References[0].constraintName,
           style: {
             strokeWidth: 2,
             stroke: '#085c84',

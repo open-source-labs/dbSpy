@@ -1,10 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { Handle, Position } from 'reactflow';
 import TableNodeColumn from './TableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
+import { DataNodeData } from '@/Types'
 
-export default function TableNode({ data }) {
+
+export default function TableNode( data: DataNodeData ) {
   const tableName = data.table[0];
   // columnData is an array of objects with each column in the table as an element
   const columnData = Object.values(data.table[1]);

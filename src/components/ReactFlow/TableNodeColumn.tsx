@@ -65,18 +65,31 @@ export default function TableNodeColumn({
   };
 
   const onDelete = async () => {
-    //declare prior values
-    const tableRef = columnData.TableName;
-    const colRef = columnData.field_name;
-    const constraintName = columnData.References[0].constraintName
-    await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
-      method:'DELETE',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({tableName: tableRef, columnName: colRef, constraintName: constraintName})
-    });
-    deleteColumnSchema(tableRef, colRef);
+    try {
+      const tableRef = columnData.TableName;
+      const colRef = columnData.field_name;
+      const constraintName = columnData.References[0].constraintName
+
+      if (schemaStore[tableRef][colRef].IsConnectedToForeignKey === true) {
+        window.alert(`Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`);
+        console.error(`Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`);
+        return;
+      };
+
+      await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+        method:'DELETE',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({tableName: tableRef, columnName: colRef, constraintName: constraintName})
+      });
+      deleteColumnSchema(tableRef, colRef);
+      return;
+
+    } catch(err) {
+      window.alert(err);
+      console.error(err);
+    };
   };
 
   const openAddReferenceModal = () => {
@@ -104,7 +117,7 @@ export default function TableNodeColumn({
                   field_name: e.target.value.replaceAll(/\s/g, '_'),
                 }))
               }
-            ></input>
+            />
           ) : (
             columnData.field_name
           )}

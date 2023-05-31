@@ -126,6 +126,7 @@ export default function FeatureTab(props: any) {
       return setSchemaStore(JSON.parse(schemaString));
     } catch (err) {
       console.error('err retrieve', err);
+      window.alert(err);
     }
   };
 

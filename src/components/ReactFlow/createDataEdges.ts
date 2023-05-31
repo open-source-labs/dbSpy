@@ -14,15 +14,14 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
       if (row.IsForeignKey) {
 
         if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
-
           edges.push({
-          id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
+          id: row.References[0].constraintName,
           source: row.References[0].ReferencesTableName,
           sourceHandle:  row.References[0].ReferencesPropertyName,
           target: row.References[0].PrimaryKeyTableName,
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
-          label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+          label: row.References[0].constraintName,
             style: {
               strokeWidth: 2,
               stroke: '#085c84',

@@ -1,38 +1,39 @@
-// React & React Router & React Query Modules;
 import React, { useState } from 'react';
-// Components Imported;
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import { Reference, InnerReference } from '@/Types';
 import useCredentialsStore from '../../store/credentialsStore';
+import { InnerReference } from '@/Types';
+
 
 const AddReference: React.FC = (): JSX.Element => {
   const { currentTable, currentColumn, setEditRefMode } = useSettingsStore((state) => state);
-  const { schemaStore, addForeignKeySchema } = useSchemaStore((state) => state);
+  const { schemaStore, addForeignKeySchema, setSchemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);
 
-  const initialReference: InnerReference = {
-      PrimaryKeyName: '',
-      PrimaryKeyTableName: '',
-      ReferencesPropertyName: currentColumn,
-      ReferencesTableName: currentTable,
-      IsDestination: false,
-      constraintName: '',
-  };
-
-  let maxConstraintLength: number;
+  // Constraint Names have a character limit depending on the database
+  let maxConstraintNameLength: number;
   switch(dbCredentials.db_type) {
     case 'mysql':
-      maxConstraintLength = 64;
+      maxConstraintNameLength = 64;
     case 'mssql':
-      maxConstraintLength = 128;
+      maxConstraintNameLength = 128;
     case 'oracle':
-      maxConstraintLength = 30;
+      maxConstraintNameLength = 30;
     case 'sqlite':
-      maxConstraintLength = 255;
+      maxConstraintNameLength = 255;
     default:
-      maxConstraintLength = 63 //Postgres
+      maxConstraintNameLength = 63; //Postgres
   };
+
+  // Starting values for the formValues
+  const initialReference: InnerReference = {
+    PrimaryKeyName: '',
+    PrimaryKeyTableName: '',
+    ReferencesPropertyName: currentColumn,
+    ReferencesTableName: currentTable,
+    isDestination: false,
+    constraintName: '',
+};
 
   const [formValues, setFormValues] = useState<InnerReference>(initialReference);
   const [tableSelected, setTableSelected] = useState<boolean>(false);
@@ -52,13 +53,19 @@ const AddReference: React.FC = (): JSX.Element => {
   const onSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
+      
+      // Preventing Errors on client side to stop quires that result in error on the server side
+      if (schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName].IsConnectedToForeignKey === true) {
+        window.alert(`The Primary Key of table ${formValues.PrimaryKeyTableName} is already connected by a Foreign Key from column ${formValues.ReferencesPropertyName} on table ${formValues.ReferencesTableName}.`);
+        console.error(`The Primary Key of table ${formValues.PrimaryKeyTableName} is already connected by a Foreign Key from column ${formValues.ReferencesPropertyName} on table ${formValues.ReferencesTableName}.`);
+        return;
+      }
       /**React Flow hack.
        * Problem: Viewports larger than 1197x1197px prevent edges from rendering
        * Hacky Solution: Minify RF. Send resize-func to task queue so RF only returns to normal once edge rendering is complete
        * Process is fast enough to not be noticeable to user
        */
       nullCheck();
-      console.log(formValues)
       const updatedForeignKey = {
         PrimaryKeyTableName: formValues.PrimaryKeyTableName,
         PrimaryKeyColumnName: formValues.PrimaryKeyName,
@@ -66,7 +73,6 @@ const AddReference: React.FC = (): JSX.Element => {
         ForeignKeyColumnName: formValues.ReferencesPropertyName,
         constraintName: formValues.constraintName.replace(/[^a-zA-Z0-9_]/g, "")
       };
-      console.log('updateForeignKey: ', updatedForeignKey)
 
       await fetch(`/api/sql/${dbCredentials.db_type}/addForeignKey`, {
         method: 'PUT',
@@ -78,6 +84,17 @@ const AddReference: React.FC = (): JSX.Element => {
 
       document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
       addForeignKeySchema(formValues);
+      setSchemaStore({
+        ...schemaStore,
+        [formValues.PrimaryKeyTableName]: {
+          ...schemaStore[formValues.PrimaryKeyTableName],
+          [formValues.PrimaryKeyName]: {
+            ...schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName],
+            IsConnectedToForeignKey: true
+          },
+        },
+      });
+      console.log('schemaStore', schemaStore)
       setEditRefMode(false);
       setTimeout(
         () => document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;'
@@ -184,7 +201,7 @@ const AddReference: React.FC = (): JSX.Element => {
                 setFormValues({
                   ...formValues,
                   PrimaryKeyName: e.target.value,
-                  constraintName: `fk_${currentColumn.replace(/[^a-zA-Z0-9_]/g, "")}_${formValues.PrimaryKeyTableName.replace(/[^a-zA-Z0-9_]/g, "")}_${e.target.value.replace(/[^a-zA-Z0-9_]/g, "")}`
+                  constraintName: `fk_${currentColumn.replace(/[^a-zA-Z0-9_]/g, "")}_to_${e.target.value.replace(/[^a-zA-Z0-9_]/g, "")}`
                 });
                 setColumnSelected(true);
               }}
@@ -203,7 +220,7 @@ const AddReference: React.FC = (): JSX.Element => {
         <input
           className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
           type="text"
-          maxLength={maxConstraintLength}
+          maxLength={maxConstraintNameLength}
           pattern="[A-Za-z0-9_]+.{1,}"
           id="constraintname"
           name="constraintname"

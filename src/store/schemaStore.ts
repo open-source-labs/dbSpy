@@ -132,7 +132,7 @@ const useSchemaStore = create<SchemaState>()(
                     References: [
                       {
                         ...referenceData,
-                        IsDestination: false,
+                        isDestination: false,
                         PrimaryKeyName: originColumn,
                       },
                     ],
@@ -146,7 +146,7 @@ const useSchemaStore = create<SchemaState>()(
                     References: [
                       {
                         ...referenceData,
-                        IsDestination: true,
+                        isDestination: true,
                       },
                     ],
                   },

@@ -10,18 +10,25 @@ const oracleController = {
     const { username } = req.session
     const OracleDataSource = await dbConnect(req);
 
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: {[key: string]: string} = {};
+
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
     async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string, user: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
     
       for (const column of oracleSchema) {
-        const columnName: any = column.COLUMN_NAME;
-        const keyString: any = column.CONSTRAINT_TYPE;
+        const columnName: string = column.COLUMN_NAME;
+        const keyString: string = column.CONSTRAINT_TYPE;
 
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (column.CONSTRAINT_TYPE === 'R'){
+          foreignKeyReferenced[`"${user}"."${column.R_PRIMARY_KEY_TABLE}"`] = column.R_PRIMARY_KEY_COLUMN;
           references.push({
             isDestination: false,
             PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
@@ -31,6 +38,8 @@ const oracleController = {
             constraintName: column.CONSTRAINT_NAME,
           });
         };
+
+        console.log('references: ', references)
 
         //Formation of the schema data
         tableSchema[columnName] = {
@@ -44,6 +53,7 @@ const oracleController = {
           data_type: column.DATA_TYPE + `${column.DATA_TYPE.includes('VARCHAR2') ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
           data_default: column.DATA_DEFAULT,
           field_name: column.COLUMN_NAME,
+          IsConnectedToForeignKey: false
         };
       };
       
@@ -68,6 +78,13 @@ const oracleController = {
         // SCHEMA Create property on schema object with every loop
         const oracleSchema: OracleSchema[] = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));
         schema[`"${user}"."${tableName}"`] = await oracleFormatTableSchema(oracleSchema, tableName, user);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (Object.entries(foreignKeyReferenced).length !== 0) {
+        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
+          schema[tableName][columnName].IsConnectedToForeignKey = true;
+        };
       };
 
       // Console.logs to check what the data looks like

@@ -22,7 +22,7 @@ export default function QueryModal ({closeQueryModal} : {closeQueryModal : () =>
     setTooltipVisible(true);
     setTimeout(() => {
       setTooltipVisible(false);
-    }, 3000);
+    }, 3500);
   };
 
 

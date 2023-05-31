@@ -9,6 +9,12 @@ const mysqlController = {
   mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
     const MysqlDataSource = await dbConnect(req);
 
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: {[key: string]: string} = {};
+
 //--------HELPER FUNCTION 1-----------------------------------
     // function to query and get all information needed for foreign keys
     async function getForeignKeys(columnName: string, tableName: string): Promise<any[]> {
@@ -21,8 +27,8 @@ const mysqlController = {
       const tableSchema: TableColumn = {};
   
       for (const column of mysqlSchemaData) {
-        const columnName: any = column.Field;
-        const keyString: any = column.Key;
+        const columnName: string | undefined = column.Field;
+        const keyString: string | undefined = column.Key;
 
         const defaultTypes = await MysqlDataSource.query(`
           SELECT 
@@ -39,13 +45,13 @@ const mysqlController = {
         console.log('MysqlDataSource.options.database: ',  MysqlDataSource.options.database)
           
         //query for the foreign key data
-        const foreignKeys: any = await getForeignKeys(columnName, tableName);
-        const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
+        const foreignKeys: TableColumn[] = await getForeignKeys(columnName!, tableName);
+        const foreignKey = foreignKeys.find((fk: TableColumn) => fk.COLUMN_NAME === columnName);
 
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
-          console.log('foreignKey: ', foreignKey)
+          foreignKeyReferenced[`${MysqlDataSource.options.database}.${foreignKey.PRIMARY_KEY_TABLE}`] = foreignKey.PRIMARY_KEY_COLUMN;
           references.push({
             isDestination: false,
             PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
@@ -55,12 +61,12 @@ const mysqlController = {
             constraintName: foreignKey.CONSTRAINT_NAME,
           });
         };
-        console.log('references: ', references)
+
 
         //Formation of the schema data
-        tableSchema[columnName] = {
-          IsForeignKey: keyString.includes('MUL'),
-          IsPrimaryKey: keyString.includes('PRI'),
+        tableSchema[columnName!] = {
+          IsForeignKey: keyString!.includes('MUL'),
+          IsPrimaryKey: keyString!.includes('PRI'),
           Name: column.Field,
           References: references,
           TableName: `${MysqlDataSource.options.database}.${tableName}`,
@@ -69,6 +75,7 @@ const mysqlController = {
           data_type: column.Type,
           default_type: defaultTypes[0].EXTRA === '' ? null : defaultTypes[0].EXTRA,
           field_name: column.Field,
+          IsConnectedToForeignKey: false,
         };
       };
       console.log('tableSchema: ', tableSchema)
@@ -94,6 +101,13 @@ const mysqlController = {
         // SCHEMA Create property on tableData object with every loop
         const mysqlSchemaData = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
         schema[`${MysqlDataSource.options.database}.${tableName}`] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (Object.entries(foreignKeyReferenced).length !== 0) {
+        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
+          schema[tableName][columnName].IsConnectedToForeignKey = true;
+        };
       };
 
       // Console.logs to check what the data looks like

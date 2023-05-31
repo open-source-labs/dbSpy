@@ -10,6 +10,11 @@ const postgresController = {
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
 
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: {[key: string]: string} = {};
 
 //--------HELPER FUNCTION 1-----------------------------------
     // function to query and get all information needed for foreign keys
@@ -23,20 +28,21 @@ const postgresController = {
       const tableSchema: TableColumn = {};
 
       for (const column of postgresSchemaData) {
-        const columnName: any = column.column_name;
-        const keyString: any = column.additional_constraints;
+        const columnName: string = column.column_name;
+        const keyString: string | null | undefined = column.additional_constraints;
 
         //query for the foreign key data
-        const foreignKeys: any = await getForeignKeys();
-        const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
+        const foreignKeys: TableColumn[] = await getForeignKeys();
+        const foreignKey = foreignKeys.find((fk: TableColumn) => fk.foreign_key_column === columnName);
 
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
+          foreignKeyReferenced[foreignKey.primary_key_table] = foreignKey.foreign_key_column;
           references.push({
             isDestination: false,
             PrimaryKeyName: foreignKey.primary_key_column,
-            PrimaryKeyTableName: foreignKey.primary_key_table,
+            PrimaryKeyTableName: 'public.' + foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,
             ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
@@ -45,12 +51,12 @@ const postgresController = {
 
         console.log('references: ', references)
 
-        const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null;
+        const additionalConstraints: string | null = keyString!.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
 
         tableSchema[columnName] = {
-          IsForeignKey: keyString.includes('FOREIGN KEY'),
-          IsPrimaryKey: keyString.includes('PRIMARY KEY'),
+          IsForeignKey: keyString!.includes('FOREIGN KEY'),
+          IsPrimaryKey: keyString!.includes('PRIMARY KEY'),
           Name: columnName,
           References: references,
           TableName: 'public.' + tableName,
@@ -59,6 +65,7 @@ const postgresController = {
           data_type: column.data_type,
           default_type: column.default_type,
           field_name: columnName,
+          IsConnectedToForeignKey: false,
         };
       };
       console.log('tableSchema: ', tableSchema)
@@ -70,6 +77,7 @@ const postgresController = {
       // Query to retrieve all table names
       const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
       //Declare storage objects with their related interfaces
+      
       const tableData: TableColumns = {};
       const schema: TableSchema = {};
 
@@ -85,9 +93,16 @@ const postgresController = {
         schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
       };
 
+      // Changing the isDestination value for the Foreign Keys
+      if (Object.entries(foreignKeyReferenced).length !== 0) {
+        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
+          schema[tableName][columnName].IsConnectedToForeignKey = true;
+        };
+      };
+
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData)
-      // console.log('schema data: ', schema)
+      console.log('schema data: ', schema)
 
       // Storage of queried results into res.locals
       res.locals.schema = schema;

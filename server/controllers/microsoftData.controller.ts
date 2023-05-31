@@ -9,6 +9,12 @@ const microsoftController = {
   microsoftQuery: async (req: Request, res: Response, next: NextFunction) => {
     //Create Connection with database
     const MicrosoftDataSource = await dbConnect(req);
+
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: {[key: string]: string} = {};
     
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
@@ -16,39 +22,41 @@ const microsoftController = {
       const tableSchema: TableColumn = {};
 
       for (const column of microsoftSchemaData) {
-          const columnName: string = column.COLUMN_NAME;
+        const columnName: string = column.COLUMN_NAME;
 
-          //query for the foreign key data
-          const foreignKeys: any = await MicrosoftDataSource.query(microsoftForeignKeyQuery);
-          const foreignKey = foreignKeys.find((fk: any) => fk.column_name === columnName);
+        //query for the foreign key data
+        const foreignKeys: TableColumn[] = await MicrosoftDataSource.query(microsoftForeignKeyQuery);
+        const foreignKey = foreignKeys.find((fk: TableColumn) => fk.column_name === columnName);
 
-          //Creating the format for the Reference property if there is a foreign key
-          const references: {[key: string]: string | boolean}[] = []
-          if (foreignKey){
-            references.push({
-              isDestination: false,
-              PrimaryKeyName: foreignKey.primary_key_column,
-              PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
-              ReferencesPropertyName: foreignKey.column_name,
-              ReferencesTableName: `${schemaName}.${tableName}`,
-              constraintName: foreignKey.constraint_name,
-            });
-          };
-
-          //Formation of the schema data
-          tableSchema[columnName] = {
-            IsForeignKey: foreignKey ? true : false,
-            IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
-            Name: column.COLUMN_NAME,
-            References: references,
-            TableName: `${schemaName}.${tableName}`,
-            Value: null,
-            additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
-            data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
-            default_type: column.IS_IDENTITY === 1 ? 'identity' : null,
-            field_name: columnName,
-          };
+        //Creating the format for the Reference property if there is a foreign key
+        const references: {[key: string]: string | boolean}[] = []
+        if (foreignKey){
+          foreignKeyReferenced[`${schemaName}.`+ foreignKey.primary_key_table] = foreignKey.primary_key_column;
+          references.push({
+            isDestination: false,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
+            ReferencesPropertyName: foreignKey.column_name,
+            ReferencesTableName: `${schemaName}.${tableName}`,
+            constraintName: foreignKey.constraint_name,
+          });
         };
+
+        //Formation of the schema data
+        tableSchema[columnName] = {
+          IsForeignKey: foreignKey ? true : false,
+          IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
+          Name: column.COLUMN_NAME,
+          References: references,
+          TableName: `${schemaName}.${tableName}`,
+          Value: null,
+          additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
+          data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
+          default_type: column.IS_IDENTITY === 1 ? 'identity' : null,
+          field_name: columnName,
+          IsConnectedToForeignKey: false,
+        };
+      };
       return tableSchema;
     };
 //--------HELPER FUNCTION END-----------------------------------
@@ -79,7 +87,14 @@ const microsoftController = {
         // SCHEMA Create property on schema object with every loop
         const microsoftSchemaData = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
         schema[`${schemaName}.${tableName}`] = await microsoftFormatTableSchema(microsoftSchemaData, tableName, schemaName);
-      }
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (Object.entries(foreignKeyReferenced).length !== 0) {
+        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
+          schema[tableName][columnName].IsConnectedToForeignKey = true;
+        };
+      };
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData);

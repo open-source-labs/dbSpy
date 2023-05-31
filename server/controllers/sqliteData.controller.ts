@@ -7,6 +7,12 @@ const sqliteController = {
 //----------Function to collect all schema and data from database-----------------------------------------------------------------
   sqliteQuery: async (req: Request, res: Response, next: NextFunction) => {
     const SqliteDataSource = await dbConnect(req);  
+
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: {[key: string]: string} = {};
   
 //--------HELPER FUNCTION-----------------------------------   
     //function organizing data from queries in to the desired format of the front end
@@ -14,18 +20,18 @@ const sqliteController = {
       const tableSchema: TableColumn = {};
     
       for (const column of sqliteSchemaData) {
-        const columnName: any = column.name;
+        const columnName: string = column.name;
         const keyString: number = column.pk;
 
         //query for the foreign key data
-        const foreignKeys = await SqliteDataSource.query(`PRAGMA foreign_key_list(${tableName})`);
-        const foreignKey = await foreignKeys.find((fk: any) => fk.from === columnName);
+        const foreignKeys: TableColumn[] = await SqliteDataSource.query(`PRAGMA foreign_key_list(${tableName})`);
+        const foreignKey: TableColumn | undefined = await foreignKeys.find((fk: TableColumn) => fk.from === columnName);
         
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey) {
+          foreignKeyReferenced[foreignKey.table] = foreignKey.to;
           references.push({
-            // These got a little mixed up but are in the right place
             isDestination: false,
             PrimaryKeyName: foreignKey.to,
             PrimaryKeyTableName: foreignKey.table,
@@ -45,6 +51,7 @@ const sqliteController = {
           additional_constraints: column.notnull === 1 ? 'NOT NULL' : null,
           data_type: column.type,
           field_name: columnName,
+          IsConnectedToForeignKey: false,
         };
       };
       return tableSchema;
@@ -67,6 +74,13 @@ const sqliteController = {
         // SCHEMAS Create property on schema object with every loop
         const sqliteSchemaData = await SqliteDataSource.query(`PRAGMA table_info(${tableName})`);
         schema['public.' + tableName] = await sqliteFormatTableSchema(sqliteSchemaData, tableName);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (Object.entries(foreignKeyReferenced).length !== 0) {
+        for (const [tableName, columnName] of Object.entries(foreignKeyReferenced)) {
+          schema[tableName][columnName].IsConnectedToForeignKey = true;
+        };
       };
 
       // Console.logs to check what the data looks like

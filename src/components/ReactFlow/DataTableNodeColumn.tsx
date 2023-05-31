@@ -11,10 +11,10 @@ import useSchemaStore from '../../store/schemaStore';
 
 type DataTableNodeColumnProp = {
   row: RowsOfData,
-  id?: string|number,
-  deleteRow: (rowData:RowsOfData,index:number,id?:string|number)=>void,
+  id?: string | number,
+  deleteRow: (rowData: RowsOfData, index: number, id: string | number ) => void,
   index: number,
-  PK: [string|number|null,Set<unknown>|null],
+  PK: [string | number | null, Set<unknown> | null],
 };
 
 export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: DataTableNodeColumnProp) {
@@ -74,8 +74,8 @@ export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: Dat
         }
       }
     } else {
-      console.log('Table not found in schemaStore');
-      console.error('The Table Does not have a Primary Key, Cannot update without one')
+      window.alert(`The table ${changes.tableName} does not have a Primary Key, cannot update without one`)
+      console.error(`The table ${changes.tableName} does not have a Primary Key, cannot update without one`)
       return;
     }
 
@@ -110,7 +110,7 @@ export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: Dat
 //setTemp data at the current column element to its value based whenever changed.
   return (
     <tr key={id} className="dark:text-[#f8f4eb]">
-      {rowDataKeys.map((element:string|number,ind:number) => 
+      {rowDataKeys.map((element: string | number, ind: number) => 
         <td className="dark:text-[#f8f4eb]" key={`${id}-${ind}`} > 
           {mode === 'edit'?
             (<input className="bg-[#f8f4eb] hover:shadow-md focus:outline-1 dark:text-black" value={tempData[element] as string|number|undefined} 
@@ -126,33 +126,38 @@ export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: Dat
         </td>
       )}
       <td>
-        {mode ==='default'?
-          (<button onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+        { mode ==='default' ? (
+          <button onClick={()=>setMode('edit')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
             <FaRegEdit size={17} />
-          </button>):
-          mode==='edit'?
-            (<button  onClick={onSave} 
-              className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-                <FaRegSave size={17} />
-              </button>):
-            (<button onClick={() =>{ 
-              deleteRow(rowData,index,id);
+          </button>
+        ) : mode==='edit' ? (
+          <button  onClick={onSave} 
+            className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+              <FaRegSave size={17} />
+          </button>
+        ) : (
+          <button 
+            className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+            onClick={() =>{ 
+              deleteRow(rowData, index, id!);
               setMode('default');
-              }}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
-              <FaRegCheckSquare size={17} />
-            </button>)
-        }
+            }}
+          >
+            <FaRegCheckSquare size={17} />
+          </button>
+        )}
       </td>
       <td>
-        {mode ==='default'?
-          (<button id={`${id}-rowDeleteBtn`} onClick={()=>setMode('trash')}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+        { mode ==='default' ? (
+          <button id={`${id}-rowDeleteBtn`} onClick={()=>setMode('trash')}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
             <FaRegTrashAlt size={17} />
-          </button>):
-          (<button id={`${id}-cancelBtn`} onClick={onCancel}>   
+          </button>
+        ) : (
+          <button id={`${id}-cancelBtn`} onClick={onCancel}>   
             <FaRegWindowClose size={17} />
-          </button>)
-        }
+          </button>
+        )}
       </td>
     </tr>
   );
-}
+};

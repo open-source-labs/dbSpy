@@ -369,9 +369,6 @@ export const getTableNames: RequestHandler = async (req: Request, res: Response,
   try {
     let query: string = '';
     switch(db_type) {
-      case 'postgres':
-        query = 'SELECT tableName FROM pg_catalog.pg_tables WHERE schemaname = \'public\'';
-        break;
       case 'mysql':
         query = 'SHOW TABLES';
         break;
@@ -381,23 +378,26 @@ export const getTableNames: RequestHandler = async (req: Request, res: Response,
       case 'oracle':
         query = 'SELECT table_name FROM user_tables';
         break;
-      default:
+      case 'sqlite':
         query = "SELECT name FROM sqlite_master WHERE type='table'";
+        break;
+      default:
+        query = 'SELECT tableName FROM pg_catalog.pg_tables WHERE schemaname = \'public\''; // Postgres
     };
 
     const tableNameList: TableNames[] = await dbDataSource.query(query);
 
     const tables: (string | undefined)[] = tableNameList.map((obj: TableNames) => {
       switch(db_type) {
-        case 'postgres':
-          return obj.tablename;
         case 'mysql':
           return obj.Tables_in_user;
         case 'mssql':
         case 'oracle':
           return obj.TABLE_NAME;
+        case 'sqlite':
+          return obj.name;
         default:
-          return obj.name; //SQLite
+          return obj.name; // Postgres
       };
     });
 

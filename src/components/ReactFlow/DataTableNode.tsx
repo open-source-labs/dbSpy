@@ -18,8 +18,8 @@ import { Edge, DataNode, DataStore, RowsOfData, Data, dbCredentials } from '@/Ty
 export default function DataTableNode({ data }: {data: Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
   
-  const newdata = structuredClone(data);
-  const [tableData, setTableData] = useState(newdata.table);
+  const newData = structuredClone(data);
+  const [tableData, setTableData] = useState(newData.table);
   const { setDataInputModalState } = useSettingsStore((state) => state);
   const { dataStore, referenceStore } = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
@@ -114,7 +114,7 @@ export default function DataTableNode({ data }: {data: Data} ) {  //this 'data' 
   }, [dataStore]);
 
 
- const deleteRow = async (value: RowsOfData, index: number, id: number | string): Promise<void> =>  {
+ const deleteRow = async (value: RowsOfData, index: number, id: number | string): Promise<void> => {
 ////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
 //loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
 //   for(let col in value){
@@ -131,7 +131,8 @@ export default function DataTableNode({ data }: {data: Data} ) {  //this 'data' 
 const newDatastore = structuredClone(dataStore);
   restRowsData = restRowsData.slice(0, index).concat(restRowsData.slice(index + 1, restRowsData.length));
   newDatastore[tableName] = restRowsData;
-   setDataStore({...newDatastore, [id]: restRowsData});
+   
+
      await fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
        method: 'DELETE',
        headers: {
@@ -140,8 +141,9 @@ const newDatastore = structuredClone(dataStore);
        body: JSON.stringify({ tableName: tableName, value: value })
      })
       .then((res) => {
-      //console.log("deleting row info sent")
-        return res;
+        setDataStore({...newDatastore, [id]: restRowsData});
+      
+        return;
       })
       .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
   };
@@ -150,7 +152,7 @@ const newDatastore = structuredClone(dataStore);
   
 //cannot make handles for data table dynamic since size of each column can vary
 //TODO: is there better way to assign handle? more dynamic?
-  const tableHandles = [];
+  const tableHandles: JSX.Element[] = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
       tableHandles.push(
@@ -158,7 +160,7 @@ const newDatastore = structuredClone(dataStore);
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Top}
-          id={data.edges[i].sourceHandle}
+          id={data.edges[i].sourceHandle as string}
           style={{
             background: 'transparent',
             left: "70%"
@@ -172,7 +174,7 @@ const newDatastore = structuredClone(dataStore);
           key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Top}
-          id={data.edges[i].targetHandle}
+          id={data.edges[i].targetHandle as string}
           style={{
             background: 'transparent',
             left: "4%"
