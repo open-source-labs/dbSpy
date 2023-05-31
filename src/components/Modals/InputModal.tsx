@@ -219,7 +219,7 @@ export default function InputModal({
                 value={tableName}
                 required
                 maxLength={63}
-                onChange={(e) => setTableName(e.target.value.trim())}
+                onChange={(e) => setTableName((dbCredentials.db_type === 'postgres' ? e.target.value.toLowerCase().trim() : e.target.value).trim())}
               />
             </>
           ) : (

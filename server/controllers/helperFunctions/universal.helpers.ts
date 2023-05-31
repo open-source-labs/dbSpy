@@ -1,5 +1,5 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { DataSource } from 'typeorm';
+import { DataSource, DatabaseType } from 'typeorm';
 
 
 // HELPER FUNCTIONS FOR THE HELPER FUNCTIONS
@@ -16,79 +16,68 @@ interface NewColumn {
 
 export const dbConnect = async (req: Request) => {
   const { db_type, hostname, password, port, username, database_name, service_name } = req.session;
+  let dbDataSource: DataSource;
 
-  if (db_type === 'mysql') {
-    const dbDataSource = new DataSource({
-      type: "mysql",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 3306,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-    });
-    await dbDataSource.initialize();
-    console.log('Data source has been connected');
-    return dbDataSource;
-  } else if (db_type === 'postgres') {
-    const dbDataSource = new DataSource({
-      type: "postgres",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 5432,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-    });
-      await dbDataSource.initialize();
-      console.log('Data source has been connected');
-      return dbDataSource;
-  } else if (db_type === 'mssql') {
-    const dbDataSource = new DataSource({
-      type: "mssql",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 1433,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-      options: {
-        encrypt: false,
-      },
-    });
-      await dbDataSource.initialize();
-      console.log('Data source has been connected');
-      return dbDataSource;
-  } else if (db_type === 'oracle') {
-    const dbDataSource = new DataSource({
-      type: "oracle",
-      host: hostname as string,
-      port: port ? parseInt(port as string) : 1521,
-      username: username as string,
-      password: password as string,
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-      serviceName: service_name as string,
-    });
-    await dbDataSource.initialize();
-    console.log('Data source has been connected');
-    return dbDataSource;
-  } else {
-    const dbDataSource = new DataSource({
-      type: "sqlite",
-      database: database_name as string,
-      synchronize: true,
-      logging: true,
-    });
-    await dbDataSource.initialize();
-    console.log('Data source has been connected');
-    return dbDataSource;
+  const commonOptions = {
+    ...(db_type !== 'sqlite' ? { host: hostname as string } : {}),
+    username: username as string,
+    password: password as string,
+    database: database_name as string,
+    synchronize: true,
+    logging: true,
   };
+
+  switch (db_type) {
+    case 'mysql':
+      dbDataSource = new DataSource({
+        type: "mysql",
+        port: port ? parseInt(port as string) : 3306,
+        ...commonOptions,
+      });
+      break;
+
+    case 'mssql':
+      dbDataSource = new DataSource({
+        type: "mssql",
+        port: port ? parseInt(port as string) : 1433,
+        options: {
+          encrypt: false,
+        },
+        ...commonOptions,
+      });
+      break;
+
+    case 'oracle':
+      dbDataSource = new DataSource({
+        type: "oracle",
+        port: port ? parseInt(port as string) : 1521,
+        serviceName: service_name as string,
+        ...commonOptions,
+      });
+      break;
+
+    case 'sqlite':
+      dbDataSource = new DataSource({
+        type: "sqlite",
+        ...commonOptions,
+      });
+      break;
+
+    default:
+      dbDataSource = new DataSource({
+        type: "postgres",
+        host: hostname as string,
+        port: port ? parseInt(port as string) : 5432,
+        ...commonOptions,
+      });
+      break;
+  };
+
+  await dbDataSource.initialize();
+  console.log('Data source has been connected');
+  return dbDataSource;
 };
+
 
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
@@ -218,11 +207,10 @@ export const addNewDbColumn: RequestHandler = async (req: Request, _res: Respons
   const dbDataSource = await dbConnect(req);
   const { db_type } = req.session;
   const { columnData, tableName } = req.body;
-  console.log('req.body: ', req.body)
 
   try{
     let keyValueString: string = '';
-    let newColumnString: string = ''
+    let newColumnString: string = '';
 
     columnData.forEach((el: NewColumn) => {
       if (db_type === 'mssql') {
@@ -456,7 +444,6 @@ export const addForeignKey: RequestHandler = async (req: Request, _res: Response
   const dbDataSource = await dbConnect(req);
   const { db_type } = req.session;
   const { PrimaryKeyTableName, PrimaryKeyColumnName, ForeignKeyTableName, ForeignKeyColumnName, constraintName } = req.body;
-  console.log('req.body: ', req.body)
 
   try{
 

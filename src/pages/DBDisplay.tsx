@@ -158,7 +158,7 @@ useEffect(() :void => {
           </div>
         ) : (
             // if true, show schema table
-          isSchema? (
+          isSchema ? (
             <><button id="showSchema"
               className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={setTableMode}

@@ -2,10 +2,8 @@
 
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
-
 // Functions imported:
 import parseSql from '../../parse';
-
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';

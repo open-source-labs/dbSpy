@@ -1,26 +1,37 @@
 // React & React Router & React Query Modules;
 import React, { useState } from 'react';
-
 // Components Imported;
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
 import { Reference, InnerReference } from '@/Types';
+import useCredentialsStore from '../../store/credentialsStore';
 
 const AddReference: React.FC = (): JSX.Element => {
   const { currentTable, currentColumn, setEditRefMode } = useSettingsStore((state) => state);
   const { schemaStore, addForeignKeySchema } = useSchemaStore((state) => state);
-  const [primaryKeyTable, setPrimaryKeyTable] = useState<string>('');
-  const [primaryKeyColumn, setPrimaryKeyColumn] = useState<string>('');
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
   const initialReference: InnerReference = {
-
       PrimaryKeyName: '',
       PrimaryKeyTableName: '',
       ReferencesPropertyName: currentColumn,
       ReferencesTableName: currentTable,
       IsDestination: false,
       constraintName: '',
+  };
 
+  let maxConstraintLength: number;
+  switch(dbCredentials.db_type) {
+    case 'mysql':
+      maxConstraintLength = 64;
+    case 'mssql':
+      maxConstraintLength = 128;
+    case 'oracle':
+      maxConstraintLength = 30;
+    case 'sqlite':
+      maxConstraintLength = 255;
+    default:
+      maxConstraintLength = 63 //Postgres
   };
 
   const [formValues, setFormValues] = useState<InnerReference>(initialReference);
@@ -53,10 +64,11 @@ const AddReference: React.FC = (): JSX.Element => {
         PrimaryKeyColumnName: formValues.PrimaryKeyName,
         ForeignKeyTableName: formValues.ReferencesTableName,
         ForeignKeyColumnName: formValues.ReferencesPropertyName,
-        constraintName: formValues.constraintName
+        constraintName: formValues.constraintName.replace(/[^a-zA-Z0-9_]/g, "")
       };
+      console.log('updateForeignKey: ', updatedForeignKey)
 
-      await fetch('/api/sql/postgres/addForeignKey', {
+      await fetch(`/api/sql/${dbCredentials.db_type}/addForeignKey`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -73,9 +85,7 @@ const AddReference: React.FC = (): JSX.Element => {
         return;
 
     } catch (err: unknown) {
-      setTimeout(
-        () => document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;'
-        ), 0);
+      document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;');
       window.alert(err);
       console.error(err);
       };
@@ -106,11 +116,13 @@ const AddReference: React.FC = (): JSX.Element => {
 
   const columnOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const col in schemaStore[formValues.PrimaryKeyTableName]) {
-    columnOptions.push(
-      <option key={col} value={col}>
-        {col}
-      </option>
-    );
+  if (schemaStore[formValues.PrimaryKeyTableName][col].IsPrimaryKey) {
+      columnOptions.push(
+        <option key={col} value={col}>
+          {col}
+        </option>
+      );
+    };
   };
 
   return (
@@ -141,9 +153,8 @@ const AddReference: React.FC = (): JSX.Element => {
           name="ptablename"
           // defaultValue={reference[0].PrimaryKeyTableName}
           defaultValue={formValues.PrimaryKeyTableName}
-          onChange={async (e) => {
+          onChange={(e) => {
             if (e.target.value === '---') return;
-            setPrimaryKeyTable(e.target.value);
             setFormValues({
               ...formValues,
               PrimaryKeyTableName: e.target.value
@@ -170,10 +181,10 @@ const AddReference: React.FC = (): JSX.Element => {
               // defaultValue={reference[0].PrimaryKeyName}
               onChange={(e) => {
                 if (e.target.value === '---') return;
-                setPrimaryKeyColumn(e.target.value);
                 setFormValues({
                   ...formValues,
-                  PrimaryKeyName: e.target.value
+                  PrimaryKeyName: e.target.value,
+                  constraintName: `fk_${currentColumn.replace(/[^a-zA-Z0-9_]/g, "")}_${formValues.PrimaryKeyTableName.replace(/[^a-zA-Z0-9_]/g, "")}_${e.target.value.replace(/[^a-zA-Z0-9_]/g, "")}`
                 });
                 setColumnSelected(true);
               }}
@@ -192,13 +203,15 @@ const AddReference: React.FC = (): JSX.Element => {
         <input
           className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
           type="text"
+          maxLength={maxConstraintLength}
+          pattern="[A-Za-z0-9_]+.{1,}"
           id="constraintname"
           name="constraintname"
-          value={`fk_${currentColumn}_of_${currentTable}_to_${primaryKeyColumn}_of_${primaryKeyTable}`}
+          defaultValue={formValues.constraintName}
           onChange={(e) =>
             setFormValues({
               ...formValues,
-              constraintName: e.target.value
+              constraintName: e.target.value.replace(/[^a-zA-Z0-9_]/g, "")
             })
           }
         />
