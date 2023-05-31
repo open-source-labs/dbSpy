@@ -61,7 +61,6 @@ const microsoftController = {
           data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
           default_type: column.IS_IDENTITY === 1 ? 'identity' : null,
           field_name: columnName,
-          IsConnectedToForeignKey: false,
         };
       };
       return tableSchema;

@@ -82,7 +82,6 @@ const mysqlController = {
           data_type: column.Type,
           default_type: defaultTypes[0].EXTRA === '' ? null : defaultTypes[0].EXTRA,
           field_name: column.Field,
-          IsConnectedToForeignKey: false,
         };
       };
       console.log('tableSchema: ', tableSchema)
