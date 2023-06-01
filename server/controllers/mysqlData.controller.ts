@@ -41,8 +41,6 @@ const mysqlController = {
             AND TABLE_NAME = '${tableName}'
             AND COLUMN_NAME = "${columnName}"
         `);
-
-        console.log('MysqlDataSource.options.database: ',  MysqlDataSource.options.database)
           
         //query for the foreign key data
         const foreignKeys: TableColumn[] = await getForeignKeys(columnName!, tableName);
@@ -84,7 +82,6 @@ const mysqlController = {
           field_name: column.Field,
         };
       };
-      console.log('tableSchema: ', tableSchema)
       return tableSchema;
   };
 //--------HELPER FUNCTIONS END-----------------------------------
@@ -111,7 +108,10 @@ const mysqlController = {
 
       // Changing the isDestination value for the Foreign Keys
       if (foreignKeyReferenced.length !== 0) {
+        console.log('foreignKeyReferenced: ', foreignKeyReferenced)
         for (const element of foreignKeyReferenced) {
+                console.log("schema data: ", schema);
+          console.log('schema[element.PrimaryKeyTableName][element.PrimaryKeyName]: ', schema[element.PrimaryKeyTableName][element.PrimaryKeyName])
           schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
         };
       };

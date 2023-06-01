@@ -107,7 +107,7 @@ export default function InputModal({
       console.log('columnData: ', columnData)
       //new column data that will be sent in the post request body
       const dataToSend = {
-        tableName: tableName, //.substring(tableName.indexOf('.') + 1),
+        tableName: tableName,
         columnData: columnData,
       };
         //adds new column to the selected table
