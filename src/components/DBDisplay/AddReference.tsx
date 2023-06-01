@@ -4,8 +4,7 @@ import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
 import { InnerReference } from '@/Types';
 
-
-const AddReference: React.FC = (): JSX.Element => {
+const AddReference: React.FC = () => {
   const { currentTable, currentColumn, setEditRefMode } = useSettingsStore((state) => state);
   const { schemaStore, addForeignKeySchema, setSchemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);

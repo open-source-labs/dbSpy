@@ -21,7 +21,7 @@
       "cert:linux": "rm -rf .cert && mkdir -p .cert && cd .cert && mkcert create-ca && mkcert create-cert --key key.pem --cert cert.pem",
       "e2e": "cypress open --project ./tests"
    },
-   "author": "Steven Geiger, Michael Costello, Alexander Tu, Yufa Li",
+   "author": "Stephen Havig, Das Kong, Yichung YC Chiu, Jose Tejeda",
    "license": "MIT",
    "dependencies": {
       "@tippyjs/react": "^4.2.6",
