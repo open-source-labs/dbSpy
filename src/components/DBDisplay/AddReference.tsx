@@ -67,6 +67,13 @@ const AddReference: React.FC = (): JSX.Element => {
         constraintName: formValues.constraintName.replace(/[^a-zA-Z0-9_]/g, "")
       };
 
+      // Front end Error checking for Oracle SQL
+      if (dbCredentials.db_type === 'oracle' && schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName].References[0].isDestination === true) {
+        window.alert(`Oracle SQL only allows for a Primary Key to be a part of a single Foreign Key. Column ${formValues.PrimaryKeyName} of table ${formValues.PrimaryKeyTableName} already has a Foreign Key associated with it`);
+        console.error(`Oracle SQL only allows for a Primary Key to be a part of a single Foreign Key. Column ${formValues.PrimaryKeyName} of table ${formValues.PrimaryKeyTableName} already has a Foreign Key associated with it`);
+        return;
+      }
+
       await fetch(`/api/sql/${dbCredentials.db_type}/addForeignKey`, {
         method: 'PUT',
         headers: {

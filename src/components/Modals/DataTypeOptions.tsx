@@ -75,8 +75,6 @@ import useCredentialsStore from '../../store/credentialsStore';
 //   'LTREE',
 // ];
 
-
-
 export default function DataTypeOptions() {
   const { dbCredentials } = useCredentialsStore((state) => state);
 

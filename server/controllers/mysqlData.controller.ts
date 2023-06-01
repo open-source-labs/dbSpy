@@ -67,7 +67,6 @@ const mysqlController = {
           });
         };
 
-
         //Formation of the schema data
         tableSchema[columnName!] = {
           IsForeignKey: keyString!.includes('MUL'),
