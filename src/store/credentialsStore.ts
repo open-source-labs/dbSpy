@@ -1,11 +1,9 @@
 //
 // State Management for User and dbCredentials
 //
-
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 import { dbCredentials } from  '@/Types';
-
 
 let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any) => (
   {
@@ -14,17 +12,12 @@ let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) =
   //user
   setUser: (userObject: any) => set((state: any) => ({ ...state, user: userObject })),
 
-
-
   //dbCredentials state
   dbCredentials: {} as dbCredentials,
   //dbFormInput is an object
   setDbCredentials: (dbFormInput: any) =>
     set((state: any) => ({ ...state, dbCredentials: dbFormInput })),
 });
-
-
-// const useCredentialsStore = create(persist(devtools(credentialsStore)))
 
 const useCredentialsStore = create(devtools(credentialsStore))
 

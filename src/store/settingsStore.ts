@@ -1,9 +1,8 @@
-// //
-// // State Management for settings (button toggles, view toggles, etc.)
-// //
-// export default useSettingsStore;
+//
+// State Management for settings (button toggles, view toggles, etc.)
+//
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 
 let settingsStore = (
   set: (arg0: { (state: any): any; (state: any): any; (state: any): any; }) => any

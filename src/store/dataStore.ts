@@ -1,6 +1,6 @@
-import { DataStore } from '@/Types';
 import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
+import { DataStore } from '@/Types';
 
 
 type DataObj = {
