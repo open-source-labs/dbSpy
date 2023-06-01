@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://makeapullrequest.com">![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)</a>
-<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-1.0.1-blue)</a>
+<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-4.0.0-blue)</a>
 ![GitHub Stars](https://img.shields.io/github/stars/oslabs-beta/JAKT?color=%23fb7182)
 ![MIT License](https://img.shields.io/badge/license-MIT-yellow)
 
@@ -9,153 +9,113 @@
 
 <div align="center">
   
-![logo 5](https://user-images.githubusercontent.com/11093217/179366043-624ba23a-408d-499a-a1aa-162acf56d247.jpg)
+![logo](https://user-images.githubusercontent.com/101940529/198836631-31a657f7-feaa-4247-8abc-cedb86540e21.png)
 
 </div>
 
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
-<p>dbSpy is an open-source data modeling tool to facilitate relational database development.</p>
+<p align="center">An open-source data modeling tool to facilitate relational database development</p>
+<!-- <p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具。</p> -->
 
-<!-- dbSpy is an open-source visualization tool to facilitate relational database model development using entity relationship diagrams and homogeneous database migration -->
+### New Features with Version 5.0
+
+- Enhanced support for SQL databases with expanded options.
+- Introduction of visualized DATA tables for improved data analysis.
+- Robust CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
+- Capability to remove and add tables as needed.
+- Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
+
+
+### Use Cases
+
+- Connecting to an existing remote PostgreSQL, MySQL, MicroSoftSQL, OracleSQL databases
+  - Renders an ER diagram for SCHEMA and DATA of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
+- Uploading your database's SQL file
+  - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
+- Seamlessly visualize relational databases (both SCHEMA and DATA)
+  - After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
+- Creating a database + ER diagram from scratch
+  - Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
 
 ---
 
 ### Key Features
 
-1. **Database Connection:** Connect to a SQL database
+1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
 
-2. **Database File Upload:** Upload a database's SQL file
+2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement
 
-3. **ER Diagrams:** Visualize the entity relationship diagram of a database
+3. **Table Relationship Visuals** Relationships of individual tables are easily identified when clicking on a table
 
-4. **Schema Modification:** Modify a database's schema
+4. **Schema Modification:** Toggle between Schema and Data easily with a click of a button
 
-5. **Database Building:** Create a new database from scratch using entity relationship diagrams
+5. **Data/Schema Modification:** Easily modify a database's schema or data through a simple UI 
 
-6. **SQL Query Generator:** Generate an executable SQL query with every modification to your schema
+5. **Guided Database Building:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
 
-7. **Screenshot:** Take a screenshot of the canvas with all your tables (BETA)
+6. **Database Undo/Redo:** Provides a history of edits for easier backtracking
 
-8. **Time Travel:** Provides a history of edits for easier backtracking
+7. **Query Generator:** Query generator generates executable SQL queries
 
-9. **Exporting Queries:** Allows updated changes of queries to be saved as a SQL file for client imports to their database
+8. **User Sessions:** Sign up/Log in securely with either Google/Github OAuth or JWTs/Bcrypt
 
-10. **Log Modeling:** Provides a tool for admins to pull, view, modify, and export log settings from an existing database
+9. **Save/Load:** Store and reload past database sessions through your user account *-CURRENTLY UNDER UPDATE*
 
-11. **Compatible SQL Database:** Current dbSpy is compatible with PostgreSQL and MySQL database
+10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-12. **Dark Mode** Additional visual setting to provide a more comfortable viewing experience in low-light environements
+## <img src="images/Darkmode.png">
 
-13. **Database Integrity Assurance** Database Logic Check is performed as the client edits the database to ensure the integrity of the database
-
-14. **Visualizing Individual Table Connections** Relationships of individual tables are now easily identified when clicking on a table. 
----
-
-### Use Cases
-
-<details><summary>Connecting to an existing database</summary>
-<ul>
-Renders an ER diagram of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can execute a transaction containing the changes, such that they are reflected in the existing database.
-</ul>
-</details>
-<details><summary>Uploading your database's SQL file</summary>
-<ul>
-Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
-</ul>
-</details>
-<details><summary>Exporting executable SQL query with every modification to your schema</summary>
-<ul>
-After modifying/editing the database schemas, users are now able to generate executable queries isolated from their database which decreases security concerns. Users are able to append all the query changes at the end of the new file and save this in their local machines.
-</ul>
-</details>
-<details><summary>Logging modeling</summary>
-<ul>
-After connnection to the database is made the user can view, modify and save the current log settings. This will assist database administrators in keeping efficient log setup in mind during the early stages of DB modeling
-</ul>
-</details>
-<details><summary>Seamlessly visualize relational database</summary>
-<ul>
-After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
-</ul>
-</details>
-<details><summary>Starting an ER diagram from scratch</summary>
-<ul>
-Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
-</ul>
-</details>
-
----
-
-### How to Use
-
-Connecting to an existing database
-
-1. Locate and click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
-2. Input your Postgres database URI information and click on "Connect". It may take a couple of seconds to connect to your database.
-3. Once the connection to your database is established, the page will populate with the tables in your database and the relationships between your tables.
-4. Each table is editable. Editing the tables does not automatically change the schema of your database.
-5. Every change you make will generate an executable SQL query. After you are done making all your changes, click on the "Execute changes" button to make those changes to your database.
-
-![dbSpy_connectToDB](https://user-images.githubusercontent.com/83368864/179806428-f73b2b18-b82b-4b19-8ea1-5af72ddd23d3.gif)
-
-![dbSpy_makeAndExecuteChanges](https://user-images.githubusercontent.com/83368864/179806700-4f67386b-d66d-469b-a92d-856d7bacc677.gif)
-
-Uploading your database's SQL file
-
-1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a window for you to select the SQL file you wish to upload. It may take a couple of seconds to upload the file.
-2. Once the file uploads, the page will populate with the tables in your database and the relationships between your tables.
-3. Each table is editable. Editing the tables does not automatically change the schema of your database.
-4. You'll notice that after making a change to a table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to execute the changes on your own database.
-
-![dbSpy_uploadSQLFile](https://user-images.githubusercontent.com/83368864/179806547-52b4ffd3-bb15-4d13-b9d6-27fd1e777da3.gif)
-
-Starting an ER diagram from scratch
-
-1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will open a window for you to create and name a table.
-2. The table will then be rendered on the page. You will then be able to edit the table and add the columns that you wish to this table.
-3. You'll notice that after making a change to the table, a SQL query will be generated in the SQL Queries section of the page. These queries are generated for you to be able to create the database that you just designed.
-
-![dbSpy_buildDatabase](https://user-images.githubusercontent.com/83368864/179806594-fa665842-43a4-4cd0-9da2-abbb05d76d89.gif)
-
----
-
-### How to contribute
-
-Below is a list of features and improvements to which you can contribute. If you have any additional ideas, please raise the issue or implement them as well!
-
-- Screenshot feature - The screenshot feature does presently capture the tables but the arrows do not align correctly in the screenshot. It would be best if the features captures everything as it is rendered on the canvas.
-- Front-End Optimization - Sprite sheet does not render in browser. 
-- Connecting to elephant SQL database - When connecting to elephant SQL to grab the data from the database, it takes a really long time to load (approximately 2 minutes), optimize the backend so pulling and parsing data doesn't take as long.
-- Logging needs a default settings list and direct reimport into live database. The SQL code to import has been placed into the DB_Schemas folder along with SQL Schema dumps. Also, log setting functionality is currently limited to Postgres databases and the code needs to be expanded to query and display log setting info from MySQL databases
-- Security setting models need to be put in place for database tables as well as log files.
-- Db-schemas - the schemas are saved under db_schemas and is saved in the server. Have a way to delete the schemas on the server from the front end. It would also be convenient to add these schemas to a list of existing schemas and be able to pull these schemas to display for the user to avoid having to make a new connection to the same database multiple times.
-- MySQL database connection - the connection feature currently is not compatible with MySQL database. During development phase, a MySQL database stored at the Google Cloud is used for testing. An authorization issue with Google is met when performing data dump. Suggests to try other MySQL server for development testing.  
-- Expand compatibility with other SQL database such as Oracle SQL, Microsoft SQL, IBM Db2, etc
--Scrollable Canvas - Able to edit tables and scroll on the right side of the canvas, scrolling does not work on the left side of the canvas. If tables are populated or pushed outside of the canvas on the left side, that table disappears, need to enable scrolling on left side. 
-- Testing - The current result of the supertest could vary based on which mode it is tested on, development or production. When tested in development mode (commented out line 83-84 in server.js), the supertest result would pass with the expected content-type "text, html" returned from the server. However, when the supertest is tested in the production mode, it would fail with 404 Error. 
-    - The current unit test will fail due to ES module error. Have tried to reconfigure webpack by declaring "module: type", rebuild jest configure file...
-- Refactoring - We need help refactoring the codebase according to the Airbnb style guide.
-- Refactoring typescript - Right now, there are an abundance of any's in the types. 
-
----
 
 ### Getting started
 
+You will need your own MySQL database for backend functions.
+
 - Fork and clone this repo
-- Add a .env file to the root directory
-- Go to the Google Cloud Platform Console
-- Set up OAuth 2.0 credentials as laid out  <a href="https://support.google.com/cloud/answer/6158849?hl=en">here</a> 
-- Populate the .env file with the newly created:
+- Add a db_schemas folder in server directory
+- Add a .env file to the root directory with the information below:
+
 ```bash
-CLIENT_ID = "client-id-goes-here"
-CLIENT_SECRET = "client-secret-goes-here"
-CALLBACK= http://localhost:8080/google/callback
-TEAM_SECRET = "team-secret-goes-here"
+# production environment variables
+USER_DB_URL = <MySQL url for storing user data>
+USER_DB_USER = <user string from USER_DB_URL>
+USER_DB_PW = <password string from USER_DB_URL>
+TOKEN_KEY = <any string>
+
+# testing environment variables
+## encoded SSL data required for GitHub Actions
+SSL_KEY = <base64 encoded SSL key (see SSL Configuration)>
+SSL_CERT = <base64 encoded SSL cert>
+## MySQL and Postgres databases to test remote connection functionality
+MYSQL_TEST_URL = <MySQL url for a test database>
+MYSQL_TEST_USERNAME = <user string from MYSQL_TEST_URL>
+MYSQL_TEST_PW = <password string from MYSQL_TEST_URL>
+PG_TEST_URL = <PostgreSQL url for a test database>
+PG_TEST_USERNAME = <user string from PG_TEST_URL>
+PG_TEST_PW = <password string from PG_TEST_URL>
+## test user with saved schema to test save/load functionality
+TEST_USER_EMAIL = <email string>
+TEST_USER_PW = <password string>
+
+GOOGLE_OAUTH_CLIENT_ID = <Google Oauth client id>
+GOOGLE_OAUTH_CLIENT_SECRET= <Google Oauth client id>
+GOOGLE_OAUTH_REDIRECT_URI = 'http://localhost:8080/display'
+
+GITHUB_OAUTH_CLIENT_ID = <Github Oauth client id>
+GITHUB_OAUTH_CLIENT_SECRET= <Github Oauth client id>
+GITHUB_OAUTH_REDIRECT_URI = 'http://localhost:8080/display'
+
 ```
-- Install the dependencies:
+
+- Run the following below:
 
 ```bash
 $ npm install
+```
+
+- Execute the following command to populate your mySql database with a users table:
+
+```bash
+$ npm run seed
 ```
 
 - Run the project in development mode:
@@ -164,21 +124,148 @@ $ npm install
 $ npm run dev
 ```
 
-- Make changes with comments
-- Add appropriate tests and ensure they pass
-- Commit your changes and make a pull request
+---
+
+### SSL Configuration
+
+To connect with the SQL database, we must create and configure SSL certificates.
+
+### Mac
+
+1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
+
+```bash
+npm install -g mkcert
+```
+
+2. Run the following script
+
+```bash
+npm run cert
+```
+
+### Linux
+
+1. Check mkcert is up to date (v1.5.1 as of publishing)
+
+```bash
+mkcert --version
+```
+
+2. Run the following script
+
+```bash
+npm run cert:linux
+```
+
+
+
 
 ---
 
-### Request a feature
+# How to Use
 
-- Submit an appropriately tagged GitHub issue
-- Submit your request <a href="https://docs.google.com/forms/d/e/1FAIpQLSdaPeCzo41VsJWHbbPzYwvu5Jd-FrXfJZnx23mtFdRVWDWCyg/viewform">here</a>
+### Connecting to an existing database
+
+1. Click on the "Connect Database" button under the Action section on the left side of the page. This will open a sidebar on the right side of the page.
+2. Select the database type from the dropdown.
+3. Input your database URI information OR database connection credentials and click on "Connect".
+4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
+    * OracleSQL requires the download of the OCI - [here](https://www.oracle.com/cloud/free/)
+
+
+
+## <img src="images/LandingPageDemo.gif">
+
+
+
+### Uploading your database's SQL file
+
+1. Locate and click on the "Upload SQL File" button under the Action section on the left side of the page. This will open a dialog box for you to select the SQL file you wish to upload.
+2. Once the file uploads, the canvas will render and generate the tables and their relationships.
+
+### Starting an ER diagram from scratch
+
+1. Locate and click on the "Build Database" button under the Action section on the left side of the page. This will render the canvas for you to create your database schema.
+2. Click on "Add Table" to name the first table and start building your database.
+
+## Adding column(s) to a SCHEMA table or row(s) to a DATA table
+
+1. To add a new column/row in a table, click on the add/plus icon on the top right of the table node. 
+2. This will render a new column/row in the table in edit mode. 
+3. Add in the data you would like in each column/row. 
+4. Click on the confirm icon to save the column/row. 
+5. The changes made in DATA table will be updated in your database. 
+6. Click on the cancel icon to cancel the addition.
+   <img src="images/Create%20tables.png">
+   <img src="images/addRow.png">
+
+
+### Editing an existing row of a DATA table
+
+1. Click on the edit icon of the specific column that you want to edit.
+2. You can make changes to column fields based on the selections provided.
+3. Click on the save icon to keep your changes.
+4. Click on the cancel icon to cancel your changes.
+
+### Deleting a column to a SCHEMA table or row of a DATA table
+
+1. Click on the delete icon of the specific column that you want to delete.
+2. Click on the confirm icon to delete the column.
+3. Click on the cancel icon to cancel the deletion.
+
+
+## <img src="images/MakingEditsDemo.gif">
+
+
+### Adding a foreign key reference to a column
+
+1. While editing a column, if setting Foreign Key (FK) to "true", the Foreign Key Reference sidebar will appear on the right side of the screen.
+2. In the Foreign Key Reference sidebar, use the displayed dropdowns to create references between tables.
+3. Click save or cancel to proceed.
+4. Click on the save icon to keep your changes or click on the cancel icon to cancel your changes.
+
+### Adding a table to a database
+
+1. When on the display page, click the 'Add Table' icon after you have either connected to a database or clicked 'Build Database'.
+2. Fill in the required information about the first column of your table along with a name.
+3. If you would like to include additional columns, click the 'Add Column' button in the top right corner.
+3. Click confirm to create your table.
+
+### Deleting a table from a database
+
+1. After you have either connected to a database or started a new database, the 'Delete Table' icon will appear on the left side of the display page
+2. This will open a pop out with a list of tables from the database.
+3. Select which table that you would like to have removed, and confirm to have it deleted.
+
+### Navigating the canvas
+
+1. Located on the bottom left corner of the canvas, you will find the canvas control panel.
+   - Zoom On [+] - this button zooms into the canvas.
+   - Zoom Out [-] - this button zooms out of the canvas.
+   - Fit View [[]] - this button zooms to fit all the tables in focus.
+   - Toggle Interactivity [lock] - this button toggles on and off all table and column interactivity.
+   - Screenshot [camera] - this button saves a .png file of the current canvas view.
+
+---
+
+### Future contributions and requests
+
+- If you'd like to contribute, please find a list of possible contributions [here](Contributors.md)
+- If you have any requests, please submit an appropriately tagged GitHub issue
+- PRs are welcome otherwise
 
 ---
 
 ### Credits/Contributors
-
+- Yichung Chiu • [LinkedIn](https://www.linkedin.com/in/yichung-chiu-b14a94272/) • [Github](https://github.com/ychiu5896)
+- Joseph Tejeda • [LinkedIn](https://www.linkedin.com/in/atxjtejeda/) • [Github](https://github.com/JosephTejeda)
+- Stephen Havig • [LinkedIn](https://www.linkedin.com/in/stephen-havig-199340145/) • [Github](https://github.com/Stephen-Havig)
+- Das Kang • [LinkedIn](https://www.linkedin.com/in/das-kang/) • [Github](https://github.com/dahae0309)
+- Alexander Tu • [LinkedIn](https://www.linkedin.com/in/atu816/) • [Github](http://github.com/atu816)
+- Michael Costello • [LinkedIn](https://www.linkedin.com/in/mcostello-swe/) • [Github](https://github.com/neighbor-peace)
+- Steven Geiger • [LinkedIn](https://www.linkedin.com/in/sgeiger9/) • [Github](https://github.com/geistnine)
+- Yufa Li • [LinkedIn](https://www.linkedin.com/in/yufa-li/) • [Github](https://github.com/01001101CK)
 - Angel Giron • [LinkedIn](https://www.linkedin.com/in/acgiron/) • [Github](https://github.com/g94angel)
 - John Paul Adigwu • [LinkedIn](https://www.linkedin.com/in/johnpaul-adigwu/) • [Github](https://github.com/engineerous)
 - Kevin Park-Lee • [LinkedIn](https://www.linkedin.com/in/kevin38424/) • [Github](https://github.com/kevin38424)
@@ -187,9 +274,14 @@ $ npm run dev
 - Emil Mebasser• [LinkedIn](https://www.linkedin.com/in/emil-mebasser-a1a2a815/) • [Github](https://github.com/ejmebasser)
 - Mimi Le • [LinkedIn](https://www.linkedin.com/in/my-le-a94575226/) • [Github](https://github.com/kawaiiyummy14)
 - Samson Lam • [LinkedIn](https://www.linkedin.com/in/samson-lam-455846219/) • [Github](https://github.com/sflam2013)
+- Adrian Reczek • [LinkedIn](https://www.linkedin.com/in/adrian-reczek/) • [Github](https://github.com/adziu1234)
+- Anthony Al-Rifai • [LinkedIn](https://www.linkedin.com/in/anthony-al-rifai-31677a100/) • [Github](https://github.com/AnthonyAl-Rifai)
+- Kevin Wang • [LinkedIn](https://www.linkedin.com/in/kevin-w-b841b13/) • [Github](https://github.com/kwang929)
+- Kris Magat • [LinkedIn](https://www.linkedin.com/in/kmag/) • [Github](https://github.com/KrisMagat)
+- Santiago Gil Maya • [LinkedIn](https://www.linkedin.com/in/santiago-gil-929721121/) • [Github](https://github.com/santiago-gil)
 
 ---
 
 ### License
 
-- dbSpy is developed under the MIT license.
+dbSpy is developed under the MIT license.

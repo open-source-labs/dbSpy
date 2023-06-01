@@ -1,25 +1,10 @@
-# General
-.DS_Store
-
-# dependencies
+.idea/
+.vscode/
+.env/
 node_modules/
-server/db_schemas
-
-# output from webpack
-dist/
-
-# package-lock
-package-lock.json
-
-<<<<<<< HEAD
-#EBStalk
-.elasticbeanstalk/
-
-.env
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-=======
-.env
->>>>>>> 342d51b7256a6ae08cc11165302b8bca3999415a
+build/
+tmp/
+temp/
+.cert/
+ca.crt/
+ca.key/
