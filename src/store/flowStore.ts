@@ -31,8 +31,8 @@ const useFlowStore = create<FlowState>() (
       set((state) => ({
         ...state,
         edges: addEdge(connection, get().edges),
-      
-          }))
+        })),
+
       })
     )
   )

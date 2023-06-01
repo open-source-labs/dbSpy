@@ -31,14 +31,6 @@ export default function Flow(): JSX.Element {
     setNodes(initialNodes);
   }
 
-  const nodePosition = (changes) => {
-    // Update the position of the dragged node in your state or storage
-    // const updatedNodes = nodes.map((n) => (n.id === node.id ? { ...n, position: node.position } : n));
-    // setNodes(updatedNodes);
-    onNodesChange(changes)
-    console.log('what is changes: ', changes)
-  };
-
   console.log('onNodesChange: ', onNodesChange)
 
   // renders React Flow canvas
@@ -46,7 +38,7 @@ export default function Flow(): JSX.Element {
     <div className="flow" style={{ height: '80%', width: '95%' }}>
       <ReactFlow
         nodes={nodes}
-        onNodesChange={nodePosition}
+        onNodesChange={onNodesChange}
         edges={edges}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
