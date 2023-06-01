@@ -1,38 +1,36 @@
 //-----IMPORTED FILES/MODULES
 import { Edge, DataNode, DataStore } from '@/Types';
 
-//----- Creates an array of all edges in the data table
 export default function createDataNodes(dataObject: DataStore, edges: Edge[]): DataNode[] {
-  const nodePositions = [
-    { x: 1000, y: 400 },
-    { x: 1000, y: 0 },
-    { x: 0, y: 600 },
-    { x: 0, y: 0 },
-    { x: 2500, y: 200 },
-    { x: 0, y: 200 },
-    { x: 2000, y: 800 },
-    { x: 0, y: 400 },
-    { x: 0, y: 800 },
-    { x: 1000, y: 800 },
-    { x: 0, y: 1050 },
-  ];
+
   // renders each table on the React Flow data canvas
   const nodes: DataNode[] = [];
-  let i = 0;
+  
+  // Arrows come from the top of tables with data. When the table tops are perfectly inline
+  // and are connected to by the arrows, there is no curve to the arrow and it becomes
+  // a straight line and harder to see. This gives the arrow a slight curve between inline tables.
+  let offSetter: number = 1; 
+  let x: number = 0;
+  let y: number = 0;
 
-  for (const tableKey in dataObject) {
-    const rowData = dataObject[tableKey];
+  for (const tableName in dataObject) {
+    const rowData = dataObject[tableName];
 
     nodes.push({
-      id: tableKey,
+      id: tableName,
       type: 'table',
-      position: nodePositions[i],
-      data: { table: [tableKey, rowData], edges }, 
+      position: {x, y},
+      data: { table: [tableName, rowData], edges },
     });
-    i = (i + 1) % 17;
-  }
-  //console.log('nodes in CDN',nodes)
+
+    y += 500;
+    if (y > 2100) {
+      y = -5 * offSetter;
+      x += 700;
+      offSetter += 1;
+    };
+  };
   return nodes;
-}
+};
 
 

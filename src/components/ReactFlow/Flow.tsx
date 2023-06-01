@@ -1,7 +1,6 @@
 import useFlowStore from '../../store/flowStore';
 import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactFlow, { Controls, ControlButton, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
@@ -32,12 +31,22 @@ export default function Flow(): JSX.Element {
     setNodes(initialNodes);
   }
 
+  const nodePosition = (changes) => {
+    // Update the position of the dragged node in your state or storage
+    // const updatedNodes = nodes.map((n) => (n.id === node.id ? { ...n, position: node.position } : n));
+    // setNodes(updatedNodes);
+    onNodesChange(changes)
+    console.log('what is changes: ', changes)
+  };
+
+  console.log('onNodesChange: ', onNodesChange)
+
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '80%', width: '95%' }}>
       <ReactFlow
         nodes={nodes}
-        onNodesChange={onNodesChange}
+        onNodesChange={nodePosition}
         edges={edges}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
