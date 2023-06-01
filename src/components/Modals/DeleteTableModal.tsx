@@ -18,20 +18,20 @@ export default function DeleteTableModal({
     const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
     const { dataStore, setDataStore } = useDataStore((state) => state);
 
-  // useEffect(() => {
-  //   const fetchTableNames = async () => {
-  //     try {
-  //       const tableNameArr: string[] = [];
-  //       for (const tableName in schemaStore) {
-  //         tableNameArr.push(tableName);
-  //       };
-  //       setTableNames(tableNameArr);
-  //     } catch (error: unknown) {
-  //       console.error('Error retrieving table names from schemaStore:', error);
-  //     };
-  //   };
-  //     fetchTableNames();
-  // }, []);
+  useEffect(() => {
+    const fetchTableNames = async () => {
+      try {
+        const tableNameArr: string[] = [];
+        for (const tableName in schemaStore) {
+          tableNameArr.push(tableName);
+        };
+        setTableNames(tableNameArr);
+      } catch (error: unknown) {
+        console.error('Error retrieving table names from schemaStore:', error);
+      };
+    };
+      fetchTableNames();
+  }, []);
 
   const deleteTable = async () => {
     setConnectPressed(true);
@@ -127,6 +127,7 @@ export default function DeleteTableModal({
                 </>
         ) : (
           <div className="flex items-center justify-center">
+            <br></br>
             <div className="flex items-center justify-center space-x-1 dark:text-[#f8f4eb]">
               <svg
                 fill="none"

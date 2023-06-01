@@ -1,6 +1,7 @@
 //-----IMPORTED FILES/MODULES
 import React from 'react';
 import useSchemaStore from '../../store/schemaStore';
+import useCredentialsStore from '../../store/credentialsStore';
 
 //-----TYPES
 type EachRow = {
@@ -25,12 +26,27 @@ export default function RowInput({
   secondaryColumnNames
 }: RowInputProps) {
 
+  const { dbCredentials } = useCredentialsStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
   
   const arrOfDataType = schemaStore[tableName as string]
   const columns: JSX.Element[] = [];
   const inputs: JSX.Element[] = [];
   let columnNames: string[];
+
+  let maxConstraintNameLength: number;
+  switch(dbCredentials.db_type) {
+    case 'mysql':
+      maxConstraintNameLength = 64;
+    case 'mssql':
+      maxConstraintNameLength = 128;
+    case 'oracle':
+      maxConstraintNameLength = 30;
+    case 'sqlite':
+      maxConstraintNameLength = 255;
+    default:
+      maxConstraintNameLength = 63; //Postgres
+  };
 
   // If current table is EMPTY, we are going to use secondaryColumnNames we got from schemaStore in DataInputModal 
   if (!currentTable.length) {
@@ -52,7 +68,7 @@ export default function RowInput({
         className='m-2'
         type="text"
         placeholder={arrOfDataType[columnNames[i]].data_type}
-        maxLength={63}
+        maxLength={maxConstraintNameLength}
         onChange={(e) => {
           handleRowChange(i, e.target.value.trim());
         }}

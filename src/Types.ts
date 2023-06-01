@@ -45,7 +45,6 @@ export interface TableColumn {
   TableName?: string;
   IsForeignKey?: boolean;
   IsPrimaryKey?: boolean;
-  IsConnectedToForeignKey?: boolean;
   Value?: null;
   additional_constraints?: string | null;
   data_type?: string;
@@ -195,7 +194,6 @@ export interface ColumnSchema{
   field_name: string;
   data_type: SQLDataType;
   additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' ;
-  IsConnectedToForeignKey: boolean;
 };
 
 // these are for data tables ######################
