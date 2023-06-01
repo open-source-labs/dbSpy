@@ -6,3 +6,5 @@ build/
 tmp/
 temp/
 .cert/
+ca.crt/
+ca.key/
