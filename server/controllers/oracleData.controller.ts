@@ -79,7 +79,7 @@ const oracleController = {
         const user = (username as string).toUpperCase();
 
         // DATA Create property on tableData object with every loop
-        const tableDataQuery: Promise<{[key: string]: [] | {}[]}> = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
+        const tableDataQuery: {[key: string]: [] | {}[]} = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
         tableData[`"${user}"."${tableName}"`] = tableDataQuery;
         // SCHEMA Create property on schema object with every loop
         const oracleSchema: OracleSchema[] = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));

@@ -97,11 +97,11 @@ const mysqlController = {
         const tableName: string = table[`Tables_in_${MysqlDataSource.options.database}`];
 
         // DATA Create property on tableData object with every loop
-        const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
+        const tableData: {[key: string]: [] | {}[]} = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
         data[`${MysqlDataSource.options.database}.${tableName}`] = tableData;
 
         // SCHEMA Create property on tableData object with every loop
-        const mysqlSchemaData = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
+        const mysqlSchemaData: TableColumn[] = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
         schema[`${MysqlDataSource.options.database}.${tableName}`] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
       };
 

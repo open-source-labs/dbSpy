@@ -87,11 +87,11 @@ const microsoftController = {
         const tableName: string = table.TABLE_NAME;
         const schemaName: string = table.SchemaName
         console.log('tableName: ', tableName)
-        const tableDataQuery = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
+        const tableDataQuery: {[key: string]: [] | {}[]} = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
         tableData[`${schemaName}.${tableName}`] = tableDataQuery;
 
         // SCHEMA Create property on schema object with every loop
-        const microsoftSchemaData = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
+        const microsoftSchemaData: TableColumn[] = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
         schema[`${schemaName}.${tableName}`] = await microsoftFormatTableSchema(microsoftSchemaData, tableName, schemaName);
       };
 

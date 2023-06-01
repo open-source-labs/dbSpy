@@ -76,10 +76,10 @@ const sqliteController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName = table.name;
-        const tableDataQuery = await SqliteDataSource.query(`SELECT * FROM ${tableName}`);
+        const tableDataQuery: {[key: string]: [] | {}[]} = await SqliteDataSource.query(`SELECT * FROM ${tableName}`);
         tableData[tableName] = tableDataQuery;
         // SCHEMAS Create property on schema object with every loop
-        const sqliteSchemaData = await SqliteDataSource.query(`PRAGMA table_info(${tableName})`);
+        const sqliteSchemaData: TableColumn[] = await SqliteDataSource.query(`PRAGMA table_info(${tableName})`);
         schema['public.' + tableName] = await sqliteFormatTableSchema(sqliteSchemaData, tableName);
       };
 
