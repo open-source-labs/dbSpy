@@ -4,7 +4,7 @@
 
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import {dbCredentials} from  '../Types';
+import { dbCredentials } from  '@/Types';
 
 
 let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) => any) => (
@@ -24,7 +24,9 @@ let credentialsStore = (set: (arg0: { (state: any): any; (state: any): any; }) =
 });
 
 
-const useCredentialsStore = create(persist(devtools(credentialsStore)))
+// const useCredentialsStore = create(persist(devtools(credentialsStore)))
+
+const useCredentialsStore = create(devtools(credentialsStore))
 
 export default useCredentialsStore;
 
