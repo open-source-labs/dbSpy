@@ -1,5 +1,6 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
+import 'reactflow/dist/style.css';
 import TableNodeColumn from './TableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';

@@ -1,5 +1,5 @@
 import { DataStore } from '@/Types';
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 
 

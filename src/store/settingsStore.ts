@@ -2,7 +2,7 @@
 // // State Management for settings (button toggles, view toggles, etc.)
 // //
 // export default useSettingsStore;
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 let settingsStore = (

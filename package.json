@@ -67,7 +67,7 @@
       "react-router": "^6.3.0",
       "react-router-dom": "^6.3.0",
       "react-tooltip": "^5.11.1",
-      "reactflow": "^11.1.1",
+      "reactflow": "^11.7.2",
       "redis": "^4.3.1",
       "sql-formatter": "^11.0.2",
       "sqlite3": "^5.1.6",

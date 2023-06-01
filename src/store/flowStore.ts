@@ -1,7 +1,7 @@
 //
 // State Management for React Flow
 //
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { addEdge, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 import { FlowState } from '@/Types'

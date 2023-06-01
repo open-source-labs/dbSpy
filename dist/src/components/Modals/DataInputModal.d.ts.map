@@ -1,1 +1,0 @@
-{"version":3,"file":"DataInputModal.d.ts","sourceRoot":"","sources":["../../../../src/components/Modals/DataInputModal.tsx"],"names":[],"mappings":";AAUA,KAAK,mBAAmB,GAAG;IACzB,IAAI,EAAE,MAAM,CAAC;IACb,mBAAmB,EAAE,MAAM,IAAI,CAAC;IAChC,aAAa,CAAC,EAAE,MAAM,CAAC;CACxB,CAAC;AASF,MAAM,CAAC,OAAO,UAAU,cAAc,CAAC,EACrC,IAAI,EACJ,mBAAmB,EACnB,aAAa,GACd,EAAE,mBAAmB,eAgHrB"}

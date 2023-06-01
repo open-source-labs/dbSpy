@@ -2,7 +2,7 @@
 // State Management for db Schema
 //
 
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { ColumnData, ColumnSchema, InnerReference } from '@/Types';
 

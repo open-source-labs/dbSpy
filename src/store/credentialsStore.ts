@@ -2,7 +2,7 @@
 // State Management for User and dbCredentials
 //
 
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import {dbCredentials} from  '../Types';
 
