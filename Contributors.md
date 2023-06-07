@@ -9,14 +9,11 @@ Below is a list of features and improvements to which you can contribute. If you
 - Complete the integration of SQLite as an optional database and expand compatibility with other SQL database such as IBM Db2, etc.
 - Add additional themes and graphical options to canvas and tables
 - Live query feedback so users can see what their changes to the canvas look like as queries.
-<<<<<<< HEAD
 - As the ability to manipulate data has been recently added, there are not as many safe guards to prevent users from performing actions that are not allowed for some databases.
 - Limiting the data types to only those possible for the the database the user is currently working on.
 - Adding Account specific functionality and the ability to save data to your account.
 - TypeORM has been implemented to connect to multiple databases but can be modified to further universal database functions
-=======
 - Create login feature to save multiple databases to user account and be able to load multiple past databases.
->>>>>>> dev
 
 Known bugs/issues
 

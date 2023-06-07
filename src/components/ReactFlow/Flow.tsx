@@ -1,7 +1,6 @@
 import useFlowStore from '../../store/flowStore';
 import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactFlow, { Controls, ControlButton, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
@@ -31,6 +30,8 @@ export default function Flow(): JSX.Element {
     const initialNodes = createNodes(schemaStore, initialEdges);
     setNodes(initialNodes);
   }
+
+  console.log('onNodesChange: ', onNodesChange)
 
   // renders React Flow canvas
   return (

@@ -55,8 +55,8 @@ const postgresController = {
             ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
           });
-          //foreignKeyReferenced.push(references[0])
         };
+        // console.log('references: ', references)
         
 
         const additionalConstraints: string | null = keyString!.includes('NOT NULL') ? 'NOT NULL'  : null;

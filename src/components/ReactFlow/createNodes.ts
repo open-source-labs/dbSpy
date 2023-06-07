@@ -2,36 +2,30 @@
 import { SchemaStore } from '@/store/schemaStore';
 import { Edge, DataNode } from '@/Types';
 
-//hard-coded x & y positioning of each node in the canvas
 export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): DataNode[] {
-  const nodePositions = [
-    { x: 1000, y: 400 },
-    { x: 1000, y: 0 },
-    { x: 0, y: 600 },
-    { x: 0, y: 0 },
-    { x: 2500, y: 200 },
-    { x: 0, y: 200 },
-    { x: 2000, y: 800 },
-    { x: 0, y: 400 },
-    { x: 0, y: 800 },
-    { x: 1000, y: 800 },
-    { x: 0, y: 1050 },
-  ];
+
   // renders each table on the React Flow schema canvas
   const nodes: DataNode[] = [];
-  let i = 0;
 
-  for (const tableKey in schemaObject) {
-    //tableKey is name of the table
-    const columnData = schemaObject[tableKey];
+  let x: number = 0;
+  let y: number = 0;
+
+  for (const tableName in schemaObject) {
+    const columnData = schemaObject[tableName];
 
     nodes.push({
-      id: tableKey,
+      id: tableName,
       type: 'table',
-      position: nodePositions[i],
-      data: { table: [tableKey, columnData], edges },
+      position: {x, y},
+      data: { table: [tableName, columnData], edges },
     });
-    i = (i + 1) % 17;
-  }
+
+    y += 370;
+    if (y > 1700) {
+      y = 0;
+      x += 600;
+    };
+  };
+
   return nodes;
 }
