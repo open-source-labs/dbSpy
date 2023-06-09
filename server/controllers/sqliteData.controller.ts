@@ -31,7 +31,7 @@ const sqliteController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey) {
           foreignKeyReferenced.push({
-            isDestination: true,
+            IsDestination: true,
             PrimaryKeyName: foreignKey.to,
             PrimaryKeyTableName: foreignKey.table,
             ReferencesPropertyName: foreignKey.from,
@@ -39,7 +39,7 @@ const sqliteController = {
             constraintName: tableName + '_' + foreignKey.from + '_fkey'
           });
           references.push({
-            isDestination: false,
+            IsDestination: false,
             PrimaryKeyName: foreignKey.to,
             PrimaryKeyTableName: foreignKey.table,
             ReferencesPropertyName: foreignKey.from,

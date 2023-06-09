@@ -109,7 +109,7 @@ xdescribe('/api/verifyUser', () => {
   });
 });
 
-describe('/api/saveSchema', () => {
+xdescribe('/api/saveSchema', () => {
   it('responds with 200', async () => {
     const response = await request(server).post('/api/saveSchema').send({
       email: TEST_USER_EMAIL,

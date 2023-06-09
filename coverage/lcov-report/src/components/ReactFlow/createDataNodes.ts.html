@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
@@ -99,37 +99,35 @@
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,38 +138,37 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//-----IMPORTED FILES/MODULES
 import { Edge, DataNode, DataStore } from '@/Types';
 &nbsp;
-//----- Creates an array of all edges in the data table
 export default function <span class="fstat-no" title="function not covered" >createDataNodes(</span>dataObject: DataStore, edges: Edge[]): DataNode[] {
-  const nodePositions = <span class="cstat-no" title="statement not covered" >[</span>
-    { x: 1000, y: 400 },
-    { x: 1000, y: 0 },
-    { x: 0, y: 600 },
-    { x: 0, y: 0 },
-    { x: 2500, y: 200 },
-    { x: 0, y: 200 },
-    { x: 2000, y: 800 },
-    { x: 0, y: 400 },
-    { x: 0, y: 800 },
-    { x: 1000, y: 800 },
-    { x: 0, y: 1050 },
-  ];
-  // renders each table on the React Flow canvas
-  const nodes: DataNode[] = <span class="cstat-no" title="statement not covered" >[];</span>
-  let i = <span class="cstat-no" title="statement not covered" >0;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  for (const tableKey in dataObject) {</span>
-    const rowData = <span class="cstat-no" title="statement not covered" >dataObject[tableKey];</span>
+  // renders each table on the React Flow data canvas
+  const nodes: DataNode[] = <span class="cstat-no" title="statement not covered" >[];</span>
+  
+  // Arrows come from the top of tables with data. When the table tops are perfectly inline
+  // and are connected to by the arrows, there is no curve to the arrow and it becomes
+  // a straight line and harder to see. This gives the arrow a slight curve between inline tables.
+  let offSetter: number = <span class="cstat-no" title="statement not covered" >1; </span>
+  let x: number = <span class="cstat-no" title="statement not covered" >0;</span>
+  let y: number = <span class="cstat-no" title="statement not covered" >0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  for (const tableName in dataObject) {</span>
+    const rowData = <span class="cstat-no" title="statement not covered" >dataObject[tableName];</span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    nodes.push({</span>
-      id: tableKey,
+      id: tableName,
       type: 'table',
-      position: nodePositions[i],
-      data: { table: [tableKey, rowData], edges }, 
+      position: {x, y},
+      data: { table: [tableName, rowData], edges },
     });
-<span class="cstat-no" title="statement not covered" >    i = (i + 1) % 17;</span>
-  }
-  //console.log('nodes in CDN',nodes)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    y += 500;</span>
+<span class="cstat-no" title="statement not covered" >    if (y &gt; 2100) {</span>
+<span class="cstat-no" title="statement not covered" >      y = -5 * offSetter;</span>
+<span class="cstat-no" title="statement not covered" >      x += 700;</span>
+<span class="cstat-no" title="statement not covered" >      offSetter += 1;</span>
+    };
+  };
 <span class="cstat-no" title="statement not covered" >  return nodes;</span>
-}
+};
 &nbsp;
 &nbsp;
 &nbsp;</pre></td></tr></table></pre>
@@ -181,7 +178,7 @@ export default function <span class="fstat-no" title="function not covered" >cre
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-17T16:05:26.256Z
+                at 2023-06-09T17:44:08.340Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
