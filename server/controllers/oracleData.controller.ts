@@ -29,7 +29,7 @@ const oracleController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (column.CONSTRAINT_TYPE === 'R'){
           foreignKeyReferenced.push({
-            isDestination: true,
+            IsDestination: true,
             PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
             PrimaryKeyTableName: `"${user}"."${column.R_PRIMARY_KEY_TABLE}"`,
             ReferencesPropertyName: column.COLUMN_NAME,
@@ -37,7 +37,7 @@ const oracleController = {
             constraintName: column.CONSTRAINT_NAME,
           });
           references.push({
-            isDestination: false,
+            IsDestination: false,
             PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
             PrimaryKeyTableName: `"${user}"."${column.R_PRIMARY_KEY_TABLE}"`,
             ReferencesPropertyName: column.COLUMN_NAME,

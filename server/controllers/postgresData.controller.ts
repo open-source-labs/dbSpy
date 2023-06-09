@@ -40,7 +40,7 @@ const postgresController = {
         const references: RefObj[] = [];
         if (foreignKey) {
           foreignKeyReferenced.push({
-            isDestination: true,
+            IsDestination: true,
             PrimaryKeyName: foreignKey.primary_key_column,
             PrimaryKeyTableName: foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,
@@ -48,7 +48,7 @@ const postgresController = {
             constraintName: foreignKey.constraint_name
           });
           references.push({
-            isDestination: false,
+            IsDestination: false,
             PrimaryKeyName: foreignKey.primary_key_column,
             PrimaryKeyTableName: foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,

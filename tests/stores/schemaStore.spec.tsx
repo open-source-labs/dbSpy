@@ -2,7 +2,7 @@ import useSchemaStore from '../../src/store/schemaStore';
 import { act, cleanup, renderHook, RenderHookResult } from '@testing-library/react';
 // For information on testing hooks with `@testing-library/react`, see https://react-hooks-testing-library.com/
 import { SchemaState, SchemaStore } from '../../src/store/schemaStore';
-import { ColumnData, ColumnSchema, Reference } from '@/Types';
+import { ColumnData, ColumnSchema, InnerReference } from '@/Types';
 
 describe('unit testing schemaStore', () => {
   // Following tests are tightly coupled because the Zustand store does not reset between tests
@@ -356,7 +356,7 @@ describe('unit testing schemaStore', () => {
           },
         },
       };
-      const referenceData: Reference = {
+      const referenceData: InnerReference = {
         PrimaryKeyName: 'column2',
         PrimaryKeyTableName: 'table2',
         ReferencesPropertyName: 'column1',
