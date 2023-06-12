@@ -33,7 +33,7 @@ export default function queryGen(schemaObj: SchemaObject, system: string) {
   // go through object keys as table names
   for (const key in schemaObj) {
     // initialize create table string with table name: 'CREATE TABLE [tablename] ( /n'
-    let createTableString: string = `CREATE TABLE "public"."${key}" ( `;
+    let createTableString: string = `CREATE TABLE ${key} ( `;
     const table = schemaObj[key];
     // go through columns in key (table)
     for (const column in table) {
@@ -84,7 +84,7 @@ export default function queryGen(schemaObj: SchemaObject, system: string) {
       createTableString = createTableString.slice(0, -2);
     }
     // at the end of iteration concat ');' and you're done
-    createTableString += ' );';
+    createTableString += ' ); ';
     createTableQs.push(createTableString);
   }
   return { create: createTableQs, alter: alterTableQs };

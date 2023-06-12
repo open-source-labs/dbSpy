@@ -3,7 +3,7 @@ import React, { useState, ReactNode } from 'react';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationIcon2.png'
+import informationIcon from '../../../src/assets/informationIcon2.png'
 
 // Components Imported;
 import useCredentialsStore from '../../store/credentialsStore';
@@ -19,7 +19,7 @@ const Sidebar = (props: any) => {
   const setSchemaStore = useSchemaStore((state) => state.setSchemaStore);
   const setDataStore = useDataStore((state) => state.setDataStore)
   const { setWelcome } = useSettingsStore((state) => state);
-  const [serviceName, setServiceName] = useState('');
+  const [dbName, setDBName] = useState('');
   //used to signal whether loading indicator should appear on sidebar or not, if connect button is pressed
   const [connectPressed, setConnectPressed] = useState(false);
   //used to signal whether full database url input should display in form
@@ -48,46 +48,53 @@ const Sidebar = (props: any) => {
     if (values.database_link) {
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
-      //console.log('fullLink: ', fullLink)
-      //console.log('splitURI: ', splitURI)
-      if (splitURI[0] === 'postgres:') {
-        const name_postgres = splitURI[3];
-        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_Postgres[1];
-        values.username = name_postgres.split(':')[0];
-        values.password = internalLinkArray_Postgres[0];
-        values.port = '5432';
-        values.database_name = name_postgres;
-        values.db_type = 'postgres';
-      } else if (splitURI[0] === 'mysql:') {
-        const name_mySQL = splitURI[3].split('?');
-        const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_mySQL[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_mySQL[0];
-        values.port = '3306';
-        values.database_name = name_mySQL[0];
-        values.db_type = 'mysql';
-      } else if (splitURI[0] === 'mssql:') {
-        const name_mssql = splitURI[3];
-        const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_mssql[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_mssql[0];
-        values.port = '1433';
-        values.database_name = name_mssql;
-        values.db_type = 'mssql';
-      } else if (splitURI[0] === 'oracle:') {
-        const name_oracle = splitURI[3];
-        const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_oracle[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_oracle[0];
-        values.port = '1521';
-        values.database_name = name_oracle;
-        values.db_type = 'oracle';
-        values.service_name = values.service_name;
-      }
+      switch(splitURI[0]) {
+        case ('mysql:'):
+          const mysqlName = splitURI[3].split('?');
+          const mysqlPort = splitURI[2].split(':')[2];
+          const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_mySQL[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_mySQL[0];
+          values.port = mysqlPort ? mysqlPort : '3306';
+          values.database_name = mysqlName[0];
+          values.db_type = 'mysql';
+          break;
+        case ('mssql:'):
+          const mssqlName = splitURI[3];
+          const mssqlPort = splitURI[2].split(':')[2];
+          const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_mssql[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_mssql[0];
+          values.port = mssqlPort ? mssqlPort : '1433';
+          values.database_name = mssqlName;
+          values.db_type = 'mssql';
+          break;
+        case ('oracle:'):
+          const oracleName = splitURI[3];
+          const oraclePort = splitURI[2].split(':')[2];
+          const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_oracle[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_oracle[0];
+          values.port = oraclePort ? oraclePort : '1521';
+          values.database_name = oracleName;
+          values.db_type = 'oracle';
+          values.service_name = values.service_name;
+          break;
+        default: // PostgreSQL
+          const postgresName = splitURI[3];
+          const postgresPort = splitURI[2].split(':')[2];
+          const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_Postgres[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_Postgres[0];
+          values.port = postgresPort ? postgresPort : '5432';
+          values.database_name = postgresName;
+          values.db_type = 'postgres';
+          break;
+        };
     } else if (values.file_path) {
       values.db_type = 'sqlite';
       values.database_name = values.file_path;
@@ -117,10 +124,11 @@ const Sidebar = (props: any) => {
   const handleChange = (event: any) => {
     setSelected(event.target.value);
     if (event.target.value === 'oracle') {
-      setServiceName('oracle');
+      setFormValues({ ...formValues, service_name: 'ORCL' });
+      setDBName('oracle');
     } else if (event.target.value === 'sqlite') {
-      setServiceName('sqlite');
-    } else setServiceName('');
+      setDBName('sqlite');
+    } else setDBName('');
   };
   //END: HELPER FUNCTIONS
 
@@ -147,13 +155,12 @@ const Sidebar = (props: any) => {
           <option value="mysql">MySQL</option>
           <option value="mssql">Microsoft SQL</option>
           <option value="oracle">Oracle SQL (requires OCI)</option>
-          
-          {/* <option value="sqlite">SQLite3</option> */}
+          <option value="sqlite">SQLite3</option>
         </select>
       </span>
       <br></br>
       <div>
-      {(serviceName !== 'sqlite') && (
+      {(dbName !== 'sqlite') && (
         <div className="form-item">
           <span className="flex position">
             <label htmlFor="database_link" className="dark:text-[#f8f4eb] rounded-md ">
@@ -171,12 +178,14 @@ const Sidebar = (props: any) => {
             autoComplete="off"
             onChange={(e) =>
               setFormValues({ ...formValues, database_link: e.target.value })
+              
             }
           />
         </div>
       )}
-      {(serviceName === 'oracle') && (
+      {(dbName === 'oracle') && (
         <div> 
+          <br></br>
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
               Service Name
@@ -187,25 +196,16 @@ const Sidebar = (props: any) => {
               id="service-name"
               name="service-name"
               autoComplete="off"
-              placeholder='ORCL'
-              value={formValues.service_name}
+              defaultValue={formValues.service_name}
               onChange={
                 (e) => { 
                 setFormValues({ ...formValues, service_name: e.target.value });
               }
             }/>
           </span>
-          <span className="flex justify-start items-center space-x-2 mt-3">
-            <p className="align-middle dark:text-[#f8f4eb]">Default:</p>
-            <button className="form-button rounded border bg-[#f8f4eb] py-2 px-4 hover:opacity-80 hover:shadow-inner dark:border-none dark:bg-slate-500 dark:text-[#f8f4eb] dark:hover:shadow-lg"
-                    onClick={(e) => { e.preventDefault()
-                    setFormValues({ ...formValues, service_name: 'ORCL' })}}>
-              ORCL
-            </button>
-          </span>
         </div> 
       )}
-      {(serviceName === 'sqlite') && (
+      {(dbName === 'sqlite') && (
         <div> 
           <span className="form-item">
             <label htmlFor="service-name" className="dark:text-[#f8f4eb]">
@@ -227,14 +227,16 @@ const Sidebar = (props: any) => {
           </span>
         </div> 
       )}
-      {(serviceName !== 'sqlite') && (
-        <><div>
+      {(dbName !== 'sqlite') && (
+        <>
+        <div>
           <br></br>
           <div className="form-item dark:text-[#f8f4eb]">
-            <p className="">OR</p>
+            <p className="flex justify-center text-2xl"><b>OR</b></p>
           </div>
           <br></br>
-        </div><span className="form-item">
+        </div>
+        <span className="form-item">
             <label htmlFor="hostname" className="dark:text-[#f8f4eb]">
               Host
             </label>
@@ -245,7 +247,8 @@ const Sidebar = (props: any) => {
               name="hostname"
               autoComplete="off"
               onChange={(e) => setFormValues({ ...formValues, hostname: e.target.value })} />
-          </span><span className="form-item">
+          </span>
+          <span className="form-item">
             <label htmlFor="port" className="dark:text-[#f8f4eb]">
               Port
             </label>
@@ -256,7 +259,8 @@ const Sidebar = (props: any) => {
               name="port"
               autoComplete="off"
               onChange={(e) => setFormValues({ ...formValues, port: e.target.value })} />
-          </span><span className="form-item">
+          </span>
+          <span className="form-item">
             <label htmlFor="username" className="dark:text-[#f8f4eb]">
               Database Username
             </label>
@@ -267,7 +271,8 @@ const Sidebar = (props: any) => {
               name="username"
               autoComplete="off"
               onChange={(e) => setFormValues({ ...formValues, username: e.target.value })} />
-          </span><span className="form-item">
+          </span>
+          <span className="form-item">
             <label htmlFor="password" className="dark:text-[#f8f4eb]">
               Database Password
             </label>
@@ -278,18 +283,35 @@ const Sidebar = (props: any) => {
               name="password"
               autoComplete="off"
               onChange={(e) => setFormValues({ ...formValues, password: e.target.value })} />
-          </span><span className="form-item">
+          </span>
+          <span className="form-item">
             <label htmlFor="database_name" className="dark:text-[#f8f4eb]">
               Database Name
             </label>
             <input
               className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
               type="text"
-              id="database_name "
+              id="database_name"
               name="database_name"
               autoComplete="off"
               onChange={(e) => setFormValues({ ...formValues, database_name: e.target.value })} />
-          </span><br></br></>
+          </span>
+          {(dbName === 'oracle') ? (
+            <span className="form-item">
+              <label htmlFor="service_name" className="dark:text-[#f8f4eb]">
+                Service Name
+              </label>
+              <input
+                className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
+                type="text"
+                id="service_name"
+                name="service_name"
+                autoComplete="off"
+                onChange={(e) => setFormValues({ ...formValues, service_name: e.target.value })} />
+            </span>
+          ) : null }
+          <br></br>
+        </>
       )}
       </div>
         <button

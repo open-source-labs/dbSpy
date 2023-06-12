@@ -2,6 +2,7 @@ import React from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import DataTypeOptions from './DataTypeOptions';
 import { useState }  from 'react';
+import useCredentialsStore from '../../store/credentialsStore';
 
 
 type ColumnInputProps = {
@@ -33,8 +34,24 @@ function ColumnInput({
   columnCount,
   mode,
 }: ColumnInputProps) {
-const [columnName, setColumnName] = useState('')
-const [columnType, setColumnType] = useState('')
+const [columnName, setColumnName] = useState('');
+const [columnType, setColumnType] = useState('');
+const { dbCredentials } = useCredentialsStore((state) => state);
+
+
+let maxConstraintNameLength: number;
+switch(dbCredentials.db_type) {
+  case 'mysql':
+    maxConstraintNameLength = 64;
+  case 'mssql':
+    maxConstraintNameLength = 128;
+  case 'oracle':
+    maxConstraintNameLength = 30;
+  case 'sqlite':
+    maxConstraintNameLength = 255;
+  default:
+    maxConstraintNameLength = 63; //Postgres
+};
 
 const sendNewColumnToBackend =():void => {
   console.log('cN', columnName)
@@ -55,7 +72,7 @@ const sendNewColumnToBackend =():void => {
           type="text"
           id={`column-${index}-name`}
           required
-          maxLength={63}
+          maxLength={maxConstraintNameLength}
           value={name}
           onChange={(e) => {
             setColumnName(e.target.value)

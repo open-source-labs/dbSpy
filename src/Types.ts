@@ -26,7 +26,7 @@ export interface Data{
 }
 
 export interface RefObj {
-    isDestination: boolean,
+    IsDestination: boolean,
     PrimaryKeyName: string,
     PrimaryKeyTableName: string,
     ReferencesPropertyName: string,
@@ -56,6 +56,21 @@ export interface TableColumn {
   default_type?: string;
 };
 
+export interface OracleSchema {
+TABLE_NAME: string,
+COLUMN_NAME: string,
+DATA_TYPE: string,
+DATA_DEFAULT: string | null,
+CHARACTER_MAXIMUM_LENGTH: string | number | null,
+IS_NULLABLE: string,
+COLUMN_ID: number,
+CONSTRAINT_NAME: string,
+CONSTRAINT_TYPE: string,
+R_TABLE_OWNER: string | null,
+R_TABLE_NAME: string | null,
+R_COLUMN_NAME: string | null
+}
+
 export interface TableColumns {
   [columnName: string]: TableColumn;
 };
@@ -66,7 +81,7 @@ export interface TableSchema {
 
 export interface ReferenceType {
   [index: number]: {
-    isDestination: boolean,
+    IsDestination: boolean,
     PrimaryKeyName: string,
     PrimaryKeyTableName: string,
     ReferencesPropertyName: string,
@@ -98,15 +113,17 @@ export type DataNode = {
   id: string;
   type: 'table';
   position: { x: number; y: number };
-  data: {
-    table: TableTuple;
-    edges: Edge[];
-  };
+  data: DataNodeData;
 };
+
+export interface DataNodeData {
+  table: TableTuple;
+  edges: Edge[];
+}
 
 export type TableTuple = 
 [ TableKey: string, 
-  ColumnData: { [ColumnName: string]: ColumnSchema }];
+  ColumnData: { [ColumnName: string]: ColumnSchema } | RowsOfData[] | RowsOfData];
 
   export interface dataSourceConnection {
     type: string,
@@ -143,19 +160,40 @@ export type Reference = {
     ReferencesTableName: string;
     IsDestination: boolean;
     constraintName: string;
-  };
+  }
 };
+
+// export type PrimaryKeyReference = {
+//   [tableName: string]: RowsOfData
+// }
+
+export type ForeignKeyData = {
+  PrimaryKeyTableName: string,
+  PrimaryKeyColumnName: string,
+  ForeignKeyTableName: string,
+  ForeignKeyColumnName: string,
+  constraintName: string
+}
+
+export type InnerReference = {
+  PrimaryKeyName: string;
+  PrimaryKeyTableName: string;
+  ReferencesPropertyName: string;
+  ReferencesTableName: string;
+  IsDestination: boolean;
+  constraintName: string;
+}
 
 export interface ColumnSchema{
   Name: string;
   Value: string | null;
   TableName: string;
-  References: Reference;
+  References: InnerReference[];
   IsPrimaryKey: boolean;
   IsForeignKey: boolean;
   field_name: string;
   data_type: SQLDataType;
-  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' ;
+  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' | '' ;
 };
 
 // these are for data tables ######################
@@ -166,6 +204,14 @@ export type RowsOfData = {
 export type DataStore = {
   [TableName: string]: RowsOfData[];
 }
+
+export type SchemaStore = {
+  [TableName: string]: {
+    [ColumnName: string]: ColumnSchema;
+  };
+};
+
+export type DataRowArray = Array<string | number | boolean>
 
 // export type DataState = {
 //   // DATA
@@ -206,7 +252,7 @@ export interface SchemaObject {
 }
 
 export type SQLDataType = 
-  | 'AUTO_INCREMENT'
+  'AUTO_INCREMENT'
   | 'SERIAL'
   | 'SMALLSERIAL'
   | 'BIGSERIAL'
@@ -274,8 +320,63 @@ export type SQLDataType =
   | 'GEOMETRY'
   | 'GEOGRAPHY'
   | 'CUBE'
-  | 'LTREE'
+  | 'LTREE';
 
+  export type PostgresDataTypes = 
+  'bigint' 
+  | 'bigserial'
+  | 'bit'
+  | 'bit varying'
+  | 'boolean'
+  | 'bool'
+  | 'box' 
+  | 'bytea' 
+  | 'char'
+  | 'character'
+  | 'character varying'
+  | 'cidr'
+  | 'circle'
+  | 'date'
+  | 'decimal'
+  | 'double precision'
+  | 'float4'
+  | 'float8'
+  | 'inet'
+  | 'int'
+  | 'int2'
+  | 'int4'
+  | 'int8'
+  | 'integer'
+  | 'interval'
+  | 'json'
+  | 'jsonb'
+  | 'line'
+  | 'lseg'
+  | 'macaddr'
+  | 'macaddr8'
+  | 'money'
+  | 'numeric'
+  | 'path'
+  | 'pg_lsn'
+  | 'pg_snapshot'
+  | 'point'
+  | 'polygon'
+  | 'real'
+  | 'serial'
+  | 'serial2'
+  | 'serial4'
+  | 'smallint'
+  | 'smallserial'
+  | 'text'
+  | 'time'
+  | 'timetz'
+  | 'timestamp'
+  | 'timestamptz'
+  | 'tsquery'
+  | 'tsvector'
+  | 'txid_snapshot'
+  | 'uuid'
+  | 'xml';
 //from canvas.tsx
 
 // export interface CanvasProps {

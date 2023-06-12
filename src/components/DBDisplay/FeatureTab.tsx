@@ -2,10 +2,8 @@
 
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
-
 // Functions imported:
 import parseSql from '../../parse';
-
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
@@ -128,6 +126,7 @@ export default function FeatureTab(props: any) {
       return setSchemaStore(JSON.parse(schemaString));
     } catch (err) {
       console.error('err retrieve', err);
+      window.alert(err);
     }
   };
 

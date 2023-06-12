@@ -2,7 +2,7 @@
 import useFlowStore from '../../store/flowStore';
 import useDataStore from '../../store/dataStore';
 import { DataStore, Edge } from '@/Types'
-import useSchemaStore from '../../store/schemaStore';
+import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React from 'react';
 import { useEffect } from 'react';
 import ReactFlow, { Controls, ControlButton, Background } from 'reactflow';
@@ -18,7 +18,7 @@ const nodeTypes = {
 };
 
 //React Flow canvas for DATA TABLES
-export default function DataFlow():JSX.Element {
+export default function DataFlow(): JSX.Element {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
@@ -27,10 +27,10 @@ export default function DataFlow():JSX.Element {
 
   // re-render every time dataStore updates
   useEffect(() => {  
-    reRender(dataStore);
+    reRender(dataStore, schemaStore);
   }, [dataStore, schemaStore]);
 
-  function reRender(dataStore: DataStore):void {
+  function reRender(dataStore: DataStore, schemaStore: SchemaStore): void {
     if (!dataStore || !Object.keys(dataStore).length) return;
     const initialEdges = createDataEdges(schemaStore);
     setEdges(initialEdges);

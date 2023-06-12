@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, OracleSchema, RefObj } from '@/Types';
 import { oracleSchemaQuery } from './queries/oracle.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
@@ -10,28 +10,43 @@ const oracleController = {
     const { username } = req.session
     const OracleDataSource = await dbConnect(req);
 
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: RefObj[] = [];
+
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
-    async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string): Promise<TableColumn> {
+    async function oracleFormatTableSchema(oracleSchema: TableColumn[], tableName: string, user: string): Promise<TableColumn> {
       const tableSchema: TableColumn = {};
     
       for (const column of oracleSchema) {
-        const columnName: any = column.COLUMN_NAME;
-        const keyString: any = column.CONSTRAINT_TYPE;
+        const columnName: string = column.COLUMN_NAME;
+        const keyString: string = column.CONSTRAINT_TYPE;
 
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (column.CONSTRAINT_TYPE === 'R'){
-          references.push({
-            // These got a little mixed up but are in the right place
-            isDestination: false,
-            PrimaryKeyName: column.R_COLUMN_NAME,
-            PrimaryKeyTableName: 'public.' + column.R_TABLE_NAME,
+          foreignKeyReferenced.push({
+            IsDestination: true,
+            PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: `"${user}"."${column.R_PRIMARY_KEY_TABLE}"`,
             ReferencesPropertyName: column.COLUMN_NAME,
-            ReferencesTableName: 'public.' + tableName,
+            ReferencesTableName: `"${user}"."${tableName}"`,
+            constraintName: column.CONSTRAINT_NAME,
+          });
+          references.push({
+            IsDestination: false,
+            PrimaryKeyName: column.R_PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: `"${user}"."${column.R_PRIMARY_KEY_TABLE}"`,
+            ReferencesPropertyName: column.COLUMN_NAME,
+            ReferencesTableName: `"${user}"."${tableName}"`,
             constraintName: column.CONSTRAINT_NAME,
           });
         };
+
+        console.log('references: ', references)
 
         //Formation of the schema data
         tableSchema[columnName] = {
@@ -39,7 +54,7 @@ const oracleController = {
           IsPrimaryKey: keyString ? keyString.includes('P') ? true : false : false,
           Name: column.COLUMN_NAME,
           References: column.CONSTRAINT_TYPE === 'R' ? references : [],
-          TableName: 'public.' + tableName,
+          TableName: `"${user}"."${tableName}"`,
           Value: null,
           additional_constraints: column.IS_NULLABLE === 'N' ? 'NOT NULL' : null ,
           data_type: column.DATA_TYPE + `${column.DATA_TYPE.includes('VARCHAR2') ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
@@ -64,11 +79,18 @@ const oracleController = {
         const user = (username as string).toUpperCase();
 
         // DATA Create property on tableData object with every loop
-        const tableDataQuery = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
-        tableData[tableName] = tableDataQuery;
+        const tableDataQuery: {[key: string]: [] | {}[]} = await OracleDataSource.query(`SELECT * FROM "${user}"."${tableName}"`);
+        tableData[`"${user}"."${tableName}"`] = tableDataQuery;
         // SCHEMA Create property on schema object with every loop
-        const oracleSchema = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));
-        schema['public.' + tableName] = await oracleFormatTableSchema(oracleSchema, tableName);
+        const oracleSchema: OracleSchema[] = await OracleDataSource.query(oracleSchemaQuery.replace('user', user).replace('tableName', tableName));
+        schema[`"${user}"."${tableName}"`] = await oracleFormatTableSchema(oracleSchema, tableName, user);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
+        };
       };
 
       // Console.logs to check what the data looks like
@@ -96,7 +118,7 @@ const oracleController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   oracleAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
+      addNewDbRow(req, res, next);
       console.log("oracleAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {

@@ -1,56 +1,55 @@
-// React & React Router & React Query Modules;
 import React, { useState } from 'react';
-
-// Components Imported;
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import { Reference } from '@/Types';
-
-// interface ForeignKeyUpdateType  {
-//     PrimaryKeyTableName: string,
-//     PrimaryKeyColumnName: string,
-//     ForeignKeyTableName: string,
-//     ForeignKeyColumnName:string
-// }
-
-
+import useCredentialsStore from '../../store/credentialsStore';
+import { InnerReference } from '@/Types';
 
 const AddReference: React.FC = () => {
-  const { currentTable, currentColumn, setEditRefMode } = useSettingsStore(
-    (state) => state
-  );
-  const { schemaStore, addForeignKeySchema } = useSchemaStore((state) => state);
+  const { currentTable, currentColumn, setEditRefMode } = useSettingsStore((state) => state);
+  const { schemaStore, addForeignKeySchema, setSchemaStore } = useSchemaStore((state) => state);
+  const { dbCredentials } = useCredentialsStore((state) => state);
 
-  const initialReference: Reference = {
-    // For whatever reason, PrimaryKeyName and PrimaryKeyTableName refer to other table
+  // Constraint Names have a character limit depending on the database
+  let maxConstraintNameLength: number;
+  switch(dbCredentials.db_type) {
+    case 'mysql':
+      maxConstraintNameLength = 64;
+    case 'mssql':
+      maxConstraintNameLength = 128;
+    case 'oracle':
+      maxConstraintNameLength = 30;
+    case 'sqlite':
+      maxConstraintNameLength = 255;
+    default:
+      maxConstraintNameLength = 63; //Postgres
+  };
+
+  // Starting values for the formValues
+  const initialReference: InnerReference = {
     PrimaryKeyName: '',
     PrimaryKeyTableName: '',
-    // ReferencesPropertyName and ReferencesTableName refer to the table we are adding the fk to
     ReferencesPropertyName: currentColumn,
     ReferencesTableName: currentTable,
-    IsDestination: false,
-    constraintName: `${currentTable}_fk${
-      schemaStore[currentTable][currentColumn].References.length + 1
-    }`,
-  };
-  //STATE DECLARATION (dbSpy3.0)
-  //END: STATE DECLARATION
+    isDestination: false,
+    constraintName: '',
+};
 
-  //form state hooks
-  const [formValues, setFormValues] = useState<Reference>(initialReference);
-
+  const [formValues, setFormValues] = useState<InnerReference>(initialReference);
+  const [tableSelected, setTableSelected] = useState<boolean>(false);
+  const [columnSelected, setColumnSelected] = useState<boolean>(false);
+  
   //HELPERS HELPER FUNCTION
   const nullCheck = () => {
     const mySideNav = document.getElementById('mySideNav') as HTMLDivElement | null;
     const main = document.getElementById('main') as HTMLDivElement | null;
     if (mySideNav !== null && main !== null){
-    mySideNav.style.width = '0px';
-    main.style.marginRight = '50px';
-    }
-  }
+      mySideNav.style.width = '0px';
+      main.style.marginRight = '50px';
+    };
+  };
 
   //HELPER FUNCTIONS
-  const onSave = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       /**React Flow hack.
@@ -59,37 +58,64 @@ const AddReference: React.FC = () => {
        * Process is fast enough to not be noticeable to user
        */
       nullCheck();
-      console.log(formValues)
-      //TODO: Send input from FK form to backend
-      const updatedForeignKey: Reference = {
+      const updatedForeignKey = {
         PrimaryKeyTableName: formValues.PrimaryKeyTableName,
         PrimaryKeyColumnName: formValues.PrimaryKeyName,
         ForeignKeyTableName: formValues.ReferencesTableName,
-        ForeignKeyColumnName:formValues.ReferencesPropertyName
+        ForeignKeyColumnName: formValues.ReferencesPropertyName,
+        constraintName: formValues.constraintName.replace(/[^a-zA-Z0-9_]/g, "")
+      };
+
+      // Front end Error checking for Oracle SQL
+      if (dbCredentials.db_type === 'oracle' && schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName].References[0].isDestination === true) {
+        window.alert(`Oracle SQL only allows for a Primary Key to be a part of a single Foreign Key. Column ${formValues.PrimaryKeyName} of table ${formValues.PrimaryKeyTableName} already has a Foreign Key associated with it`);
+        console.error(`Oracle SQL only allows for a Primary Key to be a part of a single Foreign Key. Column ${formValues.PrimaryKeyName} of table ${formValues.PrimaryKeyTableName} already has a Foreign Key associated with it`);
+        return;
       }
-      fetch('/api/sql/postgres/addForeignKey', {
+
+      await fetch(`/api/sql/${dbCredentials.db_type}/addForeignKey`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(updatedForeignKey)
       })
-      document
-        .querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
+
+      await Promise.resolve(setSchemaStore({
+        ...schemaStore,
+        [formValues.PrimaryKeyTableName]: {
+          ...schemaStore[formValues.PrimaryKeyTableName],
+          [formValues.PrimaryKeyName]: {
+            ...schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName],
+            References: [
+              ...schemaStore[formValues.PrimaryKeyTableName][formValues.PrimaryKeyName].References,
+              {
+                isDestination: true,
+                PrimaryKeyName: formValues.PrimaryKeyName,
+                PrimaryKeyTableName: formValues.PrimaryKeyTableName,
+                ReferencesPropertyName: formValues.ReferencesPropertyName,
+                ReferencesTableName: formValues.ReferencesTableName,
+                constraintName: formValues.constraintName.replace(/[^a-zA-Z0-9_]/g, "")
+              },
+            ],
+          },
+        },
+      }));
+      document.querySelector('.flow')?.setAttribute('style', 'height: 10%; width: 10%;');
       addForeignKeySchema(formValues);
+      console.log('schemaStore', schemaStore)
       setEditRefMode(false);
       setTimeout(
-        () =>
-          document
-            .querySelector('.flow')
-            ?.setAttribute('style', 'height: 80%; width: 95%;'),
-        0
-      );
+        () => document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;'
+        ), 0);
+        return;
+
     } catch (err: unknown) {
+      document.querySelector('.flow')?.setAttribute('style', 'height: 80%; width: 95%;');
       window.alert(err);
       console.error(err);
-    }
-  };
+      };
+    };
 
   const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -100,28 +126,30 @@ const AddReference: React.FC = () => {
       window.alert(err);
       console.error(err);
     }
-}
+  };
   //END: HELPER FUNCTIONS
 
   const tableOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const table in schemaStore) {
-    if (table !== formValues.ReferencesTableName) {
+    if (table !== currentTable) {
       tableOptions.push(
         <option key={table} value={table}>
           {table}
         </option>
       );
-    }
-  }
+    };
+  };
 
   const columnOptions: React.ReactNode[] = [<option key="---">---</option>];
   for (const col in schemaStore[formValues.PrimaryKeyTableName]) {
-    columnOptions.push(
-      <option key={col} value={col}>
-        {col}
-      </option>
-    );
-  }
+  if (schemaStore[formValues.PrimaryKeyTableName][col].IsPrimaryKey) {
+      columnOptions.push(
+        <option key={col} value={col}>
+          {col}
+        </option>
+      );
+    };
+  };
 
   return (
     <div id="addReference" className="bg-[#fbf3de] dark:bg-slate-700">
@@ -131,16 +159,15 @@ const AddReference: React.FC = () => {
       <br></br>
       <span className="form-item">
         <p className="dark:text-white">
-          Table: <strong>{formValues.ReferencesTableName}</strong>
+          Table: <strong>{currentTable}</strong>
         </p>
       </span>
       <br></br>
       <span className="form-item">
         <p className="dark:text-white">
-          Column: <strong>{formValues.ReferencesPropertyName}</strong>
+          Column: <strong>{currentColumn}</strong>
         </p>
       </span>
-
       <br></br>
       <span className="form-item">
         <label htmlFor="db_type" className="dark:text-white">
@@ -154,15 +181,18 @@ const AddReference: React.FC = () => {
           defaultValue={formValues.PrimaryKeyTableName}
           onChange={(e) => {
             if (e.target.value === '---') return;
-            setFormValues({ ...formValues, PrimaryKeyTableName: e.target.value });
+            setFormValues({
+              ...formValues,
+              PrimaryKeyTableName: e.target.value
+            });
+            setTableSelected(true);
           }}
         >
           {tableOptions}
         </select>
       </span>
-
       <br></br>
-      {formValues.PrimaryKeyTableName.length > 0 && (
+      {tableSelected ? (
         <>
           {' '}
           <span className="form-item">
@@ -177,7 +207,12 @@ const AddReference: React.FC = () => {
               // defaultValue={reference[0].PrimaryKeyName}
               onChange={(e) => {
                 if (e.target.value === '---') return;
-                setFormValues({ ...formValues, PrimaryKeyName: e.target.value });
+                setFormValues({
+                  ...formValues,
+                  PrimaryKeyName: e.target.value,
+                  constraintName: `fk_${currentColumn.replace(/[^a-zA-Z0-9_]/g, "")}_to_${e.target.value.replace(/[^a-zA-Z0-9_]/g, "")}`
+                });
+                setColumnSelected(true);
               }}
             >
               {columnOptions}
@@ -185,8 +220,8 @@ const AddReference: React.FC = () => {
           </span>
           <br></br>
         </>
-      )}
-
+      ) : null}
+      {columnSelected ? (
       <span className="form-item">
         <label htmlFor="db_type" className="dark:text-white">
           Constraint Name
@@ -194,14 +229,20 @@ const AddReference: React.FC = () => {
         <input
           className="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
           type="text"
+          maxLength={maxConstraintNameLength}
+          pattern="[A-Za-z0-9_]+.{1,}"
           id="constraintname"
           name="constraintname"
-          value={formValues.constraintName}
+          defaultValue={formValues.constraintName}
           onChange={(e) =>
-            setFormValues({ ...formValues, constraintName: e.target.value })
+            setFormValues({
+              ...formValues,
+              constraintName: e.target.value.replace(/[^a-zA-Z0-9_]/g, "")
+            })
           }
         />
       </span>
+      ): null}
       <br></br>
       <span className="add-ref-btn">
         <button

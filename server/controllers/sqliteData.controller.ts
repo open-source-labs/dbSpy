@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { dbConnect, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
 // Object containing all of the middleware
@@ -7,6 +7,12 @@ const sqliteController = {
 //----------Function to collect all schema and data from database-----------------------------------------------------------------
   sqliteQuery: async (req: Request, res: Response, next: NextFunction) => {
     const SqliteDataSource = await dbConnect(req);  
+
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: RefObj[] = [];
   
 //--------HELPER FUNCTION-----------------------------------   
     //function organizing data from queries in to the desired format of the front end
@@ -14,19 +20,26 @@ const sqliteController = {
       const tableSchema: TableColumn = {};
     
       for (const column of sqliteSchemaData) {
-        const columnName: any = column.name;
+        const columnName: string = column.name;
         const keyString: number = column.pk;
 
         //query for the foreign key data
-        const foreignKeys = await SqliteDataSource.query(`PRAGMA foreign_key_list(${tableName})`);
-        const foreignKey = await foreignKeys.find((fk: any) => fk.from === columnName);
+        const foreignKeys: TableColumn[] = await SqliteDataSource.query(`PRAGMA foreign_key_list(${tableName})`);
+        const foreignKey: TableColumn | undefined = await foreignKeys.find((fk: TableColumn) => fk.from === columnName);
         
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey) {
+          foreignKeyReferenced.push({
+            IsDestination: true,
+            PrimaryKeyName: foreignKey.to,
+            PrimaryKeyTableName: foreignKey.table,
+            ReferencesPropertyName: foreignKey.from,
+            ReferencesTableName: 'public.' + tableName,
+            constraintName: tableName + '_' + foreignKey.from + '_fkey'
+          });
           references.push({
-            // These got a little mixed up but are in the right place
-            isDestination: false,
+            IsDestination: false,
             PrimaryKeyName: foreignKey.to,
             PrimaryKeyTableName: foreignKey.table,
             ReferencesPropertyName: foreignKey.from,
@@ -45,6 +58,7 @@ const sqliteController = {
           additional_constraints: column.notnull === 1 ? 'NOT NULL' : null,
           data_type: column.type,
           field_name: columnName,
+          IsConnectedToForeignKey: false,
         };
       };
       return tableSchema;
@@ -62,11 +76,18 @@ const sqliteController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName = table.name;
-        const tableDataQuery = await SqliteDataSource.query(`SELECT * FROM ${tableName}`);
+        const tableDataQuery: {[key: string]: [] | {}[]} = await SqliteDataSource.query(`SELECT * FROM ${tableName}`);
         tableData[tableName] = tableDataQuery;
         // SCHEMAS Create property on schema object with every loop
-        const sqliteSchemaData = await SqliteDataSource.query(`PRAGMA table_info(${tableName})`);
+        const sqliteSchemaData: TableColumn[] = await SqliteDataSource.query(`PRAGMA table_info(${tableName})`);
         schema['public.' + tableName] = await sqliteFormatTableSchema(sqliteSchemaData, tableName);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
+        };
       };
 
       // Console.logs to check what the data looks like

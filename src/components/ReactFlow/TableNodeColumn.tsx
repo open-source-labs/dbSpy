@@ -65,17 +65,69 @@ export default function TableNodeColumn({
   };
 
   const onDelete = async () => {
-    //declare prior values
-    const tableRef = columnData.TableName;
-    const colRef = columnData.field_name;
-    await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
-      method:'DELETE',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({tableName: tableRef.substring(tableRef.indexOf('.') + 1), columnName: colRef})
-    });
-    deleteColumnSchema(tableRef, colRef);
+    try {
+      const tableRef = columnData.TableName;
+      const colRef = columnData.field_name;
+      const constraintName = columnData.References.length > 0 ? columnData.References[0].constraintName : '';
+
+      // console.log('schemaStore[tableRef][colRef].References[0].isDestination: ', schemaStore[tableRef][colRef].References[0].isDestination)
+
+      if (columnData.References.length > 0 && schemaStore[tableRef][colRef].References[0].isDestination === true) {
+        window.alert(`Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`);
+        console.error(`Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`);
+        return;
+      };
+
+      await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+        method:'DELETE',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({tableName: tableRef, columnName: colRef, constraintName: constraintName})
+      })
+      .then(() => {
+      // To clean up the references of Primary keys that were being used in foreign keys
+      for (const tableName in schemaStore) {
+        const tableData = schemaStore[tableName];
+
+        for (const columnName in tableData) {
+          const columnData = tableData[columnName];
+
+          if (
+            columnData.IsPrimaryKey === true && 
+            columnData.References.length > 0
+          ) { 
+            const references = columnData.References;
+
+            for (let i = references.length - 1; i >= 0; i--) {
+              const element = references[i];
+
+              if (element.isDestination === true &&
+                element.ReferencesPropertyName === colRef &&
+                element.ReferencesTableName === tableRef
+              ) {
+                references.splice(i, 1);
+                return;
+              }; 
+            };
+          };
+        };
+      };
+    })
+    .then(() => {
+      deleteColumnSchema(tableRef, colRef);
+
+      
+    })
+    .catch((err) => {
+      window.alert(err);
+      console.error(err);
+    })
+    return;
+    } catch(err) {
+      window.alert(err);
+      console.error(err);
+    };
   };
 
   const openAddReferenceModal = () => {
@@ -103,7 +155,7 @@ export default function TableNodeColumn({
                   field_name: e.target.value.replaceAll(/\s/g, '_'),
                 }))
               }
-            ></input>
+            />
           ) : (
             columnData.field_name
           )}

@@ -2,9 +2,9 @@
 // State Management for db Schema
 //
 
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { ColumnData, ColumnSchema, Reference } from '@/Types';
+import { ColumnData, ColumnSchema, InnerReference } from '@/Types';
 
 interface RestrictedNames {
   [name: string]: boolean;
@@ -17,7 +17,7 @@ export type SchemaStore = {
 export type SchemaState = {
   // DATA
   schemaStore: SchemaStore;
-  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
+  system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite';
   history: SchemaStore[];
   historyCounter: number;
 
@@ -30,8 +30,8 @@ export type SchemaState = {
   _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
-  addForeignKeySchema: (referenceData: Reference) => void;
-  setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL') => void;
+  addForeignKeySchema: (referenceData: InnerReference) => void;
+  setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite') => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
@@ -114,15 +114,13 @@ const useSchemaStore = create<SchemaState>()(
             get()._addHistory(newState);
             return newState;
           }),
-
         addForeignKeySchema(referenceData) {
           set((state) => {
             // TODO: ADD VALIDATION
-            const originTable: keyof SchemaStore = referenceData.ReferencesTableName;
+            const originTable: string = referenceData.ReferencesTableName;
             const originColumn: string = referenceData.ReferencesPropertyName;
-            const destinationTable: keyof SchemaStore = referenceData.PrimaryKeyTableName;
+            const destinationTable: string = referenceData.PrimaryKeyTableName;
             const destinationColumn: string = referenceData.PrimaryKeyName;
-
             const newState = {
               ...state,
               schemaStore: {

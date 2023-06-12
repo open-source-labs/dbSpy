@@ -1,8 +1,11 @@
-import * as React from 'react';
+import React from 'react';
 import { Handle, Position } from 'reactflow';
+import 'reactflow/dist/style.css';
 import TableNodeColumn from './TableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
+import { DataNodeData } from '@/Types'
+
 
 export default function TableNode({ data }) {
   const tableName = data.table[0];
@@ -85,7 +88,7 @@ export default function TableNode({ data }) {
 </div>
 
 <div
-    style={{ maxHeight: "400px", maxWidth: "600px" }}
+    style={{ maxHeight: "325px", maxWidth: "600px" }}
     className="nowheel overflow-auto"
   >
       <div className="table-bg transition-colors duration-500 dark:bg-slate-700">

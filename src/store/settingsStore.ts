@@ -1,9 +1,8 @@
-// //
-// // State Management for settings (button toggles, view toggles, etc.)
-// //
-// export default useSettingsStore;
-import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+//
+// State Management for settings (button toggles, view toggles, etc.)
+//
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 let settingsStore = (
   set: (arg0: { (state: any): any; (state: any): any; (state: any): any; }) => any
@@ -35,6 +34,15 @@ let settingsStore = (
       ...state,
       currentTable,
       inputModalState: { isOpen, mode },
+    }));
+  },
+
+  inputDataModalState: { isOpen: false, mode: '' },
+  setDataInputModalState: (isOpen: boolean, mode: string = '', currentTable: string = '') => {
+    set((state) => ({
+      ...state,
+      currentTable,
+      inputDataModalState: { isOpen, mode },
     }));
   },
 

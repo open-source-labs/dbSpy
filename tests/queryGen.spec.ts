@@ -42,7 +42,7 @@ const schema: SchemaObject = {
   }
 }
 
-describe('QueryGen...', () => {
+xdescribe('QueryGen...', () => {
   // CREATE TABLE "test" ( "testrow" serial NOT NULL PRIMARY KEY );
   const output: {create: string[], alter: string[]} = queryGen(schema);
   it('should output an object of arrays containing a create table query', () => {

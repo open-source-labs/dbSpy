@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { microsoftSchemaQuery, microsoftForeignKeyQuery } from './queries/microsoft.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
@@ -9,54 +9,74 @@ const microsoftController = {
   microsoftQuery: async (req: Request, res: Response, next: NextFunction) => {
     //Create Connection with database
     const MicrosoftDataSource = await dbConnect(req);
+
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: RefObj[] = [];
     
 //--------HELPER FUNCTION-----------------------------------
     //function organizing data from queries in to the desired format of the front end
-    async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string): Promise<TableColumns> {
+    async function microsoftFormatTableSchema(microsoftSchemaData: TableColumn[], tableName: string, schemaName: string): Promise<TableColumns> {
       const tableSchema: TableColumn = {};
 
       for (const column of microsoftSchemaData) {
-          const columnName: string = column.COLUMN_NAME;
+        const columnName: string = column.COLUMN_NAME;
 
-          //query for the foreign key data
-          const foreignKeys: any = await MicrosoftDataSource.query(microsoftForeignKeyQuery);
-          const foreignKey = foreignKeys.find((fk: any) => fk.column_name === columnName);
+        //query for the foreign key data
+        const foreignKeys: TableColumn[] = await MicrosoftDataSource.query(microsoftForeignKeyQuery);
+        const foreignKey = foreignKeys.find((fk: TableColumn) => fk.column_name === columnName);
 
-          //Creating the format for the Reference property if there is a foreign key
-          const references: {[key: string]: string | boolean}[] = []
-          if (foreignKey){
-            references.push({
-              // These got a little mixed up but are in the right place
-              isDestination: false,
-              PrimaryKeyName: foreignKey.referenced_column_name,
-              PrimaryKeyTableName: 'public.' + foreignKey.referenced_table_name,
-              ReferencesPropertyName: foreignKey.column_name,
-              ReferencesTableName: 'public.' + tableName,
-              constraintName: foreignKey.constraint_name,
-            });
-          };
-
-          //Formation of the schema data
-          tableSchema[columnName] = {
-            IsForeignKey: foreignKey ? true : false,
-            IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
-            Name: column.COLUMN_NAME,
-            References: references,
-            TableName: 'public.' + tableName,
-            Value: null,
-            additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
-            data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
-            default_type: column.IS_IDENTITY === 1 ? 'identity' : null,
-            field_name: columnName,
-          };
+        //Creating the format for the Reference property if there is a foreign key
+        const references: {[key: string]: string | boolean}[] = []
+        if (foreignKey){
+          foreignKeyReferenced.push({
+            IsDestination: true,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
+            ReferencesPropertyName: foreignKey.column_name,
+            ReferencesTableName: `${schemaName}.${tableName}`,
+            constraintName: foreignKey.constraint_name,
+          });
+          references.push({
+            IsDestination: false,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
+            ReferencesPropertyName: foreignKey.column_name,
+            ReferencesTableName: `${schemaName}.${tableName}`,
+            constraintName: foreignKey.constraint_name,
+          });
         };
+
+        //Formation of the schema data
+        tableSchema[columnName] = {
+          IsForeignKey: foreignKey ? true : false,
+          IsPrimaryKey: column.IS_PRIMARY_KEY === 'YES' ? true : false,
+          Name: column.COLUMN_NAME,
+          References: references,
+          TableName: `${schemaName}.${tableName}`,
+          Value: null,
+          additional_constraints: column.IS_NULLABLE === 'NO' ? 'NOT NULL' : null ,
+          data_type: `${column.DATA_TYPE.toUpperCase()}` + `${column.DATA_TYPE === 'varchar' ? `(${column.CHARACTER_MAXIMUM_LENGTH})` : ''}`,
+          default_type: column.IS_IDENTITY === 1 ? 'identity' : null,
+          field_name: columnName,
+        };
+      };
       return tableSchema;
     };
 //--------HELPER FUNCTION END-----------------------------------
 
     try{
       // Query to retrieve all table names
-      const tables: [{TABLE_NAME: string}] = await MicrosoftDataSource.query(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES`);
+      const tables: [{SchemaName: string, TABLE_NAME: string}] = await MicrosoftDataSource.query(`
+        SELECT
+          SCHEMA_NAME() AS SchemaName,
+          TABLE_NAME 
+        FROM 
+          INFORMATION_SCHEMA.TABLES
+        `);
+        console.log('tables: ', tables)
       // Declare constants to store results we get back from queries
       const tableData: TableColumns = {};
       const schema: TableSchema = {};
@@ -65,14 +85,22 @@ const microsoftController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName: string = table.TABLE_NAME;
+        const schemaName: string = table.SchemaName
         console.log('tableName: ', tableName)
-        const tableDataQuery = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
-        tableData[tableName] = tableDataQuery;
+        const tableDataQuery: {[key: string]: [] | {}[]} = await MicrosoftDataSource.query(`SELECT * FROM ${tableName}`);
+        tableData[`${schemaName}.${tableName}`] = tableDataQuery;
 
         // SCHEMA Create property on schema object with every loop
-        const microsoftSchemaData = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
-        schema['public.' + tableName] = await microsoftFormatTableSchema(microsoftSchemaData, tableName);
-      }
+        const microsoftSchemaData: TableColumn[] = await MicrosoftDataSource.query(microsoftSchemaQuery.replace('tableName', tableName));
+        schema[`${schemaName}.${tableName}`] = await microsoftFormatTableSchema(microsoftSchemaData, tableName, schemaName);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
+        };
+      };
 
       // Console.logs to check what the data looks like
       // console.log('table data: ', tableData);
@@ -99,7 +127,7 @@ const microsoftController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   microsoftAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
+      addNewDbRow(req, res, next);
       console.log("microsoftAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {
@@ -111,7 +139,7 @@ const microsoftController = {
 //-----------------UPDATE ROW--------------------------------------------------------------
   microsoftUpdateRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      updateRow(req, res, next);
+      await Promise.resolve(updateRow(req, res, next));
       console.log("microsoftUpdateRow function has concluded");
       return next();
     } catch (err: unknown) {

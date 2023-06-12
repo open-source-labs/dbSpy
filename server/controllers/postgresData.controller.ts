@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { postgresSchemaQuery, postgresForeignKeyQuery } from './queries/postgres.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, getTableNames, deleteTable, addForeignKey, removeForeignKey } from './helperFunctions/universal.helpers'
 import { resourceLimits } from 'worker_threads';
@@ -10,6 +10,11 @@ const postgresController = {
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
 
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */ 
+    const foreignKeyReferenced: RefObj[] = [];
 
 //--------HELPER FUNCTION 1-----------------------------------
     // function to query and get all information needed for foreign keys
@@ -23,41 +28,43 @@ const postgresController = {
       const tableSchema: TableColumn = {};
 
       for (const column of postgresSchemaData) {
-        const columnName: any = column.column_name;
-        const keyString: any = column.additional_constraints;
+        const columnName: string = column.column_name;
+        const keyString: string | null | undefined = column.additional_constraints;
 
         //query for the foreign key data
-        const foreignKeys: any = await getForeignKeys();
-        const foreignKey = await foreignKeys.find((fk: any) => fk.foreign_key_column === columnName);
+        const foreignKeys: TableColumn[] = await getForeignKeys();
+        const foreignKey = foreignKeys.find((fk: TableColumn) => fk.foreign_key_column === columnName);
 
         //Creating the format for the Reference property if there is a foreign key
-        const references: {[key: string]: string | boolean}[] = [];
-        if (foreignKey){
-          references.push({
-            // isDestination: false,
-            // PrimaryKeyName: foreignKey.foreign_key_column,
-            // PrimaryKeyTableName: 'public.' + tableName,
-            // ReferencesPropertyName: foreignKey.referenced_column,
-            // ReferencesTableName: foreignKey.referenced_table,
-            // constraintName: foreignKey.constraint_name
-            isDestination: false,
-            PrimaryKeyName: foreignKey.referenced_column,
-            PrimaryKeyTableName: foreignKey.referenced_table,
+        
+        const references: RefObj[] = [];
+        if (foreignKey) {
+          foreignKeyReferenced.push({
+            IsDestination: true,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.foreign_key_column,
             ReferencesTableName: 'public.' + tableName,
             constraintName: foreignKey.constraint_name
-
+          });
+          references.push({
+            IsDestination: false,
+            PrimaryKeyName: foreignKey.primary_key_column,
+            PrimaryKeyTableName: foreignKey.primary_key_table,
+            ReferencesPropertyName: foreignKey.foreign_key_column,
+            ReferencesTableName: 'public.' + tableName,
+            constraintName: foreignKey.constraint_name
           });
         };
+        // console.log('references: ', references)
+        
 
-        //console.log('references: ', references)
-
-        const additionalConstraints: string | null = keyString.includes('NOT NULL') ? 'NOT NULL'  : null;
+        const additionalConstraints: string | null = keyString!.includes('NOT NULL') ? 'NOT NULL'  : null;
         const hasIdentity: string | null = column.has_identity === true ? ' HAS_IDENTITY' : '';
 
         tableSchema[columnName] = {
-          IsForeignKey: keyString.includes('FOREIGN KEY'),
-          IsPrimaryKey: keyString.includes('PRIMARY KEY'),
+          IsForeignKey: keyString!.includes('FOREIGN KEY'),
+          IsPrimaryKey: keyString!.includes('PRIMARY KEY'),
           Name: columnName,
           References: references,
           TableName: 'public.' + tableName,
@@ -76,6 +83,7 @@ const postgresController = {
       // Query to retrieve all table names
       const tables = await PostgresDataSource.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'');
       //Declare storage objects with their related interfaces
+      
       const tableData: TableColumns = {};
       const schema: TableSchema = {};
 
@@ -83,12 +91,19 @@ const postgresController = {
       for (const table of tables) {
         // DATA Create property on tableData object with every loop
         const tableName = table.tablename;
-        const tableDataQuery = await PostgresDataSource.query(`SELECT * FROM ${tableName}`);
-        tableData[tableName] = tableDataQuery;
+        const tableDataQuery: {[key: string]: [] | {}[]} = await PostgresDataSource.query(`SELECT * FROM ${'public.' + tableName}`);
+        tableData['public.' + tableName] = tableDataQuery;
 
         // SCHEMAS Create property on schema object with every loop
-        const postgresSchemaData = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName));
+        const postgresSchemaData: TableColumn[] = await PostgresDataSource.query(postgresSchemaQuery.replace('tableName', tableName));
         schema['public.' + tableName] = await postgresFormatTableSchema(postgresSchemaData, tableName);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (foreignKeyReferenced.length !== 0) {
+        for (const element of foreignKeyReferenced) {
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
+        };
       };
 
       // Console.logs to check what the data looks like
@@ -116,11 +131,11 @@ const postgresController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   postgresAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
-      //console.log("postgresAddNewRow function has concluded");
+      addNewDbRow(req, res, next);
+      console.log("postgresAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {
-      //console.log('Error occurred in the postgresAddNewRow middleware: ', err);
+      console.log('Error occurred in the postgresAddNewRow middleware: ', err);
       return next(err);
     };
   },

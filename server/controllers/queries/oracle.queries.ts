@@ -10,8 +10,8 @@ c.column_id,
 cc.constraint_name,
 ac.constraint_type,
 ar.owner AS r_table_owner,
-ar.table_name AS r_table_name,
-ar.column_name AS r_column_name
+ar.table_name AS r_primary_key_table,
+ar.column_name AS r_primary_key_column
 FROM
 all_tab_columns c
 LEFT JOIN

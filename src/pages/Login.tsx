@@ -5,6 +5,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
 // Opens up the page that asks for authorization for server to receive access token from Google;
 import { handleOAuthLogin } from '../utils/getGoogleUrl';
+import googleImg from '../../src/assets/GoogleImage.png';
+import gitHubImage from '../../src/assets/GithubImage.png';
+
 
 /* "Login" Component - login page for user login */
 export default function Login() {
@@ -54,7 +57,7 @@ function getGoogle():void{
   const rootUrl:string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
   const options:Options = {
-    redirect_uri: 'http://localhost:8080/display',
+    redirect_uri: 'https://db-spy.io/display',
     client_id: '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
     access_type: 'offline',
     response_type: 'code',
@@ -77,7 +80,7 @@ function getGoogle():void{
 const getGithub = ():void => {
   const rootUrl: string = 'https://github.com/login/oauth/authorize';
   const options: Options = {
-    redirect_uri: 'http://localhost:8080/display',
+    redirect_uri: 'https://db-spy.io/display',
     client_id: 'd44f1421ff7324a4468d',
     state: 'randomstring',
     allow_signup: 'true',
@@ -158,12 +161,12 @@ const getGithub = ():void => {
         </form>
         <button
               className="bg-red-600 hover:text-cyan-950 text-white py-1 px-4 inline-flex items-center ml-1 mr-1" onClick={()=>getGoogle()}>
-              <img src='../../images/GoogleImage.png' alt= 'google logo' className='h-5 mr-1 '></img>
+              <img src={googleImg} alt= 'google logo' className='h-5 mr-1 '></img>
               Sign in with Google
         </button>
         <button
               className="bg-black hover:text-cyan-950 text-white py-1 px-4 inline-flex items-center ml-1" onClick={()=>getGithub()}>
-              <img src='../../images/GithubImage.png' alt= 'google logo' className='h-5 mr-1 '></img>
+              <img src={gitHubImage} alt= 'github logo' className='h-5 mr-1 '></img>
               Sign in with GitHub
         </button>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SQLDataType, ColumnData } from '../../Types';
 import ColumnInput from './ColumnInput';
 import useSchemaStore from '../../store/schemaStore';
@@ -51,13 +51,6 @@ export default function InputModal({
       isPrimary: true,
       defaultValue: null,
     },
-    // {
-    //   name: 'created_at',
-    //   type: 'TIMESTAMP',
-    //   isNullable: false,
-    //   isPrimary: false,
-    //   defaultValue: 'NOW()',
-    // },
   ];
   const additionalColumn: ColumnData[] = [
     {
@@ -106,7 +99,7 @@ export default function InputModal({
           .then((parsedData)=> {
             setSchemaStore(parsedData.schema);
             setDataStore(parsedData.data)
-          })
+          });
 
       }
       else if (mode === 'column') {
@@ -114,7 +107,7 @@ export default function InputModal({
       console.log('columnData: ', columnData)
       //new column data that will be sent in the post request body
       const dataToSend = {
-        tableName: tableName.substring(tableName.indexOf('.') + 1),
+        tableName: tableName,
         columnData: columnData,
       };
         //adds new column to the selected table
@@ -122,8 +115,8 @@ export default function InputModal({
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify(dataToSend)
-        })
-      }
+        });
+      };
       return true;
     } catch (error) {
       window.alert(error);
@@ -226,7 +219,7 @@ export default function InputModal({
                 value={tableName}
                 required
                 maxLength={63}
-                onChange={(e) => setTableName(e.target.value.trim())}
+                onChange={(e) => setTableName((dbCredentials.db_type === 'postgres' ? e.target.value.toLowerCase().trim() : e.target.value).trim())}
               />
             </>
           ) : (

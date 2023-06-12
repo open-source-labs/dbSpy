@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TableColumns, TableColumn, TableSchema } from '@/Types';
+import { TableColumns, TableColumn, TableSchema, RefObj } from '@/Types';
 import { mysqlForeignKeyQuery } from './queries/mysql.queries';
 import { dbConnect, addNewDbRow, updateRow, deleteRow, addNewDbColumn, updateDbColumn, deleteColumn, addNewTable, deleteTable, addForeignKey, removeForeignKey, getTableNames } from './helperFunctions/universal.helpers'
 
@@ -8,6 +8,12 @@ const mysqlController = {
 //----------Function to collect all schema and data from database-----------------------------------------------------------------
   mysqlQuery: async (req: Request, res: Response, next: NextFunction) => {
     const MysqlDataSource = await dbConnect(req);
+
+    /* 
+    * Used for storing Primary Key table and column names that are
+    *  part of Foreign Keys to adjust IsDestination to be true.
+    */
+    const foreignKeyReferenced: RefObj[] = [];
 
 //--------HELPER FUNCTION 1-----------------------------------
     // function to query and get all information needed for foreign keys
@@ -21,42 +27,53 @@ const mysqlController = {
       const tableSchema: TableColumn = {};
   
       for (const column of mysqlSchemaData) {
-        const columnName: any = column.Field;
-        const keyString: any = column.Key;
+        const columnName: string | undefined = column.Field;
+        const keyString: string | undefined = column.Key;
 
         const defaultTypes = await MysqlDataSource.query(`
-          SELECT EXTRA, COLUMN_DEFAULT
-          FROM INFORMATION_SCHEMA.COLUMNS
-          WHERE TABLE_SCHEMA = '${MysqlDataSource.options.database}'
-          AND TABLE_NAME = '${tableName}'
-          AND COLUMN_NAME = "${columnName}"
+          SELECT 
+            EXTRA, 
+            COLUMN_DEFAULT
+          FROM 
+            INFORMATION_SCHEMA.COLUMNS
+          WHERE 
+            TABLE_SCHEMA = '${MysqlDataSource.options.database}'
+            AND TABLE_NAME = '${tableName}'
+            AND COLUMN_NAME = "${columnName}"
         `);
           
         //query for the foreign key data
-        const foreignKeys: any = await getForeignKeys(columnName, tableName);
-        const foreignKey = foreignKeys.find((fk: any) => fk.COLUMN_NAME === columnName);
+        const foreignKeys: TableColumn[] = await getForeignKeys(columnName!, tableName);
+        const foreignKey = foreignKeys.find((fk: TableColumn) => fk.COLUMN_NAME === columnName);
 
         //Creating the format for the Reference property if there is a foreign key
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
-          references.push({
-            // These got a little mixed up but are in the right place
-            isDestination: false,
-            PrimaryKeyName: foreignKey.REFERENCED_COLUMN_NAME,
-            PrimaryKeyTableName: 'public.' + foreignKey.REFERENCED_TABLE_NAME,
+          foreignKeyReferenced.push({
+            IsDestination: true,
+            PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: `${MysqlDataSource.options.database}.${foreignKey.PRIMARY_KEY_TABLE}`,
             ReferencesPropertyName: foreignKey.COLUMN_NAME,
-            ReferencesTableName: 'public.' + tableName,
+            ReferencesTableName: `${MysqlDataSource.options.database}.${tableName}`,
+            constraintName: foreignKey.CONSTRAINT_NAME,
+          });
+          references.push({
+            IsDestination: false,
+            PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
+            PrimaryKeyTableName: `${MysqlDataSource.options.database}.${foreignKey.PRIMARY_KEY_TABLE}`,
+            ReferencesPropertyName: foreignKey.COLUMN_NAME,
+            ReferencesTableName: `${MysqlDataSource.options.database}.${tableName}`,
             constraintName: foreignKey.CONSTRAINT_NAME,
           });
         };
 
         //Formation of the schema data
-        tableSchema[columnName] = {
-          IsForeignKey: keyString.includes('MUL'),
-          IsPrimaryKey: keyString.includes('PRI'),
+        tableSchema[columnName!] = {
+          IsForeignKey: keyString!.includes('MUL'),
+          IsPrimaryKey: keyString!.includes('PRI'),
           Name: column.Field,
           References: references,
-          TableName: 'public.' + tableName,
+          TableName: `${MysqlDataSource.options.database}.${tableName}`,
           Value: null,
           additional_constraints: column.Null === 'NO' ? 'NOT NULL' : null ,
           data_type: column.Type,
@@ -64,7 +81,6 @@ const mysqlController = {
           field_name: column.Field,
         };
       };
-  
       return tableSchema;
   };
 //--------HELPER FUNCTIONS END-----------------------------------
@@ -81,12 +97,22 @@ const mysqlController = {
         const tableName: string = table[`Tables_in_${MysqlDataSource.options.database}`];
 
         // DATA Create property on tableData object with every loop
-        const tableData = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
-        data[tableName] = tableData;
+        const tableData: {[key: string]: [] | {}[]} = await MysqlDataSource.query(`SELECT * FROM ${tableName}`);
+        data[`${MysqlDataSource.options.database}.${tableName}`] = tableData;
 
         // SCHEMA Create property on tableData object with every loop
-        const mysqlSchemaData = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
-        schema['public.' + tableName] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
+        const mysqlSchemaData: TableColumn[] = await MysqlDataSource.query(`DESCRIBE ${MysqlDataSource.options.database}.${tableName}`);
+        schema[`${MysqlDataSource.options.database}.${tableName}`] = await mysqlFormatTableSchema(mysqlSchemaData, tableName);
+      };
+
+      // Changing the isDestination value for the Foreign Keys
+      if (foreignKeyReferenced.length !== 0) {
+        console.log('foreignKeyReferenced: ', foreignKeyReferenced)
+        for (const element of foreignKeyReferenced) {
+                console.log("schema data: ", schema);
+          console.log('schema[element.PrimaryKeyTableName][element.PrimaryKeyName]: ', schema[element.PrimaryKeyTableName][element.PrimaryKeyName])
+          schema[element.PrimaryKeyTableName][element.PrimaryKeyName].References!.push(element)
+        };
       };
 
       // Console.logs to check what the data looks like
@@ -114,7 +140,7 @@ const mysqlController = {
 //-------------------ADD NEW ROW-----------------------------------------------------------
   mysqlAddNewRow: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      addNewDbRow(req, res, next)
+      addNewDbRow(req, res, next);
       console.log("mysqlAddNewRow function has concluded");
       return next();
     } catch (err: unknown) {

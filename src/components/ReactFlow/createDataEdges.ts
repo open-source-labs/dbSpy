@@ -2,7 +2,7 @@
 import { SchemaStore } from '../../store/schemaStore';
 import { Edge } from '@/Types';
 
-//----- Creates an array of all edges in the data table
+//----- Creates an array of all edges in the data view
 export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
   const edges: Edge[] = [];
   for (const tableKey in schemaObject) {
@@ -15,13 +15,13 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
 
         if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
           edges.push({
-          id: `${row.References[0].ReferencesTableName}-to-${row.References[0].PrimaryKeyTableName}`,
-          source: row.References[0].ReferencesTableName.slice(7),
-          sourceHandle:  row.References[0].ReferencesPropertyName,
-          target: row.References[0].PrimaryKeyTableName.slice(7),
+          id: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+          source: row.References[0].ReferencesTableName,
+          sourceHandle: row.References[0].ReferencesPropertyName,
+          target: row.References[0].PrimaryKeyTableName,
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
-          label: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+          label: row.References[0].constraintName,
             style: {
               strokeWidth: 2,
               stroke: '#085c84',
@@ -34,9 +34,9 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
               color: '#085c84',
             },
           });
-        }
-      }
-    }
-  }
+        };
+      };
+    };
+  };
   return edges;
-}
+};
