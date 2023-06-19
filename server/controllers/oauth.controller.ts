@@ -4,7 +4,6 @@ import log from '../logger/index';
 dotenv.config(); 
 
 export const getGoogleAccesToken: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-    
     type code = string;
     type state = string|null;
     const {code,state} = req.body;
@@ -102,12 +101,12 @@ export const getUserInfo:RequestHandler = async (req:Request, res:Response, next
             if(data.status >= 200 && data.status < 300){
                 userInfo = await data.json()
                 userInfo = {...userInfo, type:'google'}
-                res.locals.userInfo = userInfo;
-                return next();
             }else{
                 throw new Error('error exist in oauthcontroller.ts in getUserInfo middleware');
             }
         }
+        res.locals.userInfo = userInfo;
+        return next();
     }
     catch(err){
         next({
