@@ -77,8 +77,7 @@ useEffect(() :void => {
           console.log(`OAuth : successfully sent authorization code back ${data.status}`);
           return data.json();
         } 
-        else throw new Error('error in backend with oauth')
-
+        else throw new Error('error in backend with oauth');
       })
       .then((res) => {
         console.log(res);
