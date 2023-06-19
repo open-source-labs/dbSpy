@@ -30,82 +30,97 @@ export const createUser = async (user: string[]) => {
 
 // Register w/o OAuth
 export const userRegistration: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  
-
   log.info('Registering user (middleware)');
+  // w/OAuth
+  if(req.body.code){
+    try{
+      if(res.locals.userInfo.type === 'google'){
+        const {id, email, verified_email, name, picture, type} = res.locals.userInfo
+        console.log(res.locals.userInfo)
+        const queryStr = 'INSERT IGNORE INTO users(full_name, email, password, picture,type) Values (?,?,?,?,?)';
+        const hashedPw = id.toString();
+        const createUser = await pool.query(queryStr,[name, email, hashedPw, picture,type]);
+        const user = (await findUser(email)) as RowDataPacket[][];
+        res.locals.user = user[0][0];
+        log.info('created Oauth user');
+        return res.status(200).json(res.locals.user);
+      }else{
+        const {login,id,url,avatar_url,type} = res.locals.userInfo;
+        const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
+        let hashedPw:string;
+        hashedPw = id? id.toString(): 'default';
+        const addUser = await pool.query(queryStr, [login,url,hashedPw, avatar_url,type]);
+        const user = (await findUser(url)) as RowDataPacket[][];
+        res.locals.user = user[0][0];
+        log.info('creater Oauth user');
+        return res.status(200).json(res.locals.user);
+      }
+    }
+    catch{
+        const errorObj = {
+          log:'Express error handler caught in registering Oauth User',
+          status: 509,
+          message: 'Error caught in Oauth User creation'};
+          console.log(errorObj.log)
+          return res.status(506).json(errorObj.log)
+      }
+  }
+  // w/o Oauth
+else{
+  try{
+    const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
+    if (foundUser[0]?.length) return res.status(403).json({ err: 'Email already in use' });
 
-  const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
-  if (foundUser[0].length) return res.status(403).json({ err: 'Email already in use' });
-
-  const { full_name, email, password } = req.body;
-  // console.log(typeof full_name, typeof email, typeof password)
-  if (
-    typeof full_name !== 'string' ||
-    typeof email !== 'string' ||
-    typeof password !== 'string'
-  )
-    return next({
-      log: 'Error in user.controller.userRegistration',
-      status: 400,
-      message: 'err: User data must be strings',
-    });
-
-  const hashedPw = await bcrypt.hash(password, saltRounds);
-  const queryStr: string =
-    'INSERT IGNORE INTO users (full_name, email, password) VALUES (?, ?, ?)';
-  pool
-    .query(queryStr, [full_name, email, hashedPw])
-    .then(() => {
-      log.info(`${email} successfully registered`);
-      return res.redirect(200, '/');
-    })
-    .catch((err: ErrorEvent) => next(err));
+    const { full_name, email, password } = req.body;
+    // console.log(typeof full_name, typeof email, typeof password)
+    if (
+      typeof full_name !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string'
+    )
+      return next({
+        log: 'Error in user.controller.userRegistration',
+        status: 400,
+        message: 'err: User data must be strings',
+      });
+  
+    const hashedPw = await bcrypt.hash(password, saltRounds);
+    const queryStr: string =
+      'INSERT IGNORE INTO users (full_name, email, password) VALUES (?, ?, ?)';
+    pool
+      .query(queryStr, [full_name, email, hashedPw])
+      .then(() => {
+        log.info(`${email} successfully registered`);
+        return res.redirect(200, '/');
+      })
+      .catch((err: ErrorEvent) => next(err));
+  }
+  catch(err){
+    next(err);
+  }
+}
 };
-
 
 
 export const verifyUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   log.info('Verifying user (middleware)');
 
-  //check if login is from Oauth2 and add to database
-  if(typeof req.body.code === 'string'){
-    if(res.locals.userInfo.type === 'google'){ //for Google
-     const {id, email, verified_email, name, picture, type} = res.locals.userInfo;
-    
-    const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-    const hashedPw = id.toString();
-    if(verified_email){
-      const addUser = await pool.query(queryStr,[name, email, hashedPw, picture,type]);
-      log.info('verified or added Oauth User');
-      const foundUser = (await findUser(email)) as RowDataPacket[][];
-      log.info('found user');
-      res.locals.user = foundUser[0][0];
-      console.log(res.locals.user);
-      return res.status(200).json(res.locals.user);
+  if(req.body.code){
+    let user;
+    if(res.locals.userInfo.type === 'google'){
+      console.log('in finduser')
+       user = await findUser(res.locals.userInfo.email) as RowDataPacket[][];
     }
     else{
-      log.error('Error in verifyUser OAUTH');
-      next(`Email not verified`);
-    } 
-  }else{// for GITHUB
-    const {login,id,url,avatar_url,type} = res.locals.userInfo;
-    const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-    let hashedPw:string;
-    //fix bcrypt bug
-    if(id) {
-       hashedPw = id.toString();
-      }else {
-        hashedPw = 'default'};
-    console.log(hashedPw);
-    const addUser = await pool.query(queryStr,[login, url, hashedPw, avatar_url,type]);
-    log.info('verified or added Oauth User');
-    const foundUser = (await findUser(url)) as RowDataPacket[][];
-    log.info('found user');
-    res.locals.user = foundUser[0][0];
-    console.log(res.locals.user);
-    return res.status(200).json(res.locals.user);
-  }
-
+      user = await findUser(res.locals.userInfo.url) as RowDataPacket[][];
+    }
+    if(user[0][0]){
+      res.locals.user = user[0][0];
+      return res.status(200).json(res.locals.user);
+    }else{
+      console.log('did not find user')
+      return next();
+    }
   }
 
   //other use regular login  methods
@@ -138,6 +153,7 @@ else{
 }
 
 };
+
 
 // Save currentSchema into database
 export const saveSchema: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {

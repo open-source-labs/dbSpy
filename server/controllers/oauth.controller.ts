@@ -44,9 +44,13 @@ type Options = {
         }
     })
     .then((data) =>{
-        
-        if(type === 'GITHUB') return data.text();
-        else return data.json();
+        if(data.status >= 200 && data.status <300 ){
+            if(type === 'GITHUB') return data.text();
+            else return data.json();
+        }else{
+            throw new Error('error exist in oauthcontroller.ts in getGoogleAccesToken middleware');
+        }
+
     })
     .then((data: string|{}) => {
         if(type === 'GITHUB') {
@@ -59,14 +63,14 @@ type Options = {
             }
         }
         res.locals.token = data;
-        next();
+        return next();
     })
     .catch((err) => {
-        next({
+        return next({
             log:`error exist in oauth.controller.ts in getGoogleAccesToken middleware:  ${err}`,
             status: 500,
             message:`error occurred ${err}`
-    })
+    });
     })
 }
 
@@ -82,20 +86,28 @@ export const getUserInfo:RequestHandler = async (req:Request, res:Response, next
                     'Authorization': `Bearer ${access_token}`
                 }
             })
-             userInfo = await data.json()
-            userInfo = {...userInfo, type:'github'}
+            if(data.status >= 200 && data.status < 300){
+                userInfo = await data.json()
+                userInfo = {...userInfo, type:'github'}
+            }else{
+                 throw new Error('error exist in oauthcontroller.ts in getUserInfo middleware');
+            }
+
         }
         //For Google Oauth
         else {
              data = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,{
                 headers:{'Authorization': `Bearer ${id_token}`}
             })
-
-             userInfo = await data.json()
-            userInfo = {...userInfo, type:'google'}
+            if(data.status >= 200 && data.status < 300){
+                userInfo = await data.json()
+                userInfo = {...userInfo, type:'google'}
+                res.locals.userInfo = userInfo;
+                return next();
+            }else{
+                throw new Error('error exist in oauthcontroller.ts in getUserInfo middleware');
+            }
         }
-         res.locals.userInfo = userInfo;
-        next();
     }
     catch(err){
         next({
