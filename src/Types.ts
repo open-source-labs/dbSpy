@@ -26,7 +26,7 @@ export interface Data{
 }
 
 export interface RefObj {
-    isDestination: boolean,
+    IsDestination: boolean,
     PrimaryKeyName: string,
     PrimaryKeyTableName: string,
     ReferencesPropertyName: string,
@@ -81,7 +81,7 @@ export interface TableSchema {
 
 export interface ReferenceType {
   [index: number]: {
-    isDestination: boolean,
+    IsDestination: boolean,
     PrimaryKeyName: string,
     PrimaryKeyTableName: string,
     ReferencesPropertyName: string,
@@ -158,7 +158,7 @@ export type Reference = {
     PrimaryKeyTableName: string;
     ReferencesPropertyName: string;
     ReferencesTableName: string;
-    isDestination: boolean;
+    IsDestination: boolean;
     constraintName: string;
   }
 };
@@ -180,7 +180,7 @@ export type InnerReference = {
   PrimaryKeyTableName: string;
   ReferencesPropertyName: string;
   ReferencesTableName: string;
-  isDestination: boolean;
+  IsDestination: boolean;
   constraintName: string;
 }
 
@@ -193,7 +193,7 @@ export interface ColumnSchema{
   IsForeignKey: boolean;
   field_name: string;
   data_type: SQLDataType;
-  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' ;
+  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' | '' ;
 };
 
 // these are for data tables ######################

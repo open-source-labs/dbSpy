@@ -50,7 +50,7 @@ const mysqlController = {
         const references: {[key: string]: string | boolean}[] = [];
         if (foreignKey){
           foreignKeyReferenced.push({
-            isDestination: true,
+            IsDestination: true,
             PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
             PrimaryKeyTableName: `${MysqlDataSource.options.database}.${foreignKey.PRIMARY_KEY_TABLE}`,
             ReferencesPropertyName: foreignKey.COLUMN_NAME,
@@ -58,7 +58,7 @@ const mysqlController = {
             constraintName: foreignKey.CONSTRAINT_NAME,
           });
           references.push({
-            isDestination: false,
+            IsDestination: false,
             PrimaryKeyName: foreignKey.PRIMARY_KEY_COLUMN,
             PrimaryKeyTableName: `${MysqlDataSource.options.database}.${foreignKey.PRIMARY_KEY_TABLE}`,
             ReferencesPropertyName: foreignKey.COLUMN_NAME,

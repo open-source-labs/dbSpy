@@ -73,9 +73,11 @@ useEffect(() :void => {
        body: JSON.stringify({code:code, state:state}),
      })
       .then((data) => {
-        if(data.status === 200) console.log(`OAuth : successfully sent authorization code back ${data.status}`);
-        else console.log(`OAUTH: error sending authorization code back ${data.status}`);
-        return data.json();
+        if(data.status >= 200 && data.status < 300){
+          console.log(`OAuth : successfully sent authorization code back ${data.status}`);
+          return data.json();
+        } 
+        else throw new Error('error in backend with oauth');
       })
       .then((res) => {
         console.log(res);

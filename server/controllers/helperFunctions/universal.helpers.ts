@@ -82,7 +82,7 @@ export const dbConnect = async (req: Request) => {
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 
-export const addNewDbRow: RequestHandler = async (req: Request, res: Response, next: NextFunction,) => {
+export const addNewDbRow: RequestHandler = async (req: Request, _res: Response, next: NextFunction,) => {
   const dbDataSource = await dbConnect(req);
   const { db_type } = req.session;
   const { newRow, tableName } = req.body;

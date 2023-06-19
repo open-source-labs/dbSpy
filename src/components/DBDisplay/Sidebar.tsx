@@ -48,46 +48,53 @@ const Sidebar = (props: any) => {
     if (values.database_link) {
       const fullLink = values.database_link;
       const splitURI = fullLink.split('/');
-      //console.log('fullLink: ', fullLink)
-      //console.log('splitURI: ', splitURI)
-      if (splitURI[0] === 'postgres:') {
-        const name_postgres = splitURI[3];
-        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_Postgres[1];
-        values.username = name_postgres.split(':')[0];
-        values.password = internalLinkArray_Postgres[0];
-        values.port = '5432';
-        values.database_name = name_postgres;
-        values.db_type = 'postgres';
-      } else if (splitURI[0] === 'mysql:') {
-        const name_mySQL = splitURI[3].split('?');
-        const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_mySQL[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_mySQL[0];
-        values.port = '3306';
-        values.database_name = name_mySQL[0];
-        values.db_type = 'mysql';
-      } else if (splitURI[0] === 'mssql:') {
-        const name_mssql = splitURI[3];
-        const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_mssql[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_mssql[0];
-        values.port = '1433';
-        values.database_name = name_mssql;
-        values.db_type = 'mssql';
-      } else if (splitURI[0] === 'oracle:') {
-        const name_oracle = splitURI[3];
-        const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_oracle[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_oracle[0];
-        values.port = '1521';
-        values.database_name = name_oracle;
-        values.db_type = 'oracle';
-        values.service_name = values.service_name;
-      }
+      switch(splitURI[0]) {
+        case ('mysql:'):
+          const mysqlName = splitURI[3].split('?');
+          const mysqlPort = splitURI[2].split(':')[2];
+          const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_mySQL[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_mySQL[0];
+          values.port = mysqlPort ? mysqlPort : '3306';
+          values.database_name = mysqlName[0];
+          values.db_type = 'mysql';
+          break;
+        case ('mssql:'):
+          const mssqlName = splitURI[3];
+          const mssqlPort = splitURI[2].split(':')[2];
+          const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_mssql[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_mssql[0];
+          values.port = mssqlPort ? mssqlPort : '1433';
+          values.database_name = mssqlName;
+          values.db_type = 'mssql';
+          break;
+        case ('oracle:'):
+          const oracleName = splitURI[3];
+          const oraclePort = splitURI[2].split(':')[2];
+          const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_oracle[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_oracle[0];
+          values.port = oraclePort ? oraclePort : '1521';
+          values.database_name = oracleName;
+          values.db_type = 'oracle';
+          values.service_name = values.service_name;
+          break;
+        default: // PostgreSQL
+          const postgresName = splitURI[3];
+          const postgresPort = splitURI[2].split(':')[2];
+          const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+          values.hostname = internalLinkArray_Postgres[1];
+          values.username = splitURI[2].split(':')[0];
+          values.password = internalLinkArray_Postgres[0];
+          values.port = postgresPort ? postgresPort : '5432';
+          values.database_name = postgresName;
+          values.db_type = 'postgres';
+          break;
+        };
     } else if (values.file_path) {
       values.db_type = 'sqlite';
       values.database_name = values.file_path;

@@ -32,7 +32,7 @@ const microsoftController = {
         const references: {[key: string]: string | boolean}[] = []
         if (foreignKey){
           foreignKeyReferenced.push({
-            isDestination: true,
+            IsDestination: true,
             PrimaryKeyName: foreignKey.primary_key_column,
             PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.column_name,
@@ -40,7 +40,7 @@ const microsoftController = {
             constraintName: foreignKey.constraint_name,
           });
           references.push({
-            isDestination: false,
+            IsDestination: false,
             PrimaryKeyName: foreignKey.primary_key_column,
             PrimaryKeyTableName: `${schemaName}.`+ foreignKey.primary_key_table,
             ReferencesPropertyName: foreignKey.column_name,

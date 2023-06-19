@@ -314,7 +314,9 @@
 <a name='L249'></a><a href='#L249'>249</a>
 <a name='L250'></a><a href='#L250'>250</a>
 <a name='L251'></a><a href='#L251'>251</a>
-<a name='L252'></a><a href='#L252'>252</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -447,15 +449,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -576,18 +580,18 @@ import useSchemaStore from '../../store/schemaStore';
 &nbsp;
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import informationIcon from '../../../images/informationSqIcon.png';
+import informationIcon from '../../../src/assets/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
 import { Edge, DataNode, DataStore, RowsOfData, Data, dbCredentials } from '@/Types';
 &nbsp;
 &nbsp;
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >DataTableNode(</span>{ data} : {data:Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
+export default function <span class="fstat-no" title="function not covered" >DataTableNode(</span>{ data }: {data: Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 &nbsp;
   
-  const newdata = <span class="cstat-no" title="statement not covered" >structuredClone(data);</span>
-  const [tableData, setTableData] = <span class="cstat-no" title="statement not covered" >useState(newdata.table)</span>
-  const { setInputModalState } = <span class="cstat-no" title="statement not covered" >useSettingsStore(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state)</span>;</span>
+  const newData = <span class="cstat-no" title="statement not covered" >structuredClone(data);</span>
+  const [tableData, setTableData] = <span class="cstat-no" title="statement not covered" >useState(newData.table);</span>
+  const { setDataInputModalState } = <span class="cstat-no" title="statement not covered" >useSettingsStore(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state)</span>;</span>
   const { dataStore, referenceStore } = <span class="cstat-no" title="statement not covered" >useDataStore(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state)</span>;</span>
   const setDataStore = <span class="cstat-no" title="statement not covered" >useDataStore(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state.setDataStore)</span>;</span>
   const setReferenceStore = <span class="cstat-no" title="statement not covered" >useDataStore(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state.setReferencesStore)</span>;</span>
@@ -661,7 +665,7 @@ export default function <span class="fstat-no" title="function not covered" >Dat
 &nbsp;
 //check if
 <span class="cstat-no" title="statement not covered" >  if (schemaName !== undefined) {</span>
-<span class="cstat-no" title="statement not covered" >    secondaryFirstRow = Object.keys(schemaStore['public.' + tableName]);</span>
+<span class="cstat-no" title="statement not covered" >    secondaryFirstRow = Object.keys(schemaStore[tableName]);</span>
   }
 &nbsp;
  //Filter out Schemas from data, not sure why schema data would show sometime.
@@ -681,7 +685,7 @@ export default function <span class="fstat-no" title="function not covered" >Dat
   }, [dataStore]);
 &nbsp;
 &nbsp;
- const deleteRow = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync (value:RowsOfData,index:number,id:number|string):Promise&lt;void&gt; =&gt;  {</span>
+ const deleteRow = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync (value: RowsOfData, index: number, id: number | string): Promise&lt;void&gt; =&gt; {</span>
 ////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
 //loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
 //   for(let col in value){
@@ -696,9 +700,10 @@ export default function <span class="fstat-no" title="function not covered" >Dat
 // }
 ////////////////////////////////////////////////////////////////////////
 const newDatastore = <span class="cstat-no" title="statement not covered" >structuredClone(dataStore);</span>
-<span class="cstat-no" title="statement not covered" >  restRowsData = restRowsData.slice(0,index).concat(restRowsData.slice(index+1,restRowsData.length));</span>
+<span class="cstat-no" title="statement not covered" >  restRowsData = restRowsData.slice(0, index).concat(restRowsData.slice(index + 1, restRowsData.length));</span>
 <span class="cstat-no" title="statement not covered" >  newDatastore[tableName] = restRowsData;</span>
-<span class="cstat-no" title="statement not covered" >   setDataStore({...newDatastore,[id]:restRowsData});</span>
+   
+&nbsp;
 <span class="cstat-no" title="statement not covered" >     await fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {</span>
        method: 'DELETE',
        headers: {
@@ -707,8 +712,9 @@ const newDatastore = <span class="cstat-no" title="statement not covered" >struc
        body: JSON.stringify({ tableName: tableName, value: value })
      })
       .then(<span class="fstat-no" title="function not covered" >(r</span>es) =&gt; {
-      //console.log("deleting row info sent")
-<span class="cstat-no" title="statement not covered" >        return res;</span>
+<span class="cstat-no" title="statement not covered" >        setDataStore({...newDatastore, [id]: restRowsData});</span>
+      
+<span class="cstat-no" title="statement not covered" >        return;</span>
       })
       .catch(<span class="fstat-no" title="function not covered" >(e</span>rr: ErrorEvent) =&gt; { <span class="cstat-no" title="statement not covered" >console.error('deleting row error', err) </span>})
   };
@@ -717,7 +723,7 @@ const newDatastore = <span class="cstat-no" title="statement not covered" >struc
   
 //cannot make handles for data table dynamic since size of each column can vary
 //TODO: is there better way to assign handle? more dynamic?
-  const tableHandles = <span class="cstat-no" title="statement not covered" >[];</span>
+  const tableHandles: JSX.Element[] = <span class="cstat-no" title="statement not covered" >[];</span>
 <span class="cstat-no" title="statement not covered" >  for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; data.edges.length; i++) {</span>
 <span class="cstat-no" title="statement not covered" >    if (data.edges[i].source === tableName) {</span>
 <span class="cstat-no" title="statement not covered" >      tableHandles.push(</span>
@@ -725,7 +731,7 @@ const newDatastore = <span class="cstat-no" title="statement not covered" >struc
           key={`${data.edges[i]}-source-${[i]}`}
           type="source"
           position={Position.Top}
-          id={data.edges[i].sourceHandle}
+          id={data.edges[i].sourceHandle as string}
           style={{
             background: 'transparent',
             left: "70%"
@@ -739,7 +745,7 @@ const newDatastore = <span class="cstat-no" title="statement not covered" >struc
           key={`${data.edges[i]}-target-${[i]}`}
           type="target"
           position={Position.Top}
-          id={data.edges[i].targetHandle}
+          id={data.edges[i].targetHandle as string}
           style={{
             background: 'transparent',
             left: "4%"
@@ -766,7 +772,7 @@ const newDatastore = <span class="cstat-no" title="statement not covered" >struc
           &lt;div className="addRowBtn ml-3 mb-1.5 flex position"&gt;
             &lt;button
               className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
-              onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setInputModalState(true, 'row', tableName)}</span>
+              onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; {<span class="cstat-no" title="statement not covered" >setDataInputModalState(true, 'row', tableName)}</span>}
             &gt;
               &lt;FaRegPlusSquare size={20} className="text-white" /&gt;
             &lt;/button&gt;
@@ -823,7 +829,7 @@ const newDatastore = <span class="cstat-no" title="statement not covered" >struc
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-17T16:05:26.256Z
+                at 2023-06-09T17:44:08.340Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

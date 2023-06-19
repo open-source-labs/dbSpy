@@ -69,23 +69,6 @@ exports[`AddReference matches the snapshot 1`] = `
     </select>
   </span>
   <br />
-  <span
-    class="form-item"
-  >
-    <label
-      class="dark:text-white"
-      for="db_type"
-    >
-      Constraint Name
-    </label>
-    <input
-      class="form-box rounded bg-[#f8f4eb] hover:shadow-sm focus:shadow-inner focus:shadow-[#eae7dd]/75 dark:hover:shadow-[#f8f4eb]"
-      id="constraintname"
-      name="constraintname"
-      type="text"
-      value="table1_fk2"
-    />
-  </span>
   <br />
   <span
     class="add-ref-btn"

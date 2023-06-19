@@ -22,11 +22,12 @@ app.use(session({
     secret: Math.floor(Math.random() * 1000000).toString(),
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false,
-         httpOnly: true,
-         path: '/',
-         sameSite: true,
-         expires: undefined
+    cookie: { 
+        secure: false,
+        httpOnly: true,
+        path: '/',
+        sameSite: true,
+        expires: undefined
         }, 
   }));
 
