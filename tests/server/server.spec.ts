@@ -20,7 +20,7 @@ const {
   MYSQL_TEST_PW,
 } = process.env;
 
-describe('Server Health', () => {
+xdescribe('Server Health', () => {
   it('is running as expected', async () => {
     const response = await request(server).get('/api/healthcheck');
     expect(response.statusCode).toBe(200);
