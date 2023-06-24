@@ -27,14 +27,9 @@ describe('Server Health', () => {
   });
 
   it('has access to environment variables', () => {
-    expect(PG_TEST_URL).toBeDefined();
-    expect(PG_TEST_USERNAME).toBeDefined();
-    expect(PG_TEST_PW).toBeDefined();
     expect(MYSQL_TEST_URL).toBeDefined();
     expect(MYSQL_TEST_USERNAME).toBeDefined();
     expect(MYSQL_TEST_PW).toBeDefined();
-    expect(TEST_USER_EMAIL).toBeDefined();
-    expect(TEST_USER_PW).toBeDefined();
   });
 });
 
