@@ -80,7 +80,7 @@ function getGoogle():void{
 const getGithub = ():void => {
   const rootUrl: string = 'https://github.com/login/oauth/authorize';
   const options: Options = {
-    redirect_uri: 'http://localhost:8080/display/',
+    redirect_uri: 'https://db-spy.io/display',
     client_id: 'd44f1421ff7324a4468d',
     state: 'randomstring',
     allow_signup: 'true',
