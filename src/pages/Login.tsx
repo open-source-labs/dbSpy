@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
 // Opens up the page that asks for authorization for server to receive access token from Google;
 import { handleOAuthLogin } from '../utils/getGoogleUrl';
-import googleImg from '../../src/assets/GoogleImage.png';
+import googleImg from '../../src/assets/googlegrey.png';
 import gitHubImage from '../../src/assets/GithubImage.png';
 
 
@@ -80,7 +80,7 @@ function getGoogle():void{
 const getGithub = ():void => {
   const rootUrl: string = 'https://github.com/login/oauth/authorize';
   const options: Options = {
-    redirect_uri: 'http://localhost:8080/display/',
+    redirect_uri: 'https://db-spy.io/display',
     client_id: 'd44f1421ff7324a4468d',
     state: 'randomstring',
     allow_signup: 'true',
@@ -101,7 +101,7 @@ const getGithub = ():void => {
   return (
     <div className="mt-10 grid place-items-center">
       <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
-        <span className="bg-clip-text text-transparent text-sky-700">Sign in</span> to
+        <span className="bg-clip-text text-sky-700">Sign in</span> to
         your account
       </h1>
       <div className="mb-3 text-sm dark:text-white">
