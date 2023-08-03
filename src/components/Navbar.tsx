@@ -23,7 +23,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between bg-sky-800 p-6">
+      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between bg-sky-800 p-6 z-20">
         <div className="navItems text-base">
           <img className="mr-5 inline-block h-[45] fill-current" src={logo} />
           <NavLink to="/" className={linkbtn}>
