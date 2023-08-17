@@ -1,5 +1,5 @@
 // React & React Router & React Query Modules;
-import React, { useRef,useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 // Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
@@ -14,7 +14,6 @@ import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
 const DBDisplay: React.FC = () => {
-
   const { setUser } = useCredentialsStore();
 
   const {
@@ -29,7 +28,7 @@ const DBDisplay: React.FC = () => {
     setDeleteTableModalState,
     currentTable,
     isSchema,
-    setTableMode
+    setTableMode,
   } = useSettingsStore((state) => state);
 
   // Input Modal state and handlers
@@ -52,48 +51,44 @@ const DBDisplay: React.FC = () => {
   const mySideBarId: any = useRef();
   const mainId: any = useRef();
 
-////////////OAUTHHHHHHHH//////////////////
+  ////////////OAUTHHHHHHHH//////////////////
 
-useEffect(() :void => {
+  useEffect((): void => {
+    const windowUrl = window.location.search;
+    const urlParams = new URLSearchParams(windowUrl);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
 
-
-  const windowUrl = window.location.search;
-  const urlParams = new URLSearchParams(windowUrl);
-  const code = urlParams.get('code');
-  const state = urlParams.get('state')
-
-
-  if(code){
-
-    fetch('/api/oauth',{
-       method:'POST',
-       headers:{
-         'Content-Type': 'Application/JSON'
-       },
-       body: JSON.stringify({code:code, state:state}),
-     })
-      .then((data) => {
-        if(data.status >= 200 && data.status < 300){
-          console.log(`OAuth : successfully sent authorization code back ${data.status}`);
-          return data.json();
-        } 
-        else throw new Error('error in backend with oauth');
+    if (code) {
+      fetch('/api/oauth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/JSON',
+        },
+        body: JSON.stringify({ code: code, state: state }),
       })
-      .then((res) => {
-        console.log(res);
-        setUser(res);
-
-      })
-      .catch((err)=> {
-        console.log({
-          log:`error Post request to backend from DBdisplay ${err}`,
-          status:err,
-          message: `error occured logging in`})
-      })
-   }
-
-},[])
-//TODO: Hide add table on dataview click
+        .then((data) => {
+          if (data.status >= 200 && data.status < 300) {
+            console.log(
+              `OAuth : successfully sent authorization code back ${data.status}`
+            );
+            return data.json();
+          } else throw new Error('error in backend with oauth');
+        })
+        .then((res) => {
+          console.log(res);
+          setUser(res);
+        })
+        .catch((err) => {
+          console.log({
+            log: `error Post request to backend from DBdisplay ${err}`,
+            status: err,
+            message: `error occured logging in`,
+          });
+        });
+    }
+  }, []);
+  //TODO: Hide add table on dataview click
   // const dataOnclick = ():void => {
   //   const addTableButtonRef = useRef(null);
   // }
@@ -140,11 +135,14 @@ useEffect(() :void => {
       </div>
 
       {/* <!-- Use any element to open the sidenav --> */}
-      <FeatureTab handleSidebar={handleSidebar} openAddTableModal={openAddTableModal} openDeleteTableModal={openDeleteTableModal} />
+      <FeatureTab
+        handleSidebar={handleSidebar}
+        openAddTableModal={openAddTableModal}
+        openDeleteTableModal={openDeleteTableModal}
+      />
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
-
         {/* <button id="showData"
           className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={setTableMode}
@@ -158,20 +156,30 @@ useEffect(() :void => {
               scratch!
             </p>
           </div>
-        ) : (
-            // if true, show schema table
-          isSchema ? (
-            <><button id="showSchema"
-              className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        ) : // if true, show schema table
+        isSchema ? (
+          <>
+            <button
+              id="showSchema"
+              className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
               onClick={setTableMode}
-            >Show data</button><Flow /></>
-          ) : (
-            //if false, show data table
-              <><button id="showSchema"
-                className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={setTableMode}
-              >Show Schema</button><DataFlow /></>
-          )
+            >
+              Show data
+            </button>
+            <Flow />
+          </>
+        ) : (
+          //if false, show data table
+          <>
+            <button
+              id="showSchema"
+              className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              onClick={setTableMode}
+            >
+              Show Schema
+            </button>
+            <DataFlow />
+          </>
         )}
       </div>
 
@@ -181,29 +189,26 @@ useEffect(() :void => {
       if isSchema === false => need modal for data */}
 
       {inputModalState.isOpen ? (
-          <InputModal
-            mode={inputModalState.mode as 'table' | 'column'}
-            tableNameProp={currentTable}
-            closeInputModal={() => setInputModalState(false)}
-          />
-        ) : null } 
-        
-      {inputDataModalState.isOpen ? (
-          <DataInputModal
-            mode={inputModalState.mode}
-            tableNameProp={currentTable}
-            closeDataInputModal={() => setDataInputModalState(false)}
-          />
-      ) : null }
+        <InputModal
+          mode={inputModalState.mode as 'table' | 'column'}
+          tableNameProp={currentTable}
+          closeInputModal={() => setInputModalState(false)}
+        />
+      ) : null}
 
-      {deleteTableModalState.isOpen ?
-          <DeleteTableModal
-          closeDeleteTableModal={() => setDeleteTableModalState(false)}
-          />
-         : null}
+      {inputDataModalState.isOpen ? (
+        <DataInputModal
+          mode={inputModalState.mode}
+          tableNameProp={currentTable}
+          closeDataInputModal={() => setDataInputModalState(false)}
+        />
+      ) : null}
+
+      {deleteTableModalState.isOpen ? (
+        <DeleteTableModal closeDeleteTableModal={() => setDeleteTableModalState(false)} />
+      ) : null}
     </div>
   );
 };
 
 export default DBDisplay;
-

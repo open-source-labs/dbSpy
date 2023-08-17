@@ -1,6 +1,12 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { getGoogleAccesToken, getUserInfo } from '../controllers/oauth.controller';
-import { retrieveSchema, saveSchema, userRegistration, verifyUser } from '../controllers/user.controller';
+import { setJwtToken } from '../controllers/jwtController';
+import {
+  retrieveSchema,
+  saveSchema,
+  userRegistration,
+  verifyUser,
+} from '../controllers/user.controller';
 import { postgresRouter } from './postgres.router';
 import { microsoftRouter } from './microsoft.router';
 import { oracleRouter } from './oracle.router';
@@ -16,27 +22,33 @@ import session from 'express-session';
 
 declare module 'express-session' {
   interface SessionData {
-    type?: string,             // NOTE ON TYPE: When trying to assign a type to 'type' on a data source in the controllers
-    host?: string,            // it can only be one string of the possible databases available to typeORM. This makes
-    hostname?: string,        // trying to dynamically type it based on data from a front end request difficult.
-    port?: string | number,   // Because of that you will see that 'type' is typed as  'db_type as "string of db type"'.
-    username?:string,         
-    password?: string,
-    database?: string,
-    database_name?: string,
-    service_name?: string,
-    synchronize?: boolean,
-    logging?: boolean,
-    db_type?: string,
-    file_path?: string,
+    type?: string; // NOTE ON TYPE: When trying to assign a type to 'type' on a data source in the controllers
+    host?: string; // it can only be one string of the possible databases available to typeORM. This makes
+    hostname?: string; // trying to dynamically type it based on data from a front end request difficult.
+    port?: string | number; // Because of that you will see that 'type' is typed as  'db_type as "string of db type"'.
+    username?: string;
+    password?: string;
+    database?: string;
+    database_name?: string;
+    service_name?: string;
+    synchronize?: boolean;
+    logging?: boolean;
+    db_type?: string;
+    file_path?: string;
   }
 }
 
 const routes = async (app: Express) => {
-
   app.get('/api/healthcheck', (_req: Request, res: Response) => res.sendStatus(200));
 
-  app.post('/api/oauth', getGoogleAccesToken, getUserInfo , verifyUser, userRegistration)
+  app.post(
+    '/api/oauth',
+    getGoogleAccesToken,
+    getUserInfo,
+    verifyUser,
+    setJwtToken,
+    userRegistration
+  );
 
   app.use('/api/sql/postgres', cookieSession, postgresRouter);
 
@@ -74,54 +86,54 @@ const routes = async (app: Express) => {
 
   // Global Error Handler
   app.use((err: ErrorEvent, _req: Request, res: Response, _next: NextFunction) => {
-
     const defaultErr: DefaultErr = {
       log: 'Express error handler caught unknown middleware error',
       status: 500,
       message: 'An error occurred. This is the global error handler.',
     };
-    
+
     const errorObj = Object.assign({}, defaultErr, err);
     log.error(errorObj.message);
     log.error(errorObj.log);
-    console.log(err)
+    console.log(err);
     return res.status(errorObj.status).json(errorObj.message);
   });
 };
 
 export const cookieSession = (req: Request, _res: Response, next: NextFunction) => {
   //app.get('/', (_req: Request, _res: Response, next: NextFunction) => {
-    const { db_type, hostname, password, port, username, database_name, service_name } = req.query;
-    try {
-      if (typeof db_type === 'string' ) {
-        req.session.db_type = db_type;
-      } 
-      if (typeof hostname === 'string') {
-        req.session.hostname = hostname;
-      } 
-      if (typeof password === 'string') {
-        req.session.password = password;
-      } 
-      if (typeof port === 'string') {
-        req.session.port = port;
-      } 
-      if (typeof username === 'string') {
-        req.session.username = username;
-      } 
-      if (typeof database_name === 'string') {
-        req.session.database_name = database_name;
-      } 
-      if (typeof service_name === 'string') {
-        req.session.service_name = service_name;
-      } 
-    console.log('Cookie has been set and is saving session data')
-    console.log('req.session: ', req.session)
+  const { db_type, hostname, password, port, username, database_name, service_name } =
+    req.query;
+  try {
+    if (typeof db_type === 'string') {
+      req.session.db_type = db_type;
+    }
+    if (typeof hostname === 'string') {
+      req.session.hostname = hostname;
+    }
+    if (typeof password === 'string') {
+      req.session.password = password;
+    }
+    if (typeof port === 'string') {
+      req.session.port = port;
+    }
+    if (typeof username === 'string') {
+      req.session.username = username;
+    }
+    if (typeof database_name === 'string') {
+      req.session.database_name = database_name;
+    }
+    if (typeof service_name === 'string') {
+      req.session.service_name = service_name;
+    }
+    console.log('Cookie has been set and is saving session data');
+    console.log('req.session: ', req.session);
   } catch (err: unknown) {
-    console.log('error was found in cookeSession: ', err)
+    console.log('error was found in cookeSession: ', err);
     return next(err);
   }
-// })
-return next();
-}
+  // })
+  return next();
+};
 
 export default routes;
