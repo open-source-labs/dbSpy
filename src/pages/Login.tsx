@@ -7,6 +7,7 @@ import useCredentialsStore from '../store/credentialsStore';
 import { handleOAuthLogin } from '../utils/getGoogleUrl';
 import googleImg from '../../src/assets/GoogleImage.png';
 import gitHubImage from '../../src/assets/GithubImage.png';
+import { set } from 'cypress/types/lodash';
 
 
 /* "Login" Component - login page for user login */
@@ -15,27 +16,24 @@ export default function Login() {
   const { setUser } = useCredentialsStore();
   const navigate = useNavigate();
   const [loginStatus, setLoginStatus] = useState(true);
+  // STATE DECLARATION (dbSpy6.0)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [inputError, setInputError] = useState(false);
   //END: STATE DECLARATION
 
   //Regular login using JWTs without OAuth
-  const handleLogin = (e: React.FormEvent): void => {
+  const handleLogin = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    const userLogin = {
-      email: e.target.email.value,
-      password: e.target.password.value,
-    };
-    axios
-      .post('/api/verifyUser', userLogin)
-      .then((res) => {
-        setUser(res.data);
-        navigate('/display');
-      })
-      .catch((err) => {
+    const userLogin = { email, password };
+    try {
+    const res = await axios.post('/api/verifyUser', userLogin, { withCredentials: true })
+    setUser(res.data);
+    navigate('/display');
+    } catch (err) {
         setLoginStatus(false);
-        for (const ele of document.getElementsByTagName('input')) {
-          ele.style.border = 'solid 1px red';
-        }
-      });
+        setInputError(true);
+    };
   };
 
 ///////////////////////////OAUTH//////////////
@@ -57,7 +55,7 @@ function getGoogle():void{
   const rootUrl:string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
   const options:Options = {
-    redirect_uri: 'https://db-spy.io/display',
+    redirect_uri: 'http://localhost:8080/display/',
     client_id: '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
     access_type: 'offline',
     response_type: 'code',
@@ -120,11 +118,13 @@ const getGithub = ():void => {
             </div>
             <div className="md:w-2/3">
               <input
-                className="err:focus:border-red-700 w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
+                className={`w-full appearance-none rounded border-2 ${ inputError ? "border-red-700" : "border-gray-200" } bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
                 type="email"
                 id="email"
                 name="email"
+                value={ email }
                 placeholder="example@email.com"
+                onChange={ e => setEmail(e.target.value) }
                 required
               ></input>
             </div>
@@ -137,11 +137,13 @@ const getGithub = ():void => {
             </div>
             <div className="md:w-2/3">
               <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
+                className={`w-full appearance-none rounded border-2 ${ inputError ? "border-red-700" : "border-gray-200" } bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
                 type="password"
                 name="password"
                 id="password"
+                value={ password }
                 placeholder="******************"
+                onChange={ e => setPassword(e.target.value) }
                 required
               ></input>
             </div>
