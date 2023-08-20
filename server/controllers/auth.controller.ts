@@ -44,19 +44,17 @@ export const handleGoogleAuth: RequestHandler = async (
     }
 
     //insert or retrieve the user
-    const foundUser: any = await findUser(decodedUser.email);
-    // // if we did not find the user, create one
-    if (!foundUser) {
-      createUser([
+    let user: any = await findUser(decodedUser.email);
+    // if we did not find the user, create one
+    if (!user) {
+      await createUser([
         decodedUser.sub,
         decodedUser.name,
         decodedUser.email,
         decodedUser.picture,
       ]);
+      user = await findUser(decodedUser.email);
     }
-    const newUser: any = await findUser(decodedUser.email);
-
-    const user: any = (await foundUser) || newUser;
 
     // create an access token to be provided on every call user makes to backend
     // expires in 1 day

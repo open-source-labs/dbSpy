@@ -38,7 +38,7 @@ declare module 'express-session' {
   }
 }
 
-const routes = async (app: Express) => {
+const routes = (app: Express) => {
   app.get('/api/healthcheck', (_req: Request, res: Response) => res.sendStatus(200));
 
   app.post(
@@ -46,8 +46,8 @@ const routes = async (app: Express) => {
     getGoogleAccesToken,
     getUserInfo,
     verifyUser,
+    userRegistration,
     setJwtToken,
-    userRegistration
   );
 
   app.use('/api/sql/postgres', cookieSession, postgresRouter);
@@ -81,7 +81,7 @@ const routes = async (app: Express) => {
   });
 
   app.get('/*', (_req, res) => {
-    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+    res.status(404).send('Not found');
   });
 
   // Global Error Handler

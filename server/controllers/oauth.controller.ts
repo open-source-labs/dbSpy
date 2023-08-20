@@ -8,7 +8,7 @@ export const getGoogleAccesToken: RequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('get google access token controller!!!!');
+  if (typeof req.session.user === 'string') return res.redirect('/api/me');
   type code = string;
   type state = string | null;
   const { code, state } = req.body;
@@ -39,7 +39,7 @@ export const getGoogleAccesToken: RequestHandler = (
 
   const qs = new URLSearchParams(options);
   const TokenUrl = `${rootUrl}?${qs.toString()}`;
-  console.log(TokenUrl);
+  console.log('TokenURL: ', TokenUrl);
   fetch(TokenUrl, {
     method: 'POST',
     headers: {

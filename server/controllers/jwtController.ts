@@ -21,11 +21,11 @@ export const setJwtToken: RequestHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { id, email }: { id: string; email: string } = res.locals.userInfo;
+    const { id, name, email }: { id: string; email: string, name: string } = res.locals.userInfo;
 
     // create an access token to be provided on every call user makes to backend
     // expires in 1 day
-    const payload = { user: id, session: 'session' };
+    const payload = { user: name, session: 'session' };
 
     // create a session
     // refresh token expires in 1 day
