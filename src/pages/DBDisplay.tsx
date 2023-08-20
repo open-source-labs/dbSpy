@@ -52,41 +52,38 @@ const DBDisplay: React.FC = () => {
   const mainId: any = useRef();
 
   ////////////OAUTHHHHHHHH//////////////////
-
   useEffect((): void => {
     const windowUrl = window.location.search;
     const urlParams = new URLSearchParams(windowUrl);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
-
-    if (code) {
-      fetch('/api/oauth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'Application/JSON',
-        },
-        body: JSON.stringify({ code: code, state: state }),
+  
+    fetch('/api/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify({ code: code, state: state }),
+    })
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          console.log(
+            `OAuth : successfully sent authorization code back ${data.status}`
+          );
+          return data.json();
+        } else throw new Error('error in backend with oauth');
       })
-        .then((data) => {
-          if (data.status >= 200 && data.status < 300) {
-            console.log(
-              `OAuth : successfully sent authorization code back ${data.status}`
-            );
-            return data.json();
-          } else throw new Error('error in backend with oauth');
-        })
-        .then((res) => {
-          console.log(res);
-          setUser(res);
-        })
-        .catch((err) => {
-          console.log({
-            log: `error Post request to backend from DBdisplay ${err}`,
-            status: err,
-            message: `error occured logging in`,
-          });
+      .then((res) => {
+        console.log('Fetch response from DBDisplay useEffect: ', res);
+        setUser(res);
+      })
+      .catch((err) => {
+        console.log({
+          log: `error Post request to backend from DBdisplay ${err}`,
+          status: err,
+          message: `error occured logging in`,
         });
-    }
+      });
   }, []);
   //TODO: Hide add table on dataview click
   // const dataOnclick = ():void => {

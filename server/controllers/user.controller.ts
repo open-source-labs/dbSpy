@@ -7,6 +7,12 @@ const saltRounds = 5;
 import dotenv from 'dotenv';
 dotenv.config();
 
+interface GlobalError {
+  log: string,
+  status: number,
+  message: string | { err: string }
+}
+
 // find user via email
 export const findUser = async (email: string) => {
   log.info('Finding user (helper function)');
@@ -54,7 +60,7 @@ export const userRegistration: RequestHandler = async (
         const user = (await findUser(email)) as RowDataPacket[][];
         res.locals.user = user[0][0];
         log.info('created Oauth user');
-        return res.status(200).json(res.locals.user);
+        return next();
       } else {
         const { login, id, url, avatar_url, type } = res.locals.userInfo;
         const queryStr =
@@ -166,7 +172,8 @@ export const verifyUser: RequestHandler = async (
       log.info('Username/Password confirmed');
       res.locals.user = foundUser[0][0];
       console.log(res.locals.user);
-      return res.status(200).json(res.locals.user);
+      // return res.status(200).json(res.locals.user);
+      return next();
     } else {
       log.error('Incorrect password');
       return res.redirect(401, '/login');
@@ -175,26 +182,42 @@ export const verifyUser: RequestHandler = async (
 };
 
 // Save currentSchema into database
-export const saveSchema: RequestHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  log.info(`Saving user's schema (middleware)`);
-  if (typeof req.body.email !== 'string' || typeof req.body.schema !== 'string')
-    return next({
-      log: 'Error in user.controller.userRegistration',
-      status: 400,
-      message: 'err: User data must be strings',
-    });
-  const updateColQuery: string = `UPDATE users SET pg_schema = '${req.body.schema}' WHERE email = '${req.body.email}';`;
-  pool
-    .query(updateColQuery)
-    .then(() => {
-      log.info('schema saved');
+export const saveSchema: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  log.info('Saving user\'s schema...');
+  console.log(req.body);
+  const { email, schema } = req.body;
+  
+  if (typeof email !== 'string' || typeof schema !== 'string') {
+    const error: GlobalError = {
+      log: 'saveSchema in user.controller received invalid input(s).',
+      status: 500,
+      message: 'err: Email and Schema must be strings'
+    }
+    return next({ error });
+  }
+
+    const updateColQuery: string = `UPDATE users SET dbs = ? WHERE email = ?;`;
+    try {
+      await pool.query(updateColQuery, [schema, email]);
+      log.info('New schema saved successfully.')
+
       return res.sendStatus(200);
-    })
-    .catch((err: ErrorEvent) => next(err));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        const error: GlobalError = {
+          log: `saveSchema in user.controller failed to save new schema, ${err.message}.`,
+          status: 500,
+          message: { err: 'Failed to save new schema.' }
+        }
+        return next({ error });
+      } else {
+        return next({
+          log: 'saveSchema in user.controller encountered an unknown error.',
+          status: 500,
+          message: 'An unknown error occurred.'
+        })
+      }
+    }
 };
 
 // Retrieve saved schema
@@ -205,10 +228,11 @@ export const retrieveSchema: RequestHandler = async (
 ) => {
   log.info(`Retrieving saved user's saved schema (middleware)`);
   try {
-    const updateColQuery: string = `SELECT pg_schema FROM users WHERE email = '${req.params.email}';`;
-    const data = (await pool.query(updateColQuery)) as RowDataPacket[][];
+    const updateColQuery: string = `SELECT dbs FROM users WHERE email = '${req.params.email}';`;
+    const data = (await pool.query(updateColQuery)) as RowDataPacket[];
+    console.log(data[0]);
     if (data[0][0]) {
-      if (data[0][0].pg_schema) return res.status(200).json(data[0][0].pg_schema);
+      if (data[0][0].dbs) return res.status(200).json(data[0][0].dbs);
     } else return res.sendStatus(204);
   } catch (err: unknown) {
     return next(err);
