@@ -15,15 +15,22 @@ const client_url =
     ? process.env.DEV_CLIENT_ENDPOINT
     : process.env.CLIENT_ENDPOINT;
 
-export const handleGoogleAuth: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const handleGoogleAuth: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   // get code from qs
   const code = req.query.code as string;
 
   try {
     // get the id and access token w/ the code
-    const { id_token, access_token }: {id_token: string, access_token: string} = await getGoogleAuthToken({ code });
+    const { id_token, access_token }: { id_token: string; access_token: string } =
+      await getGoogleAuthToken({ code });
 
-    console.log(`We also have the access token: ${access_token}, but it is not used for anything?`)
+    console.log(
+      `We also have the access token: ${access_token}, but it is not used for anything?`
+    );
 
     //get user with tokens
     const decodedUser = jwt.decode(id_token) as JwtPayload;
@@ -31,8 +38,8 @@ export const handleGoogleAuth: RequestHandler = async (req: Request, res: Respon
     if (!decodedUser.email_verified) {
       req.session.destroy((err: ErrorEvent) => {
         // res.redirect('localhost:8080/')
-          res.status(403).send('Unable to authorize, google account is not verified.');
-          return next(err)
+        res.status(403).send('Unable to authorize, google account is not verified.');
+        return next(err);
       });
     }
 
