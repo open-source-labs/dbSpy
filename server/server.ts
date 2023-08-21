@@ -1,16 +1,17 @@
-import express from 'express';
+import { config } from 'dotenv';
+import express, { Express } from 'express';
 import log from './logger/index';
-import dotenv from 'dotenv';
 import routes from './routes';
 import path from 'path';
 import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-dotenv.config();
 
-const port = process.env.PORT || 3000;
+config();
 
-const app = express();
+const port: number = Number(process.env.PORT) || 3000;
+
+const app: Express = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,7 +21,7 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 app.use(
   session({
-    secret: Math.floor(Math.random() * 1000000).toString(),
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -28,7 +29,7 @@ app.use(
       httpOnly: true,
       path: '/',
       sameSite: true,
-      expires: undefined,
+      maxAge: 24 * 60 * 60 * 1000
     },
   })
 );
