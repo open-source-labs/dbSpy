@@ -1,4 +1,4 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+ import express, { Express, Request, Response, NextFunction } from 'express';
 import { getGoogleAccesToken, getUserInfo } from '../controllers/oauth.controller';
 import { setJwtToken } from '../controllers/jwtController';
 import {
@@ -12,13 +12,13 @@ import { microsoftRouter } from './microsoft.router';
 import { oracleRouter } from './oracle.router';
 import { mysqlRouter } from './mysql.router';
 import { sqliteRouter } from './sqlite.router';
-import dotenv from 'dotenv';
-dotenv.config();
+import { config } from 'dotenv';
 import { getCurrentUser } from '../service/session.service';
-import path from 'path';
 import log from '../logger/index';
 import type { DefaultErr } from '../../src/Types';
 import session from 'express-session';
+
+config();
 
 declare module 'express-session' {
   interface SessionData {
@@ -60,13 +60,20 @@ const routes = (app: Express) => {
 
   app.use('/api/sql/sqlite', cookieSession, sqliteRouter);
 
-  app.post('/api/saveSchema', saveSchema);
+  app.post('/api/saveSchema', saveSchema, (_req: Request, res: Response) => {
+    return res.sendStatus(200);
+  });
 
+  // Status code being handled in middleware
   app.get('/api/retrieveSchema/:email', retrieveSchema);
 
-  app.post('/api/userRegistration', userRegistration);
+  app.post('/api/userRegistration', userRegistration, (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.user);
+  });
 
-  app.post('/api/verifyUser', verifyUser);
+  app.post('/api/verifyUser', verifyUser, (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.verified);
+  });
 
   app.use('/api/me', getCurrentUser);
 
