@@ -18,7 +18,7 @@ export default function Signup() {
     const password = formValues[3].value;
     await axios
       .post('/api/userRegistration', { full_name, email, password })
-      .then(() => navigate('/login'))
+      .then(() => navigate('/'))
       .catch((err) => {
         const emailInput = document.querySelector('#email') as HTMLElement;
         setEmailErr(true);
@@ -29,7 +29,7 @@ export default function Signup() {
   return (
     <div className="mt-10 grid place-items-center dark:text-white">
       <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
-        <span className="bg-clip-text text-transparent text-sky-700">Sign up</span> with
+        <span className="bg-clip-text text-sky-700 text-transparent">Sign up</span> with
         dbSpy
       </h1>
       <div className="mb-3 text-sm">
@@ -49,7 +49,7 @@ export default function Signup() {
             <div className="md:w-2/3">
               <input
                 className={
-                  'w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:bg-white focus:outline-none ' +
+                  'w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:bg-white focus:outline-none ' +
                   (!emailErr ? 'focus:border-indigo-500' : 'focus:border-red-700')
                 }
                 type="email"
@@ -73,7 +73,7 @@ export default function Signup() {
             </div>
             <div className="md:w-2/3">
               <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
+                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
                 type="text"
                 id="firstName"
                 placeholder="Jane"
@@ -90,7 +90,7 @@ export default function Signup() {
             </div>
             <div className="md:w-2/3">
               <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
+                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
                 type="text"
                 id="lastName"
                 placeholder="Doe"
@@ -107,7 +107,7 @@ export default function Signup() {
             </div>
             <div className="md:w-2/3">
               <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
+                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
                 type="password"
                 name="password"
                 id="password"
@@ -118,7 +118,7 @@ export default function Signup() {
           </div>
           <div className="justify-center md:flex">
             <button
-              className="focus:shadow-outline rounded bg-sky-700 py-2 px-4 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
+              className="focus:shadow-outline rounded bg-sky-700 px-4 py-2 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
               type="submit"
             >
               Sign Up

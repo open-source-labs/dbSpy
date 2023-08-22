@@ -21,7 +21,9 @@ export const setJwtToken: RequestHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { id, name, email }: { id: string; email: string, name: string } = res.locals.userInfo;
+    // to work with all authentication methods, res.locals.userInfo.name = 'full name'
+    const { name, email }: { id: string; email: string; name: string } =
+      res.locals.userInfo;
 
     // create an access token to be provided on every call user makes to backend
     // expires in 1 day
@@ -37,26 +39,9 @@ export const setJwtToken: RequestHandler = async (
     req.session.user = accessToken;
     console.log(accessToken, 'access token');
 
-    return res
-      .cookie('access_token', accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-      })
-      .status(200)
-      .json(res.locals.user);
-  } catch (error: unknown) {
-    log.info(error, 'User authorization failed');
-    return res.redirect(301, `${client_url}/login`);
-  }
-};
+    console.log(res.locals.user, 'res.locals.user');
 
-export const verifyJwtToken: RequestHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { id, email }: { id: string; email: string } = res.locals.userInfo;
+    return next();
   } catch (error: unknown) {
     log.info(error, 'User authorization failed');
     return res.redirect(301, `${client_url}/login`);

@@ -57,7 +57,7 @@ const DBDisplay: React.FC = () => {
     const urlParams = new URLSearchParams(windowUrl);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
-  
+
     fetch('/api/oauth', {
       method: 'POST',
       headers: {
@@ -67,9 +67,7 @@ const DBDisplay: React.FC = () => {
     })
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
-          console.log(
-            `OAuth : successfully sent authorization code back ${data.status}`
-          );
+          console.log(`OAuth : successfully sent authorization code back ${data.status}`);
           return data.json();
         } else throw new Error('error in backend with oauth');
       })
