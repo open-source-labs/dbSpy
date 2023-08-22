@@ -58,6 +58,9 @@ const DBDisplay: React.FC = () => {
     const code = urlParams.get('code');
     const state = urlParams.get('state');
 
+    const newURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+    window.history.replaceState({}, document.title, newURL);
+
     fetch('/api/oauth', {
       method: 'POST',
       headers: {

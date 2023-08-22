@@ -29,8 +29,7 @@ export default function Signup() {
   return (
     <div className="mt-10 grid place-items-center dark:text-white">
       <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
-        <span className="bg-clip-text text-sky-700 text-transparent">Sign up</span> with
-        dbSpy
+        Sign up with dbSpy
       </h1>
       <div className="mb-3 text-sm">
         Already have an account? Login{' '}
