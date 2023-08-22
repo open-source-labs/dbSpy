@@ -1,5 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
-import { getGoogleAccesToken, getUserInfo } from '../controllers/oauth.controller';
+import { getAccesToken, getUserInfo } from '../controllers/oauth.controller';
 import { setJwtToken } from '../controllers/jwtController';
 import {
   retrieveSchema,
@@ -43,7 +43,7 @@ const routes = (app: Express) => {
 
   app.post(
     '/api/oauth',
-    getGoogleAccesToken,
+    getAccesToken,
     getUserInfo,
     verifyUser,
     userRegistration,

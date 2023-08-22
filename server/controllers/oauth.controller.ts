@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import log from '../logger/index';
 dotenv.config();
 
-export const getGoogleAccesToken: RequestHandler = (
+export const getAccesToken: RequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction
