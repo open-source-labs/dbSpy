@@ -8,6 +8,7 @@ export const getGoogleAccesToken: RequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log('made it to getGoogleAccessToken!!!!!');
   if (typeof req.session.user === 'string') return res.redirect('/api/me');
   type code = string;
   type state = string | null;
@@ -20,6 +21,7 @@ export const getGoogleAccesToken: RequestHandler = (
     rootUrl = 'https://github.com/login/oauth/access_token';
     type = 'GITHUB';
   }
+  console.log(type, 'type');
 
   type Options = {
     code: string;

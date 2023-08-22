@@ -9,7 +9,6 @@ import googleImg from '../../src/assets/GoogleImage.png';
 import gitHubImage from '../../src/assets/GithubImage.png';
 import { set } from 'cypress/types/lodash';
 
-
 /* "Login" Component - login page for user login */
 export default function Login() {
   //STATE DECLARATION (dbSpy3.0)
@@ -27,13 +26,15 @@ export default function Login() {
     e.preventDefault();
     const userLogin = { email, password };
     try {
-    const res = await axios.post('/api/verifyUser', userLogin, { withCredentials: true })
-    setUser(res.data);
-    navigate('/display');
+      const res = await axios.post('/api/verifyUser', userLogin, {
+        withCredentials: true,
+      });
+      setUser(res.data);
+      navigate('/display');
     } catch (err) {
-        setLoginStatus(false);
-        setInputError(true);
-    };
+      setLoginStatus(false);
+      setInputError(true);
+    }
   };
 
   ///////////////////////////OAUTH//////////////
@@ -49,30 +50,28 @@ export default function Login() {
     allow_signup?: string;
   };
 
+  function getGoogle(): void {
+    const rootUrl: string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
-function getGoogle():void{
+    const options: Options = {
+      redirect_uri: 'http://localhost:8080/display/',
+      client_id:
+        '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
+      access_type: 'offline',
+      response_type: 'code',
+      prompt: 'consent',
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email',
+      ].join(' '),
+    };
+    const qs = new URLSearchParams(options);
+    const url = `${rootUrl}?${qs.toString()}`;
 
-  const rootUrl:string = 'https://accounts.google.com/o/oauth2/v2/auth';
-
-  const options:Options = {
-    redirect_uri: 'http://localhost:8080/display/',
-    client_id: '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
-    access_type: 'offline',
-    response_type: 'code',
-    prompt: 'consent',
-    scope: [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ].join(' '),
-  };
-  const qs = new URLSearchParams(options);
-  const url = `${rootUrl}?${qs.toString()}`;
-
-  const strWindowFeatures =
-    'toolbar=no, menubar=no, width=600, height=700, top=100, left=800';
-  window.open(url, '_self', strWindowFeatures);
-
-}
+    const strWindowFeatures =
+      'toolbar=no, menubar=no, width=600, height=700, top=100, left=800';
+    window.open(url, '_self', strWindowFeatures);
+  }
 
   const getGithub = (): void => {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
@@ -96,7 +95,7 @@ function getGoogle():void{
   return (
     <div className="mt-10 grid place-items-center">
       <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
-          Sign into your account
+        Sign into your account
       </h1>
       <div className="mb-3 text-sm dark:text-white">
         Don't have an account yet?{' '}
@@ -114,13 +113,15 @@ function getGoogle():void{
             </div>
             <div className="md:w-2/3">
               <input
-                className={`w-full appearance-none rounded border-2 ${ inputError ? "border-red-700" : "border-gray-200" } bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
+                className={`w-full appearance-none rounded border-2 ${
+                  inputError ? 'border-red-700' : 'border-gray-200'
+                } bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
                 type="email"
                 id="email"
                 name="email"
-                value={ email }
+                value={email}
                 placeholder="example@email.com"
-                onChange={ e => setEmail(e.target.value) }
+                onChange={(e) => setEmail(e.target.value)}
                 required
               ></input>
             </div>
@@ -133,13 +134,15 @@ function getGoogle():void{
             </div>
             <div className="md:w-2/3">
               <input
-                className={`w-full appearance-none rounded border-2 ${ inputError ? "border-red-700" : "border-gray-200" } bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
+                className={`w-full appearance-none rounded border-2 ${
+                  inputError ? 'border-red-700' : 'border-gray-200'
+                } bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
                 type="password"
                 name="password"
                 id="password"
-                value={ password }
+                value={password}
                 placeholder="******************"
-                onChange={ e => setPassword(e.target.value) }
+                onChange={(e) => setPassword(e.target.value)}
                 required
               ></input>
             </div>

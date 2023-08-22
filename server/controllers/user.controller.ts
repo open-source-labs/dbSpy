@@ -8,9 +8,9 @@ import { config } from 'dotenv';
 config();
 
 interface GlobalError {
-  log: string,
-  status: number,
-  message: string | { err: string }
+  log: string;
+  status: number;
+  message: string | { err: string };
 }
 
 // find user via email
@@ -26,12 +26,12 @@ export const createUser = async (user: string[]) => {
   const queryStr: string =
     'INSERT IGNORE INTO users (sub, full_name, email, picture) VALUES (?, ?, ?, ?)';
   try {
-    await pool.query(queryStr, user)
+    await pool.query(queryStr, user);
     log.info('[userCtrl - createUser] Successfully created user');
   } catch (err: unknown) {
-      log.error('[userCtrl - createUser] Unable to create new user: ' + err);
-      throw new Error('[userCtrl - createUser] Unable to create new user in DB.');
-  };
+    log.error('[userCtrl - createUser] Unable to create new user: ' + err);
+    throw new Error('[userCtrl - createUser] Unable to create new user in DB.');
+  }
 };
 
 // Register w/o OAuth
@@ -81,14 +81,16 @@ export const userRegistration: RequestHandler = async (
     } catch (err: unknown) {
       if (err instanceof Error) {
         const error: GlobalError = {
-          log: '[userCtrl - userReg] There was a problem registering with OAuth: ' + err.message,
+          log:
+            '[userCtrl - userReg] There was a problem registering with OAuth: ' +
+            err.message,
           status: 500,
           message: 'Failed to register user with OAuth',
         };
 
         return next(error);
       } else {
-        return next(err)
+        return next(err);
       }
     }
   }
@@ -97,7 +99,9 @@ export const userRegistration: RequestHandler = async (
     try {
       const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
       if (foundUser[0]?.length) {
-        return res.status(403).json({ err: 'Registration failed. Please check your information and try again.' });
+        return res.status(403).json({
+          err: 'Registration failed. Please check your information and try again.',
+        });
       }
 
       const { full_name, email, password } = req.body;
@@ -109,9 +113,9 @@ export const userRegistration: RequestHandler = async (
         const error: GlobalError = {
           log: '[userCtrl - userReg] Invalid input types for user registration',
           status: 400,
-          message: 'User data must be strings'
-        }
-        
+          message: 'User data must be strings',
+        };
+
         return next(error);
       }
 
@@ -122,16 +126,20 @@ export const userRegistration: RequestHandler = async (
         .query(queryStr, [full_name, email, hashedPw])
         .then(() => {
           log.info(`${email} successfully registered`);
-          return res.redirect(200, '/');
+          res.locals.userInfo = { name: full_name, email: email };
+          res.locals.user = full_name;
+          return next();
         })
         .catch((err: ErrorEvent) => next(err));
     } catch (err: unknown) {
       if (err instanceof Error) {
         const error: GlobalError = {
-          log: '[userCtrl - userReg] There was a problem registering from input: ' + err.message,
+          log:
+            '[userCtrl - userReg] There was a problem registering from input: ' +
+            err.message,
           status: 500,
           message: 'Failed to register user from input',
-        }
+        };
         return next(error);
       } else {
         return next(err);
@@ -148,9 +156,9 @@ export const verifyUser: RequestHandler = async (
   log.info('[userCtrl - verifyUser] Verifying user information...');
 
   try {
-  // OAuth login methods
-  if (req.body.code) {
-    let user;
+    // OAuth login methods
+    if (req.body.code) {
+      let user;
       if (res.locals.userInfo.type === 'google') {
         const { email } = res.locals.userInfo;
         user = (await findUser(email)) as RowDataPacket[][];
@@ -158,21 +166,20 @@ export const verifyUser: RequestHandler = async (
         const { url } = res.locals.userInfo;
         user = (await findUser(url)) as RowDataPacket[][];
       }
-  
+
       if (!user[0][0]) {
         return res.status(401).json({ error: 'Unable to verify user' });
       }
 
-      log.info('[userCtrl - verifyUser] OAuth user verified')
+      log.info('[userCtrl - verifyUser] OAuth user verified');
       res.locals.verified = user[0][0];
-
       return next();
     } else {
       // Regular login method
       if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
         return res.status(401).json({ error: 'User data must be strings' });
       }
-      
+
       // foundUser structure: [[RowDataPackets], [metadata]]
       const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
       // verify user exists in db
@@ -186,11 +193,15 @@ export const verifyUser: RequestHandler = async (
       if (match) {
         log.info('[userCtrl - verifyUser] Username/Password confirmed');
         res.locals.verified = foundUser[0][0];
+        res.locals.userInfo = {
+          name: foundUser[0][0].full_name,
+          email: foundUser[0][0].email,
+        };
 
         return next();
       } else {
-        log.error('[userCtrl - verifyUser] Username/Password do not match')
-        
+        log.error('[userCtrl - verifyUser] Username/Password do not match');
+
         return res.redirect(401, '/login');
       }
     }
@@ -200,42 +211,46 @@ export const verifyUser: RequestHandler = async (
         log: '[userCtrl - verifyUser] There was a problem verifying user: ' + err.message,
         status: 500,
         message: 'Unable to verify user',
-      }
+      };
       return next(error);
     } else {
       return next(err);
     }
   }
-  };
+};
 
 // Save currentSchema into database
-export const saveSchema: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  log.info('[userCtrl - saveSchema] Saving user\'s schema...');
+export const saveSchema: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  log.info("[userCtrl - saveSchema] Saving user's schema...");
   const { email, schema } = req.body;
-  
+
   if (typeof email !== 'string' || typeof schema !== 'string') {
     return res.status(400).json({ error: 'User data must be strings' });
   }
 
-    const updateColQuery: string = `UPDATE users SET dbs = ? WHERE email = ?;`;
-    try {
-      await pool.query(updateColQuery, [schema, email]);
-      log.info('[userCtrl - saveSchema] New schema saved successfully')
+  const updateColQuery: string = `UPDATE users SET dbs = ? WHERE email = ?;`;
+  try {
+    await pool.query(updateColQuery, [schema, email]);
+    log.info('[userCtrl - saveSchema] New schema saved successfully');
 
-      return next();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        const error: GlobalError = {
-          log: '[userCtrl - saveSchema] Failed to save new schema: ' + err.message,
-          status: 500,
-          message: 'Failed to save new schema'
-        }
+    return next();
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      const error: GlobalError = {
+        log: '[userCtrl - saveSchema] Failed to save new schema: ' + err.message,
+        status: 500,
+        message: 'Failed to save new schema',
+      };
 
-        return next(error);
-      } else {
-        return next(err)
-      }
+      return next(error);
+    } else {
+      return next(err);
     }
+  }
 };
 
 // Retrieve saved schema
@@ -244,7 +259,7 @@ export const retrieveSchema: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  log.info('[userCtrl - retrvSchema] Retrieving user\'s saved schema');
+  log.info("[userCtrl - retrvSchema] Retrieving user's saved schema");
 
   try {
     const { email } = req.params;
@@ -263,12 +278,12 @@ export const retrieveSchema: RequestHandler = async (
       const error: GlobalError = {
         log: '[userCtrl - retrvSchema] Failed to retrieve saved schema: ' + err.message,
         status: 500,
-        message: 'Failed to retrieve saved schema'
-      }
+        message: 'Failed to retrieve saved schema',
+      };
 
       return next(error);
     } else {
-      return next(err)
+      return next(err);
     }
   }
 };

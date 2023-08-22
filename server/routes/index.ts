@@ -1,4 +1,4 @@
- import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import { getGoogleAccesToken, getUserInfo } from '../controllers/oauth.controller';
 import { setJwtToken } from '../controllers/jwtController';
 import {
@@ -48,7 +48,35 @@ const routes = (app: Express) => {
     verifyUser,
     userRegistration,
     setJwtToken,
+    (_req: Request, res: Response) => {
+      return res.status(200).json(res.locals.user);
+    }
   );
+
+  app.post(
+    '/api/userRegistration',
+    userRegistration,
+    setJwtToken,
+    (_req: Request, res: Response) => {
+      return res.status(200).json(res.locals.user);
+    }
+  );
+
+  app.post('/api/verifyUser', verifyUser, setJwtToken, (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.verified);
+  });
+
+  app.use('/api/me', getCurrentUser);
+
+  app.use('/api/logout', (req, res) => {
+    req.session.destroy((err: ErrorEvent) => {
+      if (err) log.info('Error destroying session:', err);
+      else {
+        log.info('Successfully destroyed session');
+        return res.redirect(`/`);
+      }
+    });
+  });
 
   app.use('/api/sql/postgres', cookieSession, postgresRouter);
 
@@ -66,26 +94,6 @@ const routes = (app: Express) => {
 
   // Status code being handled in middleware
   app.get('/api/retrieveSchema/:email', retrieveSchema);
-
-  app.post('/api/userRegistration', userRegistration, (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals.user);
-  });
-
-  app.post('/api/verifyUser', verifyUser, (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals.verified);
-  });
-
-  app.use('/api/me', getCurrentUser);
-
-  app.use('/api/logout', (req, res) => {
-    req.session.destroy((err: ErrorEvent) => {
-      if (err) log.info('Error destroying session:', err);
-      else {
-        log.info('Successfully destroyed session');
-        return res.redirect(`/`);
-      }
-    });
-  });
 
   app.get('/*', (_req, res) => {
     res.status(404).send('Not found');
