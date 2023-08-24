@@ -226,7 +226,8 @@ export const saveSchema: RequestHandler = async (
   next: NextFunction
 ) => {
   log.info("[userCtrl - saveSchema] Saving user's schema...");
-  const { email, schema } = req.body;
+  const { schema } = req.body;
+  const { email } = req.session;
 
   if (typeof email !== 'string' || typeof schema !== 'string') {
     return res.status(400).json({ error: 'User data must be strings' });
@@ -262,7 +263,7 @@ export const retrieveSchema: RequestHandler = async (
   log.info("[userCtrl - retrvSchema] Retrieving user's saved schema");
 
   try {
-    const { email } = req.params;
+    const { email } = req.session;
     const updateColQuery: string = `SELECT dbs FROM users WHERE email = ?;`;
     const data = (await pool.query(updateColQuery, [email])) as RowDataPacket[];
 

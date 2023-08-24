@@ -93,7 +93,7 @@ const routes = (app: Express) => {
   });
 
   // Status code being handled in middleware
-  app.get('/api/retrieveSchema/:email', retrieveSchema);
+  app.get('/api/retrieveSchema', retrieveSchema);
 
   app.get('/*', (_req, res) => {
     res.status(404).send('Not found');

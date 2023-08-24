@@ -7,6 +7,7 @@ import { createUser, findUser } from './user.controller';
 declare module 'express-session' {
   interface SessionData {
     user: string;
+    email: string;
   }
 }
 
@@ -21,9 +22,7 @@ export const setJwtToken: RequestHandler = async (
   next: NextFunction
 ) => {
   try {
-    // to work with all authentication methods, res.locals.userInfo.name = 'full name'
-    const { name, email }: { id: string; email: string; name: string } =
-      res.locals.userInfo;
+    const { name, email }: { name: string; email: string } = res.locals.userInfo;
 
     // create an access token to be provided on every call user makes to backend
     // expires in 1 day
@@ -37,9 +36,7 @@ export const setJwtToken: RequestHandler = async (
     });
 
     req.session.user = accessToken;
-    console.log(accessToken, 'access token');
-
-    console.log(res.locals.user, 'res.locals.user');
+    req.session.email = email;
 
     return next();
   } catch (error: unknown) {
