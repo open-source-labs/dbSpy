@@ -22,7 +22,11 @@ export const setJwtToken: RequestHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { name, email }: { name: string; email: string } = res.locals.userInfo;
+    let { name, email, login }: { name: string; email: string; login: string } =
+      res.locals.userInfo;
+
+    if (!name) name = login;
+    if (!email) email = `https://api.github.com/users/${name}`;
 
     // create an access token to be provided on every call user makes to backend
     // expires in 1 day
