@@ -120,6 +120,7 @@ export const getUserInfo: RequestHandler = async (
         throw new Error('error exist in oauthcontroller.ts in getUserInfo middleware');
       }
     }
+
     res.locals.userInfo = userInfo;
     console.log(userInfo, 'this is the user info!!!!');
     return next();

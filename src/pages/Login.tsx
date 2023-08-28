@@ -73,11 +73,12 @@ export default function Login() {
     window.open(url, '_self', strWindowFeatures);
   }
 
+  // old client id: d44f1421ff7324a4468d
   const getGithub = (): void => {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
     const options: Options = {
       redirect_uri: 'http://localhost:8080/display/',
-      client_id: 'd44f1421ff7324a4468d',
+      client_id: '18d4ecdcc6ed1cb25240',
       state: 'randomstring',
       allow_signup: 'true',
       scope: ['read:user', 'user:email'].join(' '),
