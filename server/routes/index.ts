@@ -41,11 +41,11 @@ declare module 'express-session' {
 const routes = (app: Express) => {
   app.get('/api/healthcheck', (_req: Request, res: Response) => res.sendStatus(200));
 
+  // OAuth (Google/GitHub) verifies users, verifyUser was redundant check (removed from route).
   app.post(
     '/api/oauth',
     getAccesToken,
     getUserInfo,
-    verifyUser,
     userRegistration,
     setJwtToken,
     (_req: Request, res: Response) => {
