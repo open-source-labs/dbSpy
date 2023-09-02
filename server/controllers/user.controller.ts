@@ -156,55 +156,47 @@ export const verifyUser: RequestHandler = async (
   log.info('[userCtrl - verifyUser] Verifying user information...');
 
   try {
-    // OAuth login methods
-    if (req.body.code) {
-      let user;
-      if (res.locals.userInfo.type === 'google') {
-        const { email } = res.locals.userInfo;
-        user = (await findUser(email)) as RowDataPacket[][];
-      } else {
-        const { url } = res.locals.userInfo;
-        user = (await findUser(url)) as RowDataPacket[][];
-      }
+    // Sanitze user inputs to prevent SQL injection attacks
+    const { email } = req.body;
+    const { password } = req.body;
+    // Data received from request should contain email and password as string types
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(401).json({ error: 'User data must be strings' });
+    }
 
-      if (!user[0][0]) {
-        return res.status(401).json({ error: 'Unable to verify user' });
-      }
+    /**
+     * Search database for user with matching email
+     * foundUser structure: [[RowDataPackets], [metadata]]
+     */
+    const foundUser = (await findUser(email)) as RowDataPacket[][];
 
-      log.info('[userCtrl - verifyUser] OAuth user verified');
-      res.locals.verified = user[0][0];
+    /**
+     * Exits middleware and returns an error if user provided email does not exist
+     * in the database.
+     */
+    if (!foundUser[0][0]) {
+      log.error('[userCtrl - verifyUser] Email address not found');
+      return res.status(401).json({ error: 'Unable to verify user' });
+    }
+
+    // Bcrypt compares hashed password stored in database with user provided password.
+    const hashedPW: string = foundUser[0][0]?.password;
+    const match: boolean = await bcrypt.compare(password, hashedPW);
+
+    if (match) {
+      log.info('[userCtrl - verifyUser] Username/Password confirmed');
+      res.locals.verified = foundUser[0][0];
+      res.locals.userInfo = {
+        name: foundUser[0][0].full_name,
+        email: foundUser[0][0].email,
+      };
+
       return next();
-    } else {
-      // Regular login method
-      if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
-        return res.status(401).json({ error: 'User data must be strings' });
-      }
-
-      // foundUser structure: [[RowDataPackets], [metadata]]
-      const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
-      // verify user exists in db
-      if (!foundUser[0][0]) {
-        log.error('[userCtrl - verifyUser] Email address not found');
-        return res.status(401).json({ error: 'Unable to verify user' });
-      }
-      // check for pw match
-      const hashedPW: string = foundUser[0][0]?.password;
-      const match: boolean = await bcrypt.compare(req.body.password, hashedPW);
-      if (match) {
-        log.info('[userCtrl - verifyUser] Username/Password confirmed');
-        res.locals.verified = foundUser[0][0];
-        res.locals.userInfo = {
-          name: foundUser[0][0].full_name,
-          email: foundUser[0][0].email,
-        };
-
-        return next();
       } else {
         log.error('[userCtrl - verifyUser] Username/Password do not match');
 
         return res.redirect(401, '/login');
       }
-    }
   } catch (err: unknown) {
     if (err instanceof Error) {
       const error: GlobalError = {
