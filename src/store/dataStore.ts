@@ -3,7 +3,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { DataStore } from '@/Types';
 
 
-type DataObj = {
+export type DataObj = {
   [key: string]: string | number | boolean | null
 }
 
@@ -43,7 +43,7 @@ const useDataStore = create<DataState>()(
         setDataStore: (dataInfo) =>
           set((state) => ({ ...state, dataStore: dataInfo })),
         setReferencesStore: (dataInfo) =>
-          set((state) => ({ ...state, dataStore: dataInfo })),
+          set((state) => ({ ...state, referenceStore: dataInfo })),
         deleteTableData: (tableName) => set((state) => {
           const newState = { ...state };
           delete newState.dataStore[tableName];
