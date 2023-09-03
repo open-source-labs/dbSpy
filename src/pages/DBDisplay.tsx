@@ -18,6 +18,7 @@ const DBDisplay: React.FC = () => {
 
   const {
     sidebarDisplayState,
+    setSidebarDisplayState,
     welcome,
     editRefMode,
     inputModalState,
@@ -86,32 +87,34 @@ const DBDisplay: React.FC = () => {
         });
       });
   }, []);
+
   //TODO: Hide add table on dataview click
   // const dataOnclick = ():void => {
   //   const addTableButtonRef = useRef(null);
   // }
 
-  //////////////OAUTHHHHHHH//////////////
-  /* Set the width of the side navigation to 250px and add a black background color to body */
+  /* Set the width of the side navigation to 400px and add a right margin of 400px */
   const openNav = () => {
     mySideBarId.current.style.width = '400px';
     mainId.current.style.marginRight = '400px';
   };
 
-  /* Set the width of the side navigation to 0, and the background color of body to white */
+  /* Set the width of the side navigation to 0, and a right margin of 50px */
   const closeNav = () => {
     mySideBarId.current.style.width = '0';
     mainId.current.style.marginRight = '50px';
   };
 
-  /* Sidebar handler*/
+  // dbSpy 6.0: Update handleSidebar to allow opening/closing sidebar on Connect Database click
   function handleSidebar() {
-    if (sidebarDisplayState) closeNav();
-    else openNav();
+    if (sidebarDisplayState) {
+      setSidebarDisplayState();
+      closeNav();
+    } else {
+      setSidebarDisplayState();
+      openNav();
+    }
   }
-
-  //console.log('isSchema???', isSchema)
-  //console.log('currentTable???', currentTable)
 
   return (
     <div
@@ -141,10 +144,6 @@ const DBDisplay: React.FC = () => {
 
       {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
       <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
-        {/* <button id="showData"
-          className="bg-sky-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={setTableMode}
-        >Data</button> */}
 
         {welcome ? (
           <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
@@ -154,8 +153,9 @@ const DBDisplay: React.FC = () => {
               scratch!
             </p>
           </div>
-        ) : // if true, show schema table
+        ) : // If welcome state is false, check isSchema condition
         isSchema ? (
+          // If isSchema state is true, render Show Data button and Flow component
           <>
             <button
               id="showSchema"
@@ -167,7 +167,7 @@ const DBDisplay: React.FC = () => {
             <Flow />
           </>
         ) : (
-          //if false, show data table
+          // If isSchema state is false, render Show Schema button and DataFlow component
           <>
             <button
               id="showSchema"
@@ -180,11 +180,6 @@ const DBDisplay: React.FC = () => {
           </>
         )}
       </div>
-
-      {/* MODALS */}
-
-      {/* if isSchema === true => need modal for schema
-      if isSchema === false => need modal for data */}
 
       {inputModalState.isOpen ? (
         <InputModal

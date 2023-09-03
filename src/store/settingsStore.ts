@@ -12,6 +12,9 @@ let settingsStore = (
     set((state: { darkMode: any; }) => ({ ...state, darkMode: !state.darkMode })),
 
   sidebarDisplayState: false,
+  // dbSpy 6.0: Include setter for sidebarDisplayState to open/close sidebar from Connect Database button
+  setSidebarDisplayState: () => 
+    set((state: { sidebarDisplayState: any; }) => ({ ...state, sidebarDisplayState: !state.sidebarDisplayState })),
 
   welcome: true,
   setWelcome: (input: any) => set((state: any) => ({ ...state, welcome: input })),
