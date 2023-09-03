@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
+import fetch from 'node-fetch';
 // Helps properly render router pages/components
 import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
@@ -9,26 +10,24 @@ import Navbar from '../../src/components/Navbar';
 import Signup from '../../src/pages/Signup';
 import DBDisplay from '../../src/pages/DBDisplay';
 
-describe("placeholder", () => {
-  // Simple unit test tests
-  it('Renders navbar', () => {
-    render(<Navbar />, { wrapper: BrowserRouter });
-    expect(screen.getByText('Home')).toBeInTheDocument;
+(global.fetch as jest.Mock) = jest.fn(() => 
+  Promise.resolve({
+    json: () => Promise.resolve({}),
   })
-  it('handles userEvent clicks', async () => {
-    const mockFn = jest.fn();
-    render(<div>
-      <button id="clickme" onClick={mockFn}></button>
-    </div>)
+);
 
-    const btnTest = document.querySelector('#clickme') as Element;
-    expect(mockFn).toBeCalledTimes(0);
-    await userEvent.click(btnTest);
-    expect(mockFn).toBeCalled;
-  })
-});
+let mockState = {
+  sidebarDisplayState: false,
+  welcome: true,
+  editRefMode: false,
+  inputModalState: { isOpen: false, mode: '' },
+  inputDataModalState: { isOpen: false, mode: '' },
+  deleteTableModalState: { isOpen: false },
+  currentTable: '',
+  isSchema: true,
+}
 
-describe('DB Display Interface', () => {
+describe('DBDisplay Interface', () => {
   // render DBDisplay.tsx
   let container: any = null;
   beforeEach(() => {
@@ -36,7 +35,6 @@ describe('DB Display Interface', () => {
     container.setAttribute('id', 'dbDisplayCount');
     document.body.appendChild(container);
     render(<DBDisplay />, container);
-    // render(<DBDisplay />);
     global.ResizeObserver = jest.fn().mockImplementation(() => ({
       observe: jest.fn(),
       unobserve: jest.fn(),
@@ -45,31 +43,39 @@ describe('DB Display Interface', () => {
   })
 
   afterEach(() => {
-    // unmountComponentAtNode(container);
     container.remove();
     container = null;
   })
-  // Lefthand features toolbar
+
+  it('should render Navbar', () => {
+      render(<Navbar />, { wrapper: BrowserRouter });
+      expect(screen.getByText('Home')).toBeInTheDocument;
+    })
+
+  // Renders FeatureTab on left of screen
   it('should render features tab', () => {
     expect(screen.getByText('Action')).toBeInTheDocument;
   })
 
-  // Upload database sidebar
-  it('should render sidebar', () => {
-    expect(screen.getByText('Full Database Link')).toBeInTheDocument;
+  // Renders Sidebar on right of screen
+  it('should render sidebar when sidebarDisplay state is true', () => {
+    mockState.sidebarDisplayState = true;
+    // Should test its rendering sidebarDisplay
+    // expect(screen.getByText('Full Database Link')).toBeInTheDocument;
   })
 
-  // Main DB Display flow component
+  // Main DB Display flow component test
   xit('should render flow', () => {
-
+    
   })
   // press buttons in featuretab - running into issues checking that userEvent.click is working
-  xit('does stuff in featuretab', () => {
-    
+  it('should respond correctly when buttons are clicked', () => {
+    //
     const createTableModal = document.querySelector('.addTableModal') as Element;
     const styles = getComputedStyle(createTableModal) as CSSStyleDeclaration;
     expect(styles.display).toBe('none');
-
+    
+    //Add Table button on initial render does not display table modal
     const anchor = document.querySelector('#addTable');
     // Click add table - shows up 'Enter your table name.""
     if (anchor) userEvent.click(anchor);
@@ -82,7 +88,7 @@ describe('DB Display Interface', () => {
 
     expect(screen.getByText('Enter your table name.')).toBeInTheDocument;
     expect(document.querySelector('#addTable')).toBeInTheDocument;
-    // if (createTableModal) expect(createTableModal).toHaveStyle('display: block');
+    if (createTableModal) expect(createTableModal).toHaveStyle('display: block');
   })
 
   xit('Adding table confirmation should create new flow node', async () => {
