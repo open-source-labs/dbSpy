@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unit testing dataStore dataStore shape matches the snapshot 1`] = `
+{
+  "_addRow": [Function],
+  "addTableData": [Function],
+  "dataStore": {},
+  "deleteTableData": [Function],
+  "referenceStore": {},
+  "setDataStore": [Function],
+  "setReferencesStore": [Function],
+  "setSystem": [Function],
+  "system": "PostgreSQL",
+}
+`;
+
+exports[`Unit testing for dataStore dataStore shape matches the snapshot 1`] = `
+{
+  "_addRow": [Function],
+  "addTableData": [Function],
+  "dataStore": {},
+  "deleteTableData": [Function],
+  "referenceStore": {},
+  "setDataStore": [Function],
+  "setReferencesStore": [Function],
+  "setSystem": [Function],
+  "system": "PostgreSQL",
+}
+`;
