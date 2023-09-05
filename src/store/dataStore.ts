@@ -3,7 +3,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { DataStore } from '@/Types';
 
 
-type DataObj = {
+export type DataObj = {
   [key: string]: string | number | boolean | null
 }
 
@@ -42,8 +42,9 @@ const useDataStore = create<DataState>()(
           set((state) => ({ ...state, system })),
         setDataStore: (dataInfo) =>
           set((state) => ({ ...state, dataStore: dataInfo })),
+        // dbSpy 6.0: Modify setReferenceStore to set referenceStore instead of dataStore
         setReferencesStore: (dataInfo) =>
-          set((state) => ({ ...state, dataStore: dataInfo })),
+          set((state) => ({ ...state, referenceStore: dataInfo })),
         deleteTableData: (tableName) => set((state) => {
           const newState = { ...state };
           delete newState.dataStore[tableName];
