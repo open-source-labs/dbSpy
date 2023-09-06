@@ -8,7 +8,6 @@ export const getAccesToken: RequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('made it to getGoogleAccessToken!!!!!');
   if (typeof req.session.user === 'string') return res.redirect('/api/me');
   type code = string;
   type state = string | null;
@@ -122,7 +121,7 @@ export const getUserInfo: RequestHandler = async (
     }
 
     res.locals.userInfo = userInfo;
-    console.log(userInfo, 'this is the user info!!!!');
+
     return next();
   } catch (err) {
     next({
