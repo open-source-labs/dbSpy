@@ -32,7 +32,12 @@ export default function Signup() {
     <div className="Content mx-auto mt-20 w-96 h-96 grid max-w-screen-md place-items-center gap-8">
     <div className="Header self-stretch h-9 flex-col justify-start items-center gap-6 flex">
       <div className="TextAndSupportingText self-stretch h-9 flex-col justify-start items-start gap-3 flex">
-        <div className="Text self-stretch text-center text-white text-3xl font-semibold leading-9">Create an account</div>
+        <div className="Text self-stretch text-center text-white text-3xl font-semibold leading-9">
+          Create an account
+          </div>
+          <div className="SupportingText self-stretch text-center text-base font-normal leading-normal dark:text-white">
+            Welcome! Please register to continue.
+          </div>
       </div>
     </div>
     <div className="Content self-stretch h-70 rounded-xl flex-col justify-start items-center gap-6 flex">
@@ -82,7 +87,7 @@ export default function Signup() {
           </div>
         </div>
         <div className="Button self-stretch rounded-lg justify-start items-start inline-flex">
-          <button className="ButtonBase grow shrink basis-0 h-11 px-4 py-2.5 bg-sky-800 rounded-lg shadow border border-gray-400 justify-center items-center gap-2 flex" type="submit">
+          <button className="ButtonBase grow shrink basis-0 h-11 px-4 py-2.5 bg-sky-800 rounded-lg shadow border-gray-400 justify-center items-center gap-2 flex" type="submit">
               <div >
             <div className="Text text-white text-base font-semibold leading-normal">
               Sign Up
