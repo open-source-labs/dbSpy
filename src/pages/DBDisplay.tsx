@@ -1,6 +1,12 @@
 // React & React Router & React Query Modules;
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
+import { NavLink } from 'react-router-dom';
+import logo from '../assets/newLogoWhite.png';
+import login from '../assets/right-to-bracket-solid.svg';
+import default_pfp from '../assets/default_pfp.svg';
+
+const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 // Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
@@ -42,12 +48,15 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
   const openAddRowDataModal = () => setDataInputModalState(true);
+
   const openAddColumnModal = (tableName: string) =>
     setInputModalState(true, 'column', tableName);
 
   const openAddRowModal = (tableName: string) =>
     setInputModalState(true, 'row', tableName); //(isOpen? mode? currentTable?)
 
+
+    const { user } = useCredentialsStore((state): any => state);
   //create references for HTML elements
   const mySideBarId: any = useRef();
   const mainId: any = useRef();
@@ -76,7 +85,6 @@ const DBDisplay: React.FC = () => {
         } else throw new Error('error in backend with oauth');
       })
       .then((res) => {
-        console.log('Fetch response from DBDisplay useEffect: ', res);
         setUser(res);
       })
       .catch((err) => {
@@ -117,6 +125,32 @@ const DBDisplay: React.FC = () => {
   }
 
   return (
+    <div>
+
+    <div className='flex justify-end pt-5 pr-5'>
+          {user ? (
+            <>
+              <span className="mt-4 inline-block text-black-200 lg:mt-0 dark:text-white">
+                {user.full_name}
+              </span>
+              <img
+                className="ml-2 mr-2 inline-block h-[25] rounded-full dark:invert"
+                src={default_pfp}
+              />
+            </>
+          ) : (
+            <div className='flex justify-end'>
+      <NavLink
+        to="/login"
+        className="text-white text-base font-bold leading-normal p-6"
+        >
+        <span>Login</span>
+        <img className="mr-3 ml-3 inline-block h-[20] invert" src={login} />
+      </NavLink>
+    </div>
+          )}
+        </div>
+        
     <div
       id="DBDisplay"
       className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-slate-700"
@@ -124,7 +158,7 @@ const DBDisplay: React.FC = () => {
       <div
         ref={mySideBarId}
         id="mySidenav"
-        className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-slate-700"
+        className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-gray-800"
       >
         <a href="#" className="closebtn" onClick={closeNav}>
           &times;
@@ -200,6 +234,7 @@ const DBDisplay: React.FC = () => {
       {deleteTableModalState.isOpen ? (
         <DeleteTableModal closeDeleteTableModal={() => setDeleteTableModalState(false)} />
       ) : null}
+    </div>
     </div>
   );
 };

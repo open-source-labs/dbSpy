@@ -2,9 +2,14 @@
 
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
+import { NavLink } from 'react-router-dom';
+
+const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
+
 // Functions imported:
 import parseSql from '../../parse';
 // Stores imported:
+import logo from '../../assets/newLogoWhite.png';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -17,6 +22,7 @@ import QueryModal from '../Modals/QueryModal';
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
+  const [theme, setTheme] = useState('Light');
 
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
@@ -138,6 +144,13 @@ export default function FeatureTab(props: any) {
     setUser(null);
   };
 
+  //Toggle function for DarkMode
+  const toggleClass = (): void => {
+    const page = document.getElementById('body');
+    page!.classList.toggle('dark');
+    theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
+  };
+
   // END: HELPER FUNCTIONS
 
   return (
@@ -145,11 +158,56 @@ export default function FeatureTab(props: any) {
       {/* PAGE */}
       <div className="mx-auto max-w-2xl">
         <aside
-          className="featureTab absolute inset-y-0 left-0 top-24 w-64"
+          className="featureTab absolute inset-y-0 left-0 top-24 w-64 light:bg-sky-800"
           aria-label="FeatureTab"
         >
-          <div className="menuBar overflow-y-auto rounded bg-[#f8f4eb] px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-gray-800">
-            <p className="text-slate-900 dark:text-[#f8f4eb]">Action</p>
+          
+          <div className="menuBar overflow-y-auto rounded  px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-gray-800 light:bg-sky-800">
+          
+          {theme === 'Light' ? (
+                <img className="w-[200px] mb-4 h-[88px] pl-7 inline-block h-[45] fill-current  mt-12" src={logo} alt="Logo" />
+              ) : (
+                <img className="w-[200px] mb-4 h-[88px] pl-7 inline-block h-[45] filter invert mt-12" src={logo} alt="Logo" />
+              )}
+
+          <NavLink to="/" className={linkbtn}>
+          <div className="w-[232px] h-10 pl-1 pr-[54.52px] py-2 rounded-lg justify-start items-center gap-3 inline-flex">
+          
+          {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white">
+<g clip-path="url(#clip0_107_1134)">
+<path d="M24.6255 25.5284H16.7504V18.2159H12.2503V25.5284H4.37524V13.7159C4.37524 13.4054 4.62668 13.1534 4.93775 13.1534C5.24882 13.1534 5.50026 13.4054 5.50026 13.7159V24.4034H11.1253V17.0909H17.8754V24.4034H23.5004V14.2784C23.5004 13.9679 23.7519 13.7159 24.0629 13.7159C24.374 13.7159 24.6255 13.9679 24.6255 14.2784V25.5284Z" fill="white"/>
+<path d="M27.4379 13.716C27.2979 13.716 27.1583 13.6643 27.0492 13.5602L14.5003 1.557L1.95134 13.5602C1.7269 13.7745 1.37083 13.7672 1.15596 13.5428C0.94108 13.3183 0.949518 12.9623 1.17339 12.7474L14.5003 0L27.8266 12.7468C28.0505 12.9617 28.0589 13.3178 27.844 13.5422C27.7338 13.6575 27.5864 13.716 27.4379 13.716Z" fill="white"/>
+<path d="M22.9378 6.96594C22.6267 6.96594 22.3753 6.71394 22.3753 6.40344V3.02844H19.0002C18.6892 3.02844 18.4377 2.77644 18.4377 2.46594C18.4377 2.15544 18.6892 1.90344 19.0002 1.90344H23.5003V6.40344C23.5003 6.71394 23.2489 6.96594 22.9378 6.96594Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_107_1134">
+<rect width="40" height="27" fill="white" transform="translate(0.745117 0.120605)"/>
+</clipPath>
+</defs>
+</svg> 
+          <div className="pr-[2.48px] flex-col justify-start items-start inline-flex">
+            <div className="text-slate-900 dark:text-[#f8f4eb]">Home</div>
+            </div>
+            </div>
+            </NavLink>
+
+            <button onClick={toggleClass}>
+              <div className="ItemLink w-[232px] h-10 pl-0 pr-0 py-2 rounded-lg justify-start items-center gap-0 inline-flex">
+                <svg fill="black"
+                    viewBox="0 0 24 24"
+                    
+                   
+                    className="ml-2 mr-2 inline-block h-[25] rounded-full white:invert"xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.50488 10.7569C1.50488 16.4855 6.14803 21.1294 11.8756 21.1294C16.2396 21.1294 19.974 18.4335 21.5049 14.616C20.3104 15.0962 19.0033 15.3668 17.6372 15.3668C11.9095 15.3668 7.26642 10.7229 7.26642 4.99427C7.26642 3.63427 7.53299 2.3195 8.00876 1.12939C4.19637 2.66259 1.50488 6.39536 1.50488 10.7569Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div className="DarkMode dark:text-white text-base leading-normal">
+                  {theme} Mode
+                </div>
+              </div>
+            </button>
+
+            <p className="text-slate-900 dark:text-[#f8f4eb] mt-7">Action</p>
             <hr />
             <ul className="space-y-2">
               <li>
@@ -166,6 +224,7 @@ export default function FeatureTab(props: any) {
                     stroke="currentColor"
                     className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
                   >
+
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
