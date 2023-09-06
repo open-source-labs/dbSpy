@@ -92,90 +92,109 @@ export default function Login() {
     window.open(url, '_self', strWindowFeatures);
   };
 
-  ///////////////////OAUTH/////////////
   return (
-    <div className="mt-10 grid place-items-center">
-      <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
-        Sign into your account
-      </h1>
-      <div className="mb-3 text-sm dark:text-white">
-        Don't have an account yet?{' '}
-        <span className="font-semibold text-gray-400 hover:text-gray-300 active:text-gray-500">
-          <NavLink to="/signup">Sign up</NavLink>
-        </span>
+    <div className="Content h-150 w-150 mx-auto mt-10 grid max-w-screen-md place-items-center gap-6">
+      <div className="Header flex h-20 flex-col items-center justify-start gap-6 self-stretch">
+        <div className="TextAndSupportingText flex h-20 flex-col items-start justify-start gap-3 self-stretch">
+          <div className="Text self-stretch text-center text-3xl font-semibold leading-9 dark:text-white">
+            Log in to your account
+          </div>
+          <div className="SupportingText self-stretch text-center text-base font-normal leading-normal dark:text-white">
+            Welcome back! Please enter your details.
+          </div>
+        </div>
       </div>
-      <div className="">
-        <form className="w-full max-w-sm" onSubmit={(e) => handleLogin(e)}>
-          <div className="mb-6 md:flex md:items-center">
-            <div className="md:w-1/3">
-              <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
-                Email
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <input
-                className={`w-full appearance-none rounded border-2 ${
-                  inputError ? 'border-red-700' : 'border-gray-200'
-                } bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                placeholder="example@email.com"
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              ></input>
+      <div className="Content flex h-96 flex-col items-center justify-start gap-6 self-stretch rounded-xl">
+        <form
+          className="Form flex h-40 flex-col items-start justify-start gap-4 self-stretch"
+          onSubmit={(e) => handleLogin(e)}
+        >
+          <div className="InputField flex h-11 flex-col items-start justify-start gap-1.5 self-stretch">
+            <div className="InputWithLabel flex h-11 flex-col items-start justify-start gap-1.5 self-stretch">
+              <div className="Input inline-flex items-center justify-start gap-2 self-stretch rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 shadow">
+                <div className="Content flex h-6 shrink grow basis-0 items-center justify-start gap-2">
+                  <input
+                    placeholder="Enter your email"
+                    className="Text shrink grow basis-0 text-base font-normal leading-normal text-gray-500"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div className={'md:flex md:items-center ' + (loginStatus ? 'mb-6' : 'mb-2')}>
-            <div className="md:w-1/3">
-              <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
-                Password
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <input
-                className={`w-full appearance-none rounded border-2 ${
-                  inputError ? 'border-red-700' : 'border-gray-200'
-                } bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none`}
-                type="password"
-                name="password"
-                id="password"
-                value={password}
-                placeholder="******************"
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              ></input>
+          <div className="InputField flex h-11 flex-col items-start justify-start gap-1.5 self-stretch">
+            <div className="InputWithLabel flex h-11 flex-col items-start justify-start gap-1.5 self-stretch">
+              <div className="Input inline-flex items-center justify-start gap-2 self-stretch rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 shadow">
+                <div className="Content flex h-6 shrink grow basis-0 items-center justify-start gap-2">
+                  <input
+                    placeholder="Enter your password"
+                    className="Text shrink grow basis-0 text-base font-normal leading-normal text-gray-500"
+                    type="password"
+                    name="password"
+                    id="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                    required
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          {loginStatus === false ? (
-            <p className="mb-2 text-xs text-red-700 md:text-center">
-              Incorrect username/password
-            </p>
-          ) : null}
-          <div className="justify-center md:flex">
+          <div className="Button inline-flex h-10 items-center justify-center gap-2 self-stretch rounded-lg bg-sky-800 px-4 py-2.5 shadow">
             <button
-              className="focus:shadow-outline rounded bg-sky-700 px-4 py-2 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
+              className="Text text-base font-semibold leading-normal text-white"
               type="submit"
             >
-              Sign In
+              Continue with email
             </button>
           </div>
         </form>
-        <button
-          className="ml-1 mr-1 inline-flex items-center bg-red-600 px-4 py-1 text-white hover:text-cyan-950"
-          onClick={() => getGoogle()}
-        >
-          <img src={googleImg} alt="google logo" className="mr-1 h-5 "></img>
-          Sign in with Google
-        </button>
-        <button
-          className="ml-1 inline-flex items-center bg-black px-4 py-1 text-white hover:text-cyan-950"
-          onClick={() => getGithub()}
-        >
-          <img src={gitHubImage} alt="github logo" className="mr-1 h-5 "></img>
-          Sign in with GitHub
-        </button>
+        <div className="ContentDivider inline-flex h-5 items-center justify-start gap-2 self-stretch">
+          <div className="Divider h-px shrink grow basis-0 bg-gray-200" />
+          <div className="Text text-center text-sm font-medium leading-tight dark:text-white">
+            OR
+          </div>
+          <div className="Divider h-px shrink grow basis-0 bg-gray-200" />
+        </div>
+        <div className="SocialButtonGroups flex h-36 flex-col items-center justify-center gap-3 self-stretch">
+          <button
+            className="SocialButton inline-flex items-center justify-center gap-3 self-stretch rounded-lg border border-gray-300 bg-white px-4 py-2.5 shadow"
+            onClick={() => getGoogle()}
+          >
+            <img
+              src={googleImg}
+              alt="google logo"
+              className="SocialIcon relative h-6 w-6"
+            />
+            <div className="Text text-base font-semibold leading-normal text-slate-700">
+              Continue with Google
+            </div>
+          </button>
+          <button
+            className="SocialButton inline-flex items-center justify-center gap-3 self-stretch rounded-lg border border-gray-300 bg-white px-4 py-2.5 shadow"
+            onClick={() => getGithub()}
+          >
+            <img
+              src={gitHubImage}
+              alt="github logo"
+              className="SocialIcon relative h-6 w-6"
+            />
+            <div className="Text text-base font-semibold leading-normal text-slate-700 hover:text-cyan-950">
+              Continue with GitHub
+            </div>
+          </button>
+          <div className="Github142SvgrepoCom1 relative h-9 w-9" />
+        </div>
+      </div>
+      <div className="Row inline-flex h-5 items-start justify-center gap-1 self-stretch">
+        <div className="Text text-sm font-normal leading-tight dark:text-white">
+          Don’t have an account?
+        </div>
+        <div className="Button flex items-center justify-center gap-2">
+          <div className="Text text-sm font-semibold leading-tight text-sky-800">
+            <NavLink to="/signup">Sign up</NavLink>
+          </div>
+        </div>
       </div>
     </div>
   );
