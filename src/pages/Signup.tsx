@@ -2,6 +2,8 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { handleOAuthLogin } from '../utils/getGoogleUrl';
+import googleImg from '../../src/assets/GoogleImage.png';
+import gitHubImage from '../../src/assets/GithubImage.png';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 /* "Signup" Component - signup page for user creation */
@@ -13,9 +15,9 @@ export default function Signup() {
     e.preventDefault();
     // TODO: What's the proper type? HTLMFormElement ? HTMLInputElement?
     let formValues = e.target as any;
-    const email = formValues[0].value;
-    const full_name = `${formValues[1].value} ${formValues[2].value}`;
-    const password = formValues[3].value;
+    const full_name = formValues[0].value;
+    const email = formValues[1].value;
+    const password = formValues[2].value;
     await axios
       .post('/api/userRegistration', { full_name, email, password })
       .then(() => navigate('/'))
@@ -27,133 +29,84 @@ export default function Signup() {
   };
 
   return (
-    <div className="mt-10 grid place-items-center dark:text-white">
-      <h1 className="mt-10 text-3xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl">
-        Sign up with dbSpy
-      </h1>
-      <div className="mb-3 text-sm">
-        Already have an account? Login{' '}
-        <span className="font-semibold text-gray-400 hover:text-gray-300 active:text-gray-500">
-          <NavLink to="/login">here</NavLink>
-        </span>
+    <div className="Content mx-auto mt-20 w-96 h-96 grid max-w-screen-md place-items-center gap-8">
+    <div className="Header self-stretch h-9 flex-col justify-start items-center gap-6 flex">
+      <div className="TextAndSupportingText self-stretch h-9 flex-col justify-start items-start gap-3 flex">
+        <div className="Text self-stretch text-center text-white text-3xl font-semibold leading-9">Create an account</div>
       </div>
-      <div className="">
-        <form className="w-full max-w-sm" onSubmit={(e) => registerAccount(e)}>
-          <div className="mb-6 md:flex md:items-center">
-            <div className="md:w-1/3">
-              <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
-                Email
-              </label>
+    </div>
+    <div className="Content self-stretch h-70 rounded-xl flex-col justify-start items-center gap-6 flex">
+      <form className="Form self-stretch h-50 flex-col justify-start items-start gap-4 flex"
+      onSubmit={(e) => registerAccount(e)}
+      >
+        <div className="InputField self-stretch h-11 flex-col justify-start items-start flex">
+          <div className="InputFieldBase self-stretch h-11 flex-col justify-start items-start gap-1.5 flex">
+            <div className="InputWithLabel self-stretch h-11 flex-col justify-start items-start gap-1.5 flex">
+              <div className="Input self-stretch px-3.5 py-2.5 bg-white rounded-lg shadow border border-gray-300 justify-start items-center gap-2 inline-flex">
+                <div className="Content grow shrink basis-0 h-6 justify-start items-center gap-2 flex">
+                  <input 
+                  placeholder="Enter your full name"
+                  className="Text grow shrink basis-0 text-gray-500 text-base font-normal leading-normal"
+                  name="full_name"
+                  required
+                  />
+                </div>
+              </div>
             </div>
-            <div className="md:w-2/3">
-              <input
-                className={
-                  'w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:bg-white focus:outline-none ' +
-                  (!emailErr ? 'focus:border-indigo-500' : 'focus:border-red-700')
-                }
-                type="email"
-                id="email"
-                name="email"
-                placeholder="example@email.com"
-                required
-              ></input>
-              {emailErr ? (
-                <div className="absolute ml-3 text-xs text-red-700 md:text-right">
-                  Email address is already in use
+          </div>
+        </div>
+        <div className="InputWithLabel self-stretch h-11 flex-col justify-start items-start gap-1.5 flex">
+          <div className={`Input self-stretch px-3.5 py-2.5 bg-white rounded-lg shadow border ${!emailErr ? 'border-gray-300' : 'border-red-500'} justify-start items-center gap-2 inline-flex`}>
+            <div className="Content grow shrink basis-0 h-6 justify-start items-center gap-2 flex">
+              <input 
+              placeholder="Enter your email"
+              className="Text grow shrink basis-0 focus:border-indigo-500 text-gray-500 text-base font-normal leading-normal"
+              type="email"
+              name="email"
+              required
+              />
+            </div>
+          </div>
+        </div>
+        <div className="InputWithLabel self-stretch h-11 flex-col justify-start items-start gap-1.5 flex">
+          <div className={`Input self-stretch px-3.5 py-2.5 bg-white rounded-lg shadow border ${!emailErr ? 'border-gray-300' : 'border-red-500'} justify-start items-center gap-2 inline-flex`}>
+            <div className="Content grow shrink basis-0 h-6 justify-start items-center gap-2 flex">
+              <input 
+              placeholder="Enter your password"
+              className="Text grow shrink basis-0 text-gray-500 text-base font-normal leading-normal"
+              type="password"
+              name="password"
+              required
+              />
+            </div>
+          </div>
+        </div>
+        <div className="Button self-stretch rounded-lg justify-start items-start inline-flex">
+          <button className="ButtonBase grow shrink basis-0 h-11 px-4 py-2.5 bg-sky-800 rounded-lg shadow border border-gray-400 justify-center items-center gap-2 flex" type="submit">
+              <div >
+            <div className="Text text-white text-base font-semibold leading-normal">
+              Sign Up
+            </div>
+              </div>
+          </button>
+        </div>
+        {emailErr ? (
+                <div className="text-xs text-red-500 md:text-right">
+                  Error signing up, please check email/password and try again.
                 </div>
               ) : null}
+      </form>
+    <div className="Row self-stretch justify-center items-start gap-1 inline-flex">
+      <div className="Text text-white text-sm font-normal leading-tight">Already have an account?</div>
+      <div className="Button justify-start items-start flex">
+        <div className="ButtonBase justify-center items-center gap-2 flex">
+          <div className="Text text-sky-500 text-sm font-semibold leading-tight">
+          <NavLink to="/login">Login</NavLink>
             </div>
-          </div>
-          <div className="mb-6 md:flex md:items-center">
-            <div className="md:w-1/3">
-              <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
-                First Name
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
-                type="text"
-                id="firstName"
-                placeholder="Jane"
-                name="firstName"
-                required
-              ></input>
-            </div>
-          </div>
-          <div className="mb-6 md:flex md:items-center">
-            <div className="md:w-1/3">
-              <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
-                Last Name
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
-                type="text"
-                id="lastName"
-                placeholder="Doe"
-                name="lastName"
-                required
-              ></input>
-            </div>
-          </div>
-          <div className="mb-6 md:flex md:items-center">
-            <div className="md:w-1/3">
-              <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
-                Password
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <input
-                className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-indigo-500 focus:bg-white focus:outline-none"
-                type="password"
-                name="password"
-                id="password"
-                placeholder="******************"
-                required
-              ></input>
-            </div>
-          </div>
-          <div className="justify-center md:flex">
-            <button
-              className="focus:shadow-outline rounded bg-sky-700 px-4 py-2 font-bold text-white shadow hover:bg-indigo-400 focus:outline-none"
-              type="submit"
-            >
-              Sign Up
-            </button>
-          </div>
-        </form>
-        {/* TODO: Implement production scale OAuth */}
-        {/* <div className="inline-flex w-full items-center justify-between">
-          <hr className="my-8 h-px w-32 border-0 bg-gray-200 dark:bg-gray-700"></hr>
-          <span className="absolute left-1/2 -translate-x-1/2 px-3 font-medium text-gray-900 dark:bg-slate-700 dark:text-white">
-            or
-          </span>
-          <hr className="my-8 h-px w-32 border-0 bg-gray-200 dark:bg-gray-700"></hr>
-        </div> */}
+        </div>
       </div>
-      {/* <button
-        className="inline-flex items-center bg-red-600 py-1 px-4 text-stone-100 hover:bg-red-700"
-        onClick={handleOAuthLogin}
-      >
-        <svg
-          className="mr-2 h-4 w-4 text-white"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          strokeWidth="2"
-          stroke="currentColor"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          {' '}
-          <path stroke="none" d="M0 0h24v24H0z" />{' '}
-          <path d="M17.788 5.108A9 9 0 1021 12h-8" />
-        </svg>
-        <span>Sign up with Google</span>
-      </button> */}
     </div>
+    </div>
+  </div>
   );
 }
