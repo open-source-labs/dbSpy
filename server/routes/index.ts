@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { getAccesToken, getUserInfo } from '../controllers/oauth.controller';
-import { setJwtToken } from '../controllers/jwtController';
+import { setJwtToken, getCurrentUser } from '../controllers/sessionController';
 import {
   retrieveSchema,
   saveSchema,
@@ -13,7 +13,6 @@ import { oracleRouter } from './oracle.router';
 import { mysqlRouter } from './mysql.router';
 import { sqliteRouter } from './sqlite.router';
 import { config } from 'dotenv';
-import { getCurrentUser } from '../service/session.service';
 import log from '../logger/index';
 import type { DefaultErr } from '../../src/Types';
 import session from 'express-session';
