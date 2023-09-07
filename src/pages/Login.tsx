@@ -95,7 +95,7 @@ export default function Login() {
   };
 
   return (
-    <div className="Content h-150 w-150 mx-auto mt-10 grid max-w-screen-md place-items-center gap-6">
+    <div className="Content h-150 w-150 mx-auto mt-20 grid max-w-screen-md place-items-center gap-6">
       <div className="Header flex h-20 flex-col items-center justify-start gap-6 self-stretch">
         <div className="TextAndSupportingText flex h-20 flex-col items-start justify-start gap-3 self-stretch">
           <div className="Text self-stretch text-center text-3xl font-semibold leading-9 dark:text-white">
@@ -193,7 +193,7 @@ export default function Login() {
           Don’t have an account?
         </div>
         <div className="Button flex items-center justify-center gap-2">
-          <div className="Text text-sm font-semibold leading-tight text-sky-800">
+          <div className="Text text-sm font-semibold leading-tight text-sky-500">
             <NavLink to="/signup">Sign up</NavLink>
           </div>
         </div>
