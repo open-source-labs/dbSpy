@@ -21,7 +21,7 @@
       "cert:linux": "rm -rf .cert && mkdir -p .cert && cd .cert && mkcert create-ca && mkcert create-cert --key key.pem --cert cert.pem",
       "e2e": "cypress open --project ./tests"
    },
-   "author": "Stephen Havig, Das Kong, Yichung YC Chiu, Jose Tejeda",
+   "author": "Minh Chang, David Jones, Darius Okafor, John Ruiz, Parwinder Singh",
    "license": "MIT",
    "dependencies": {
       "@tippyjs/react": "^4.2.6",
