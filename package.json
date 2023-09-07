@@ -1,6 +1,6 @@
 {
    "name": "dbspy",
-   "version": "5.0.1",
+   "version": "6.0.1",
    "description": "The open source dev tool to logically model and build MySQL and PostgreSQL databases",
    "main": "server/server.ts",
    "engines": {
