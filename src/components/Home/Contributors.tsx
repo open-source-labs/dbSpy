@@ -22,6 +22,10 @@ import yufaLi from '../../assets/contributors/yufa_li.jpeg';
 import DK from '../../assets/contributors/dk.png';
 import SH from '../../assets/contributors/SH.jpg';
 import JT from '../../assets/contributors/joseph_360.png';
+import DJ from '../../assets/contributors/dj.png';
+import JR from '../../assets/contributors/JR.png';
+import PS from '../../assets/contributors/PS.png';
+import mc from '../../assets/contributors/mc.jpg';
 
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
@@ -191,6 +195,41 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'https://www.linkedin.com/in/yichung-chiu-b14a94272/',
     githubUrl: 'https://github.com/ychiu5896',
   },
+  {
+    imgUrl: DJ,
+    name: 'David Jones',
+    title: 'Software Engineer',
+    linkedInUrl: 'http://www.linkedin.com/in/davidjonesswe',
+    githubUrl: 'https://github.com/david-jones-git',
+  },
+    {
+    imgUrl: YC,
+    name: 'Darius Okafor',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/dariusokafor/',
+    githubUrl: 'https://github.com/DE7741',
+  },
+  {
+    imgUrl: JR,
+    name: 'John Ruiz',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/john-ruiz-profile/',
+    githubUrl: 'https://github.com/johnruiz17',
+  },
+  {
+    imgUrl: mc,
+    name: 'Minh Chang',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/minh-chang/',
+    githubUrl: 'https://github.com/miha-cha',
+  },  
+  {
+    imgUrl: PS,
+    name: 'Parwinder Singh',
+    title: 'Software Engineer',
+    linkedInUrl: 'http://www.linkedin.com/in/singh-parwinder',
+    githubUrl: 'https://github.com/PintaAE86',
+  }
 ];
 
 export default function Contributors() {

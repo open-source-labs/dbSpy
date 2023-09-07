@@ -37,8 +37,6 @@ export default function Login() {
     }
   };
 
-  ///////////////////////////OAUTH//////////////
-
   type Options = {
     redirect_uri: string;
     client_id: string;
@@ -50,11 +48,13 @@ export default function Login() {
     allow_signup?: string;
   };
 
+  // in development mode, change redirect_uri to 'http://localhost:8080/display/'
+  // in production mode, change redirect_uri back to 'http://db-spy.io/display/' before deploying 
   function getGoogle(): void {
     const rootUrl: string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     const options: Options = {
-      redirect_uri: 'http://localhost:8080/display/',
+      redirect_uri: 'http://db-spy.io/display/',
       client_id:
         '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
       access_type: 'offline',
@@ -73,11 +73,13 @@ export default function Login() {
     window.open(url, '_self', strWindowFeatures);
   }
 
-  // old client id: d44f1421ff7324a4468d
+  // *** MUST 
+  // in development mode, change redirect_uri to 'http://localhost:8080/display/'
+  // in production mode, change redirect_uri back to 'http://db-spy.io/display/' before deploying 
   const getGithub = (): void => {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
     const options: Options = {
-      redirect_uri: 'http://localhost:8080/display/',
+      redirect_uri: 'http://db-spy.io/display/',
       client_id: '18d4ecdcc6ed1cb25240',
       state: 'randomstring',
       allow_signup: 'true',

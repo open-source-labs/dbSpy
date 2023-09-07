@@ -17,9 +17,9 @@
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
 <!-- <p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具。</p> -->
 
-### New Features with Version 5.0
+### New Features with Version 6.0
 
-- Enhanced support for SQL databases with expanded options.
+- Implementatioin
 - Introduction of visualized DATA tables for improved data analysis.
 - Robust CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
 - Capability to remove and add tables as needed.
@@ -258,6 +258,11 @@ npm run cert:linux
 ---
 
 ### Credits/Contributors
+- David Jones • [LinkedIn](http://www.linkedin.com/in/davidjonesswe/) • [Github](https://github.com/david-jones-git)
+- John Ruiz • [LinkedIn](https://www.linkedin.com/in/john-ruiz-profile/) • [Github](https://github.com/johnruiz17)
+- Minh Chang • [LinkedIn](https://www.linkedin.com/in/minh-chang/) • [Github](https://github.com/miha-cha)
+- Darius Okafor • [LinkedIn](https://www.linkedin.com/in/dariusokafor/) • [Github](https://github.com/DE7741)
+- Parwinder Singh • [LinkedIn](http://www.linkedin.com/in/singh-parwinder/) • [Github](https://github.com/PintaAE86)
 - Yichung Chiu • [LinkedIn](https://www.linkedin.com/in/yichung-chiu-b14a94272/) • [Github](https://github.com/ychiu5896)
 - Joseph Tejeda • [LinkedIn](https://www.linkedin.com/in/atxjtejeda/) • [Github](https://github.com/JosephTejeda)
 - Stephen Havig • [LinkedIn](https://www.linkedin.com/in/stephen-havig-199340145/) • [Github](https://github.com/Stephen-Havig)
