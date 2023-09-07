@@ -115,7 +115,6 @@ const routes = (app: Express) => {
 };
 
 export const cookieSession = (req: Request, _res: Response, next: NextFunction) => {
-  //app.get('/', (_req: Request, _res: Response, next: NextFunction) => {
   const { db_type, hostname, password, port, username, database_name, service_name } =
     req.query;
   try {
@@ -146,7 +145,6 @@ export const cookieSession = (req: Request, _res: Response, next: NextFunction) 
     console.log('error was found in cookeSession: ', err);
     return next(err);
   }
-  // })
   return next();
 };
 
