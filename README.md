@@ -19,12 +19,15 @@
 
 ### New Features with Version 6.0
 
-- Implementatioin
-- Introduction of visualized DATA tables for improved data analysis.
+- Enchanced JWT-based user authentication to maintain user login sessions 
+- Securely manage user-specific database storage and retrieval 
+- Expanded database connnectivity to include MySQL databases for visualization.
 - Robust CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
-- Capability to remove and add tables as needed.
+- Redesigned the display page UI to produce a more mordern aesthetic 
+- Redesigned the UI for the login and signup pages to create a more user-friendly login experience
+- Improved Undo/Redo functionality
 - Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
-
+- Improve TDD coverage for Zustand stores.
 
 ### Use Cases
 
@@ -59,11 +62,11 @@
 
 8. **User Sessions:** Sign up/Log in securely with either Google/Github OAuth or JWTs/Bcrypt
 
-9. **Save/Load:** Store and reload past database sessions through your user account *-CURRENTLY UNDER UPDATE*
+9. **Save/Load:** Store and reload past database sessions through your user accoun
 
 10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-## <img src="images/Darkmode.png">
+## <img src="images/ConnectedToDB.png">
 
 
 ### Getting started
@@ -175,8 +178,6 @@ npm run cert:linux
 
 
 
-## <img src="images/LandingPageDemo.gif">
-
 
 
 ### Uploading your database's SQL file
@@ -197,8 +198,11 @@ npm run cert:linux
 4. Click on the confirm icon to save the column/row. 
 5. The changes made in DATA table will be updated in your database. 
 6. Click on the cancel icon to cancel the addition.
-   <img src="images/Create%20tables.png">
-   <img src="images/addRow.png">
+
+
+   <img src="images/zuckOverWaz.png">
+
+   <img src="images/zuckTables.png">
 
 
 ### Editing an existing row of a DATA table
@@ -215,7 +219,7 @@ npm run cert:linux
 3. Click on the cancel icon to cancel the deletion.
 
 
-## <img src="images/MakingEditsDemo.gif">
+## <img src="images/DbSpy Gif.gif">
 
 
 ### Adding a foreign key reference to a column

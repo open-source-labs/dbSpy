@@ -73,7 +73,7 @@ export default function Login() {
     window.open(url, '_self', strWindowFeatures);
   }
 
-  // *** MUST 
+  // *** FIRST CREATE A GITHUB OAUTH APPLICATION IN GITHUB DEVELOPER SETTINGS AND CHANGE CLIENT_ID HERE AND IN .ENV FILE ***
   // in development mode, change redirect_uri to 'http://localhost:8080/display/'
   // in production mode, change redirect_uri back to 'http://db-spy.io/display/' before deploying 
   const getGithub = (): void => {

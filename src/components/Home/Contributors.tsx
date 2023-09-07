@@ -26,7 +26,7 @@ import DJ from '../../assets/contributors/dj.png';
 import JR from '../../assets/contributors/JR.png';
 import PS from '../../assets/contributors/PS.png';
 import mc from '../../assets/contributors/mc.jpg';
-
+import DO from '../../assets/contributors/DO.jpeg'
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
 type profileInfo = {
@@ -203,7 +203,7 @@ const profileList: profileInfo[] = [
     githubUrl: 'https://github.com/david-jones-git',
   },
     {
-    imgUrl: YC,
+    imgUrl: DO,
     name: 'Darius Okafor',
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/dariusokafor/',
