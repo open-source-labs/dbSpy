@@ -13,17 +13,9 @@ function Navbar() {
   const { user } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
 
-  //this is a function to toggle class between light and dark using vanilla DOM manipulation and local state.
-  //FOR FUTURE DEVS: there's probably a more elegant way to do this with settings store and sharing that state globally but tailwind cascades dark mode from the top element so this works
-  const toggleClass = (): void => {
-    const page = document.getElementById('body');
-    page!.classList.toggle('dark');
-    theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
-  };
-
   return (
     <>
-      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between bg-sky-800 p-6">
+      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between  bg-sky-800 p-6">
         <div className="navItems text-base">
           <img className="mr-5 inline-block h-[45] fill-current" src={logo} />
           <NavLink to="/" className={linkbtn}>
@@ -32,9 +24,6 @@ function Navbar() {
           <NavLink to="/display" data-testid="navbar-display" className={linkbtn}>
             Display
           </NavLink>
-          <button className="text-blue-200 hover:text-[#f8f4eb]" onClick={toggleClass}>
-            {theme} Mode
-          </button>
         </div>
         <div>
           {user ? (
@@ -51,7 +40,7 @@ function Navbar() {
             <div>
               <NavLink
                 to="/login"
-                className="mt-1 inline-block text-blue-200 shadow-2xl hover:text-white lg:mt-0"
+                className="text-white text-base font-bold leading-normal"
               >
                 Login
               </NavLink>

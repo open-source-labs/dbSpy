@@ -24,7 +24,7 @@
 }
 /* misc. remaining  */
 .menuBar {
-  height: calc(100% - 64px);
+  height: 100%;
 }
 
 .main {
@@ -532,14 +532,14 @@ tr {
 #main {
   transition: margin-left 0.5s;
   padding: 20px;
-  margin-top: 50px;
+  /* margin-top: 50px; */
   margin-left: 300px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-@media screen and (max-height: 450px) {
+@media screen and (max-height: 2000px) {
   .sidenav {
-    padding-top: 15px;
+    padding-top: 0px;
   }
 
   .sidenav a {
@@ -617,12 +617,12 @@ select:focus {
   width: 50vw;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 3000px) {
   .navItems {
     width: 50%;
   }
   .featureTab {
-    top: 7rem;
+    top: 0rem;
   }
 }
 /* //Add Table Modal */
