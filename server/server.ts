@@ -1,16 +1,17 @@
-import express from 'express';
-import log from './logger/index'
-import dotenv from 'dotenv'
-import routes from './routes'
+import { config } from 'dotenv';
+import express, { Express } from 'express';
+import log from './logger/index';
+import routes from './routes';
 import path from 'path';
 import cors from 'cors';
 import session from 'express-session';
-import cookieParser from 'cookie-parser'
-dotenv.config();
+import cookieParser from 'cookie-parser';
 
-const port = process.env.PORT || 3000;
+config();
 
-const app = express();
+const port: number = Number(process.env.PORT) || 3000;
+
+const app: Express = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,23 +19,24 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../dist')));
 
-app.use(session({
-    secret: Math.floor(Math.random() * 1000000).toString(),
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
-    cookie: { 
-        secure: false,
-        httpOnly: true,
-        path: '/',
-        sameSite: true,
-        expires: undefined
-        }, 
-  }));
-
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      path: '/',
+      sameSite: true,
+      maxAge: 24 * 60 * 60 * 1000
+    },
+  })
+);
 
 app.listen(3000, () => {
-    log.info(`Securely Running at ${port}`);
-    routes(app);
+  log.info(`Securely Running at ${port}`);
+  routes(app);
 });
 
 export default app;

@@ -47,7 +47,7 @@ export default function Home() {
             ) : (
               <NavLink
                 to="/display"
-                className="mb-2 mr-0 inline-block rounded bg-blue-600 px-7 py-3 text-sm font-medium uppercase leading-snug text-[#f8f4eb] shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg md:mb-0 md:mr-2"
+                className="mb-2 mr-0 inline-block rounded bg-blue-600 px-7 py-3 text-sm font-medium uppercase leading-snug text-[#f8f4eb] shadow-md transition duration-500 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg md:mb-0 md:mr-2"
                 data-mdb-ripple="true"
                 data-mdb-ripple-color="light"
                 role="button"

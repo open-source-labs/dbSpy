@@ -32,8 +32,8 @@ const App: React.FC = () => {
           <Route index element={<Home />} />
           <Route path='login' element={user ? <DBDisplay /> : <Login />} />
           <Route path='signup' element={user ? <DBDisplay /> : <Signup />} />
-          <Route path='display' element={<DBDisplay />} />
         </Route>
+          <Route path='display' element={<DBDisplay />} />
       </Routes>
     </BrowserRouter>
   );

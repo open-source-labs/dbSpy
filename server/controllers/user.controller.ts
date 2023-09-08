@@ -4,186 +4,279 @@ import { RowDataPacket } from 'mysql2';
 import pool from '../models/userModel';
 import bcrypt from 'bcrypt';
 const saltRounds = 5;
-import dotenv from 'dotenv';
-dotenv.config();
+import { config } from 'dotenv';
+config();
+
+interface GlobalError {
+  log: string;
+  status: number;
+  message: string | { err: string };
+}
 
 // find user via email
 export const findUser = async (email: string) => {
-  log.info('Finding user (helper function)');
+  log.info('[userCtrl - findUser] Searching for user with email');
   const queryStr: string = 'SELECT * FROM users WHERE email = ?';
   return pool.query(queryStr, [email]);
 };
 
 // Creating user via Google OAuth
 export const createUser = async (user: string[]) => {
-  log.info('Creating user (helper function)');
+  log.info('[userCtrl - createUser] Creating user from inputs');
   const queryStr: string =
     'INSERT IGNORE INTO users (sub, full_name, email, picture) VALUES (?, ?, ?, ?)';
-  pool
-    .query(queryStr, user)
-    .then(() => log.info('createUser: successfully created User'))
-    .catch((err: ErrorEvent) => {
-      log.error("This is the error in createUser: ", err);
-      throw new Error('Error on createUser: Could not create new user on DB.');
-    });
+  try {
+    await pool.query(queryStr, user);
+    log.info('[userCtrl - createUser] Successfully created user');
+  } catch (err: unknown) {
+    log.error('[userCtrl - createUser] Unable to create new user: ' + err);
+    throw new Error('[userCtrl - createUser] Unable to create new user in DB.');
+  }
 };
 
 // Register w/o OAuth
-export const userRegistration: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  log.info('Registering user (middleware)');
+export const userRegistration: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  log.info('[userCtrl - userReg] Registering new user signup...');
   // w/OAuth
-  if(req.body.code){
-    try{
-      if(res.locals.userInfo.type === 'google'){
-        const {id, email, verified_email, name, picture, type} = res.locals.userInfo
-        console.log(res.locals.userInfo)
-        const queryStr = 'INSERT IGNORE INTO users(full_name, email, password, picture,type) Values (?,?,?,?,?)';
+  if (req.body.code) {
+    try {
+      if (res.locals.userInfo.type === 'google') {
+        const { id, email, name, picture, type } = res.locals.userInfo;
+        const queryStr =
+          'INSERT IGNORE INTO users(full_name, email, password, picture,type) Values (?,?,?,?,?)';
         const hashedPw = id.toString();
-        const createUser = await pool.query(queryStr,[name, email, hashedPw, picture,type]);
+        const createUser = await pool.query(queryStr, [
+          name,
+          email,
+          hashedPw,
+          picture,
+          type,
+        ]);
         const user = (await findUser(email)) as RowDataPacket[][];
         res.locals.user = user[0][0];
-        log.info('created Oauth user');
-        return res.status(200).json(res.locals.user);
-      }else{
-        const {login,id,url,avatar_url,type} = res.locals.userInfo;
-        const queryStr = 'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-        let hashedPw:string;
-        hashedPw = id? id.toString(): 'default';
-        const addUser = await pool.query(queryStr, [login,url,hashedPw, avatar_url,type]);
+        log.info('[userCtrl - userReg] Created user from Google OAuth');
+        return next();
+      } else {
+        const { login, id, url, avatar_url, type } = res.locals.userInfo;
+        const queryStr =
+          'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
+        let hashedPw: string;
+        hashedPw = id ? id.toString() : 'default';
+        const addUser = await pool.query(queryStr, [
+          login,
+          url,
+          hashedPw,
+          avatar_url,
+          type,
+        ]);
         const user = (await findUser(url)) as RowDataPacket[][];
         res.locals.user = user[0][0];
-        log.info('creater Oauth user');
-        return res.status(200).json(res.locals.user);
+        log.info('[userCtrl - userReg] Created user from GitHub OAuth');
+        return next();
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        const error: GlobalError = {
+          log:
+            '[userCtrl - userReg] There was a problem registering with OAuth: ' +
+            err.message,
+          status: 500,
+          message: 'Failed to register user with OAuth',
+        };
+
+        return next(error);
+      } else {
+        return next(err);
       }
     }
-    catch{
-        const errorObj = {
-          log:'Express error handler caught in registering Oauth User',
-          status: 509,
-          message: 'Error caught in Oauth User creation'};
-          console.log(errorObj.log)
-          return res.status(506).json(errorObj.log)
-      }
   }
   // w/o Oauth
-else{
-  try{
-    const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
-    if (foundUser[0]?.length) return res.status(403).json({ err: 'Email already in use' });
+  else {
+    try {
+      const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
+      if (foundUser[0]?.length) {
+        return res.status(403).json({
+          err: 'Registration failed. Please check your information and try again.',
+        });
+      }
 
-    const { full_name, email, password } = req.body;
-    // console.log(typeof full_name, typeof email, typeof password)
-    if (
-      typeof full_name !== 'string' ||
-      typeof email !== 'string' ||
-      typeof password !== 'string'
-    )
-      return next({
-        log: 'Error in user.controller.userRegistration',
-        status: 400,
-        message: 'err: User data must be strings',
-      });
-  
-    const hashedPw = await bcrypt.hash(password, saltRounds);
-    const queryStr: string =
-      'INSERT IGNORE INTO users (full_name, email, password) VALUES (?, ?, ?)';
-    pool
-      .query(queryStr, [full_name, email, hashedPw])
-      .then(() => {
-        log.info(`${email} successfully registered`);
-        return res.redirect(200, '/');
-      })
-      .catch((err: ErrorEvent) => next(err));
+      const { full_name, email, password } = req.body;
+      if (
+        typeof full_name !== 'string' ||
+        typeof email !== 'string' ||
+        typeof password !== 'string'
+      ) {
+        const error: GlobalError = {
+          log: '[userCtrl - userReg] Invalid input types for user registration',
+          status: 400,
+          message: 'User data must be strings',
+        };
+
+        return next(error);
+      }
+
+      const hashedPw = await bcrypt.hash(password, saltRounds);
+      const queryStr: string =
+        'INSERT IGNORE INTO users (full_name, email, password) VALUES (?, ?, ?)';
+      pool
+        .query(queryStr, [full_name, email, hashedPw])
+        .then(() => {
+          log.info(`${email} successfully registered`);
+          res.locals.userInfo = { name: full_name, email: email };
+          res.locals.user = full_name;
+          return next();
+        })
+        .catch((err: ErrorEvent) => next(err));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        const error: GlobalError = {
+          log:
+            '[userCtrl - userReg] There was a problem registering from input: ' +
+            err.message,
+          status: 500,
+          message: 'Failed to register user from input',
+        };
+        return next(error);
+      } else {
+        return next(err);
+      }
+    }
   }
-  catch(err){
-    next(err);
-  }
-}
 };
 
+export const verifyUser: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  log.info('[userCtrl - verifyUser] Verifying user information...');
 
-export const verifyUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  log.info('Verifying user (middleware)');
+  try {
+    // Sanitze user inputs to prevent SQL injection attacks
+    const { email } = req.body;
+    const { password } = req.body;
+    // Data received from request should contain email and password as string types
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(401).json({ error: 'User data must be strings' });
+    }
 
-  if(req.body.code){
-    let user;
-    if(res.locals.userInfo.type === 'google'){
-      console.log('in finduser')
-       user = await findUser(res.locals.userInfo.email) as RowDataPacket[][];
+    /**
+     * Search database for user with matching email
+     * foundUser structure: [[RowDataPackets], [metadata]]
+     */
+    const foundUser = (await findUser(email)) as RowDataPacket[][];
+
+    /**
+     * Exits middleware and returns an error if user provided email does not exist
+     * in the database.
+     */
+    if (!foundUser[0][0]) {
+      log.error('[userCtrl - verifyUser] Email address not found');
+      return res.status(401).json({ error: 'Unable to verify user' });
     }
-    else{
-      user = await findUser(res.locals.userInfo.url) as RowDataPacket[][];
-    }
-    if(user[0][0]){
-      res.locals.user = user[0][0];
-      return res.status(200).json(res.locals.user);
-    }else{
-      console.log('did not find user')
+
+    // Bcrypt compares hashed password stored in database with user provided password.
+    const hashedPW: string = foundUser[0][0]?.password;
+    const match: boolean = await bcrypt.compare(password, hashedPW);
+
+    if (match) {
+      log.info('[userCtrl - verifyUser] Username/Password confirmed');
+      res.locals.verified = foundUser[0][0];
+      res.locals.userInfo = {
+        name: foundUser[0][0].full_name,
+        email: foundUser[0][0].email,
+      };
+
       return next();
+      } else {
+        log.error('[userCtrl - verifyUser] Username/Password do not match');
+
+        return res.redirect(401, '/login');
+      }
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      const error: GlobalError = {
+        log: '[userCtrl - verifyUser] There was a problem verifying user: ' + err.message,
+        status: 500,
+        message: 'Unable to verify user',
+      };
+      return next(error);
+    } else {
+      return next(err);
     }
   }
-
-  //other use regular login  methods
-else{
-  if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string')
-    return next({
-      log: 'Error in user.controller.userRegistration',
-      status: 400,
-      message: 'err: User data must be strings',
-    });
-  // foundUser structure: [[RowDataPackets], [metadata]]
-  const foundUser = (await findUser(req.body.email)) as RowDataPacket[][];
-  // verify user exists in db
-  if (!foundUser[0][0]) {
-    log.error('Email address not found');
-    return res.status(401).json({ err: 'Email address not found' });
-  }
-  // check for pw match
-  const hashedPW: string = foundUser[0][0]?.password;
-  const match: boolean = await bcrypt.compare(req.body.password, hashedPW);
-  if (match) {
-    log.info('Username/Password confirmed');
-    res.locals.user = foundUser[0][0];
-    console.log(res.locals.user)
-    return res.status(200).json(res.locals.user);
-  } else {
-    log.error('Incorrect password');
-    return res.redirect(401, '/login');
-  }
-}
-
 };
-
 
 // Save currentSchema into database
-export const saveSchema: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  log.info(`Saving user's schema (middleware)`);
-  if (typeof req.body.email !== 'string' || typeof req.body.schema !== 'string')
-    return next({
-      log: 'Error in user.controller.userRegistration',
-      status: 400,
-      message: 'err: User data must be strings',
-    });
-  const updateColQuery: string = `UPDATE users SET pg_schema = '${req.body.schema}' WHERE email = '${req.body.email}';`;
-  pool
-    .query(updateColQuery)
-    .then(() => {
-      log.info('schema saved');
-      return res.sendStatus(200);
-    })
-    .catch((err: ErrorEvent) => next(err));
+export const saveSchema: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  log.info("[userCtrl - saveSchema] Saving user's schema...");
+  const { schema } = req.body;
+  const { email } = req.session;
+
+  if (typeof email !== 'string' || typeof schema !== 'string') {
+    return res.status(400).json({ error: 'User data must be strings' });
+  }
+
+  const updateColQuery: string = `UPDATE users SET dbs = ? WHERE email = ?;`;
+  try {
+    await pool.query(updateColQuery, [schema, email]);
+    log.info('[userCtrl - saveSchema] New schema saved successfully');
+
+    return next();
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      const error: GlobalError = {
+        log: '[userCtrl - saveSchema] Failed to save new schema: ' + err.message,
+        status: 500,
+        message: 'Failed to save new schema',
+      };
+
+      return next(error);
+    } else {
+      return next(err);
+    }
+  }
 };
 
 // Retrieve saved schema
-export const retrieveSchema: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  log.info(`Retrieving saved user's saved schema (middleware)`);
+export const retrieveSchema: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  log.info("[userCtrl - retrvSchema] Retrieving user's saved schema");
+
   try {
-    const updateColQuery: string = `SELECT pg_schema FROM users WHERE email = '${req.params.email}';`;
-    const data = (await pool.query(updateColQuery)) as RowDataPacket[][];
-    if(data[0][0]){
-      if (data[0][0].pg_schema) return res.status(200).json(data[0][0].pg_schema);
-    } else return res.sendStatus(204);
+    const { email } = req.session;
+    const updateColQuery: string = `SELECT dbs FROM users WHERE email = ?;`;
+    const data = (await pool.query(updateColQuery, [email])) as RowDataPacket[];
+
+    if (data[0][0] && data[0][0].dbs) {
+      res.locals.data = data[0][0].dbs;
+
+      return res.status(200).json(res.locals.data);
+    } else {
+      return res.sendStatus(204);
+    }
   } catch (err: unknown) {
-    return next(err);
+    if (err instanceof Error) {
+      const error: GlobalError = {
+        log: '[userCtrl - retrvSchema] Failed to retrieve saved schema: ' + err.message,
+        status: 500,
+        message: 'Failed to retrieve saved schema',
+      };
+
+      return next(error);
+    } else {
+      return next(err);
+    }
   }
 };

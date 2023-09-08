@@ -1,6 +1,6 @@
 .idea/
 .vscode/
-.env/
+.env
 node_modules/
 build/
 tmp/
@@ -8,3 +8,4 @@ temp/
 .cert/
 ca.crt/
 ca.key/
+coverage/
