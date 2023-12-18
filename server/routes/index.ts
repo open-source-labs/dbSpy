@@ -12,6 +12,7 @@ import { microsoftRouter } from './microsoft.router';
 import { oracleRouter } from './oracle.router';
 import { mysqlRouter } from './mysql.router';
 import { sqliteRouter } from './sqlite.router';
+import { saveRouter } from './save.router';
 import { config } from 'dotenv';
 import log from '../logger/index';
 import type { DefaultErr } from '../../src/Types';
@@ -86,6 +87,8 @@ const routes = (app: Express) => {
   app.use('/api/sql/oracle', cookieSession, oracleRouter);
 
   app.use('/api/sql/sqlite', cookieSession, sqliteRouter);
+
+  app.use('/api/saveFiles', cookieSession, saveRouter);
 
   app.post('/api/saveSchema', saveSchema, (_req: Request, res: Response) => {
     return res.sendStatus(200);
