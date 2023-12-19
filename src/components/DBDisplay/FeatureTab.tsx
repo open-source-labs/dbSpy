@@ -18,6 +18,7 @@ import useCredentialsStore from '../../store/credentialsStore';
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
+import LoadDbModal from '../Modals/LoadDbModal';
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
@@ -33,6 +34,7 @@ export default function FeatureTab(props: any) {
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
+  const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
   //END: STATE DECLARATION
 
   //create references for HTML elements
@@ -122,15 +124,26 @@ export default function FeatureTab(props: any) {
     saveSchema(input);
     setSaveDbNameModalOpened(false);
   };
+  const openLoadDbModal = () => {
+    if (!user) alert('Must sign in to save!');
+    else {
+      setLoadDbModalOpened(true);
+    }
+  };
+  const closeLoadDbModal = () => {
+    setLoadDbModalOpened(false);
+  };
 
   // Temp
-  const saveSchema = (input: string): void => {
+  const saveSchema = (inputName: string): void => {
+    //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
-      console.log('input: ', input);
+      //Create request body with the schema to be saved and the inputted name to save it under
       const postBody = {
         schema: JSON.stringify(schemaStore),
-        SaveName: input,
+        SaveName: inputName,
       };
+      //make a get request to see if the name already exists in the database
       axios
         .get<string[]>('/api/saveFiles/allSave')
         .then((res: AxiosResponse<string[]>) => {
@@ -139,9 +152,11 @@ export default function FeatureTab(props: any) {
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
           }
-          if (nameArr.includes(input)) {
+          // if the name already exists then send to one route and if not then send to the other
+          // route with combined middleware.
+          if (nameArr.includes(inputName)) {
             axios
-              .post('/api/saveFiles/save', postBody)
+              .patch('/api/saveFiles/save', postBody)
               .catch((err) => console.error('err', err));
           } else {
             axios
@@ -151,14 +166,15 @@ export default function FeatureTab(props: any) {
         })
         .catch((err) => console.error('Err', err));
     } else {
+      //if no table is present, send alert to the user
       alert('No schema displayed.');
     }
   };
 
-  const loadSchema = async () => {
+  const loadSchema = async (inputName: string) => {
     try {
-      if (!user) return alert('Sign in first');
-      const data = await fetch('/api/retrieveSchema');
+      //send the inputName along with the get request as query in the parameters.
+      const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
       return setSchemaStore(JSON.parse(schemaString));
@@ -524,7 +540,7 @@ export default function FeatureTab(props: any) {
                 </li>
                 <li>
                   <a
-                    onClick={() => loadSchema()}
+                    onClick={openLoadDbModal}
                     className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
@@ -606,6 +622,7 @@ export default function FeatureTab(props: any) {
         {saveDbNameModalOpened ? (
           <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
         ) : null}
+        {loadDbModalOpened ? <LoadDbModal closeLoadDbModal={closeLoadDbModal} /> : null}
       </div>
     </>
   );
