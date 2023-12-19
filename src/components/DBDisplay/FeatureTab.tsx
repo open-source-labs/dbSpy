@@ -1,7 +1,7 @@
 // React & React Router & React Query Modules
 
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
 
 const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
@@ -116,15 +116,33 @@ export default function FeatureTab(props: any) {
     setSaveDbNameModalOpened(true);
   };
   const closeSaveDbNameModal = () => {
+    //pull dbName from input field and send it to the database along with the schema.
+    saveSchema();
     setSaveDbNameModalOpened(false);
   };
 
   // Temp
   const saveSchema = (): void => {
-    if (!user) alert('Sign in first');
-    else {
+    // if (!user) alert('Sign in first');
+    // else {}
+    const dbNameInput: HTMLElement | null = document.querySelector('#dbNameInput');
+    if (dbNameInput) {
+      const dbName: string = dbNameInput.value;
+      if (dbName.length === 0) {
+        alert('Must enter a name');
+        return;
+      }
+      axios
+        .get<string[]>('/allSave')
+        .then((res: AxiosResponse<string[]>) => {
+          const nameArr: string[] = res.data;
+          if (nameArr.includes(dbName)) console.log('Response data:', res.data);
+        })
+        .catch((err) => console.error('Err', err));
+
       const postBody = {
         schema: JSON.stringify(schemaStore),
+        SaveName: dbName,
       };
       axios.post('/api/saveSchema', postBody).catch((err) => console.error('err', err));
     }
@@ -578,7 +596,9 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
-        {saveDbNameModalOpened ? <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} /> : null}
+        {saveDbNameModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+        ) : null}
       </div>
     </>
   );

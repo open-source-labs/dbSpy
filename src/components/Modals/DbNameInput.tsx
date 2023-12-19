@@ -21,7 +21,7 @@ export default function DbNameInputModal({
     >
       <div className="modal-content w-[30%] min-w-[300px] max-w-[850px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
         <span className="flex justify-between"></span>
-        <input placeholder="Enter file name."></input>
+        <input id="dbNameInput" placeholder="Enter file name."></input>
         <button
           onClick={closeSaveDbNameModal}
           id="closeSaveDbNameModal"
