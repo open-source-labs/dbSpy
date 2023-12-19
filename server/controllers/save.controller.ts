@@ -154,10 +154,10 @@ const saveController = {
     log.info("[saveCtrl - newSave] Begining to load user's schema...");
     const { SaveName } = req.body;
     const { email } = req.session;
-    console.log(email, SaveName);
+    console.log('157', email, SaveName);
 
     const newSaveQuery = 'INSERT INTO saveddb(email,SaveName,SaveData) VALUES (?,?,?)';
-    const values = [email, SaveName, {}];
+    const values = [email, SaveName, '{}'];
     try {
       const saveData = await pool.query(newSaveQuery, values);
       console.log(saveData);

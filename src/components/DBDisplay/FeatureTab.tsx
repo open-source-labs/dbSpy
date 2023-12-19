@@ -1,7 +1,7 @@
 // React & React Router & React Query Modules
 
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
 
 const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
@@ -21,7 +21,6 @@ import DbNameInput from '../Modals/DbNameInput';
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
-  console.log('this is props: ', props);
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const [theme, setTheme] = useState('Light');
 
@@ -113,20 +112,46 @@ export default function FeatureTab(props: any) {
     setQueryModalOpened(false);
   };
   const openSaveDbNameModal = () => {
-    setSaveDbNameModalOpened(true);
+    if (!user) alert('Must sign in to save!');
+    else {
+      setSaveDbNameModalOpened(true);
+    }
   };
-  const closeSaveDbNameModal = () => {
+  const closeSaveDbNameModal = (input: string) => {
+    //pull dbName from input field and send it to the database along with the schema.
+    saveSchema(input);
     setSaveDbNameModalOpened(false);
   };
 
   // Temp
-  const saveSchema = (): void => {
-    if (!user) alert('Sign in first');
-    else {
+  const saveSchema = (input: string): void => {
+    if (Object.keys(schemaStore).length !== 0) {
+      console.log('input: ', input);
       const postBody = {
         schema: JSON.stringify(schemaStore),
+        SaveName: input,
       };
-      axios.post('/api/saveSchema', postBody).catch((err) => console.error('err', err));
+      axios
+        .get<string[]>('/api/saveFiles/allSave')
+        .then((res: AxiosResponse<string[]>) => {
+          console.log('Response data:', res.data.data);
+          const nameArr = [];
+          for (let saveName of res.data.data) {
+            nameArr.push(saveName.SaveName);
+          }
+          if (nameArr.includes(input)) {
+            axios
+              .post('/api/saveFiles/save', postBody)
+              .catch((err) => console.error('err', err));
+          } else {
+            axios
+              .post('/api/saveFiles/CreateAndSave', postBody)
+              .catch((err) => console.error('err', err));
+          }
+        })
+        .catch((err) => console.error('Err', err));
+    } else {
+      alert('No schema displayed.');
     }
   };
 
@@ -578,7 +603,9 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
-        {saveDbNameModalOpened ? <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} /> : null}
+        {saveDbNameModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+        ) : null}
       </div>
     </>
   );
