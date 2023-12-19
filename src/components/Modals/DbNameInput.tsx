@@ -14,9 +14,7 @@ export default function DbNameInputModal({
 
   function handleFormSubmit(event: any) {
     event.preventDefault(); // Prevent default form submission behavior
-    console.log('this is event: ', event);
     const inputValue: string = event.target.elements.inputDbName.value;
-    console.log('inputValue: ', inputValue); // Replace 'inputName' with the actual name or ID of your input field
     // Add your logic to send the inputValue to the database here
     closeSaveDbNameModal(inputValue); // Close the modal after submission
   }
