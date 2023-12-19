@@ -17,10 +17,11 @@ import useCredentialsStore from '../../store/credentialsStore';
 
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
-
+import DbNameInput from '../Modals/DbNameInput';
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
+  console.log('this is props: ', props);
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const [theme, setTheme] = useState('Light');
 
@@ -32,6 +33,7 @@ export default function FeatureTab(props: any) {
   const { setWelcome, isSchema } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
+  const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
   //END: STATE DECLARATION
 
   //create references for HTML elements
@@ -107,9 +109,14 @@ export default function FeatureTab(props: any) {
   const openQueryModal = () => {
     setQueryModalOpened(true);
   };
-
   const closeQueryModal = () => {
     setQueryModalOpened(false);
+  };
+  const openSaveDbNameModal = () => {
+    setSaveDbNameModalOpened(true);
+  };
+  const closeSaveDbNameModal = () => {
+    setSaveDbNameModalOpened(false);
   };
 
   // Temp
@@ -468,7 +475,7 @@ export default function FeatureTab(props: any) {
               <ul className="space-y-2">
                 <li>
                   <a
-                    onClick={() => saveSchema()}
+                    onClick={openSaveDbNameModal}
                     className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
@@ -571,6 +578,7 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
+        {saveDbNameModalOpened ? <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} /> : null}
       </div>
     </>
   );
