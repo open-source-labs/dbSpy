@@ -21,7 +21,6 @@ import DbNameInput from '../Modals/DbNameInput';
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
-  console.log('this is props: ', props);
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const [theme, setTheme] = useState('Light');
 
@@ -113,38 +112,46 @@ export default function FeatureTab(props: any) {
     setQueryModalOpened(false);
   };
   const openSaveDbNameModal = () => {
-    setSaveDbNameModalOpened(true);
+    if (!user) alert('Must sign in to save!');
+    else {
+      setSaveDbNameModalOpened(true);
+    }
   };
-  const closeSaveDbNameModal = () => {
+  const closeSaveDbNameModal = (input: string) => {
     //pull dbName from input field and send it to the database along with the schema.
-    saveSchema();
+    saveSchema(input);
     setSaveDbNameModalOpened(false);
   };
 
   // Temp
-  const saveSchema = (): void => {
-    // if (!user) alert('Sign in first');
-    // else {}
-    const dbNameInput: HTMLElement | null = document.querySelector('#dbNameInput');
-    if (dbNameInput) {
-      const dbName: string = dbNameInput.value;
-      if (dbName.length === 0) {
-        alert('Must enter a name');
-        return;
-      }
-      axios
-        .get<string[]>('/allSave')
-        .then((res: AxiosResponse<string[]>) => {
-          const nameArr: string[] = res.data;
-          if (nameArr.includes(dbName)) console.log('Response data:', res.data);
-        })
-        .catch((err) => console.error('Err', err));
-
+  const saveSchema = (input: string): void => {
+    if (Object.keys(schemaStore).length !== 0) {
+      console.log('input: ', input);
       const postBody = {
         schema: JSON.stringify(schemaStore),
-        SaveName: dbName,
+        SaveName: input,
       };
-      axios.post('/api/saveSchema', postBody).catch((err) => console.error('err', err));
+      axios
+        .get<string[]>('/api/saveFiles/allSave')
+        .then((res: AxiosResponse<string[]>) => {
+          console.log('Response data:', res.data.data);
+          const nameArr = [];
+          for (let saveName of res.data.data) {
+            nameArr.push(saveName.SaveName);
+          }
+          if (nameArr.includes(input)) {
+            axios
+              .post('/api/saveFiles/save', postBody)
+              .catch((err) => console.error('err', err));
+          } else {
+            axios
+              .post('/api/saveFiles/CreateAndSave', postBody)
+              .catch((err) => console.error('err', err));
+          }
+        })
+        .catch((err) => console.error('Err', err));
+    } else {
+      alert('No schema displayed.');
     }
   };
 

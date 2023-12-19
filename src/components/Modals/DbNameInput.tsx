@@ -6,12 +6,20 @@ import { SchemaObject } from '../../Types';
 export default function DbNameInputModal({
   closeSaveDbNameModal,
 }: {
-  closeSaveDbNameModal: () => void;
+  closeSaveDbNameModal: (input: string) => void;
 }) {
   // read from schemaStore, then run queryGen
   const { schemaStore, system } = useSchemaStore((state) => state);
   const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
 
+  function handleFormSubmit(event: any) {
+    event.preventDefault(); // Prevent default form submission behavior
+    console.log('this is event: ', event);
+    const inputValue: string = event.target.elements.inputDbName.value;
+    console.log('inputValue: ', inputValue); // Replace 'inputName' with the actual name or ID of your input field
+    // Add your logic to send the inputValue to the database here
+    closeSaveDbNameModal(inputValue); // Close the modal after submission
+  }
   // handleclose from FeatureTab to toggle this modal off
   return (
     <div
@@ -19,24 +27,26 @@ export default function DbNameInputModal({
       id="dbNameInputModal"
       style={{ display: 'block', zIndex: '100' }}
     >
-      <div className="modal-content w-[30%] min-w-[300px] max-w-[850px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
-        <span className="flex justify-between"></span>
-        <input id="dbNameInput" placeholder="Enter file name."></input>
+      <form
+        onSubmit={handleFormSubmit}
+        className="modal-content w-[30%] min-w-[300px] max-w-[850px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+      >
+        <input placeholder="Enter file name." required name="inputDbName"></input>
         <button
-          onClick={closeSaveDbNameModal}
-          id="closeSaveDbNameModal"
+          id="dbNameInput"
+          type="submit"
           className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
         >
           Save
         </button>
         <button
+          type="button"
           onClick={closeSaveDbNameModal}
-          id="closeSaveDbNameModal"
           className="modalButton ml-5 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
         >
           Cancel
         </button>
-      </div>
+      </form>
     </div>
   );
 }
