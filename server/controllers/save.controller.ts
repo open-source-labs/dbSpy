@@ -33,7 +33,8 @@ const saveController = {
   clone: async (req: Request, res: Response, next: NextFunction) => {
     log.info('[saveCtrl - cloneSchema] Begining cloneing process');
     //necesary information to complete request
-    const { email, SaveName } = req.body;
+    const { SaveName } = req.body;
+    const { email } = req.session;
     //type checking
     if (typeof email !== 'string' || typeof SaveName !== 'string') {
       next({
@@ -80,7 +81,8 @@ const saveController = {
   save: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[saveCtrl - saveSchema] Begining to save user's schema...");
     //const {email} = req.session; // this will change to session when live
-    const { email, SaveName, schema } = req.body;
+    const { SaveName, schema } = req.body;
+    const { email } = req.session;
     console.log(email, SaveName, schema);
     try {
       // all schema data is on table saveddb in the SaveData Column.
@@ -104,7 +106,8 @@ const saveController = {
   delete: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[deleteCtrl - deleteSchema] Begining to deleteing user's schema...");
 
-    const { email, SaveName } = req.body;
+    const { SaveName } = req.body;
+    const { email } = req.session;
     console.log(email, SaveName);
     try {
       const deleteSaveQuery: string = `DELETE FROM saveddb WHERE email = ? AND SaveName = ?`;
@@ -124,7 +127,8 @@ const saveController = {
   //load current save
   load: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[loadCtrl - loadSchema] Begining to load user's schema...");
-    const { email, SaveName } = req.body;
+    const { SaveName } = req.body;
+    const { email } = req.session;
     console.log(email, SaveName);
 
     try {
@@ -148,7 +152,8 @@ const saveController = {
   //create new save
   newSave: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[saveCtrl - newSave] Begining to load user's schema...");
-    const { email, SaveName } = req.body;
+    const { SaveName } = req.body;
+    const { email } = req.session;
     console.log(email, SaveName);
 
     const newSaveQuery = 'INSERT INTO saveddb(email,SaveName,SaveData) VALUES (?,?,?)';
@@ -168,7 +173,8 @@ const saveController = {
   //update a saves name in the database
   renameSave: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[saveCtrl - renameSave] Begining to load user's schema...");
-    const { email, SaveName, OldName } = req.body;
+    const { SaveName, OldName } = req.body;
+    const { email } = req.session;
     console.log(email, OldName, SaveName);
     if (
       typeof email !== 'string' ||
@@ -198,7 +204,7 @@ const saveController = {
 
   getAllSaves: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[saveCtrl - renameSave] Begining to load user's schema...");
-    const { email } = req.body;
+    const { email } = req.session;
     console.log(email);
     try {
       const getSavesQuery: string = 'SELECT SaveName FROM saveddb WHERE email =?';
