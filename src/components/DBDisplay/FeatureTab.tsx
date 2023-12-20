@@ -18,6 +18,7 @@ import useCredentialsStore from '../../store/credentialsStore';
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
+import LoadDbModal from '../Modals/LoadDbModal';
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
@@ -33,6 +34,8 @@ export default function FeatureTab(props: any) {
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
+  const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
+  const [nameArr, setNameArr] = useState<string[]>([]);
   //END: STATE DECLARATION
 
   //create references for HTML elements
@@ -117,20 +120,59 @@ export default function FeatureTab(props: any) {
       setSaveDbNameModalOpened(true);
     }
   };
+
   const closeSaveDbNameModal = (input: string) => {
     //pull dbName from input field and send it to the database along with the schema.
     saveSchema(input);
     setSaveDbNameModalOpened(false);
   };
 
+  const pureCloseSaveDbNameModal = () => {
+    setSaveDbNameModalOpened(false);
+  };
+
+  //open loadDbName Modal and send get request to database to get all the database names.
+  const openLoadDbModal = async (): Promise<string[]> => {
+    if (!user) {
+      alert('Must sign in to save!');
+      return Promise.reject('User not signed in');
+    } else {
+      const response = await axios
+        .get<string[]>('/api/saveFiles/allSave')
+        .then((res: AxiosResponse<string[]>) => {
+          console.log('Response data142:', res.data);
+          const nameArr = [];
+          for (let saveName of res.data.data) {
+            nameArr.push(saveName.SaveName);
+          }
+          setLoadDbModalOpened(true);
+          setNameArr(nameArr);
+          // return nameArr;
+        })
+        .catch((err) => {
+          console.error('Err', err);
+          return Promise.reject(err);
+        });
+    }
+    return [];
+  };
+
+  const closeLoadDbModal = (input: string) => {
+    console.log("input161: ", input)
+    loadSchema(input);
+    setLoadDbModalOpened(false);
+  };
+
   // Temp
-  const saveSchema = (input: string): void => {
+  const saveSchema = (inputName: string): void => {
+    //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
-      console.log('input: ', input);
+      //Create request body with the schema to be saved and the inputted name to save it under
       const postBody = {
         schema: JSON.stringify(schemaStore),
-        SaveName: input,
+        SaveName: inputName,
       };
+      //make a get request to see if the name already exists in the database
       axios
         .get<string[]>('/api/saveFiles/allSave')
         .then((res: AxiosResponse<string[]>) => {
@@ -139,9 +181,11 @@ export default function FeatureTab(props: any) {
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
           }
-          if (nameArr.includes(input)) {
+          // if the name already exists then send to one route and if not then send to the other
+          // route with combined middleware.
+          if (nameArr.includes(inputName)) {
             axios
-              .post('/api/saveFiles/save', postBody)
+              .patch('/api/saveFiles/save', postBody)
               .catch((err) => console.error('err', err));
           } else {
             axios
@@ -151,18 +195,23 @@ export default function FeatureTab(props: any) {
         })
         .catch((err) => console.error('Err', err));
     } else {
+      //if no table is present, send alert to the user
       alert('No schema displayed.');
     }
   };
 
-  const loadSchema = async () => {
+  const loadSchema = async (inputName: string) => {
     try {
-      if (!user) return alert('Sign in first');
-      const data = await fetch('/api/retrieveSchema');
+      //send the inputName along with the get request as query in the parameters.
+      console.log("inputName206: ", typeof inputName);
+      const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
+      console.log("data208: ", data);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      return setSchemaStore(JSON.parse(schemaString));
+      console.log("schemastring211: ", typeof schemaString);
+      return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
+      console.log(err);
       console.error('err retrieve', err);
       window.alert(err);
     }
@@ -524,7 +573,7 @@ export default function FeatureTab(props: any) {
                 </li>
                 <li>
                   <a
-                    onClick={() => loadSchema()}
+                    onClick={openLoadDbModal}
                     className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
@@ -604,7 +653,13 @@ export default function FeatureTab(props: any) {
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {saveDbNameModalOpened ? (
-          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+          <DbNameInput
+            closeSaveDbNameModal={closeSaveDbNameModal}
+            pureCloseSaveDbNameModal={pureCloseSaveDbNameModal}
+          />
+        ) : null}
+        {loadDbModalOpened ? (
+          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
         ) : null}
       </div>
     </>
