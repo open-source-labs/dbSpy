@@ -124,6 +124,11 @@ export default function FeatureTab(props: any) {
     saveSchema(input);
     setSaveDbNameModalOpened(false);
   };
+
+  const pureCloseSaveDbNameModal = () => {
+    setSaveDbNameModalOpened(false);
+  };
+
   const openLoadDbModal = () => {
     if (!user) alert('Must sign in to save!');
     else {
@@ -620,7 +625,10 @@ export default function FeatureTab(props: any) {
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {saveDbNameModalOpened ? (
-          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+          <DbNameInput
+            closeSaveDbNameModal={closeSaveDbNameModal}
+            pureCloseSaveDbNameModal={pureCloseSaveDbNameModal}
+          />
         ) : null}
         {loadDbModalOpened ? <LoadDbModal closeLoadDbModal={closeLoadDbModal} /> : null}
       </div>

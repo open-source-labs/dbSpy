@@ -5,8 +5,10 @@ import { SchemaObject } from '../../Types';
 
 export default function DbNameInputModal({
   closeSaveDbNameModal,
+  pureCloseSaveDbNameModal,
 }: {
   closeSaveDbNameModal: (input: string) => void;
+  pureCloseSaveDbNameModal: () => void;
 }) {
   // read from schemaStore, then run queryGen
   const { schemaStore, system } = useSchemaStore((state) => state);
@@ -39,7 +41,7 @@ export default function DbNameInputModal({
         </button>
         <button
           type="button"
-          onClick={closeSaveDbNameModal}
+          onClick={pureCloseSaveDbNameModal}
           className="modalButton ml-5 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
         >
           Cancel

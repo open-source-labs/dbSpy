@@ -127,7 +127,7 @@ const saveController = {
   //load current save
   load: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[loadCtrl - loadSchema] Begining to load user's schema...");
-    const { SaveName } = req.body;
+    const { SaveName } = req.query;
     const { email } = req.session;
     console.log(email, SaveName);
 
