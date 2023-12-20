@@ -127,9 +127,9 @@ const saveController = {
   //load current save
   load: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[loadCtrl - loadSchema] Begining to load user's schema...");
-    const { SaveName } = req.body;
+    const { SaveName } = req.query;
     const { email } = req.session;
-    console.log(email, SaveName);
+    console.log("email and saveName: ", email, SaveName);
 
     try {
       const loadQuery: string = `SELECT SaveData FROM saveddb WHERE email = ? AND SaveName = ?`;
