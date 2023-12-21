@@ -130,9 +130,13 @@ export default function FeatureTab(props: any) {
   const pureCloseSaveDbNameModal = () => {
     setSaveDbNameModalOpened(false);
   };
+  const pureCloseLoadDbModal = () => {
+    setLoadDbModalOpened(false);
+  };
 
   //open loadDbName Modal and send get request to database to get all the database names.
   const openLoadDbModal = async (): Promise<string[]> => {
+    buildDatabase();
     if (!user) {
       alert('Must sign in to save!');
       return Promise.reject('User not signed in');
@@ -140,7 +144,6 @@ export default function FeatureTab(props: any) {
       const response = await axios
         .get<string[]>('/api/saveFiles/allSave')
         .then((res: AxiosResponse<string[]>) => {
-          console.log('Response data142:', res.data);
           const nameArr = [];
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
@@ -158,7 +161,6 @@ export default function FeatureTab(props: any) {
   };
 
   const closeLoadDbModal = (input: string) => {
-    console.log("input161: ", input)
     loadSchema(input);
     setLoadDbModalOpened(false);
   };
@@ -176,7 +178,6 @@ export default function FeatureTab(props: any) {
       axios
         .get<string[]>('/api/saveFiles/allSave')
         .then((res: AxiosResponse<string[]>) => {
-          console.log('Response data:', res.data.data);
           const nameArr = [];
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
@@ -203,12 +204,9 @@ export default function FeatureTab(props: any) {
   const loadSchema = async (inputName: string) => {
     try {
       //send the inputName along with the get request as query in the parameters.
-      console.log("inputName206: ", typeof inputName);
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
-      console.log("data208: ", data);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      console.log("schemastring211: ", typeof schemaString);
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);
@@ -659,7 +657,7 @@ export default function FeatureTab(props: any) {
           />
         ) : null}
         {loadDbModalOpened ? (
-          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
+          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} pureCloseLoadDbModal={pureCloseLoadDbModal} />
         ) : null}
       </div>
     </>
