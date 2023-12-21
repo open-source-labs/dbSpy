@@ -40,6 +40,7 @@ export default function Flow(): JSX.Element {
       if (edge.source === node.id || edge.target === node.id) {
         return {
           ...edge,
+          type: 'soothstep',
           style: {
             //strokeWidth: 2,
             ...edge.style,
@@ -53,6 +54,7 @@ export default function Flow(): JSX.Element {
       }
       return {
         ...edge,
+        type: 'bezier',
         style: {
           //strokeWidth: 2,
           ...edge.style,
