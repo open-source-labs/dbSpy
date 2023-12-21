@@ -174,6 +174,7 @@ const DBDisplay: React.FC = () => {
         />
         {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
         <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
+        {/* <div>"Current Database Name:"</div> */}
           {welcome ? (
             <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
               <h3 className="text-center">Welcome to dbSpy!</h3>
