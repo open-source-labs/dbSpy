@@ -295,6 +295,10 @@
   box-shadow: 0 0 0 0.5px #1a192b;
   outline: none;
 }
+.react-flow__node.selected {
+  border: 4px solid #ffc444; /* Change the border color for selected nodes */
+  /* Change the background color for selected nodes */
+}
 .react-flow__node-group {
   background-color: rgba(240, 240, 240, 0.25);
 }
@@ -685,7 +689,7 @@ select:focus {
   justify-content: space-between;
   border-bottom: 1px solid gray;
   padding: 10px 0px;
-  width: 100%
+  width: 100%;
 }
 
 .column-input > div {
@@ -699,7 +703,6 @@ select:focus {
   width: 100%;
   height: 25px;
 }
-
 
 .column-input select {
   font-size: 0.9rem;

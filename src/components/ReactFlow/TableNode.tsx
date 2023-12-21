@@ -4,8 +4,7 @@ import 'reactflow/dist/style.css';
 import TableNodeColumn from './TableNodeColumn';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import useSettingsStore from '../../store/settingsStore';
-import { DataNodeData } from '@/Types'
-
+import { DataNodeData } from '@/Types';
 
 export default function TableNode({ data }) {
   const tableName = data.table[0];
@@ -18,7 +17,7 @@ export default function TableNode({ data }) {
   // schema edges to match source and target handles of edges to handle id
   const tableHandles = [];
   for (let i = 0; i < data.edges.length; i++) {
-    if (data.edges[i].source === tableName) {  
+    if (data.edges[i].source === tableName) {
       //make handle placement dynamic, we need to know the column of our source
       let columnNumberSource =
         columnData.findIndex((obj) => obj.Name === data.edges[i].sourceHandle) + 1;
@@ -31,7 +30,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].sourceHandle}
           style={{
             background: 'transparent',
-            top: 67 + ((columnNumberSource-1)*24),
+            top: 67 + (columnNumberSource - 1) * 24,
             // bottom: 'auto',
           }}
         />
@@ -51,7 +50,7 @@ export default function TableNode({ data }) {
           id={data.edges[i].targetHandle}
           style={{
             background: 'transparent',
-            top: 67 + ((columnNumberTarget-1)*24),
+            top: 67 + (columnNumberTarget - 1) * 24,
             // bottom: 'auto',
           }}
         />
@@ -63,85 +62,84 @@ export default function TableNode({ data }) {
   return (
     <>
       <div className="table-node transition-colors duration-500" key={tableName}>
-        <div className="flex items-center justify-between table-header relative bg-[#075985] dark:bg-opacity-75">
+        <div className="table-header relative flex items-center justify-between bg-[#075985] dark:bg-opacity-75">
           {/* <NodeResizer minWidth={100} minHeight={30} /> */}
           {tableHandles}
           <div>
             <label
-            htmlFor="text"
-            className="bg-[#075985] text-white text-stroke-black dark:bg-opacity-0"
-            style={{
-             'marginLeft': '0px'
-            }}
-          >
-      {tableName}
-    </label>
-  </div>
-    <div className="addRowBtn ml-3 mb-1.5">
-      <button
-        className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
-        onClick={() => setInputModalState(true, 'column', tableName)}
-      >
-        <FaRegPlusSquare size={20} className="text-white" />
-      </button>
-    </div>
-</div>
+              htmlFor="text"
+              className="text-stroke-black bg-[#075985] text-white dark:bg-opacity-0"
+              style={{
+                marginLeft: '0px',
+              }}
+            >
+              {tableName}
+            </label>
+          </div>
+          <div className="addRowBtn mb-1.5 ml-3">
+            <button
+              className="add-field bg-transparent transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+              onClick={() => setInputModalState(true, 'column', tableName)}
+            >
+              <FaRegPlusSquare size={20} className="text-white" />
+            </button>
+          </div>
+        </div>
 
-<div
-    style={{ maxHeight: "325px", maxWidth: "600px" }}
-    className="nowheel overflow-auto"
-  >
-      <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
-        <table className="transition-colors duration-500 dark:text-[#fbf3de]">
-          <thead>
-            <tr className="head-column">
-              <th
-                scope="col"
-                className="transition-colors duration-500 dark:text-[#fbf3de]"
-              >
-                <b>Column</b>
-              </th>
-              <th
-                scope="col"
-                className="transition-colors duration-500 dark:text-[#fbf3de]"
-              >
-                <b>Type</b>
-              </th>
-              <th
-                scope="col"
-                className="transition-colors duration-500 dark:text-[#fbf3de]"
-              >
-                <b>Constraints</b>
-              </th>
-              <th
-                scope="col"
-                className="transition-colors duration-500 dark:text-[#fbf3de]"
-              >
-                <b>PK</b>
-              </th>
-              <th
-                scope="col"
-                className="transition-colors duration-500 dark:text-[#fbf3de]"
-              >
-                <b>FK</b>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* generates dynamic columns */}
-            {columnData.map((column, index) => (
-              <TableNodeColumn
-                column={column}
-                key={`${tableName}-column${index}`}
-                id={`${tableName}-column${index}`}
-              />
-            ))}
-          </tbody>
-        </table>
+        <div
+          style={{ maxHeight: '325px', maxWidth: '600px' }}
+          className="nowheel overflow-auto"
+        >
+          <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
+            <table className="transition-colors duration-500 dark:text-[#fbf3de]">
+              <thead>
+                <tr className="head-column">
+                  <th
+                    scope="col"
+                    className="transition-colors duration-500 dark:text-[#fbf3de]"
+                  >
+                    <b>Column</b>
+                  </th>
+                  <th
+                    scope="col"
+                    className="transition-colors duration-500 dark:text-[#fbf3de]"
+                  >
+                    <b>Type</b>
+                  </th>
+                  <th
+                    scope="col"
+                    className="transition-colors duration-500 dark:text-[#fbf3de]"
+                  >
+                    <b>Constraints</b>
+                  </th>
+                  <th
+                    scope="col"
+                    className="transition-colors duration-500 dark:text-[#fbf3de]"
+                  >
+                    <b>PK</b>
+                  </th>
+                  <th
+                    scope="col"
+                    className="transition-colors duration-500 dark:text-[#fbf3de]"
+                  >
+                    <b>FK</b>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* generates dynamic columns */}
+                {columnData.map((column, index) => (
+                  <TableNodeColumn
+                    column={column}
+                    key={`${tableName}-column${index}`}
+                    id={`${tableName}-column${index}`}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
     </>
   );
 }
-
