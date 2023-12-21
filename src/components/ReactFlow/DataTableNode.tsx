@@ -17,10 +17,11 @@ export default function DataTableNode({ data }: { data: Data }) {
   //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
   const newData = structuredClone(data);
-  console.log('===== newData =====', newData);
+  console.log('===== newData (in DataTableNode) =====', newData);
+  const deepClone = { ...newData };
   const [tableData, setTableData] = useState(newData.table);
-  console.log('===== newData.table ======', newData.table);
-  console.log('===== tableData =====', tableData);
+  console.log('===== newData.table (in DataTableNode) ======', newData.table);
+  console.log('===== tableData (in DataTableNode) =====', tableData);
   const { setDataInputModalState } = useSettingsStore((state) => state);
   const { dataStore, referenceStore } = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
@@ -36,7 +37,8 @@ export default function DataTableNode({ data }: { data: Data }) {
   let firstRow: string[] = [];
   let restRowsData: RowsOfData[] | [] = [];
   let secondaryFirstRow: string[] = [];
-  let RowData: RowsOfData[] = Object.values(tableData[1]);
+  // let RowData: RowsOfData[] = Object.values(tableData[1]);
+  let RowData: RowsOfData[] = Object.values(deepClone.table[1]);
 
   //Used to grab the primary key and foreign keys column in the Table
   let schemaName = schemaStore[`public.${tableName}`];
