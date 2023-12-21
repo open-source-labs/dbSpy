@@ -5,16 +5,19 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 let settingsStore = (
-  set: (arg0: { (state: any): any; (state: any): any; (state: any): any; }) => any
+  set: (arg0: { (state: any): any; (state: any): any; (state: any): any }) => any
 ) => ({
   darkMode: true,
   setDarkMode: () =>
-    set((state: { darkMode: any; }) => ({ ...state, darkMode: !state.darkMode })),
+    set((state: { darkMode: any }) => ({ ...state, darkMode: !state.darkMode })),
 
   sidebarDisplayState: false,
   // dbSpy 6.0: Include setter for sidebarDisplayState to open/close sidebar from Connect Database button
-  setSidebarDisplayState: () => 
-    set((state: { sidebarDisplayState: any; }) => ({ ...state, sidebarDisplayState: !state.sidebarDisplayState })),
+  setSidebarDisplayState: () =>
+    set((state: { sidebarDisplayState: any }) => ({
+      ...state,
+      sidebarDisplayState: !state.sidebarDisplayState,
+    })),
 
   welcome: true,
   setWelcome: (input: any) => set((state: any) => ({ ...state, welcome: input })),
@@ -41,7 +44,11 @@ let settingsStore = (
   },
 
   inputDataModalState: { isOpen: false, mode: '' },
-  setDataInputModalState: (isOpen: boolean, mode: string = '', currentTable: string = '') => {
+  setDataInputModalState: (
+    isOpen: boolean,
+    mode: string = '',
+    currentTable: string = ''
+  ) => {
     set((state) => ({
       ...state,
       currentTable,
@@ -54,13 +61,13 @@ let settingsStore = (
     set((state) => ({
       ...state,
       deleteTableModalState: { isOpen },
-    }))
+    }));
   },
 
   isSchema: true,
-  setTableMode: (input:any) =>
-    set((state: {isSchema: any}) => ({ ...state, isSchema: !state.isSchema })),
-    //!state.isSchema or input??  ##########
+  setTableMode: (input: any) =>
+    set((state: { isSchema: any }) => ({ ...state, isSchema: !state.isSchema })),
+  //!state.isSchema or input??  ##########
 });
 
 // settingsStore = devtools(settingsStore);

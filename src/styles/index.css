@@ -39,7 +39,7 @@
 
 /* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
 .dark {
-  background-color: #334155;
+  background-color: #0f192a;
 }
 
 .testing {
@@ -118,7 +118,8 @@
   pointer-events: all;
 }
 .react-flow__edge-textbg {
-  fill: #4a7187;
+  fill: #0f192a;
+  border: 1px solid #ffc444;
 }
 
 .react-flow__edge-text {

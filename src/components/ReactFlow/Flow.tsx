@@ -40,7 +40,7 @@ export default function Flow(): JSX.Element {
       if (edge.source === node.id || edge.target === node.id) {
         return {
           ...edge,
-          type: 'soothstep',
+          type: 'smoothstep',
           style: {
             //strokeWidth: 2,
             ...edge.style,
@@ -84,7 +84,7 @@ export default function Flow(): JSX.Element {
         fitView
       >
         <div id="download-image"></div>
-        <Background className=" transition-colors duration-500 dark:bg-slate-800" />
+        <Background className=" transition-colors duration-500 dark:bg-black" />
         <Controls>
           <ControlButton>
             <DownloadButton />

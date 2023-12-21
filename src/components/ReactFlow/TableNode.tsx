@@ -62,7 +62,7 @@ export default function TableNode({ data }) {
   return (
     <>
       <div className="table-node transition-colors duration-500" key={tableName}>
-        <div className="table-header relative flex items-center justify-between bg-[#075985] dark:bg-opacity-75">
+        <div className="table-header relative flex items-center justify-between bg-[#075985] dark:bg-gray-900">
           {/* <NodeResizer minWidth={100} minHeight={30} /> */}
           {tableHandles}
           <div>
