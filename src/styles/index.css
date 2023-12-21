@@ -39,7 +39,7 @@
 
 /* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
 .dark {
-  background-color: #334155;
+  background-color: #0f192a;
 }
 
 .testing {
@@ -118,7 +118,8 @@
   pointer-events: all;
 }
 .react-flow__edge-textbg {
-  fill: #4a7187;
+  fill: #0f192a;
+  border: 1px solid #ffc444;
 }
 
 .react-flow__edge-text {
@@ -294,6 +295,10 @@
 .react-flow__node-group.selectable:focus-visible {
   box-shadow: 0 0 0 0.5px #1a192b;
   outline: none;
+}
+.react-flow__node.selected {
+  border: 4px solid #ffc444; /* Change the border color for selected nodes */
+  /* Change the background color for selected nodes */
 }
 .react-flow__node-group {
   background-color: rgba(240, 240, 240, 0.25);
@@ -685,7 +690,7 @@ select:focus {
   justify-content: space-between;
   border-bottom: 1px solid gray;
   padding: 10px 0px;
-  width: 100%
+  width: 100%;
 }
 
 .column-input > div {
@@ -699,7 +704,6 @@ select:focus {
   width: 100%;
   height: 25px;
 }
-
 
 .column-input select {
   font-size: 0.9rem;

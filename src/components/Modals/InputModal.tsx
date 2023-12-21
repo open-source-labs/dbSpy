@@ -14,18 +14,17 @@ type InputModalProps = {
 };
 
 interface Column {
-  name: string,
-  type: any,
-  isNullable: boolean,
-  isPrimary: boolean,
+  name: string;
+  type: any;
+  isNullable: boolean;
+  isPrimary: boolean;
   defaultValue: string | null;
-  }
+}
 
-  type AddTableToDb = {
+type AddTableToDb = {
   tableName: string;
-  newColumns: Column[]
-  };
-
+  newColumns: Column[];
+};
 
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
@@ -42,7 +41,7 @@ export default function InputModal({
   const { setSchemaStore } = useSchemaStore((state) => state);
   const { setDataStore } = useDataStore((state) => state);
 
-  const initialTable: string = 'untitled_table';  //for adding new table
+  const initialTable: string = 'untitled_table'; //for adding new table
   const initialColumns: ColumnData[] = [
     {
       name: 'id',
@@ -62,7 +61,6 @@ export default function InputModal({
     },
   ];
 
-
   const [tableName, setTableName] = useState<string>(() => {
     if (!tableNameProp) return initialTable;
     else return tableNameProp;
@@ -72,51 +70,46 @@ export default function InputModal({
     else return additionalColumn;
   });
 
-
   // functions that check validity and add schema to the store
-  const {  addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
+  const { addTableSchema, deleteTableSchema, addColumnSchema } = useSchemaStore(
     (state) => state
   );
 
-
   const handleSubmit = (): boolean => {
     try {
-
       if (mode === 'table') {
         addTableSchema(tableName, columnData);
         const dataToSend: AddTableToDb = {
           tableName: tableName,
-          newColumns: columnData
-          }
-          //req to backend to save new table
+          newColumns: columnData,
+        };
+        //req to backend to save new table
 
-          fetch(`/api/sql/${dbCredentials.db_type}/saveNewTable`, {
+        fetch(`/api/sql/${dbCredentials.db_type}/saveNewTable`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify(dataToSend)
-          })
-          .then((responseData)=> responseData.json())
-          .then((parsedData)=> {
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSend),
+        })
+          .then((responseData) => responseData.json())
+          .then((parsedData) => {
             setSchemaStore(parsedData.schema);
-            setDataStore(parsedData.data)
+            setDataStore(parsedData.data);
           });
-
-      }
-      else if (mode === 'column') {
-      addColumnSchema(tableName, columnData);
-      console.log('columnData: ', columnData)
-      //new column data that will be sent in the post request body
-      const dataToSend = {
-        tableName: tableName,
-        columnData: columnData,
-      };
+      } else if (mode === 'column') {
+        addColumnSchema(tableName, columnData);
+        console.log('columnData: ', columnData);
+        //new column data that will be sent in the post request body
+        const dataToSend = {
+          tableName: tableName,
+          columnData: columnData,
+        };
         //adds new column to the selected table
         fetch(`/api/sql/${dbCredentials.db_type}/addColumn`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify(dataToSend)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSend),
         });
-      };
+      }
       return true;
     } catch (error) {
       window.alert(error);
@@ -133,13 +126,13 @@ export default function InputModal({
     defaultValue: null,
   };
 
-  const addColumn = () => { //addNewRow for data table
+  const addColumn = () => {
+    //addNewRow for data table
     setColumnData((prevColumns) => {
       prevColumns.push(newColumn);
 
       return [...prevColumns];
     });
-
   };
 
   const deleteColumn = (index: number) => {
@@ -152,10 +145,8 @@ export default function InputModal({
   const handleColumnChange = (
     index: number,
     property: keyof ColumnData,
-    value: string | boolean,
-
+    value: string | boolean
   ) => {
-
     setColumnData((prevColumns) => {
       // isPrimary is special. Only one column may be pk. Extra logic required
       if (property !== 'isPrimary') {
@@ -192,8 +183,6 @@ export default function InputModal({
     />
   ));
 
-
-
   return (
     <div id="inputModal" className="input-modal">
       <form
@@ -219,7 +208,14 @@ export default function InputModal({
                 value={tableName}
                 required
                 maxLength={63}
-                onChange={(e) => setTableName((dbCredentials.db_type === 'postgres' ? e.target.value.toLowerCase().trim() : e.target.value).trim())}
+                onChange={(e) =>
+                  setTableName(
+                    (dbCredentials.db_type === 'postgres'
+                      ? e.target.value.toLowerCase().trim()
+                      : e.target.value
+                    ).trim()
+                  )
+                }
               />
             </>
           ) : (
@@ -245,7 +241,7 @@ export default function InputModal({
         <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
           <button
             type="button"
-            className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb] border-slate-500"
+            className="modalButton border-slate-500 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
             onClick={closeInputModal}
             data-testid="modal-cancel"
           >

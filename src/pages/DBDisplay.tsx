@@ -152,12 +152,12 @@ const DBDisplay: React.FC = () => {
       </div>
       <div
         id="DBDisplay"
-        className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-slate-700"
+        className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-gray-900"
       >
         <div
           ref={mySideBarId}
           id="mySidenav"
-          className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-gray-800"
+          className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-gray-900"
         >
           <a href="#" className="closebtn" onClick={closeNav}>
             &times;
@@ -188,7 +188,7 @@ const DBDisplay: React.FC = () => {
             <>
               <button
                 id="showSchema"
-                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-600"
                 onClick={setTableMode}
               >
                 Show data

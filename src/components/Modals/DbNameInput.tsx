@@ -3,7 +3,13 @@ import useSchemaStore from '../../store/schemaStore';
 import queryGen from '../../queryGen';
 import { SchemaObject } from '../../Types';
 
-export default function DbNameInputModal({closeSaveDbNameModal, pureCloseSaveDbNameModal}: {closeSaveDbNameModal: (input: string) => void, pureCloseSaveDbNameModal: () => void}) {
+export default function DbNameInputModal({
+  closeSaveDbNameModal,
+  pureCloseSaveDbNameModal,
+}: {
+  closeSaveDbNameModal: (input: string) => void;
+  pureCloseSaveDbNameModal: () => void;
+}) {
   // read from schemaStore, then run queryGen
   const { schemaStore, system } = useSchemaStore((state) => state);
   const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
@@ -16,7 +22,7 @@ export default function DbNameInputModal({closeSaveDbNameModal, pureCloseSaveDbN
   }
   // handleclose from FeatureTab to toggle this modal off
   return (
-    <div 
+    <div
       className="modal"
       id="dbNameInputModal"
       style={{ display: 'block', zIndex: '100' }}
@@ -29,7 +35,7 @@ export default function DbNameInputModal({closeSaveDbNameModal, pureCloseSaveDbN
         <button
           id="dbNameInput"
           type="submit"
-          className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+          className="modalButton ml-5 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
         >
           Save
         </button>
