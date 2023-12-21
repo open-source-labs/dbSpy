@@ -49,7 +49,7 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
-    const { user } = useCredentialsStore((state): any => state);
+  const { user } = useCredentialsStore((state): any => state);
   //create references for HTML elements
   const mySideBarId: any = useRef();
   const mainId: any = useRef();
@@ -68,7 +68,8 @@ const DBDisplay: React.FC = () => {
     const state = urlParams.get('state');
 
     // Replaces client's URL in window to remove OAuth code/state
-    const newURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+    const newURL =
+      window.location.protocol + '//' + window.location.host + window.location.pathname;
     window.history.replaceState({}, document.title, newURL);
 
     fetch('/api/oauth', {
@@ -81,7 +82,8 @@ const DBDisplay: React.FC = () => {
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
           return data.json();
-        } else throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
+        } else
+          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
       })
       .then((res) => {
         setUser(res);
@@ -125,30 +127,29 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-      <div className='flex justify-end pt-5 pr-5'>
-            {user ? (
-              <>
-                <span className="mt-4 inline-block text-black-200 lg:mt-0 dark:text-white">
-                  {user.full_name}
-                </span>
-                <img
-                  className="ml-2 mr-2 inline-block h-[25] rounded-full dark:invert"
-                  src={default_pfp}
-                />
-              </>
-            ) : (
-              <div className='flex justify-end'>
-        <NavLink
-          to="/login"
-
-          className="text-black text-base font-bold leading-normal p-6 dark:text-white"
-          >
-          <span>Login</span>
-          <img className="mr-3 ml-3 inline-block h-[20] dark:invert" src={login} />
-        </NavLink>
+      <div className="flex justify-end pr-5 pt-5">
+        {user ? (
+          <>
+            <span className="text-black-200 mt-4 inline-block dark:text-white lg:mt-0">
+              {user.full_name}
+            </span>
+            <img
+              className="ml-2 mr-2 inline-block h-[25] rounded-full dark:invert"
+              src={default_pfp}
+            />
+          </>
+        ) : (
+          <div className="flex justify-end">
+            <NavLink
+              to="/login"
+              className="p-6 text-base font-bold leading-normal text-black dark:text-white"
+            >
+              <span>Login</span>
+              <img className="ml-3 mr-3 inline-block h-[20] dark:invert" src={login} />
+            </NavLink>
+          </div>
+        )}
       </div>
-            )}
-          </div>      
       <div
         id="DBDisplay"
         className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-slate-700"
@@ -177,8 +178,8 @@ const DBDisplay: React.FC = () => {
             <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
               <h3 className="text-center">Welcome to dbSpy!</h3>
               <p className="text-center">
-                Please connect your database, upload a SQL file, or build your database from
-                scratch!
+                Please connect your database, upload a SQL file, or build your database
+                from scratch!
               </p>
             </div>
           ) : // If welcome state is false, check isSchema condition
@@ -223,7 +224,9 @@ const DBDisplay: React.FC = () => {
           />
         ) : null}
         {deleteTableModalState.isOpen ? (
-          <DeleteTableModal closeDeleteTableModal={() => setDeleteTableModalState(false)} />
+          <DeleteTableModal
+            closeDeleteTableModal={() => setDeleteTableModalState(false)}
+          />
         ) : null}
       </div>
     </>
