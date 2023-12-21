@@ -13,13 +13,15 @@ import informationIcon from '../../../src/assets/informationSqIcon.png';
 import useCredentialsStore from '../../store/credentialsStore';
 import { Edge, DataNode, DataStore, RowsOfData, Data, dbCredentials } from '@/Types';
 
+export default function DataTableNode({ data }: { data: Data }) {
+  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
 
-
-export default function DataTableNode({ data }: {data: Data} ) {  //this 'data' is created and passed from createdDataNodes, need DATA, not SCHEMA
-
-  
   const newData = structuredClone(data);
+  console.log('===== newData (in DataTableNode) =====', newData);
+  const deepClone = { ...newData };
   const [tableData, setTableData] = useState(newData.table);
+  console.log('===== newData.table (in DataTableNode) ======', newData.table);
+  console.log('===== tableData (in DataTableNode) =====', tableData);
   const { setDataInputModalState } = useSettingsStore((state) => state);
   const { dataStore, referenceStore } = useDataStore((state) => state);
   const setDataStore = useDataStore((state) => state.setDataStore);
@@ -27,131 +29,133 @@ export default function DataTableNode({ data }: {data: Data} ) {  //this 'data' 
   const { schemaStore } = useSchemaStore((state) => state);
   const { dbCredentials } = useCredentialsStore((state) => state);
 
-  const infoIconStr: string = "Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax." 
-  
+  const infoIconStr: string =
+    'Please strictly follow syntax of your database. Ex) leave blank for auto-generating values, primary key must have value, etc. It may cause an error in updating database if you not strictly follow the syntax.';
+
   //split up the table into different parts based on how the data is structured. fetch
   const tableName = tableData[0];
-  let firstRow : string[] = [];
-  let restRowsData : RowsOfData[]|[] = [];
-  let secondaryFirstRow : string[] = [];
-  let RowData:(RowsOfData[]) = Object.values(tableData[1]);
+  let firstRow: string[] = [];
+  let restRowsData: RowsOfData[] | [] = [];
+  let secondaryFirstRow: string[] = [];
+  // let RowData: RowsOfData[] = Object.values(tableData[1]);
+  let RowData: RowsOfData[] = Object.values(deepClone.table[1]);
 
+  //Used to grab the primary key and foreign keys column in the Table
+  let schemaName = schemaStore[`public.${tableName}`];
+  let PK: string | number | null = null;
+  let FK: string | number | null = null;
+  let pkVals = new Set();
+  for (let key in schemaName) {
+    if (schemaName[key]['IsForeignKey']) FK = schemaName[key].field_name;
+    if (schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
+  }
 
- //Used to grab the primary key and foreign keys column in the Table
- let schemaName = schemaStore[`public.${tableName}`];
- let PK :(string|number|null) = null;
- let FK :(string|number|null) = null;
- let pkVals = new Set();
- for(let key in schemaName){
-   if(schemaName[key]['IsForeignKey']) FK = schemaName[key].field_name;
-   if(schemaName[key]['IsPrimaryKey']) PK = schemaName[key].field_name;
+  //loop through all of RowData, grab each primary key value and store it in object<pkVals>
 
- }
-
-//loop through all of RowData, grab each primary key value and store it in object<pkVals>
-
-  for(let i = 0; i < RowData.length; i++){
-    if(PK !== null){
+  for (let i = 0; i < RowData.length; i++) {
+    if (PK !== null) {
       pkVals.add(RowData[i][PK]);
     }
   }
 
+  /////////////// FOR EDGE CASE CONSTRAINT THAT PREVENT ROW DELETED THAT HAS A FOREIGN KEY REFERENCING TO THAT ROW ////////////
+  // UseEffect on Mount to grab all the Foreign Key reference and store it in reference store because of constraint, *cant delete the row that has
+  // a foreign key referenced to it.
+  // useEffect(()=>{
 
-/////////////// FOR EDGE CASE CONSTRAINT THAT PREVENT ROW DELETED THAT HAS A FOREIGN KEY REFERENCING TO THAT ROW ////////////
-// UseEffect on Mount to grab all the Foreign Key reference and store it in reference store because of constraint, *cant delete the row that has 
-// a foreign key referenced to it.
-// useEffect(()=>{
+  //   //loop through all of the schemastore in current table to grab all the schema info referencing foreignkey
+  //   for(let columnKey in schemaName){
+  //     if(schemaName[columnKey].References[0]){
 
-//   //loop through all of the schemastore in current table to grab all the schema info referencing foreignkey
-//   for(let columnKey in schemaName){
-//     if(schemaName[columnKey].References[0]){
+  //       const toForeignKey = {};
+  //       const fromForeignKey = new Set();
+  //       const toTableName:string = schemaName[columnKey].References[0].PrimaryKeyTableName.replace('public.',"");
+  //       const toColumnName:string = schemaName[columnKey].References[0].PrimaryKeyName;
+  //       const fromTableName:string = schemaName[columnKey].References[0].ReferencesTableName.replace('public.',"");
+  //       const fromColumnName:string = schemaName[columnKey].References[0].ReferencesPropertyName;
 
-//       const toForeignKey = {};
-//       const fromForeignKey = new Set();
-//       const toTableName:string = schemaName[columnKey].References[0].PrimaryKeyTableName.replace('public.',"");
-//       const toColumnName:string = schemaName[columnKey].References[0].PrimaryKeyName;
-//       const fromTableName:string = schemaName[columnKey].References[0].ReferencesTableName.replace('public.',"");
-//       const fromColumnName:string = schemaName[columnKey].References[0].ReferencesPropertyName;
+  //       //loop throw all of the Rowdata and grab data if there is a corresponding foreign key
+  //       for(let i = 0; i < RowData.length; i++){
+  //         if(RowData[i][fromColumnName] !== null){
+  //           fromForeignKey.add(RowData[i][fromColumnName]);
+  //         }
+  //       }
+  //       //assign to the state reference store
+  //       toForeignKey[toTableName] = {[toColumnName]:fromForeignKey};
+  //       const currentRef = structuredClone(referenceStore);
+  //       //console.log('prereference' ,referenceStore)
+  //       setReferenceStore({...currentRef,...toForeignKey});
+  //       //console.log('post reference',referenceStore) //// ** State of referenceStore is not updating right away after setting referenceStore, only update on page mount?
+  //     }
+  //    }
+  //  },[dataStore])
+  //////////////////////////////////////////////////////
 
-      
-//       //loop throw all of the Rowdata and grab data if there is a corresponding foreign key
-//       for(let i = 0; i < RowData.length; i++){
-//         if(RowData[i][fromColumnName] !== null){
-//           fromForeignKey.add(RowData[i][fromColumnName]);
-//         }
-//       }
-//       //assign to the state reference store
-//       toForeignKey[toTableName] = {[toColumnName]:fromForeignKey};
-//       const currentRef = structuredClone(referenceStore);
-//       //console.log('prereference' ,referenceStore) 
-//       setReferenceStore({...currentRef,...toForeignKey});
-//       //console.log('post reference',referenceStore) //// ** State of referenceStore is not updating right away after setting referenceStore, only update on page mount?
-//     }
-//    }
-//  },[dataStore])
-//////////////////////////////////////////////////////
-
-
-//check if
+  //check if
   if (schemaName !== undefined) {
     secondaryFirstRow = Object.keys(schemaStore[tableName]);
   }
 
- //Filter out Schemas from data, not sure why schema data would show sometime.
-  if(RowData[0] !== undefined){
+  //Filter out Schemas from data, not sure why schema data would show sometime.
+  if (RowData[0] !== undefined) {
     if (RowData[0].IsForeignKey === undefined) {
       firstRow = Object.keys(RowData[0]);
       restRowsData = [...RowData];
     }
- }else{
+  } else {
     firstRow = secondaryFirstRow;
- }
+  }
 
-
-//UseEffect set Table when the dataStore is changed after on Delete.
+  //UseEffect set Table when the dataStore is changed after on Delete.
   useEffect(() => {
-    setTableData([tableName,dataStore[tableName]]);
+    setTableData([tableName, dataStore[tableName]]);
+    console.log('====== dataStore ======', dataStore);
+    console.log('====== setTableData IS BEING FIRED ======');
   }, [dataStore]);
 
+  const deleteRow = async (
+    value: RowsOfData,
+    index: number,
+    id: number | string
+  ): Promise<void> => {
+    ////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
+    //loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key.
+    //   for(let col in value){
+    //   if(referenceStore[id] !== undefined ){
+    //     if(referenceStore[id][col] !== undefined ){
+    //       if(referenceStore[id][col].has(value[col])){
+    //         alert(`Can't Delete Foreign Key: ${col}`);
+    //         throw new Error(`Can't Delete Foreign Key: ${col}`);
+    //       }
+    //     }
+    //   }
+    // }
+    ////////////////////////////////////////////////////////////////////////
+    const newDatastore = structuredClone(dataStore);
+    restRowsData = restRowsData
+      .slice(0, index)
+      .concat(restRowsData.slice(index + 1, restRowsData.length));
+    newDatastore[tableName] = restRowsData;
 
- const deleteRow = async (value: RowsOfData, index: number, id: number | string): Promise<void> => {
-////////////////////////// CHECK TO SEE IF IT HAS A REFERENCE FOREIGN KEY BEFORE DELETE/////////////
-//loop through all of deleteRow values and check if there is a corresponding referenceStore, if so throw error because it has a corresponding foreign key. 
-//   for(let col in value){
-//   if(referenceStore[id] !== undefined ){
-//     if(referenceStore[id][col] !== undefined ){
-//       if(referenceStore[id][col].has(value[col])){
-//         alert(`Can't Delete Foreign Key: ${col}`);
-//         throw new Error(`Can't Delete Foreign Key: ${col}`);
-//       }
-//     }
-//   }
-// }
-////////////////////////////////////////////////////////////////////////
-const newDatastore = structuredClone(dataStore);
-  restRowsData = restRowsData.slice(0, index).concat(restRowsData.slice(index + 1, restRowsData.length));
-  newDatastore[tableName] = restRowsData;
-   
-
-     await fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
-       method: 'DELETE',
-       headers: {
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify({ tableName: tableName, value: value })
-     })
+    await fetch(`/api/sql/${dbCredentials.db_type}/deleteRow`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tableName: tableName, value: value }),
+    })
       .then((res) => {
-        setDataStore({...newDatastore, [id]: restRowsData});
-      
+        setDataStore({ ...newDatastore, [id]: restRowsData });
+
         return;
       })
-      .catch((err: ErrorEvent) => { console.error('deleting row error', err) })
+      .catch((err: ErrorEvent) => {
+        console.error('deleting row error', err);
+      });
   };
 
-
-  
-//cannot make handles for data table dynamic since size of each column can vary
-//TODO: is there better way to assign handle? more dynamic?
+  //cannot make handles for data table dynamic since size of each column can vary
+  //TODO: is there better way to assign handle? more dynamic?
   const tableHandles: JSX.Element[] = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].source === tableName) {
@@ -163,7 +167,7 @@ const newDatastore = structuredClone(dataStore);
           id={data.edges[i].sourceHandle as string}
           style={{
             background: 'transparent',
-            left: "70%"
+            left: '70%',
           }}
         />
       );
@@ -177,9 +181,9 @@ const newDatastore = structuredClone(dataStore);
           id={data.edges[i].targetHandle as string}
           style={{
             background: 'transparent',
-            left: "4%"
+            left: '4%',
           }}
-        /> 
+        />
       );
     }
   }
@@ -187,52 +191,61 @@ const newDatastore = structuredClone(dataStore);
   return (
     <>
       <div className="table-node transition-colors duration-500" key={tableName}>
-        <div className="flex items-center justify-between table-header relative bg-[#075985] dark:opacity-75">
+        <div className="table-header relative flex items-center justify-between bg-[#075985] dark:opacity-75">
           {tableHandles}
           <div>
-            <label htmlFor="text"
-              className="bg-[#075985] dark:opacity-75 text-white text-stroke-black dark:bg-opacity-0"
+            <label
+              htmlFor="text"
+              className="text-stroke-black bg-[#075985] text-white dark:bg-opacity-0 dark:opacity-75"
               style={{
-                'marginLeft': '0px'
-              }}>
+                marginLeft: '0px',
+              }}
+            >
               {tableName}
             </label>
           </div>
-          <div className="addRowBtn ml-3 mb-1.5 flex position">
+          <div className="addRowBtn position mb-1.5 ml-3 flex">
             <button
-              className="add-field transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7] bg-transparent"
-              onClick={() => {setDataInputModalState(true, 'row', tableName)}}
+              className="add-field bg-transparent transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]"
+              onClick={() => {
+                setDataInputModalState(true, 'row', tableName);
+              }}
             >
               <FaRegPlusSquare size={20} className="text-white" />
             </button>
-            <div className='mt-2 mr-2'>
+            <div className="mr-2 mt-2">
               <Tippy content={infoIconStr} placement="top" trigger="mouseenter click">
-                <img src={informationIcon} alt="Information Icon" className="h-3 rounded-full ml-0" />
+                <img
+                  src={informationIcon}
+                  alt="Information Icon"
+                  className="ml-0 h-3 rounded-full"
+                />
               </Tippy>
             </div>
           </div>
         </div>
         <div
-          style={{ maxHeight: "350px", maxWidth: "600px" }}
-          className="nowheel overflow-auto scrollbar-hide"
+          style={{ maxHeight: '350px', maxWidth: '600px' }}
+          className="nowheel scrollbar-hide overflow-auto"
         >
           <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
             <table className="transition-colors duration-500 dark:text-[#fbf3de]">
               <thead>
                 <tr className="head-column">
-                  {firstRow?.map(each => (
+                  {firstRow?.map((each) => (
                     <th
                       key={each}
                       scope="col"
                       className="transition-colors duration-500 dark:text-[#fbf3de]"
-                    ><b>{each}</b>
+                    >
+                      <b>{each}</b>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-              {/* generates dynamic columns */}
-                {restRowsData.map((row, index) =>{
+                {/* generates dynamic columns */}
+                {restRowsData.map((row, index) => {
                   return (
                     <DataTableNodeColumn
                       row={row}
@@ -240,10 +253,10 @@ const newDatastore = structuredClone(dataStore);
                       id={tableName}
                       index={index}
                       deleteRow={deleteRow}
-                      PK={[PK,pkVals]}
+                      PK={[PK, pkVals]}
                     />
-                  )}
-                )}
+                  );
+                })}
               </tbody>
             </table>
           </div>

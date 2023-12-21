@@ -33,8 +33,8 @@ export default function createEdges(schemaObject: SchemaStore) {
             color: '#085c84',
           },
         });
-      };
-    };
-  };
+      }
+    }
+  }
   return edges;
-};
+}

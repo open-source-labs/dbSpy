@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 
 
-export default function LoadDbModal({closeLoadDbModal,nameArr,pureCloseLoadDbModal}: {nameArr: string[], closeLoadDbModal: (input: string) => void, pureCloseLoadDbModal:() => void}) {
+export default function LoadDbModal({
+  closeLoadDbModal,
+  nameArr,
+}: {
+  nameArr: string[];
+  closeLoadDbModal: (input: string) => void;
+}) {
   function handleFormSubmit(event: any) {
     event.preventDefault(); // Prevent default form submission behavior
     const selectedOptions = event.target.selectedItems.selectedOptions;

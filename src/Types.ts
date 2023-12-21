@@ -1,8 +1,7 @@
-
 export type DefaultErr = {
-  log: string,
-  status: number,
-  message: string,
+  log: string;
+  status: number;
+  message: string;
 };
 
 export type Props = {
@@ -10,29 +9,29 @@ export type Props = {
   setIsActive: (active: boolean) => void;
 };
 
-export interface dbCredentials{
-  database_name: string|number|null;
-  username: string|number|null;
-  password: string|number|null;
-  hostname: string|number|null;
-  port: string|number|null;
-  database_link: string|number|null;
+export interface dbCredentials {
+  database_name: string | number | null;
+  username: string | number | null;
+  password: string | number | null;
+  hostname: string | number | null;
+  port: string | number | null;
+  database_link: string | number | null;
   db_type: string;
 }
 
-export interface Data{
+export interface Data {
   edges: RowsOfData[];
   table: [string, RowsOfData[]];
 }
 
 export interface RefObj {
-    IsDestination: boolean,
-    PrimaryKeyName: string,
-    PrimaryKeyTableName: string,
-    ReferencesPropertyName: string,
-    ReferencesTableName: string,
-    constraintName: string,
-  }
+  IsDestination: boolean;
+  PrimaryKeyName: string;
+  PrimaryKeyTableName: string;
+  ReferencesPropertyName: string;
+  ReferencesTableName: string;
+  constraintName: string;
+}
 
 export interface TableColumn {
   Field?: string;
@@ -54,42 +53,42 @@ export interface TableColumn {
   update_rule?: string;
   delete_rule?: string;
   default_type?: string;
-};
+}
 
 export interface OracleSchema {
-TABLE_NAME: string,
-COLUMN_NAME: string,
-DATA_TYPE: string,
-DATA_DEFAULT: string | null,
-CHARACTER_MAXIMUM_LENGTH: string | number | null,
-IS_NULLABLE: string,
-COLUMN_ID: number,
-CONSTRAINT_NAME: string,
-CONSTRAINT_TYPE: string,
-R_TABLE_OWNER: string | null,
-R_TABLE_NAME: string | null,
-R_COLUMN_NAME: string | null
+  TABLE_NAME: string;
+  COLUMN_NAME: string;
+  DATA_TYPE: string;
+  DATA_DEFAULT: string | null;
+  CHARACTER_MAXIMUM_LENGTH: string | number | null;
+  IS_NULLABLE: string;
+  COLUMN_ID: number;
+  CONSTRAINT_NAME: string;
+  CONSTRAINT_TYPE: string;
+  R_TABLE_OWNER: string | null;
+  R_TABLE_NAME: string | null;
+  R_COLUMN_NAME: string | null;
 }
 
 export interface TableColumns {
   [columnName: string]: TableColumn;
-};
+}
 
 export interface TableSchema {
   [tableName: string]: TableColumns;
-};
+}
 
 export interface ReferenceType {
   [index: number]: {
-    IsDestination: boolean,
-    PrimaryKeyName: string,
-    PrimaryKeyTableName: string,
-    ReferencesPropertyName: string,
-    ReferencesTableName: string,
-    constraintName: string,
-  },
-  length: number,
-};
+    IsDestination: boolean;
+    PrimaryKeyName: string;
+    PrimaryKeyTableName: string;
+    ReferencesPropertyName: string;
+    ReferencesTableName: string;
+    constraintName: string;
+  };
+  length: number;
+}
 
 export type Edge = {
   id: string;
@@ -99,6 +98,7 @@ export type Edge = {
   targetHandle: string;
   animated: boolean;
   label: string;
+  type: string;
   style: { strokeWidth: number; stroke: string };
   type: string;
   markerEnd: {
@@ -122,20 +122,21 @@ export interface DataNodeData {
   edges: Edge[];
 }
 
-export type TableTuple = 
-[ TableKey: string, 
-  ColumnData: { [ColumnName: string]: ColumnSchema } | RowsOfData[] | RowsOfData];
+export type TableTuple = [
+  TableKey: string,
+  ColumnData: { [ColumnName: string]: ColumnSchema } | RowsOfData[] | RowsOfData
+];
 
-  export interface dataSourceConnection {
-    type: string,
-    host?: string,
-    port?: string | number,
-    username?:string,
-    password?: string,
-    database?: string,
-    serviceName?: string,
-    synchronize?: boolean,
-    logging?: boolean,
+export interface dataSourceConnection {
+  type: string;
+  host?: string;
+  port?: string | number;
+  username?: string;
+  password?: string;
+  database?: string;
+  serviceName?: string;
+  synchronize?: boolean;
+  logging?: boolean;
 }
 
 // ---------------------------------------------------------------------
@@ -161,7 +162,7 @@ export type Reference = {
     ReferencesTableName: string;
     IsDestination: boolean;
     constraintName: string;
-  }
+  };
 };
 
 // export type PrimaryKeyReference = {
@@ -169,12 +170,12 @@ export type Reference = {
 // }
 
 export type ForeignKeyData = {
-  PrimaryKeyTableName: string,
-  PrimaryKeyColumnName: string,
-  ForeignKeyTableName: string,
-  ForeignKeyColumnName: string,
-  constraintName: string
-}
+  PrimaryKeyTableName: string;
+  PrimaryKeyColumnName: string;
+  ForeignKeyTableName: string;
+  ForeignKeyColumnName: string;
+  constraintName: string;
+};
 
 export type InnerReference = {
   PrimaryKeyName: string;
@@ -183,9 +184,9 @@ export type InnerReference = {
   ReferencesTableName: string;
   IsDestination: boolean;
   constraintName: string;
-}
+};
 
-export interface ColumnSchema{
+export interface ColumnSchema {
   Name: string;
   Value: string | null;
   TableName: string;
@@ -194,17 +195,17 @@ export interface ColumnSchema{
   IsForeignKey: boolean;
   field_name: string;
   data_type: SQLDataType;
-  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' | '' ;
-};
+  additional_constraints: 'NULL' | 'NOT NULL' | 'PRIMARY' | 'UNIQUE' | '';
+}
 
 // these are for data tables ######################
 export type RowsOfData = {
-  [key: string | number]: string | number | boolean | null,
+  [key: string | number]: string | number | boolean | null;
 };
 
 export type DataStore = {
   [TableName: string]: RowsOfData[];
-}
+};
 
 export type SchemaStore = {
   [TableName: string]: {
@@ -212,7 +213,7 @@ export type SchemaStore = {
   };
 };
 
-export type DataRowArray = Array<string | number | boolean>
+export type DataRowArray = Array<string | number | boolean>;
 
 // export type DataState = {
 //   // DATA
@@ -220,8 +221,6 @@ export type DataRowArray = Array<string | number | boolean>
 //   system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL';
 //   history: DataStore[];
 //   historyCounter: number;
-
-  
 
 //   // DATA SETTERS
 //   setDataStore: (dataInfo: DataStore) => void;
@@ -239,8 +238,7 @@ export type FlowState = {
 };
 
 export type ColumnDataForDataTable = {
-  [key: string | number]: RowsOfData[],
-  
+  [key: string | number]: RowsOfData[];
 };
 //######################
 
@@ -252,8 +250,8 @@ export interface SchemaObject {
   [key: string]: Table;
 }
 
-export type SQLDataType = 
-  'AUTO_INCREMENT'
+export type SQLDataType =
+  | 'AUTO_INCREMENT'
   | 'SERIAL'
   | 'SMALLSERIAL'
   | 'BIGSERIAL'
@@ -323,15 +321,15 @@ export type SQLDataType =
   | 'CUBE'
   | 'LTREE';
 
-  export type PostgresDataTypes = 
-  'bigint' 
+export type PostgresDataTypes =
+  | 'bigint'
   | 'bigserial'
   | 'bit'
   | 'bit varying'
   | 'boolean'
   | 'bool'
-  | 'box' 
-  | 'bytea' 
+  | 'box'
+  | 'bytea'
   | 'char'
   | 'character'
   | 'character varying'

@@ -76,7 +76,7 @@ export default function Login() {
   const getGithub = (): void => {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
     const options: Options = {
-      redirect_uri: 'http://db-spy.io/display/',
+      redirect_uri: 'http://localhost:8080/display/',
       client_id: '18d4ecdcc6ed1cb25240',
       state: 'randomstring',
       allow_signup: 'true',

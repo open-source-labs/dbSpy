@@ -240,7 +240,7 @@ export default function FeatureTab(props: any) {
           className="featureTab light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 overflow-y-auto  rounded px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-gray-800">
+          <div className="menuBar light:bg-sky-800 overflow-y-auto  rounded px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-black">
             {theme === 'Light' ? (
               <img
                 className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
