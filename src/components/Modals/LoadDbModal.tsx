@@ -10,10 +10,6 @@ export default function LoadDbModal({
   nameArr: string[];
   closeLoadDbModal: (input: string) => void;
 }) {
-  // read from schemaStore, then run queryGen
-  const { schemaStore, system } = useSchemaStore((state) => state);
-  const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
-
   function handleFormSubmit(event: any) {
     event.preventDefault(); // Prevent default form submission behavior
     const selectedOptions = event.target.selectedItems.selectedOptions;
