@@ -158,7 +158,7 @@ export default function FeatureTab(props: any) {
   };
 
   const closeLoadDbModal = (input: string) => {
-    console.log("input161: ", input)
+    console.log('input161: ', input);
     loadSchema(input);
     setLoadDbModalOpened(false);
   };
@@ -203,12 +203,12 @@ export default function FeatureTab(props: any) {
   const loadSchema = async (inputName: string) => {
     try {
       //send the inputName along with the get request as query in the parameters.
-      console.log("inputName206: ", typeof inputName);
+      console.log('inputName206: ', typeof inputName);
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
-      console.log("data208: ", data);
+      console.log('data208: ', data);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      console.log("schemastring211: ", typeof schemaString);
+      console.log('schemastring211: ', typeof schemaString);
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);
@@ -242,7 +242,7 @@ export default function FeatureTab(props: any) {
           className="featureTab light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 overflow-y-auto  rounded px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-gray-800">
+          <div className="menuBar light:bg-sky-800 overflow-y-auto  rounded px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-black">
             {theme === 'Light' ? (
               <img
                 className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
