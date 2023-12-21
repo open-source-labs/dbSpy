@@ -31,7 +31,7 @@ saveRouter.get('/loadSave', saveController.load, (_req: Request, res: Response) 
 //Save
 // Takes in current useremail + filename
 //updates the schema in the database
-saveRouter.post('/save', saveController.save, (_req: Request, res: Response) => {
+saveRouter.patch('/save', saveController.save, (_req: Request, res: Response) => {
   return res.status(200).json(res.locals);
 });
 

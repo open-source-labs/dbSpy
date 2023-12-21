@@ -30,11 +30,7 @@ interface Column {
 // TODO: ADD FORM VALIDATION
 // table or column name can have length <= 63
 
-export default function InputModal({
-  mode,
-  closeInputModal,
-  tableNameProp,
-}: InputModalProps) {
+export default function InputModal({mode,closeInputModal,tableNameProp,}: InputModalProps) {
   // TODO: separate state for table name and column data
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
