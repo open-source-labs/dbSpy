@@ -127,7 +127,7 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-end pr-5 pt-5">
+      <div className="flex h-2 justify-end pr-5 pt-4">
         {user ? (
           <>
             <span className="text-black-200 mt-4 inline-block dark:text-white lg:mt-0">

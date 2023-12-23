@@ -287,9 +287,11 @@ export default function FeatureTab(props: any) {
     let time = 30;
     if (logoClicked) {
       event.target.parentElement.classList.add('pointer-events-none');
+      event.target.parentElement.parentElement.classList.add('pointer-events-none');
     }
     if (!logoClicked) {
       event.target.parentElement.classList.remove('pointer-events-none');
+      event.target.parentElement.parentElement.classList.remove('pointer-events-none');
     }
     event.target;
     const siblings = Array.from(event.target.parentElement.children).filter(
@@ -316,13 +318,13 @@ export default function FeatureTab(props: any) {
       {/* PAGE */}
       <div className="mx-auto max-w-2xl">
         <aside
-          className="featureTab z-index-10 light:bg-sky-800 pointer-events-none absolute inset-y-0 left-0 top-24 w-64"
+          className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 overflow-y-auto rounded px-3 py-4 shadow-lg transition-colors duration-500">
+          <div className="menuBar light:bg-sky-800 ml-9 overflow-y-auto rounded px-6 py-8 shadow-lg transition-colors duration-500">
             {theme === 'Light' ? (
               <img
-                className="pointer-events-auto mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] fill-current  pr-2"
                 src={logo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}
@@ -331,7 +333,7 @@ export default function FeatureTab(props: any) {
               />
             ) : (
               <img
-                className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] pl-7 invert filter"
+                className="mb-8 mt-12 inline-block h-[45] h-[88px] w-[200px] pl-7 invert filter"
                 src={logo}
                 alt="Logo"
               />
@@ -374,7 +376,7 @@ export default function FeatureTab(props: any) {
                   </defs>
                 </svg>
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
-                  <div className="text-slate-900 dark:text-[#f8f4eb]">Home</div>
+                  <div className="text-md text-slate-900 dark:text-[#f8f4eb]">Home</div>
                 </div>
               </div>
             </NavLink>
@@ -395,19 +397,19 @@ export default function FeatureTab(props: any) {
                     stroke-linejoin="round"
                   />
                 </svg>
-                <div className="DarkMode text-base leading-normal dark:text-white">
+                <div className="DarkMode text-sm leading-normal dark:text-[#f8f4eb]">
                   {theme} Mode
                 </div>
               </div>
             </button>
 
-            <p className="mt-7 text-slate-900 dark:text-[#f8f4eb]">Action</p>
+            <p className="mb-1 mt-4 text-slate-900 dark:text-[#f8f4eb]">Action</p>
             <hr />
-            <ul className="space-y-2">
+            <ul className="mt-1 space-y-1">
               <li>
                 <a
                   onClick={connectDb}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   data-testid="connect-database"
                 >
                   <svg
@@ -430,7 +432,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={uploadSQL}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -453,7 +455,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={buildDb}
-                  className=" flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className=" flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -476,7 +478,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={openQueryModal}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -507,7 +509,7 @@ export default function FeatureTab(props: any) {
                       if (!Object.keys(schemaStore).length) buildDatabase();
                     }}
                     id="addTable"
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -534,7 +536,7 @@ export default function FeatureTab(props: any) {
                       props.openDeleteTableModal();
                     }}
                     id="deleteTable"
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -557,7 +559,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={clearCanvas}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -580,7 +582,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={undoHandler}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -602,7 +604,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={redoHandler}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -624,13 +626,13 @@ export default function FeatureTab(props: any) {
             </ul>
             <br />
             <div className="historyBlock">
-              <p className="text-slate-900 dark:text-[#f8f4eb]">Account</p>
+              <p className="mb-1 text-slate-900 dark:text-[#f8f4eb]">Account</p>
               <hr />
-              <ul className="space-y-2">
+              <ul className="mb-8 space-y-1">
                 <li>
                   <a
                     onClick={openSaveDbNameModal}
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -654,7 +656,7 @@ export default function FeatureTab(props: any) {
                 <li>
                   <a
                     onClick={openLoadDbModal}
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -679,7 +681,7 @@ export default function FeatureTab(props: any) {
                   <li>
                     <a
                       onClick={() => signoutSession()}
-                      className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                      className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
