@@ -243,6 +243,7 @@ export default function FeatureTab(props: any) {
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   };
 
+  //Create logo image hover over animation
   let hoverOverLogoTimeout;
   let ImgSwap;
   function logoImageFlow(event) {
@@ -272,10 +273,31 @@ export default function FeatureTab(props: any) {
       currIndex++;
     }, 130); // Adjust the timeout value (in milliseconds) as needed
   }
-
+  // function to clean up after the hover over affect
   function clearImgSwap(event) {
     event.target.src = logo;
     clearInterval(ImgSwap);
+  }
+
+  //on click function for revealing/hiding the nav bar
+  let logoClicked = false;
+  function revealHideNav(event) {
+    // Get the siblings
+    logoClicked = !logoClicked;
+    let time = 30;
+    const siblings = Array.from(event.target.parentElement.children).filter(
+      (child) => child !== event.target
+    );
+    for (let element of siblings) {
+      if (logoClicked) {
+        setTimeout(() => element.classList.add('hidden'), time);
+        time += 30;
+      } else {
+        setTimeout(() => element.classList.remove('hidden'), time);
+        time += 30;
+      }
+    }
+    console.log('These are the siblings of the image button', siblings);
   }
 
   // END: HELPER FUNCTIONS
@@ -296,6 +318,7 @@ export default function FeatureTab(props: any) {
                 alt="Logo"
                 onMouseOver={logoImageFlow}
                 onMouseOut={clearImgSwap}
+                onClick={revealHideNav}
               />
             ) : (
               <img
