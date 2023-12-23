@@ -10,6 +10,19 @@ const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 import parseSql from '../../parse';
 // Stores imported:
 import logo from '../../assets/newLogoWhite.png';
+import logo1 from '../../assets/newLogoWhite_color1.png';
+import logo2 from '../../assets/newLogoWhite_color2.png';
+import logo3 from '../../assets/newLogoWhite_color3.png';
+import logo4 from '../../assets/newLogoWhite_color4.png';
+import logo5 from '../../assets/newLogoWhite_color5.png';
+import logo6 from '../../assets/newLogoWhite_color6.png';
+import logo7 from '../../assets/newLogoWhite_color7.png';
+import logo8 from '../../assets/newLogoWhite_color8.png';
+import logo9 from '../../assets/newLogoWhite_color9.png';
+import logo10 from '../../assets/newLogoWhite_color10.png';
+import logo11 from '../../assets/newLogoWhite_color11.png';
+import logo12 from '../../assets/newLogoWhite_color12.png';
+
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -230,6 +243,39 @@ export default function FeatureTab(props: any) {
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   };
 
+  let hoverOverLogoTimeout;
+  let ImgSwap;
+  function logoImageFlow(event) {
+    //let currentLogoImg = event.target.src;
+    let logoImgArr = [
+      logo1,
+      logo2,
+      logo3,
+      logo4,
+      logo5,
+      logo6,
+      logo7,
+      logo8,
+      logo9,
+      logo10,
+      logo11,
+      logo12,
+      logo,
+    ];
+    let currIndex = 0;
+    ImgSwap = setInterval(function (currentLogoImg) {
+      if (currIndex > 11) {
+        currIndex = 0;
+      }
+      event.target.src = logoImgArr[++currIndex];
+    }, 130); // Adjust the timeout value (in milliseconds) as needed
+  }
+
+  function clearImgSwap(event) {
+    event.target.src = logo;
+    clearInterval(ImgSwap);
+  }
+
   // END: HELPER FUNCTIONS
 
   return (
@@ -246,6 +292,8 @@ export default function FeatureTab(props: any) {
                 className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
                 src={logo}
                 alt="Logo"
+                onMouseOver={logoImageFlow}
+                onMouseOut={clearImgSwap}
               />
             ) : (
               <img
@@ -657,7 +705,11 @@ export default function FeatureTab(props: any) {
           />
         ) : null}
         {loadDbModalOpened ? (
-          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} pureCloseLoadDbModal={pureCloseLoadDbModal} />
+          <LoadDbModal
+            nameArr={nameArr}
+            closeLoadDbModal={closeLoadDbModal}
+            pureCloseLoadDbModal={pureCloseLoadDbModal}
+          />
         ) : null}
       </div>
     </>

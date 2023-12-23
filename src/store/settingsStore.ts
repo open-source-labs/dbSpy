@@ -11,6 +11,16 @@ const settingsStore = (
     arg2: string
   ) => any
 ) => ({
+  displayNavBar: false,
+  setDisplayNavBar: () =>
+    set(
+      (state: { displayNavBar: boolean }) => ({
+        ...state,
+        displayNavBar: !state.displayNavBar,
+      }),
+      false,
+      'setDisplayNavBar in settingsStore'
+    ),
   darkMode: true,
   setDarkMode: () =>
     set(
