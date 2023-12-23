@@ -260,14 +260,16 @@ export default function FeatureTab(props: any) {
       logo10,
       logo11,
       logo12,
+      logo12,
       logo,
     ];
     let currIndex = 0;
-    ImgSwap = setInterval(function (currentLogoImg) {
-      if (currIndex > 11) {
+    ImgSwap = setInterval(function () {
+      if (currIndex > 12) {
         currIndex = 0;
       }
-      event.target.src = logoImgArr[++currIndex];
+      event.target.src = logoImgArr[currIndex];
+      currIndex++;
     }, 130); // Adjust the timeout value (in milliseconds) as needed
   }
 
