@@ -285,9 +285,19 @@ export default function FeatureTab(props: any) {
     // Get the siblings
     logoClicked = !logoClicked;
     let time = 30;
+    if (logoClicked) {
+      event.target.parentElement.classList.add('pointer-events-none');
+    }
+    if (!logoClicked) {
+      event.target.parentElement.classList.remove('pointer-events-none');
+    }
+    event.target;
     const siblings = Array.from(event.target.parentElement.children).filter(
       (child) => child !== event.target
     );
+    // if (logoClicked) {
+    //   event.target.parentElement.remove('');
+    // }
     for (let element of siblings) {
       if (logoClicked) {
         setTimeout(() => element.classList.add('hidden'), time);
@@ -297,7 +307,6 @@ export default function FeatureTab(props: any) {
         time += 30;
       }
     }
-    console.log('These are the siblings of the image button', siblings);
   }
 
   // END: HELPER FUNCTIONS
@@ -307,13 +316,13 @@ export default function FeatureTab(props: any) {
       {/* PAGE */}
       <div className="mx-auto max-w-2xl">
         <aside
-          className="featureTab light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
+          className="featureTab z-index-10 light:bg-sky-800 pointer-events-none absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 overflow-y-auto  rounded px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-black">
+          <div className="menuBar light:bg-sky-800 overflow-y-auto rounded px-3 py-4 shadow-lg transition-colors duration-500">
             {theme === 'Light' ? (
               <img
-                className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
+                className="pointer-events-auto mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
                 src={logo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}
