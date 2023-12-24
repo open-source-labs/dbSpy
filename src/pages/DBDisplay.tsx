@@ -181,6 +181,7 @@ const DBDisplay: React.FC = () => {
           isSchema ? (
             // If isSchema state is true, render Show Data button and Flow component
             <>
+              <Flow />
               <button
                 id="showSchema"
                 className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-600"
@@ -188,11 +189,11 @@ const DBDisplay: React.FC = () => {
               >
                 Show data
               </button>
-              <Flow />
             </>
           ) : (
             // If isSchema state is false, render Show Schema button and DataFlow component
             <>
+              <DataFlow />
               <button
                 id="showSchema"
                 className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
@@ -200,7 +201,6 @@ const DBDisplay: React.FC = () => {
               >
                 Show Schema
               </button>
-              <DataFlow />
             </>
           )}
         </div>

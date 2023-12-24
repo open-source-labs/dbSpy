@@ -85,7 +85,7 @@ export default function Flow(): JSX.Element {
       >
         <div id="download-image"></div>
         <Background className=" transition-colors duration-500 dark:bg-black" />
-        <Controls>
+        <Controls position="top-right">
           <ControlButton>
             <DownloadButton />
           </ControlButton>

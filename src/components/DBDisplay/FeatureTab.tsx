@@ -405,7 +405,7 @@ export default function FeatureTab(props: any) {
 
             <p className="mb-1 mt-4 text-slate-900 dark:text-[#f8f4eb]">Action</p>
             <hr />
-            <ul className="mt-1 space-y-1">
+            <ul className="mt-1 space-y-0">
               <li>
                 <a
                   onClick={connectDb}
