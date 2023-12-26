@@ -100,7 +100,6 @@ export type Edge = {
   label: string;
   type: string;
   style: { strokeWidth: number; stroke: string };
-  type: string;
   markerEnd: {
     type: string;
     orient: string;

@@ -143,7 +143,6 @@ export const cookieSession = (req: Request, _res: Response, next: NextFunction) 
       req.session.service_name = service_name;
     }
     console.log('Cookie has been set and is saving session data');
-    console.log('req.session in index.ts: ', req.session);
   } catch (err: unknown) {
     console.log('error was found in cookeSession: ', err);
     return next(err);

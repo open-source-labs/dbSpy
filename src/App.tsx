@@ -7,15 +7,6 @@ import Signup from './pages/Signup';
 import Shared from './pages/Shared';
 import useCredentialsStore from './store/credentialsStore';
 import './styles/index.css';
-import React from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import Home from './pages/Home';
-import DBDisplay from './pages/DBDisplay';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Shared from './pages/Shared';
-import useCredentialsStore from './store/credentialsStore';
-import './styles/index.css';
 
 const App: React.FC = () => {
   //STATE DECLARATION (dbSpy3.0)
@@ -34,21 +25,19 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Shared />}>
+        
         <Route path="/" element={<Shared />}>
           {/* index renders root directory */}
           <Route index element={<Home />} />
-          <Route path="login" element={user ? <DBDisplay /> : <Login />} />
-          <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
+          
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
         </Route>
-        <Route path="display" element={<DBDisplay />} />
+        
         <Route path="display" element={<DBDisplay />} />
       </Routes>
     </BrowserRouter>
   );
-};
 };
 
 export default App;
