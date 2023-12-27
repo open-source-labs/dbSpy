@@ -178,7 +178,7 @@ export default function FeatureTab(props: any) {
     setLoadDbModalOpened(false);
   };
 
-  // Temp
+  // Function for saving databases. Reworked for multiple saves - db 7.0
   const saveSchema = (inputName: string): void => {
     //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
@@ -214,6 +214,7 @@ export default function FeatureTab(props: any) {
     }
   };
 
+  // Reworked for multiple loads -  db 7.0
   const loadSchema = async (inputName: string) => {
     try {
       //send the inputName along with the get request as query in the parameters.
@@ -243,7 +244,7 @@ export default function FeatureTab(props: any) {
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   };
 
-  //Create logo image hover over animation
+  //Create logo image hover over animation - db 7.0
   let hoverOverLogoTimeout;
   let ImgSwap;
   function logoImageFlow(event) {
@@ -273,13 +274,13 @@ export default function FeatureTab(props: any) {
       currIndex++;
     }, 130); // Adjust the timeout value (in milliseconds) as needed
   }
-  // function to clean up after the hover over affect
+  // function to clean up after the hover over affect - db 7.0
   function clearImgSwap(event) {
     event.target.src = logo;
     clearInterval(ImgSwap);
   }
 
-  //on click function for revealing/hiding the nav bar
+  //on click function for revealing/hiding the nav bar db - 7.0
   let logoClicked = false;
   function revealHideNav(event) {
     // Get the siblings
@@ -324,7 +325,7 @@ export default function FeatureTab(props: any) {
           <div className="menuBar light:bg-sky-800 ml-9 overflow-y-auto rounded px-6 py-8 shadow-lg transition-colors duration-500">
             {theme === 'Light' ? (
               <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] fill-current  pr-2"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] fill-current  pr-3"
                 src={logo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}
@@ -333,9 +334,12 @@ export default function FeatureTab(props: any) {
               />
             ) : (
               <img
-                className="mb-8 mt-12 inline-block h-[45] h-[88px] w-[200px] pl-7 invert filter"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 invert filter"
                 src={logo}
                 alt="Logo"
+                onMouseOver={logoImageFlow}
+                onMouseOut={clearImgSwap}
+                onClick={revealHideNav}
               />
             )}
 
