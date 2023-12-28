@@ -1,5 +1,4 @@
 // React & React Router & React Query Modules
-
 import React, { useState, useRef } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
@@ -14,12 +13,14 @@ import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
-
+//import icon
+import { Home, ConnectDatabase, UploadSQLFile, ExportQuery, AddTable, DeleteTable, ClearCanvas, Undo, Redo, SaveDatabase, LoadDatabase, SignOut, BuildDatabase } from '../../FeatureTabIcon';
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
-import {Home, ConnectDatabaseIcon, UploadSQLFile, ExportQuery, AddTable, DeleteTable, ClearCanvas, Undo, Redo, SaveDatabase, LoadDatabase, SignOut, BuildDatabase} from '../../FeatureTabIcon';
+
+
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
@@ -109,12 +110,15 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
+  // Export QueryModal
   const openQueryModal = () => {
     setQueryModalOpened(true);
   };
   const closeQueryModal = () => {
     setQueryModalOpened(false);
   };
+
+  //SaveDbNameModal
   const openSaveDbNameModal = () => {
     if (!user) alert('Must sign in to save!');
     else {
@@ -122,20 +126,16 @@ export default function FeatureTab(props: any) {
     }
   };
 
-  const closeSaveDbNameModal = (input: string) => {
+  const closeSaveDbNameModal = (input?: string) => {
     //pull dbName from input field and send it to the database along with the schema.
-    saveSchema(input);
+    if(input){
+      saveSchema(input);
+    }
     setSaveDbNameModalOpened(false);
   };
-
-  const pureCloseSaveDbNameModal = () => {
-    setSaveDbNameModalOpened(false);
-  };
-  const pureCloseLoadDbModal = () => {
-    setLoadDbModalOpened(false);
-  };
-
-  //open loadDbName Modal and send get request to database to get all the database names.
+ 
+  // LoadDbModal
+  // Open loadDbName Modal and send get request to database to get&list all the databases name.
   const openLoadDbModal = async (): Promise<string[]> => {
     buildDatabase();
     if (!user) {
@@ -144,14 +144,13 @@ export default function FeatureTab(props: any) {
     } else {
       const response = await axios
         .get<string[]>('/api/saveFiles/allSave')
-        .then((res: AxiosResponse<string[]>) => {
+        .then((res: AxiosResponse) => {
           const nameArr = [];
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
           }
           setLoadDbModalOpened(true);
           setNameArr(nameArr);
-          // return nameArr;
         })
         .catch((err) => {
           console.error('Err', err);
@@ -161,8 +160,10 @@ export default function FeatureTab(props: any) {
     return [];
   };
 
-  const closeLoadDbModal = (input: string) => {
-    loadSchema(input);
+  const closeLoadDbModal = (input?: string) => {
+    if(input){
+      loadSchema(input);
+    }
     setLoadDbModalOpened(false);
   };
 
@@ -178,7 +179,7 @@ export default function FeatureTab(props: any) {
       //make a get request to see if the name already exists in the database
       axios
         .get<string[]>('/api/saveFiles/allSave')
-        .then((res: AxiosResponse<string[]>) => {
+        .then((res: AxiosResponse) => {
           const nameArr = [];
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
@@ -230,9 +231,7 @@ export default function FeatureTab(props: any) {
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
   };
-  function TWstyle(){
 
-  }
   // END: HELPER FUNCTIONS
 
   return (
@@ -299,7 +298,7 @@ export default function FeatureTab(props: any) {
                   className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
                   data-testid="connect-database"
                 >
-                  <ConnectDatabaseIcon/>
+                  <ConnectDatabase/>
                   <span className="ml-3">Connect Database</span>
                 </a>
               </li>
@@ -440,8 +439,7 @@ export default function FeatureTab(props: any) {
           {/* <!-- Confirm Modal content --> */}
           <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
             <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
-              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
-              changes.
+              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved changes.
             </p>
             <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
               <button
@@ -463,15 +461,8 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
-        {saveDbNameModalOpened ? (
-          <DbNameInput
-            closeSaveDbNameModal={closeSaveDbNameModal}
-            pureCloseSaveDbNameModal={pureCloseSaveDbNameModal}
-          />
-        ) : null}
-        {loadDbModalOpened ? (
-          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} pureCloseLoadDbModal={pureCloseLoadDbModal} />
-        ) : null}
+        {saveDbNameModalOpened ? (<DbNameInput closeSaveDbNameModal={closeSaveDbNameModal}/>) : null}
+        {loadDbModalOpened ? (<LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />) : null}
       </div>
     </>
   );

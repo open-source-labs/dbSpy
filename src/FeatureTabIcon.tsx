@@ -1,4 +1,7 @@
 import React from 'react';
+
+
+// All icons display feature tab
 export const Home = () => {
   return (
     <svg
@@ -7,7 +10,7 @@ export const Home = () => {
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
     >
       <g clip-path="url(#clip0_107_1134)">
         <path
@@ -56,7 +59,7 @@ export const Mode = () => {
   );
 };
 
-export const ConnectDatabaseIcon = () => {
+export const ConnectDatabase = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -93,6 +96,7 @@ export const UploadSQLFile = () => {
     </svg>
   );
 };
+
 export const BuildDatabase = () => {
   return (
     <svg
@@ -111,6 +115,7 @@ export const BuildDatabase = () => {
     </svg>
   );
 };
+
 export const ExportQuery = () => {
   return (
     <svg
@@ -129,6 +134,7 @@ export const ExportQuery = () => {
     </svg>
   );
 };
+
 export const AddTable = () => {
   return (
     <svg
@@ -147,6 +153,7 @@ export const AddTable = () => {
     </svg>
   );
 };
+
 export const DeleteTable = () => {
   return (
     <svg
@@ -165,6 +172,7 @@ export const DeleteTable = () => {
     </svg>
   );
 };
+
 export const ClearCanvas = () => {
   return (
     <svg
@@ -183,6 +191,7 @@ export const ClearCanvas = () => {
     </svg>
   );
 };
+
 export const Undo = () => {
   return (
     <svg
@@ -201,6 +210,7 @@ export const Undo = () => {
     </svg>
   );
 };
+
 export const Redo = () => {
   return (
     <svg
@@ -219,6 +229,7 @@ export const Redo = () => {
     </svg>
   );
 };
+
 export const SaveDatabase = () => {
   return (
     <svg
@@ -238,6 +249,7 @@ export const SaveDatabase = () => {
     </svg>
   );
 };
+
 export const LoadDatabase = () => {
   return (
     <svg
@@ -258,6 +270,7 @@ export const LoadDatabase = () => {
     </svg>
   );
 };
+
 export const SignOut = () => {
   return (
     <svg
