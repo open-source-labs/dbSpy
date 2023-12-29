@@ -349,15 +349,9 @@
 
 .flow {
   position: absolute;
-  top: 46px;
-  left: 6px;
-  right: 6px;
-  bottom: 6px;
-  border: 1px solid #273943;
+  top: 56px;
+  right: 0px;
   background: #fffefd;
-  border-width: 5px;
-  border-radius: 5px;
-  margin: 10px;
 }
 
 .table-node {
@@ -543,7 +537,7 @@ tr {
   transition: margin-left 0.5s;
   padding: 0px;
   /* margin-top: 50px; */
-  margin-left: 400px;
+  margin-left: 300px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */

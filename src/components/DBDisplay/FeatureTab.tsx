@@ -323,7 +323,7 @@ export default function FeatureTab(props: any) {
           className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 ml-9 overflow-auto rounded px-6 py-8 transition-colors duration-500">
+          <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
             {theme === 'Light' ? (
               <img
                 className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] fill-current  pr-3"
@@ -353,7 +353,7 @@ export default function FeatureTab(props: any) {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                  className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
                 >
                   <g clip-path="url(#clip0_107_1134)">
                     <path
@@ -381,7 +381,7 @@ export default function FeatureTab(props: any) {
                   </defs>
                 </svg>
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
-                  <div className="text-md text-slate-900 dark:text-[#f8f4eb]">Home</div>
+                  <div className="text-sm text-slate-900 dark:text-[#f8f4eb]">Home</div>
                 </div>
               </div>
             </NavLink>
@@ -408,9 +408,9 @@ export default function FeatureTab(props: any) {
               </div>
             </button>
 
-            <p className="mb-1 mt-4 text-slate-900 dark:text-[#f8f4eb]">Action</p>
+            <p className=" mt-4 text-slate-900 dark:text-[#f8f4eb]">Action</p>
             <hr />
-            <ul className="mt-1 space-y-0">
+            <ul className=" space-y-0">
               <li>
                 <a
                   onClick={connectDb}
@@ -631,7 +631,7 @@ export default function FeatureTab(props: any) {
             </ul>
             <br />
             <div className="historyBlock">
-              <p className="mb-1 text-slate-900 dark:text-[#f8f4eb]">Account</p>
+              <p className=" text-slate-900 dark:text-[#f8f4eb]">Account</p>
               <hr />
               <ul className="mb-8 space-y-1">
                 <li>
