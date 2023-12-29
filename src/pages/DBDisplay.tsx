@@ -127,14 +127,14 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-      <div className="flex h-2 justify-end pr-5 pt-4">
+      <div className="flex h-2 justify-end pr-5">
         {user ? (
           <>
-            <span className="text-black-200 mt-4 inline-block dark:text-white lg:mt-0">
+            <span className="text-black-200 inline-block pt-4 dark:text-white lg:mt-0">
               {user.full_name}
             </span>
             <img
-              className="ml-2 mr-2 inline-block h-[25] rounded-full dark:invert"
+              className="ml-2 mr-2 mt-4 inline-block h-[25] rounded-full dark:invert"
               src={default_pfp}
             />
           </>
@@ -184,7 +184,7 @@ const DBDisplay: React.FC = () => {
               <Flow />
               <button
                 id="showSchema"
-                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-600"
+                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show data
@@ -196,7 +196,7 @@ const DBDisplay: React.FC = () => {
               <DataFlow />
               <button
                 id="showSchema"
-                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-yellow-600"
                 onClick={setTableMode}
               >
                 Show Schema

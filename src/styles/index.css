@@ -349,11 +349,12 @@
 
 .flow {
   position: absolute;
-  top: 50px;
+  top: 46px;
   left: 6px;
-  right: 50px;
+  right: 6px;
+  bottom: 6px;
   border: 1px solid #273943;
-  background: #fbf3de;
+  background: #fffefd;
   border-width: 5px;
   border-radius: 5px;
   margin: 10px;

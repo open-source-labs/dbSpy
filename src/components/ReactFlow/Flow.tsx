@@ -7,6 +7,7 @@ import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
 import createEdges from './createEdges';
 import createNodes from './createNodes';
+import useSettingsStore from '../../store/settingsStore';
 
 const nodeTypes = {
   table: TableNode,
@@ -16,6 +17,7 @@ export default function Flow(): JSX.Element {
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
+  const { darkMode } = useSettingsStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
 
   // re-render every time schemaStore updates
@@ -33,10 +35,14 @@ export default function Flow(): JSX.Element {
   }
 
   console.log('onNodesChange: ', onNodesChange);
-
+  // function for highlighting the edges associated with the current node - db 7.0
   const handleNodeClick = (event, node) => {
     // Find edges connected to the clicked node and update their selected property
+    //console.log('this is the event', event);
+    console.log('these are the nodes', nodes);
     const updatedEdges = edges.map((edge) => {
+      let hlColor;
+      darkMode === true ? (hlColor = '#fedd0a') : (hlColor = '#fedd0a');
       if (edge.source === node.id || edge.target === node.id) {
         return {
           ...edge,
@@ -44,11 +50,11 @@ export default function Flow(): JSX.Element {
           style: {
             //strokeWidth: 2,
             ...edge.style,
-            stroke: '#fedd0a',
+            stroke: hlColor,
           },
           markerEnd: {
             ...edge.markerEnd,
-            color: '#fedd0a',
+            color: hlColor,
           },
         };
       }

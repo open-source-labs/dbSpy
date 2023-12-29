@@ -43,7 +43,7 @@ export default function FeatureTab(props: any) {
   );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema } = useSettingsStore((state) => state);
+  const { setWelcome, isSchema, setDarkMode } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
@@ -242,6 +242,7 @@ export default function FeatureTab(props: any) {
     const page = document.getElementById('body');
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
+    setDarkMode();
   };
 
   //Create logo image hover over animation - db 7.0
@@ -322,7 +323,7 @@ export default function FeatureTab(props: any) {
           className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 ml-9 overflow-y-auto rounded px-6 py-8 shadow-lg transition-colors duration-500">
+          <div className="menuBar light:bg-sky-800 ml-9 overflow-auto rounded px-6 py-8 transition-colors duration-500">
             {theme === 'Light' ? (
               <img
                 className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] fill-current  pr-3"
