@@ -150,10 +150,7 @@ const DBDisplay: React.FC = () => {
           </div>
         )}
       </div>
-      <div
-        id="DBDisplay"
-        className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-gray-900"
-      >
+      <div id="DBDisplay" className=" transition-colors duration-500">
         <div
           ref={mySideBarId}
           id="mySidenav"
