@@ -193,7 +193,7 @@ const DBDisplay: React.FC = () => {
               <DataFlow />
               <button
                 id="showSchema"
-                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-yellow-600"
+                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show Schema

@@ -8,7 +8,7 @@ const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 
 // Functions imported:
 import parseSql from '../../parse';
-// Stores imported:
+// Images for logo animation db 7.0
 import logo from '../../assets/newLogoWhite.png';
 import logo1 from '../../assets/newLogoWhite_color1.png';
 import logo2 from '../../assets/newLogoWhite_color2.png';
@@ -22,7 +22,7 @@ import logo9 from '../../assets/newLogoWhite_color9.png';
 import logo10 from '../../assets/newLogoWhite_color10.png';
 import logo11 from '../../assets/newLogoWhite_color11.png';
 import logo12 from '../../assets/newLogoWhite_color12.png';
-
+// Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -147,7 +147,7 @@ export default function FeatureTab(props: any) {
     setLoadDbModalOpened(false);
   };
 
-  //open loadDbName Modal and send get request to database to get all the database names.
+  //open loadDbName Modal and send get request to database to get all the database names. updated by db 7.0
   const openLoadDbModal = async (): Promise<string[]> => {
     buildDatabase();
     if (!user) {
@@ -381,9 +381,9 @@ export default function FeatureTab(props: any) {
                   </defs>
                 </svg>
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
-                  <div className="text-sm text-slate-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300">
+                  <span className="text-sm text-slate-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300">
                     Home
-                  </div>
+                  </span>
                 </div>
               </div>
             </NavLink>
@@ -405,9 +405,9 @@ export default function FeatureTab(props: any) {
                     stroke-linejoin="round"
                   />
                 </svg>
-                <div className="DarkMode text-sm font-normal leading-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 ">
+                <span className="DarkMode text-sm font-normal leading-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 ">
                   {theme} Mode
-                </div>
+                </span>
               </div>
             </button>
 
