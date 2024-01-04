@@ -209,6 +209,7 @@ export default function FeatureTab(props: any) {
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
+      console.log("schemaString212", schemaString.data)
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);
