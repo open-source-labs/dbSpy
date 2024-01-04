@@ -1,6 +1,6 @@
 // React & React Router & React Query Modules
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
 
@@ -260,7 +260,6 @@ export default function FeatureTab(props: any) {
   };
 
   //Create logo image hover over animation - db 7.0
-  let hoverOverLogoTimeout;
   let ImgSwap;
   function logoImageFlow(event) {
     //let currentLogoImg = event.target.src;
