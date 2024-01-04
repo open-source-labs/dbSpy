@@ -62,13 +62,13 @@ export default function TableNode({ data }) {
   return (
     <>
       <div className="table-node transition-colors duration-500" key={tableName}>
-        <div className="table-header relative flex items-center justify-between bg-[#075985] dark:bg-gray-900">
+        <div className="table-header relative flex items-center justify-between bg-[#f8f4eb] dark:bg-gray-900">
           {/* <NodeResizer minWidth={100} minHeight={30} /> */}
           {tableHandles}
           <div>
             <label
               htmlFor="text"
-              className="text-stroke-black bg-[#075985] text-white dark:bg-opacity-0"
+              className="text-stroke-black bg-[#f8f4eb] text-black dark:bg-opacity-0 dark:text-white"
               style={{
                 marginLeft: '0px',
               }}
@@ -90,7 +90,7 @@ export default function TableNode({ data }) {
           style={{ maxHeight: '325px', maxWidth: '600px' }}
           className="nowheel overflow-auto"
         >
-          <div className="table-bg transition-colors duration-500 dark:bg-slate-700">
+          <div className="table-bg bg-[#fffefd] transition-colors duration-500 dark:bg-slate-700">
             <table className="transition-colors duration-500 dark:text-[#fbf3de]">
               <thead>
                 <tr className="head-column">

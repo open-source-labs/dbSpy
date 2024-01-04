@@ -1,6 +1,6 @@
 // React & React Router & React Query Modules
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
 
@@ -8,8 +8,35 @@ const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 
 // Functions imported:
 import parseSql from '../../parse';
-// Stores imported:
+// Images for logo animation db 7.0
 import logo from '../../assets/newLogoWhite.png';
+import logo1 from '../../assets/newLogoWhite_color1.png';
+import logo2 from '../../assets/newLogoWhite_color2.png';
+import logo3 from '../../assets/newLogoWhite_color3.png';
+import logo4 from '../../assets/newLogoWhite_color4.png';
+import logo5 from '../../assets/newLogoWhite_color5.png';
+import logo6 from '../../assets/newLogoWhite_color6.png';
+import logo7 from '../../assets/newLogoWhite_color7.png';
+import logo8 from '../../assets/newLogoWhite_color8.png';
+import logo9 from '../../assets/newLogoWhite_color9.png';
+import logo10 from '../../assets/newLogoWhite_color10.png';
+import logo11 from '../../assets/newLogoWhite_color11.png';
+import logo12 from '../../assets/newLogoWhite_color12.png';
+import darkLogo from '../../assets/newLogoBlack.png';
+import darkLogo1 from '../../assets/newLogoBlack_color1.png';
+import darkLogo2 from '../../assets/newLogoBlack_color2.png';
+import darkLogo3 from '../../assets/newLogoBlack_color3.png';
+import darkLogo4 from '../../assets/newLogoBlack_color4.png';
+import darkLogo5 from '../../assets/newLogoBlack_color5.png';
+import darkLogo6 from '../../assets/newLogoBlack_color6.png';
+import darkLogo7 from '../../assets/newLogoBlack_color7.png';
+import darkLogo8 from '../../assets/newLogoBlack_color8.png';
+import darkLogo9 from '../../assets/newLogoBlack_color9.png';
+import darkLogo10 from '../../assets/newLogoBlack_color10.png';
+import darkLogo11 from '../../assets/newLogoBlack_color11.png';
+import darkLogo12 from '../../assets/newLogoBlack_color12.png';
+
+// Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -30,7 +57,7 @@ export default function FeatureTab(props: any) {
   );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema } = useSettingsStore((state) => state);
+  const { setWelcome, isSchema, setDarkMode } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
@@ -134,7 +161,7 @@ export default function FeatureTab(props: any) {
     setLoadDbModalOpened(false);
   };
 
-  //open loadDbName Modal and send get request to database to get all the database names.
+  //open loadDbName Modal and send get request to database to get all the database names. updated by db 7.0
   const openLoadDbModal = async (): Promise<string[]> => {
     buildDatabase();
     if (!user) {
@@ -165,7 +192,7 @@ export default function FeatureTab(props: any) {
     setLoadDbModalOpened(false);
   };
 
-  // Temp
+  // Function for saving databases. Reworked for multiple saves - db 7.0
   const saveSchema = (inputName: string): void => {
     //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
@@ -201,6 +228,7 @@ export default function FeatureTab(props: any) {
     }
   };
 
+  // Reworked for multiple loads -  db 7.0
   const loadSchema = async (inputName: string) => {
     try {
       //send the inputName along with the get request as query in the parameters.
@@ -228,7 +256,99 @@ export default function FeatureTab(props: any) {
     const page = document.getElementById('body');
     page!.classList.toggle('dark');
     theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
+    setDarkMode();
   };
+
+  //Create logo image hover over animation - db 7.0
+  let ImgSwap;
+  function logoImageFlow(event) {
+    //let currentLogoImg = event.target.src;
+    let logoImgArr;
+    if (theme === 'Light') {
+      logoImgArr = [
+        logo1,
+        logo2,
+        logo3,
+        logo4,
+        logo5,
+        logo6,
+        logo7,
+        logo8,
+        logo9,
+        logo10,
+        logo11,
+        logo12,
+        logo12,
+        logo,
+      ];
+    } else {
+      logoImgArr = [
+        darkLogo1,
+        darkLogo2,
+        darkLogo3,
+        darkLogo4,
+        darkLogo5,
+        darkLogo6,
+        darkLogo7,
+        darkLogo8,
+        darkLogo9,
+        darkLogo10,
+        darkLogo11,
+        darkLogo12,
+        darkLogo12,
+        darkLogo,
+      ];
+    }
+    let currIndex = 0;
+    ImgSwap = setInterval(function () {
+      if (currIndex > 12) {
+        currIndex = 0;
+      }
+      event.target.src = logoImgArr[currIndex];
+      currIndex++;
+    }, 130); // Adjust the timeout value (in milliseconds) as needed
+  }
+  // function to clean up after the hover over affect - db 7.0
+  function clearImgSwap(event) {
+    if (theme === 'Light') {
+      event.target.src = logo;
+    } else {
+      event.target.src = darkLogo;
+    }
+    clearInterval(ImgSwap);
+  }
+
+  //on click function for revealing/hiding the nav bar db - 7.0
+  let logoClicked = false;
+  function revealHideNav(event) {
+    // Get the siblings
+    logoClicked = !logoClicked;
+    let time = 30;
+    if (logoClicked) {
+      event.target.parentElement.classList.add('pointer-events-none');
+      event.target.parentElement.parentElement.classList.add('pointer-events-none');
+    }
+    if (!logoClicked) {
+      event.target.parentElement.classList.remove('pointer-events-none');
+      event.target.parentElement.parentElement.classList.remove('pointer-events-none');
+    }
+    event.target;
+    const siblings = Array.from(event.target.parentElement.children).filter(
+      (child) => child !== event.target
+    );
+    // if (logoClicked) {
+    //   event.target.parentElement.remove('');
+    // }
+    for (let element of siblings) {
+      if (logoClicked) {
+        setTimeout(() => element.classList.add('hidden'), time);
+        time += 30;
+      } else {
+        setTimeout(() => element.classList.remove('hidden'), time);
+        time += 30;
+      }
+    }
+  }
 
   // END: HELPER FUNCTIONS
 
@@ -237,21 +357,27 @@ export default function FeatureTab(props: any) {
       {/* PAGE */}
       <div className="mx-auto max-w-2xl">
         <aside
-          className="featureTab light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
+          className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 overflow-y-auto  rounded px-3 py-4 shadow-lg transition-colors duration-500 dark:bg-black">
+          <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
             {theme === 'Light' ? (
               <img
-                className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] fill-current  pl-7"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
                 src={logo}
                 alt="Logo"
+                onMouseOver={logoImageFlow} //db 7.0
+                onMouseOut={clearImgSwap} //db 7.0
+                onClick={revealHideNav} //db 7.0
               />
             ) : (
               <img
-                className="mb-4 mt-12 inline-block h-[45] h-[88px] w-[200px] pl-7 invert filter"
-                src={logo}
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter"
+                src={darkLogo}
                 alt="Logo"
+                onMouseOver={logoImageFlow}
+                onMouseOut={clearImgSwap}
+                onClick={revealHideNav}
               />
             )}
 
@@ -262,9 +388,9 @@ export default function FeatureTab(props: any) {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  stroke-width="1.0"
                   stroke="currentColor"
-                  className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                  className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
                   <g clip-path="url(#clip0_107_1134)">
                     <path
@@ -292,7 +418,9 @@ export default function FeatureTab(props: any) {
                   </defs>
                 </svg>
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
-                  <div className="text-slate-900 dark:text-[#f8f4eb]">Home</div>
+                  <span className="text-sm text-slate-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300">
+                    Home
+                  </span>
                 </div>
               </div>
             </NavLink>
@@ -300,32 +428,33 @@ export default function FeatureTab(props: any) {
             <button onClick={toggleClass}>
               <div className="ItemLink inline-flex h-10 w-[232px] items-center justify-start gap-0 rounded-lg py-2 pl-0 pr-0">
                 <svg
-                  fill="black"
+                  fill="none"
                   viewBox="0 0 24 24"
-                  className="white:invert ml-2 mr-2 inline-block h-[25] rounded-full"
+                  stroke-width="1.0"
+                  stroke="currentColor"
+                  className=" ml-2 mr-2 h-[24] stroke-current text-gray-500 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M1.50488 10.7569C1.50488 16.4855 6.14803 21.1294 11.8756 21.1294C16.2396 21.1294 19.974 18.4335 21.5049 14.616C20.3104 15.0962 19.0033 15.3668 17.6372 15.3668C11.9095 15.3668 7.26642 10.7229 7.26642 4.99427C7.26642 3.63427 7.53299 2.3195 8.00876 1.12939C4.19637 2.66259 1.50488 6.39536 1.50488 10.7569Z"
-                    stroke="white"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
-                <div className="DarkMode text-base leading-normal dark:text-white">
+                <span className="DarkMode text-sm font-normal leading-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 ">
                   {theme} Mode
-                </div>
+                </span>
               </div>
             </button>
 
-            <p className="mt-7 text-slate-900 dark:text-[#f8f4eb]">Action</p>
+            <p className=" mt-4 text-slate-900 dark:text-[#f8f4eb]">Action</p>
             <hr />
-            <ul className="space-y-2">
+            <ul className=" space-y-0">
               <li>
                 <a
                   onClick={connectDb}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="dark: flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   data-testid="connect-database"
                 >
                   <svg
@@ -334,7 +463,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <path
                       strokeLinecap="round"
@@ -348,7 +477,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={uploadSQL}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -356,7 +485,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <path
                       strokeLinecap="round"
@@ -371,7 +500,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={buildDb}
-                  className=" flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className=" flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -379,7 +508,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <path
                       strokeLinecap="round"
@@ -394,7 +523,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={openQueryModal}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -402,7 +531,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
                     stroke="currentColor"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                   >
                     <path
                       strokeLinecap="round"
@@ -425,7 +554,7 @@ export default function FeatureTab(props: any) {
                       if (!Object.keys(schemaStore).length) buildDatabase();
                     }}
                     id="addTable"
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -433,7 +562,7 @@ export default function FeatureTab(props: any) {
                       viewBox="0 0 24 24"
                       strokeWidth="1.5"
                       stroke="currentColor"
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500   dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
                       <path
                         strokeLinecap="round"
@@ -452,7 +581,7 @@ export default function FeatureTab(props: any) {
                       props.openDeleteTableModal();
                     }}
                     id="deleteTable"
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -460,7 +589,7 @@ export default function FeatureTab(props: any) {
                       viewBox="0 0 24 24"
                       strokeWidth="1.5"
                       stroke="currentColor"
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
                       <path
                         strokeLinecap="round"
@@ -475,7 +604,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={clearCanvas}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -483,7 +612,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <path
                       strokeLinecap="round"
@@ -498,7 +627,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={undoHandler}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -506,7 +635,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <path
                       strokeLinecap="round"
@@ -520,7 +649,7 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={redoHandler}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -528,7 +657,7 @@ export default function FeatureTab(props: any) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                   >
                     <path
                       strokeLinecap="round"
@@ -542,13 +671,13 @@ export default function FeatureTab(props: any) {
             </ul>
             <br />
             <div className="historyBlock">
-              <p className="text-slate-900 dark:text-[#f8f4eb]">Account</p>
+              <p className=" text-slate-900 dark:text-[#f8f4eb]">Account</p>
               <hr />
-              <ul className="space-y-2">
+              <ul className="mb-8 space-y-1">
                 <li>
                   <a
                     onClick={openSaveDbNameModal}
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -556,7 +685,7 @@ export default function FeatureTab(props: any) {
                       viewBox="0 0 24 24"
                       strokeWidth="1.5"
                       stroke="currentColor"
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
                       <path
                         strokeLinecap="round"
@@ -572,7 +701,7 @@ export default function FeatureTab(props: any) {
                 <li>
                   <a
                     onClick={openLoadDbModal}
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -580,7 +709,7 @@ export default function FeatureTab(props: any) {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
                       <path
                         strokeLinecap="round"
@@ -597,7 +726,7 @@ export default function FeatureTab(props: any) {
                   <li>
                     <a
                       onClick={() => signoutSession()}
-                      className="flex cursor-pointer items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-[#f8f4eb] dark:hover:bg-gray-700"
+                      className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -605,7 +734,7 @@ export default function FeatureTab(props: any) {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                       >
                         <path stroke="none" d="M0 0h24v24H0z" />
                         <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
@@ -657,7 +786,11 @@ export default function FeatureTab(props: any) {
           />
         ) : null}
         {loadDbModalOpened ? (
-          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} pureCloseLoadDbModal={pureCloseLoadDbModal} />
+          <LoadDbModal
+            nameArr={nameArr}
+            closeLoadDbModal={closeLoadDbModal}
+            pureCloseLoadDbModal={pureCloseLoadDbModal}
+          />
         ) : null}
       </div>
     </>
