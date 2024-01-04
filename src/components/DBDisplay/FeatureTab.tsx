@@ -329,9 +329,9 @@ export default function FeatureTab(props: any) {
                 className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
                 src={logo}
                 alt="Logo"
-                onMouseOver={logoImageFlow}
-                onMouseOut={clearImgSwap}
-                onClick={revealHideNav}
+                onMouseOver={logoImageFlow} //db 7.0
+                onMouseOut={clearImgSwap} //db 7.0
+                onClick={revealHideNav} //db 7.0
               />
             ) : (
               <img

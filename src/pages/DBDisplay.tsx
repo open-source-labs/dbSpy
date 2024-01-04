@@ -142,7 +142,7 @@ const DBDisplay: React.FC = () => {
           <div className="flex justify-end">
             <NavLink
               to="/login"
-              className="p-6 text-base font-bold leading-normal text-black dark:text-white"
+              className="p-4 text-base font-bold leading-normal text-black dark:text-white"
             >
               <span>Login</span>
               <img className="ml-3 mr-3 inline-block h-[20] dark:invert" src={login} />

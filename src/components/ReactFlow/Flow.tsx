@@ -33,8 +33,6 @@ export default function Flow(): JSX.Element {
     const initialNodes = createNodes(schemaStore, initialEdges);
     setNodes(initialNodes);
   }
-
-  console.log('onNodesChange: ', onNodesChange);
   // function for highlighting the edges associated with the current node - db 7.0
   const handleNodeClick = (event, node) => {
     // Find edges connected to the clicked node and update their selected property

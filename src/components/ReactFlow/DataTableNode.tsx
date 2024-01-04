@@ -191,12 +191,12 @@ export default function DataTableNode({ data }: { data: Data }) {
   return (
     <>
       <div className="table-node transition-colors duration-500" key={tableName}>
-        <div className="table-header relative flex items-center justify-between bg-[#075985] dark:opacity-75">
+        <div className="table-header relative flex items-center justify-between bg-[#f8f4eb] dark:bg-gray-900">
           {tableHandles}
           <div>
             <label
               htmlFor="text"
-              className="text-stroke-black bg-[#075985] text-white dark:bg-opacity-0 dark:opacity-75"
+              className="text-stroke-black bg-[#f8f4eb] text-black dark:bg-opacity-0 dark:text-white"
               style={{
                 marginLeft: '0px',
               }}
