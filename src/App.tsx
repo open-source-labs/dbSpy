@@ -25,15 +25,12 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        
         <Route path="/" element={<Shared />}>
           {/* index renders root directory */}
           <Route index element={<Home />} />
-          
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
         </Route>
-        
         <Route path="display" element={<DBDisplay />} />
       </Routes>
     </BrowserRouter>
@@ -41,4 +38,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 export default function LoadDbModal({
   closeLoadDbModal,
+  pureCloseLoadDbModal,
   nameArr,
 }: {
   nameArr: string[];
@@ -29,7 +30,10 @@ export default function LoadDbModal({
         className="modal-content w-[30%] min-w-[300px] max-w-[850px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="menu-box ml-0 mt-5" style={{ marginBottom: '20px' }}>
-          <label htmlFor="selectItems" className="ml-0 mt-0 text-white">
+          <label
+            htmlFor="selectItems"
+            className="ml-0 mt-0  text-slate-900 dark:text-[#f8f4eb]"
+          >
             Select database:
           </label>
           <select id="selectItems" name="selectedItems" className="ml-5">
