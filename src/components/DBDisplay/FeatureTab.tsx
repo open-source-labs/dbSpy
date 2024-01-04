@@ -22,6 +22,20 @@ import logo9 from '../../assets/newLogoWhite_color9.png';
 import logo10 from '../../assets/newLogoWhite_color10.png';
 import logo11 from '../../assets/newLogoWhite_color11.png';
 import logo12 from '../../assets/newLogoWhite_color12.png';
+import darkLogo from '../../assets/newLogoBlack.png';
+import darkLogo1 from '../../assets/newLogoBlack_color1.png';
+import darkLogo2 from '../../assets/newLogoBlack_color2.png';
+import darkLogo3 from '../../assets/newLogoBlack_color3.png';
+import darkLogo4 from '../../assets/newLogoBlack_color4.png';
+import darkLogo5 from '../../assets/newLogoBlack_color5.png';
+import darkLogo6 from '../../assets/newLogoBlack_color6.png';
+import darkLogo7 from '../../assets/newLogoBlack_color7.png';
+import darkLogo8 from '../../assets/newLogoBlack_color8.png';
+import darkLogo9 from '../../assets/newLogoBlack_color9.png';
+import darkLogo10 from '../../assets/newLogoBlack_color10.png';
+import darkLogo11 from '../../assets/newLogoBlack_color11.png';
+import darkLogo12 from '../../assets/newLogoBlack_color12.png';
+
 // Stores imported:
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
@@ -250,22 +264,42 @@ export default function FeatureTab(props: any) {
   let ImgSwap;
   function logoImageFlow(event) {
     //let currentLogoImg = event.target.src;
-    let logoImgArr = [
-      logo1,
-      logo2,
-      logo3,
-      logo4,
-      logo5,
-      logo6,
-      logo7,
-      logo8,
-      logo9,
-      logo10,
-      logo11,
-      logo12,
-      logo12,
-      logo,
-    ];
+    let logoImgArr;
+    if (theme === 'Light') {
+      logoImgArr = [
+        logo1,
+        logo2,
+        logo3,
+        logo4,
+        logo5,
+        logo6,
+        logo7,
+        logo8,
+        logo9,
+        logo10,
+        logo11,
+        logo12,
+        logo12,
+        logo,
+      ];
+    } else {
+      logoImgArr = [
+        darkLogo1,
+        darkLogo2,
+        darkLogo3,
+        darkLogo4,
+        darkLogo5,
+        darkLogo6,
+        darkLogo7,
+        darkLogo8,
+        darkLogo9,
+        darkLogo10,
+        darkLogo11,
+        darkLogo12,
+        darkLogo12,
+        darkLogo,
+      ];
+    }
     let currIndex = 0;
     ImgSwap = setInterval(function () {
       if (currIndex > 12) {
@@ -277,7 +311,11 @@ export default function FeatureTab(props: any) {
   }
   // function to clean up after the hover over affect - db 7.0
   function clearImgSwap(event) {
-    event.target.src = logo;
+    if (theme === 'Light') {
+      event.target.src = logo;
+    } else {
+      event.target.src = darkLogo;
+    }
     clearInterval(ImgSwap);
   }
 
@@ -335,8 +373,8 @@ export default function FeatureTab(props: any) {
               />
             ) : (
               <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 invert filter"
-                src={logo}
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter"
+                src={darkLogo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}
                 onMouseOut={clearImgSwap}
