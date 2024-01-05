@@ -3,22 +3,20 @@ import useSchemaStore from '../../store/schemaStore';
 import queryGen from '../../queryGen';
 import { SchemaObject } from '../../Types';
 
-export default function DbNameInputModal({
-  closeSaveDbNameModal,
-  pureCloseSaveDbNameModal,
-}: {
-  closeSaveDbNameModal: (input: string) => void;
-  pureCloseSaveDbNameModal: () => void;
-}) {
+export default function DbNameInputModal({closeSaveDbNameModal}: {closeSaveDbNameModal: (input?: string) => void;}) {
   // read from schemaStore, then run queryGen
   const { schemaStore, system } = useSchemaStore((state) => state);
   const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
 
   function handleFormSubmit(event: any) {
     event.preventDefault(); // Prevent default form submission behavior
-    const inputValue: string = event.target.elements.inputDbName.value;
-    // Add your logic to send the inputValue to the database here
-    closeSaveDbNameModal(inputValue); // Close the modal after submission
+    const isSaveButton = event.submitter && event.submitter.id === 'dbNameInput';
+    if(isSaveButton){
+      const inputValue: string = event.target.elements.inputDbName.value;
+      closeSaveDbNameModal(inputValue); // Close the modal after submission
+    }else{
+      closeSaveDbNameModal();
+    }
   }
   // handleclose from FeatureTab to toggle this modal off
   return (
@@ -40,8 +38,9 @@ export default function DbNameInputModal({
           Save
         </button>
         <button
+          id="cancel"
           type="button"
-          onClick={pureCloseSaveDbNameModal}
+          onClick={handleFormSubmit}
           className="modalButton ml-5 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
         >
           Cancel
