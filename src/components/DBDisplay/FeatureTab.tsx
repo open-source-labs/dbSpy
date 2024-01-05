@@ -41,25 +41,39 @@ import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
 //import icon
-import { Home, ConnectDatabase, UploadSQLFile, ExportQuery, AddTable, DeleteTable, ClearCanvas, Undo, Redo, SaveDatabase, LoadDatabase, SignOut, BuildDatabase } from '../../FeatureTabIcon';
+import {
+  Home,
+  ConnectDatabase,
+  UploadSQLFile,
+  ExportQuery,
+  AddTable,
+  DeleteTable,
+  ClearCanvas,
+  Undo,
+  Redo,
+  SaveDatabase,
+  LoadDatabase,
+  SignOut,
+  BuildDatabase,
+} from '../../FeatureTabIcon';
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
 
-
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
-  const [theme, setTheme] = useState('Light');
 
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
   );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema, setDarkMode } = useSettingsStore((state) => state);
+  const { setWelcome, isSchema, setDarkMode, darkMode } = useSettingsStore(
+    (state) => state
+  );
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
@@ -155,12 +169,12 @@ export default function FeatureTab(props: any) {
 
   const closeSaveDbNameModal = (input?: string) => {
     //pull dbName from input field and send it to the database along with the schema.
-    if(input){
+    if (input) {
       saveSchema(input);
     }
     setSaveDbNameModalOpened(false);
   };
- 
+
   // LoadDbModal
   // Open loadDbName Modal and send get request to database to get&list all the databases name.
   const openLoadDbModal = async (): Promise<string[]> => {
@@ -188,7 +202,7 @@ export default function FeatureTab(props: any) {
   };
 
   const closeLoadDbModal = (input?: string) => {
-    if(input){
+    if (input) {
       loadSchema(input);
     }
     setLoadDbModalOpened(false);
@@ -237,7 +251,7 @@ export default function FeatureTab(props: any) {
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      console.log("schemaString212", schemaString.data)
+      console.log('schemaString212', schemaString.data);
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);
@@ -258,7 +272,6 @@ export default function FeatureTab(props: any) {
   const toggleClass = (): void => {
     const page = document.getElementById('body');
     page!.classList.toggle('dark');
-    theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
     setDarkMode();
   };
 
@@ -267,7 +280,7 @@ export default function FeatureTab(props: any) {
   function logoImageFlow(event) {
     //let currentLogoImg = event.target.src;
     let logoImgArr;
-    if (theme === 'Light') {
+    if (darkMode === true) {
       logoImgArr = [
         logo1,
         logo2,
@@ -313,7 +326,7 @@ export default function FeatureTab(props: any) {
   }
   // function to clean up after the hover over affect - db 7.0
   function clearImgSwap(event) {
-    if (theme === 'Light') {
+    if (darkMode === true) {
       event.target.src = logo;
     } else {
       event.target.src = darkLogo;
@@ -328,6 +341,7 @@ export default function FeatureTab(props: any) {
     logoClicked = !logoClicked;
     let time = 30;
     if (logoClicked) {
+      //adding this class allows the canvas to be interacted with while being 'beneath' the divs
       event.target.parentElement.classList.add('pointer-events-none');
       event.target.parentElement.parentElement.classList.add('pointer-events-none');
     }
@@ -335,7 +349,6 @@ export default function FeatureTab(props: any) {
       event.target.parentElement.classList.remove('pointer-events-none');
       event.target.parentElement.parentElement.classList.remove('pointer-events-none');
     }
-    event.target;
     const siblings = Array.from(event.target.parentElement.children).filter(
       (child) => child !== event.target
     );
@@ -364,7 +377,7 @@ export default function FeatureTab(props: any) {
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
-            {theme === 'Light' ? (
+            {darkMode === true ? (
               <img
                 className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
                 src={logo}
@@ -385,11 +398,11 @@ export default function FeatureTab(props: any) {
             )}
 
             <NavLink to="/" className={linkbtn}>
-              <div className="inline-flex h-10 w-[232px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
+              <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
-                <Home/>
+                <Home />
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
-                  <span className="text-sm text-slate-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300">
+                  <span className="text-sm text-slate-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300">
                     Home
                   </span>
                 </div>
@@ -397,13 +410,13 @@ export default function FeatureTab(props: any) {
             </NavLink>
 
             <button onClick={toggleClass}>
-              <div className="ItemLink inline-flex h-10 w-[232px] items-center justify-start gap-0 rounded-lg py-2 pl-0 pr-0">
+              <div className="ItemLink group inline-flex h-10 w-[160px] items-center justify-start gap-0 rounded-lg py-2 pl-0 pr-0">
                 <svg
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.0"
                   stroke="currentColor"
-                  className=" ml-2 mr-2 h-[24] stroke-current text-gray-500 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className=" ml-2 mr-2 h-[24] stroke-current text-gray-500 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
@@ -413,8 +426,8 @@ export default function FeatureTab(props: any) {
                     stroke-linejoin="round"
                   />
                 </svg>
-                <span className="DarkMode text-sm font-normal leading-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 ">
-                  {theme} Mode
+                <span className="DarkMode text-sm font-normal leading-normal text-gray-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300 ">
+                  {darkMode === true ? 'Light' : 'Dark'} Mode
                 </span>
               </div>
             </button>
@@ -425,19 +438,19 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={connectDb}
-                  className="dark: flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className="dark: group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   data-testid="connect-database"
                 >
-                  <ConnectDatabase/>
+                  <ConnectDatabase />
                   <span className="ml-3">Connect Database</span>
                 </a>
               </li>
               <li>
                 <a
                   onClick={uploadSQL}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <UploadSQLFile/>
+                  <UploadSQLFile />
                   <span className="ml-3 flex-1 whitespace-nowrap">Upload SQL File</span>
                   <span className="ml-3 inline-flex items-center justify-center rounded-full bg-gray-200 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"></span>
                 </a>
@@ -445,9 +458,9 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={buildDb}
-                  className=" flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className=" group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <BuildDatabase/>
+                  <BuildDatabase />
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
@@ -455,9 +468,9 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={openQueryModal}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                 >
-                  <ExportQuery/>
+                  <ExportQuery />
                   <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
               </li>
@@ -466,20 +479,20 @@ export default function FeatureTab(props: any) {
               <hr />
               {isSchema ? (
                 <li>
-                <a
-                  onClick={() => {
-                    props.openAddTableModal();
-                    // if schemaStore is empty, initialize
-                    if (!Object.keys(schemaStore).length) buildDatabase();
-                  }}
-                  id="addTable"
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
-                >
-                  <AddTable/>
-                  <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
-                </a>
-              </li>
-            ) : null}
+                  <a
+                    onClick={() => {
+                      props.openAddTableModal();
+                      // if schemaStore is empty, initialize
+                      if (!Object.keys(schemaStore).length) buildDatabase();
+                    }}
+                    id="addTable"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                  >
+                    <AddTable />
+                    <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
+                  </a>
+                </li>
+              ) : null}
               {Object.keys(schemaStore).length ? (
                 <li>
                   <a
@@ -487,9 +500,9 @@ export default function FeatureTab(props: any) {
                       props.openDeleteTableModal();
                     }}
                     id="deleteTable"
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <DeleteTable/>
+                    <DeleteTable />
                     <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
                   </a>
                 </li>
@@ -497,9 +510,9 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={clearCanvas}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <ClearCanvas/>
+                  <ClearCanvas />
                   <span className="ml-3 flex-1 whitespace-nowrap">Clear Canvas</span>
                 </a>
               </li>
@@ -507,18 +520,18 @@ export default function FeatureTab(props: any) {
               <li>
                 <a
                   onClick={undoHandler}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <Undo/>
+                  <Undo />
                   <span className="ml-3 flex-1 whitespace-nowrap">Undo</span>
                 </a>
               </li>
               <li>
                 <a
                   onClick={redoHandler}
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <Redo/>
+                  <Redo />
                   <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
                 </a>
               </li>
@@ -531,18 +544,18 @@ export default function FeatureTab(props: any) {
                 <li>
                   <a
                     onClick={openSaveDbNameModal}
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <SaveDatabase/>
+                    <SaveDatabase />
                     <span className="ml-3 flex-1 whitespace-nowrap">Save Database</span>
                   </a>
                 </li>
                 <li>
                   <a
                     onClick={openLoadDbModal}
-                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <LoadDatabase/>
+                    <LoadDatabase />
                     <span className="ml-3 flex-1 whitespace-nowrap">Load Database</span>
                   </a>
                 </li>
@@ -550,9 +563,9 @@ export default function FeatureTab(props: any) {
                   <li>
                     <a
                       onClick={() => signoutSession()}
-                      className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                      className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
-                      <SignOut/>
+                      <SignOut />
                       <span className="ml-3 flex-1 whitespace-nowrap">Sign Out</span>
                     </a>
                   </li>
@@ -569,7 +582,8 @@ export default function FeatureTab(props: any) {
           {/* <!-- Confirm Modal content --> */}
           <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
             <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
-              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved changes.
+              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
+              changes.
             </p>
             <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
               <button
@@ -591,8 +605,12 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
-        {saveDbNameModalOpened ? (<DbNameInput closeSaveDbNameModal={closeSaveDbNameModal}/>) : null}
-        {loadDbModalOpened ? (<LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />) : null}
+        {saveDbNameModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+        ) : null}
+        {loadDbModalOpened ? (
+          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
+        ) : null}
       </div>
     </>
   );
