@@ -65,14 +65,15 @@ import LoadDbModal from '../Modals/LoadDbModal';
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
-  const [theme, setTheme] = useState('Light');
 
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
   );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema, setDarkMode } = useSettingsStore((state) => state);
+  const { setWelcome, isSchema, setDarkMode, darkMode } = useSettingsStore(
+    (state) => state
+  );
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
@@ -271,7 +272,6 @@ export default function FeatureTab(props: any) {
   const toggleClass = (): void => {
     const page = document.getElementById('body');
     page!.classList.toggle('dark');
-    theme === 'Dark' ? setTheme('Light') : setTheme('Dark');
     setDarkMode();
   };
 
@@ -280,7 +280,7 @@ export default function FeatureTab(props: any) {
   function logoImageFlow(event) {
     //let currentLogoImg = event.target.src;
     let logoImgArr;
-    if (theme === 'Light') {
+    if (darkMode === true) {
       logoImgArr = [
         logo1,
         logo2,
@@ -326,7 +326,7 @@ export default function FeatureTab(props: any) {
   }
   // function to clean up after the hover over affect - db 7.0
   function clearImgSwap(event) {
-    if (theme === 'Light') {
+    if (darkMode === true) {
       event.target.src = logo;
     } else {
       event.target.src = darkLogo;
@@ -377,7 +377,7 @@ export default function FeatureTab(props: any) {
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
-            {theme === 'Light' ? (
+            {darkMode === true ? (
               <img
                 className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
                 src={logo}
@@ -427,7 +427,7 @@ export default function FeatureTab(props: any) {
                   />
                 </svg>
                 <span className="DarkMode text-sm font-normal leading-normal text-gray-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300 ">
-                  {theme} Mode
+                  {darkMode === true ? 'Light' : 'Dark'} Mode
                 </span>
               </div>
             </button>
