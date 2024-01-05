@@ -2,18 +2,12 @@ import React, { useState } from 'react';
 
 export default function LoadDbModal({
   closeLoadDbModal,
-  pureCloseLoadDbModal,
   nameArr,
 }: {
   nameArr: string[];
   closeLoadDbModal: (input?: string) => void;
 }) {
-  // function handleFormSubmit(event: any) {
-  //   event.preventDefault();
-  //   const selectedOptions = event.target.selectedItems.selectedOptions;
-  //   const values = Array.from(selectedOptions).map((option: string[]) => option.value);
-  //   closeLoadDbModal(values[0]); // Close the modal after submission
-  // }
+
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;

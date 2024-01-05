@@ -1,6 +1,6 @@
 import React from 'react';
 
-// All icons display feature tab
+// Encapsulate all icons displayed on FeatureTab to make the codebase looks cleaner.
 export const Home = () => {
   return (
     <svg
