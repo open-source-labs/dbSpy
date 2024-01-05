@@ -34,6 +34,8 @@ export default function InputModal({mode,closeInputModal,tableNameProp,}: InputM
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
   const { dbCredentials } = useCredentialsStore((state) => state);
+  console.log('===== dbCredentials Object =====', dbCredentials);
+  if (!dbCredentials.db_type) dbCredentials.db_type = 'postgres';
   const { setSchemaStore } = useSchemaStore((state) => state);
   const { setDataStore } = useDataStore((state) => state);
 
@@ -80,7 +82,7 @@ export default function InputModal({mode,closeInputModal,tableNameProp,}: InputM
           newColumns: columnData,
         };
         //req to backend to save new table
-
+        console.log('===== dataToSend =====', dataToSend);
         fetch(`/api/sql/${dbCredentials.db_type}/saveNewTable`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
