@@ -130,7 +130,6 @@ const saveController = {
     log.info("[loadCtrl - loadSchema] Begining to load user's schema...");
     const { SaveName } = req.query;
     const { email } = req.session;
-    console.log('email and saveName: ', email, SaveName);
 
     try {
       const loadQuery: string = `SELECT SaveData,TableData FROM saveddb WHERE email = ? AND SaveName = ?`;
