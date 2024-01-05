@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 // All icons display feature tab
 export const Home = () => {
   return (
@@ -8,9 +7,9 @@ export const Home = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="1.5"
+      stroke-width="1.0"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <g clip-path="url(#clip0_107_1134)">
         <path
@@ -65,9 +64,9 @@ export const ConnectDatabase = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      strokeWidth="1.5"
+      strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6"
+      className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -86,7 +85,7 @@ export const UploadSQLFile = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -105,7 +104,7 @@ export const BuildDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -124,7 +123,7 @@ export const ExportQuery = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
     >
       <path
         strokeLinecap="round"
@@ -143,7 +142,7 @@ export const AddTable = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500   dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -162,7 +161,7 @@ export const DeleteTable = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -181,7 +180,7 @@ export const ClearCanvas = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -200,7 +199,7 @@ export const Undo = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -219,7 +218,7 @@ export const Redo = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
     >
       <path
         strokeLinecap="round"
@@ -238,7 +237,7 @@ export const SaveDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -258,7 +257,7 @@ export const LoadDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -279,7 +278,7 @@ export const SignOut = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:stroke-[#f8f4eb] dark:text-gray-400 dark:group-hover:text-white"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
     >
       <path stroke="none" d="M0 0h24v24H0z" />
       <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
