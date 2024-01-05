@@ -3,17 +3,19 @@ import useSchemaStore from '../../store/schemaStore';
 import queryGen from '../../queryGen';
 import { SchemaObject } from '../../Types';
 
+//Input modal for saving a new or existing database.
 export default function DbNameInputModal({closeSaveDbNameModal}: {closeSaveDbNameModal: (input?: string) => void;}) {
   // read from schemaStore, then run queryGen
   const { schemaStore, system } = useSchemaStore((state) => state);
-  const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
-
+  // const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
+  
   function handleFormSubmit(event: any) {
     event.preventDefault(); // Prevent default form submission behavior
-    const isSaveButton = event.submitter && event.submitter.id === 'dbNameInput';
+    //Target save button's id to indentify which button is clicked.
+    const isSaveButton = event.nativeEvent.submitter && event.nativeEvent.submitter.id === 'dbNameInput';
     if(isSaveButton){
       const inputValue: string = event.target.elements.inputDbName.value;
-      closeSaveDbNameModal(inputValue); // Close the modal after submission
+      closeSaveDbNameModal(inputValue);
     }else{
       closeSaveDbNameModal();
     }

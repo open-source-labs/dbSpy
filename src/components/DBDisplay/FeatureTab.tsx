@@ -36,6 +36,7 @@ import darkLogo11 from '../../assets/newLogoBlack_color11.png';
 import darkLogo12 from '../../assets/newLogoBlack_color12.png';
 
 // Stores imported:
+import useDataStore from '../../store/dataStore';
 import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -53,6 +54,10 @@ export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
   const [theme, setTheme] = useState('Light');
+
+  const { dataStore, setDataStore} = useDataStore(
+    (state) => state
+  );
 
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
@@ -196,12 +201,14 @@ export default function FeatureTab(props: any) {
 
   // Function for saving databases. Reworked for multiple saves - db 7.0
   const saveSchema = (inputName: string): void => {
+    console.log("we are here")
     //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
       //Create request body with the schema to be saved and the inputted name to save it under
       const postBody = {
         schema: JSON.stringify(schemaStore),
         SaveName: inputName,
+        TableData: JSON.stringify(dataStore),
       };
       //make a get request to see if the name already exists in the database
       axios
@@ -237,7 +244,8 @@ export default function FeatureTab(props: any) {
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      console.log("schemaString212", schemaString.data)
+      console.log('tabledataString', schemaString.tableData)
+       setDataStore(JSON.parse(schemaString.tableData))
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);

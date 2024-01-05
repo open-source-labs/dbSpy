@@ -136,7 +136,7 @@ const saveController = {
       const values = [email, SaveName];
 
       const loadData = (await pool.query(loadQuery, values)) as RowDataPacket[];
-      console.log(loadData[0][0]);
+      // console.log("loadData[0][0]", loadData[0][0]);
       res.locals.data = loadData[0][0].SaveData;
       res.locals.tableData = loadData[0][0].TableData;
       return next();

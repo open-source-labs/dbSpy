@@ -49,9 +49,9 @@ export default function QueryModal({ closeQueryModal }: { closeQueryModal: () =>
             <button
               onClick={closeQueryModal}
               id="closeQueryModal"
-              className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+              className="ml-5 modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
             >
-              <IoClose />
+              Return
             </button>
           </div>
         </div>
