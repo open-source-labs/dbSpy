@@ -58,10 +58,11 @@ const saveController = {
       //grabbing the data off of the SaveData of the current Object
       const schema = getSchema[0][0].SaveData;
       const type = getSchema[0][0].DataType;
+      const tableData = getSchema[0][0].TableData;
       // create
       const createCloneQuery =
-        'INSERT INTO saveddb(email,SaveName,DataType,SaveData) VALUES (?,?,?,?)';
-      const createCloneValues = [email, newName, type, schema];
+        'INSERT INTO saveddb(email,SaveName,DataType,SaveData,TableData) VALUES (?,?,?,?,?)';
+      const createCloneValues = [email, newName, type, schema, tableData];
       const newEntry = await pool.query(createCloneQuery, createCloneValues);
       console.log(newEntry);
       res.locals.message = 'new Entry Succesfully created';
@@ -81,14 +82,14 @@ const saveController = {
   save: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[saveCtrl - saveSchema] Begining to save user's schema...");
     //const {email} = req.session; // this will change to session when live
-    const { SaveName, schema } = req.body;
+    const { SaveName, schema, TableData } = req.body;
     const { email } = req.session;
     console.log(email, SaveName, schema);
     try {
       // all schema data is on table saveddb in the SaveData Column.
       const saveSchemaQuery: string =
-        'UPDATE saveddb SET SaveData = ? WHERE email = ? AND SaveName = ?'; // update existing with schema
-      const values = [schema, email, SaveName];
+        'UPDATE saveddb SET SaveData = ?, TableData = ? WHERE email = ? AND SaveName = ?'; // update existing with schema
+      const values = [schema, TableData, email, SaveName];
 
       const dataSlot = (await pool.query(saveSchemaQuery, values)) as RowDataPacket[];
       res.locals.message = 'Schema Save Completed';
@@ -106,7 +107,7 @@ const saveController = {
   delete: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[deleteCtrl - deleteSchema] Begining to deleteing user's schema...");
 
-    const { SaveName } = req.body;
+    const { SaveName, TableData } = req.body;
     const { email } = req.session;
     console.log(email, SaveName);
     try {
@@ -129,15 +130,16 @@ const saveController = {
     log.info("[loadCtrl - loadSchema] Begining to load user's schema...");
     const { SaveName } = req.query;
     const { email } = req.session;
-    console.log("email and saveName: ", email, SaveName);
+    console.log('email and saveName: ', email, SaveName);
 
     try {
-      const loadQuery: string = `SELECT SaveData FROM saveddb WHERE email = ? AND SaveName = ?`;
+      const loadQuery: string = `SELECT SaveData,TableData FROM saveddb WHERE email = ? AND SaveName = ?`;
       const values = [email, SaveName];
 
       const loadData = (await pool.query(loadQuery, values)) as RowDataPacket[];
-      console.log(loadData[0][0].SaveData);
+      console.log(loadData[0][0]);
       res.locals.data = loadData[0][0].SaveData;
+      res.locals.tableData = loadData[0][0].TableData;
       return next();
     } catch (err) {
       return next({
