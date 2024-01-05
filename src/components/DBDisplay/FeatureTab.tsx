@@ -67,9 +67,7 @@ export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
 
-  const { dataStore, setDataStore} = useDataStore(
-    (state) => state
-  );
+  const { dataStore, setDataStore } = useDataStore((state) => state);
 
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
@@ -215,7 +213,7 @@ export default function FeatureTab(props: any) {
 
   // Function for saving databases. Reworked for multiple saves - db 7.0
   const saveSchema = (inputName: string): void => {
-    console.log("we are here")
+    console.log('we are here');
     //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
       //Create request body with the schema to be saved and the inputted name to save it under
@@ -259,7 +257,7 @@ export default function FeatureTab(props: any) {
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
       //console.log('tabledataString', schemaString.tableData)
-       setDataStore(JSON.parse(schemaString.tableData))
+      setDataStore(JSON.parse(schemaString.tableData));
       //console.log('schemaString212', schemaString.data);
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
@@ -388,7 +386,7 @@ export default function FeatureTab(props: any) {
           <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
             {darkMode === true ? (
               <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter hover:cursor-pointer"
                 src={logo}
                 alt="Logo"
                 onMouseOver={logoImageFlow} //db 7.0
@@ -397,7 +395,7 @@ export default function FeatureTab(props: any) {
               />
             ) : (
               <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter hover:cursor-pointer"
                 src={darkLogo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}
