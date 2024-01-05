@@ -38,8 +38,10 @@ export default function DataInputModal({
   const currentTable = deepCopyDataStore[tableName as string]
     ? deepCopyDataStore[tableName as string]
     : [];
-  console.log('====== tableName (in DataInputModal) ======', tableName);
-  console.log('====== currentTable (in DataInputModal) ======', currentTable);
+  console.log('====== tableName (in DataInputModal) ======');
+  console.log(tableName);
+  console.log('====== currentTable (in DataInputModal) ======');
+  console.log(currentTable);
 
   // we get the column names from schemaStore IN CASE current table is EMPTY (because if table is EMPTY, it will
   // not pass in the column names)
