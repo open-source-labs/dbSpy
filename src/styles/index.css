@@ -59,6 +59,9 @@
   left: 0;
 }
 .react-flow__pane {
+  /* position: absolute;
+  top: 0px;     /* Adjust these values */
+  /* left: 300px;    */
   z-index: 1;
   cursor: -webkit-grab;
   cursor: grab;
@@ -213,6 +216,8 @@
   cursor: move;
   pointer-events: all;
 }
+
+/* tiny tool bar */
 .react-flow__panel {
   position: absolute;
   z-index: 5;
@@ -348,11 +353,10 @@
 /*custom react flow styling*/
 
 .flow {
-  border: 1px solid #273943;
-  background: #fbf3de;
-  border-width: 5px;
-  border-radius: 5px;
-  margin: 10px;
+  position: absolute;
+  top: 56px;
+  right: 0px;
+  background: #f8f4eb;
 }
 
 .table-node {
@@ -362,7 +366,7 @@
   /* padding: 5px; */
   border-radius: 4px;
   color: #f8f4eb;
-  background-color: f8f4eb;
+  background-color: #fffefd;
 }
 
 .table-node label {
@@ -536,7 +540,7 @@ tr {
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
   transition: margin-left 0.5s;
-  padding: 20px;
+  padding: 0px;
   /* margin-top: 50px; */
   margin-left: 300px;
 }
@@ -733,6 +737,17 @@ select:focus {
   /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
+}
+
+.z-index-0 {
+  z-index: 0;
+}
+
+.z-index-1 {
+  z-index: 1;
+}
+.z-index-10 {
+  z-index: 10;
 }
 
 /* Add Reference  */

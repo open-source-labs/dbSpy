@@ -22,6 +22,7 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
           label: row.References[0].constraintName,
+          type: "smoothstep",
             style: {
               strokeWidth: 2,
               stroke: '#085c84',

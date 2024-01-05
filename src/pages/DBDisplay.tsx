@@ -127,14 +127,14 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-end pr-5 pt-5">
+      <div className="flex h-2 justify-end pr-5">
         {user ? (
           <>
-            <span className="text-black-200 mt-4 inline-block dark:text-white lg:mt-0">
+            <span className="text-black-200 inline-block pt-4 dark:text-white lg:mt-0">
               {user.full_name}
             </span>
             <img
-              className="ml-2 mr-2 inline-block h-[25] rounded-full dark:invert"
+              className="ml-2 mr-2 mt-4 inline-block h-[25] rounded-full dark:invert"
               src={default_pfp}
             />
           </>
@@ -142,7 +142,7 @@ const DBDisplay: React.FC = () => {
           <div className="flex justify-end">
             <NavLink
               to="/login"
-              className="p-6 text-base font-bold leading-normal text-black dark:text-white"
+              className="p-4 text-base font-bold leading-normal text-black dark:text-white"
             >
               <span>Login</span>
               <img className="ml-3 mr-3 inline-block h-[20] dark:invert" src={login} />
@@ -150,10 +150,7 @@ const DBDisplay: React.FC = () => {
           </div>
         )}
       </div>
-      <div
-        id="DBDisplay"
-        className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-gray-900"
-      >
+      <div id="DBDisplay" className=" transition-colors duration-500">
         <div
           ref={mySideBarId}
           id="mySidenav"
@@ -166,14 +163,9 @@ const DBDisplay: React.FC = () => {
           {/* "AddReference" => change reference in schema */}
           {editRefMode ? <AddReference /> : <></>}
         </div>
-        {/* <!-- Use any element to open the sidenav --> */}
-        <FeatureTab
-          handleSidebar={handleSidebar}
-          openAddTableModal={openAddTableModal}
-          openDeleteTableModal={openDeleteTableModal}
-        />
         {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
         <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
+          {/* <div>"Current Database Name:"</div> */}
           {welcome ? (
             <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
               <h3 className="text-center">Welcome to dbSpy!</h3>
@@ -186,29 +178,34 @@ const DBDisplay: React.FC = () => {
           isSchema ? (
             // If isSchema state is true, render Show Data button and Flow component
             <>
+              <Flow />
               <button
                 id="showSchema"
-                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-600"
+                className=" rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show data
               </button>
-              <Flow />
             </>
           ) : (
             // If isSchema state is false, render Show Schema button and DataFlow component
             <>
+              <DataFlow />
               <button
                 id="showSchema"
-                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show Schema
               </button>
-              <DataFlow />
             </>
           )}
         </div>
+        <FeatureTab
+          handleSidebar={handleSidebar}
+          openAddTableModal={openAddTableModal}
+          openDeleteTableModal={openDeleteTableModal}
+        />
         {inputModalState.isOpen ? (
           <InputModal
             mode={inputModalState.mode as 'table' | 'column'}
