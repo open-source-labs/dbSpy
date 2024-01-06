@@ -61,6 +61,8 @@ import {
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
+import DeleteDbModal from '../Modals/DeleteDBModal';
+
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -83,6 +85,7 @@ export default function FeatureTab(props: any) {
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
   const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
+  const [deleteDbModalOpened, setDeleteDbModalOpened] = useState(false);
   const [nameArr, setNameArr] = useState<string[]>([]);
   //END: STATE DECLARATION
 
@@ -185,7 +188,7 @@ export default function FeatureTab(props: any) {
   const openLoadDbModal = async (): Promise<string[]> => {
     buildDatabase();
     if (!user) {
-      alert('Must sign in to save!');
+      alert('Must sign in to load!');
       return Promise.reject('User not signed in');
     } else {
       const response = await axios
@@ -206,6 +209,29 @@ export default function FeatureTab(props: any) {
     return [];
   };
 
+  const openDeleteDbModal = async (): Promise<string[]> => {
+    if (!user) {
+      alert('Please sign in first!');
+      return Promise.reject('User not signed in');
+    } else {
+      const response = await axios
+        .get<string[]>('/api/saveFiles/allSave')
+        .then((res: AxiosResponse) => {
+          const nameArr = [];
+          for (let saveName of res.data.data) {
+            nameArr.push(saveName.SaveName);
+          }
+          setDeleteDbModalOpened(true);
+          setNameArr(nameArr);
+        })
+        .catch((err) => {
+          console.error('Err', err);
+          return Promise.reject(err);
+        });
+    }
+    return [];
+  };
+
   const closeLoadDbModal = (input?: string) => {
     if (input) {
       loadSchema(input);
@@ -213,9 +239,15 @@ export default function FeatureTab(props: any) {
     setLoadDbModalOpened(false);
   };
 
+  const closeDeleteDbModal = (input?: string) => {
+    if (input) {
+      deleteSchema(input);
+    }
+    setDeleteDbModalOpened(false);
+  };
+
   // Function for saving databases. Reworked for multiple saves - db 7.0
   const saveSchema = (inputName: string): void => {
-    console.log("we are here")
     //check to see if a table is present in the schemaStore
     if (Object.keys(schemaStore).length !== 0) {
       //Create request body with the schema to be saved and the inputted name to save it under
@@ -262,6 +294,20 @@ export default function FeatureTab(props: any) {
        setDataStore(JSON.parse(schemaString.tableData))
       //console.log('schemaString212', schemaString.data);
       return setSchemaStore(JSON.parse(schemaString.data));
+    } catch (err) {
+      console.log(err);
+      console.error('err retrieve', err);
+      window.alert(err);
+    }
+  };
+
+  const deleteSchema = (inputName: string) => {
+    try {
+      //send the inputName along with the delete request as query in the parameters.
+      axios
+          .delete(`/api/saveFiles/deleteSave/${inputName}`)
+          .then(response => console.log("response ", response))
+          .catch((err) => console.error('err', err));
     } catch (err) {
       console.log(err);
       console.error('err retrieve', err);
@@ -570,7 +616,7 @@ export default function FeatureTab(props: any) {
                 </li>
                 <li>
                   <a
-                    onClick={openLoadDbModal}
+                    onClick={openDeleteDbModal}
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
                     <DeleteIcon />
@@ -628,6 +674,9 @@ export default function FeatureTab(props: any) {
         ) : null}
         {loadDbModalOpened ? (
           <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
+        ) : null}
+        {deleteDbModalOpened ? (
+          <DeleteDbModal nameArr={nameArr} closeDeleteDbModal={closeDeleteDbModal} />
         ) : null}
       </div>
     </>

@@ -23,10 +23,10 @@ saveRouter.post('/cloneSave', saveController.clone, (_req: Request, res: Respons
 //takes in user email + filename
 //deletes the query
 saveRouter.delete(
-  '/deleteSave',
+  '/deleteSave/:SaveName',
   saveController.delete,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals);
+    return res.status(200).json(res.locals.message);
   }
 );
 
