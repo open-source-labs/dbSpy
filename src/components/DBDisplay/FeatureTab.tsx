@@ -43,19 +43,19 @@ import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
 //import icon
 import {
-  Home,
-  ConnectDatabase,
-  UploadSQLFile,
-  ExportQuery,
-  AddTable,
-  DeleteTable,
-  ClearCanvas,
-  Undo,
-  Redo,
-  SaveDatabase,
-  LoadDatabase,
-  SignOut,
-  BuildDatabase,
+  HomeIcon,
+  ConnectDatabaseIcon,
+  UploadSQLFileIcon,
+  ExportQueryIcon,
+  AddTableIcon,
+  DeleteTableIcon,
+  DeleteIcon,
+  UndoIcon,
+  RedoIcon,
+  SaveDatabaseIcon,
+  LoadDatabaseIcon,
+  SignOutIcon,
+  BuildDatabaseIcon,
 } from '../../FeatureTabIcon';
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
@@ -388,7 +388,7 @@ export default function FeatureTab(props: any) {
           <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
             {darkMode === true ? (
               <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
+                className=" hover:cursor-pointer pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
                 src={logo}
                 alt="Logo"
                 onMouseOver={logoImageFlow} //db 7.0
@@ -397,7 +397,7 @@ export default function FeatureTab(props: any) {
               />
             ) : (
               <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter"
+                className="hover:cursor-pointer pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter"
                 src={darkLogo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}
@@ -409,7 +409,7 @@ export default function FeatureTab(props: any) {
             <NavLink to="/" className={linkbtn}>
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
-                <Home />
+                <HomeIcon />
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
                   <span className="text-sm text-slate-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300">
                     Home
@@ -450,7 +450,7 @@ export default function FeatureTab(props: any) {
                   className="dark: group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   data-testid="connect-database"
                 >
-                  <ConnectDatabase />
+                  <ConnectDatabaseIcon />
                   <span className="ml-3">Connect Database</span>
                 </a>
               </li>
@@ -459,7 +459,7 @@ export default function FeatureTab(props: any) {
                   onClick={uploadSQL}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <UploadSQLFile />
+                  <UploadSQLFileIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Upload SQL File</span>
                   <span className="ml-3 inline-flex items-center justify-center rounded-full bg-gray-200 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"></span>
                 </a>
@@ -469,7 +469,7 @@ export default function FeatureTab(props: any) {
                   onClick={buildDb}
                   className=" group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <BuildDatabase />
+                  <BuildDatabaseIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
@@ -479,7 +479,7 @@ export default function FeatureTab(props: any) {
                   onClick={openQueryModal}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                 >
-                  <ExportQuery />
+                  <ExportQueryIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
               </li>
@@ -497,7 +497,7 @@ export default function FeatureTab(props: any) {
                     id="addTable"
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                   >
-                    <AddTable />
+                    <AddTableIcon />
                     <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
                   </a>
                 </li>
@@ -511,7 +511,7 @@ export default function FeatureTab(props: any) {
                     id="deleteTable"
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <DeleteTable />
+                    <DeleteTableIcon />
                     <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
                   </a>
                 </li>
@@ -521,7 +521,7 @@ export default function FeatureTab(props: any) {
                   onClick={clearCanvas}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <ClearCanvas />
+                  <DeleteIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Clear Canvas</span>
                 </a>
               </li>
@@ -531,7 +531,7 @@ export default function FeatureTab(props: any) {
                   onClick={undoHandler}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <Undo />
+                  <UndoIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Undo</span>
                 </a>
               </li>
@@ -540,7 +540,7 @@ export default function FeatureTab(props: any) {
                   onClick={redoHandler}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <Redo />
+                  <RedoIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
                 </a>
               </li>
@@ -555,7 +555,7 @@ export default function FeatureTab(props: any) {
                     onClick={openSaveDbNameModal}
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <SaveDatabase />
+                    <SaveDatabaseIcon />
                     <span className="ml-3 flex-1 whitespace-nowrap">Save Database</span>
                   </a>
                 </li>
@@ -564,8 +564,17 @@ export default function FeatureTab(props: any) {
                     onClick={openLoadDbModal}
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <LoadDatabase />
+                    <LoadDatabaseIcon />
                     <span className="ml-3 flex-1 whitespace-nowrap">Load Database</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={openLoadDbModal}
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  >
+                    <DeleteIcon />
+                    <span className="ml-3 flex-1 whitespace-nowrap">Delete Database</span>
                   </a>
                 </li>
                 {user ? (
@@ -574,7 +583,7 @@ export default function FeatureTab(props: any) {
                       onClick={() => signoutSession()}
                       className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
-                      <SignOut />
+                      <SignOutIcon />
                       <span className="ml-3 flex-1 whitespace-nowrap">Sign Out</span>
                     </a>
                   </li>

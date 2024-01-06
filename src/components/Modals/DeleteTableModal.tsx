@@ -35,7 +35,7 @@ export default function DeleteTableModal({
 
   const deleteTable = async () => {
     setConnectPressed(true);
-    await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
+    await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable `, {
       method:'DELETE',
       headers:{
         'Content-Type':'application/json'

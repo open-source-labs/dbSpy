@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Encapsulate all icons displayed on FeatureTab to make the codebase looks cleaner.
-export const Home = () => {
+export const HomeIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +39,7 @@ export const Home = () => {
   );
 };
 
-export const Mode = () => {
+export const ModeIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@ export const Mode = () => {
   );
 };
 
-export const ConnectDatabase = () => {
+export const ConnectDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@ export const ConnectDatabase = () => {
   );
 };
 
-export const UploadSQLFile = () => {
+export const UploadSQLFileIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +96,7 @@ export const UploadSQLFile = () => {
   );
 };
 
-export const BuildDatabase = () => {
+export const BuildDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@ export const BuildDatabase = () => {
   );
 };
 
-export const ExportQuery = () => {
+export const ExportQueryIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@ export const ExportQuery = () => {
   );
 };
 
-export const AddTable = () => {
+export const AddTableIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +153,7 @@ export const AddTable = () => {
   );
 };
 
-export const DeleteTable = () => {
+export const DeleteTableIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +172,7 @@ export const DeleteTable = () => {
   );
 };
 
-export const ClearCanvas = () => {
+export const DeleteIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +191,7 @@ export const ClearCanvas = () => {
   );
 };
 
-export const Undo = () => {
+export const UndoIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -210,7 +210,7 @@ export const Undo = () => {
   );
 };
 
-export const Redo = () => {
+export const RedoIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -229,7 +229,7 @@ export const Redo = () => {
   );
 };
 
-export const SaveDatabase = () => {
+export const SaveDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +249,7 @@ export const SaveDatabase = () => {
   );
 };
 
-export const LoadDatabase = () => {
+export const LoadDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +270,7 @@ export const LoadDatabase = () => {
   );
 };
 
-export const SignOut = () => {
+export const SignOutIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
