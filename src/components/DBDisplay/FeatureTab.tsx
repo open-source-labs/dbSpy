@@ -431,7 +431,7 @@ export default function FeatureTab(props: any) {
           className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
+          <div className="menuBar light:bg-sky-800 ml-3 rounded px-10 py-6 transition-colors duration-500">
             {darkMode === true ? (
               <img
                 className=" hover:cursor-pointer pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
