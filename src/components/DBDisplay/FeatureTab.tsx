@@ -2,9 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
-
-const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
-
 // Functions imported:
 import parseSql from '../../parse';
 // Images for logo animation db 7.0
@@ -41,7 +38,7 @@ import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
-//import icon
+//Icons import
 import {
   HomeIcon,
   ConnectDatabaseIcon,
@@ -57,7 +54,7 @@ import {
   SignOutIcon,
   BuildDatabaseIcon,
 } from '../../FeatureTabIcon';
-// Components imported:
+// Components imported(Pop up modals):
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
@@ -78,7 +75,7 @@ export default function FeatureTab(props: any) {
   );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema, setDarkMode, darkMode } = useSettingsStore(
+  const { setWelcome, isSchema, setDarkMode, darkMode, setDBName } = useSettingsStore(
     (state) => state
   );
   const [action, setAction] = useState(new Array());
@@ -186,11 +183,11 @@ export default function FeatureTab(props: any) {
   // LoadDbModal
   // Open loadDbName Modal and send get request to database to get&list all the databases name.
   const openLoadDbModal = async (): Promise<string[]> => {
-    buildDatabase();
     if (!user) {
       alert('Must sign in to load!');
       return Promise.reject('User not signed in');
     } else {
+      buildDatabase();
       const response = await axios
         .get<string[]>('/api/saveFiles/allSave')
         .then((res: AxiosResponse) => {
@@ -231,10 +228,11 @@ export default function FeatureTab(props: any) {
     }
     return [];
   };
-
+  // modified by db 7.0
   const closeLoadDbModal = (input?: string) => {
     if (input) {
       loadSchema(input);
+      setDBName(input);
     }
     setLoadDbModalOpened(false);
   };
@@ -300,7 +298,7 @@ export default function FeatureTab(props: any) {
       window.alert(err);
     }
   };
-
+  // modified by db 7.0
   const deleteSchema = (inputName: string) => {
     try {
       //send the inputName along with the delete request as query in the parameters.
@@ -452,7 +450,7 @@ export default function FeatureTab(props: any) {
               />
             )}
 
-            <NavLink to="/" className={linkbtn}>
+            <NavLink to="/" className='mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4'>
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
                 <HomeIcon />
@@ -640,7 +638,6 @@ export default function FeatureTab(props: any) {
         </aside>
 
         {/* MODALS */}
-
         {/* MODAL FOR CONFIRMATION POPUP */}
         <div ref={confirmModal} id="confirmModal" className="confirmModal">
           {/* <!-- Confirm Modal content --> */}
@@ -665,9 +662,7 @@ export default function FeatureTab(props: any) {
             </div>
           </div>
         </div>
-
         {/* Query Output Modal */}
-
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {saveDbNameModalOpened ? (
           <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
