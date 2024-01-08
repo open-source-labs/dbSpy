@@ -1,7 +1,16 @@
 // This is going to be my new place to build out the upgraded saving logic.
+// Everything seems fine. The only potential concern is testing the volume of data being allowed to be saved by users.
 import { Router, Response, Request } from 'express';
+import bodyParser from 'body-parser';
 import saveController from '../controllers/save.controller';
 const saveRouter = Router();
+
+// Apply bodyParser with a larger limit
+// Might be good to in the future limit data storage per user. rather then per file.
+// app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+
 
 //Clone Save
 //takes current user email + filename
@@ -14,10 +23,10 @@ saveRouter.post('/cloneSave', saveController.clone, (_req: Request, res: Respons
 //takes in user email + filename
 //deletes the query
 saveRouter.delete(
-  '/deleteSave',
+  '/deleteSave/:SaveName',
   saveController.delete,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals);
+    return res.status(200).json(res.locals.message);
   }
 );
 
@@ -31,7 +40,7 @@ saveRouter.get('/loadSave', saveController.load, (_req: Request, res: Response) 
 //Save
 // Takes in current useremail + filename
 //updates the schema in the database
-saveRouter.patch('/save', saveController.save, (_req: Request, res: Response) => {
+saveRouter.patch('/save',saveController.save, (_req: Request, res: Response) => {
   return res.status(200).json(res.locals);
 });
 
@@ -60,6 +69,7 @@ saveRouter.get(
   }
 );
 
+//combination of two middlewears listed above.
 saveRouter.post(
   '/CreateAndSave',
   saveController.newSave,

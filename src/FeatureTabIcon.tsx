@@ -1,7 +1,7 @@
 import React from 'react';
 
-// All icons display feature tab
-export const Home = () => {
+// Encapsulate all icons displayed on FeatureTab to make the codebase looks cleaner.
+export const HomeIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,7 +9,7 @@ export const Home = () => {
       viewBox="0 0 24 24"
       stroke-width="1.0"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <g clip-path="url(#clip0_107_1134)">
         <path
@@ -39,7 +39,7 @@ export const Home = () => {
   );
 };
 
-export const Mode = () => {
+export const ModeIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@ export const Mode = () => {
   );
 };
 
-export const ConnectDatabase = () => {
+export const ConnectDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@ export const ConnectDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 h-6 w-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -77,7 +77,7 @@ export const ConnectDatabase = () => {
   );
 };
 
-export const UploadSQLFile = () => {
+export const UploadSQLFileIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +85,7 @@ export const UploadSQLFile = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-yellow-500  dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -96,7 +96,7 @@ export const UploadSQLFile = () => {
   );
 };
 
-export const BuildDatabase = () => {
+export const BuildDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ export const BuildDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500  dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -115,7 +115,7 @@ export const BuildDatabase = () => {
   );
 };
 
-export const ExportQuery = () => {
+export const ExportQueryIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +123,7 @@ export const ExportQuery = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-yellow-500  dark:text-[#f8f4eb] dark:group-hover:text-yellow-300 "
     >
       <path
         strokeLinecap="round"
@@ -134,7 +134,7 @@ export const ExportQuery = () => {
   );
 };
 
-export const AddTable = () => {
+export const AddTableIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +142,7 @@ export const AddTable = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500   dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500   dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -153,7 +153,7 @@ export const AddTable = () => {
   );
 };
 
-export const DeleteTable = () => {
+export const DeleteTableIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +161,7 @@ export const DeleteTable = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -172,7 +172,7 @@ export const DeleteTable = () => {
   );
 };
 
-export const ClearCanvas = () => {
+export const DeleteIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -180,7 +180,7 @@ export const ClearCanvas = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -191,7 +191,7 @@ export const ClearCanvas = () => {
   );
 };
 
-export const Undo = () => {
+export const UndoIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +199,7 @@ export const Undo = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -210,7 +210,7 @@ export const Undo = () => {
   );
 };
 
-export const Redo = () => {
+export const RedoIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +218,7 @@ export const Redo = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300 "
     >
       <path
         strokeLinecap="round"
@@ -229,7 +229,7 @@ export const Redo = () => {
   );
 };
 
-export const SaveDatabase = () => {
+export const SaveDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -237,7 +237,7 @@ export const SaveDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -249,7 +249,7 @@ export const SaveDatabase = () => {
   );
 };
 
-export const LoadDatabase = () => {
+export const LoadDatabaseIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -257,7 +257,7 @@ export const LoadDatabase = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path
         strokeLinecap="round"
@@ -270,7 +270,7 @@ export const LoadDatabase = () => {
   );
 };
 
-export const SignOut = () => {
+export const SignOutIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +278,7 @@ export const SignOut = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
       <path stroke="none" d="M0 0h24v24H0z" />
       <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />

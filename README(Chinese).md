@@ -13,59 +13,58 @@
 
 </div>
 
-<h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
-<p align="center">An open-source data modeling tool to facilitate relational database development</p>
+<h1 align="center">使用 <i>dbSpy</i> 可视化、修改和构建您的数据库！</h1>
+<p align="center">使关联式数据库开发更便利的开源数据建模工具</p>
+<!-- <p align="center">dbSpy是一个促进关系数据库开发的开源数据建模工具。</p> -->
 
-### New Features with Version 7.0
+### 6.0 版本的新功能
 
-### New Features with Version 6.0
+- 增强的基于 JWT 的用户身份验证以维护用户登录会话 
+- 安全管理用户特定的数据库存储和检索。 
+- 扩展数据库连接，包括MySQL数据库，用于可视化。
+- 增强的CRUD功能，使得可以在数据库中的DATA表中添加、修改和删除行。
+- 重新设计显示页面的UI，以产生更现代的美感。 
+- 重新设计登录和注册页面的UI，以创造更友好的用户登录体验。
+- 改进撤销/重做功能。
+- 实现谷歌和GitHub OAuth登录，以简化用户认证。
+- 提高Zustand stores的TDD覆盖率。
 
-- Enchanced JWT-based user authentication to maintain user login sessions 
-- Securely manage user-specific database storage and retrieval 
-- Expanded database connnectivity to include MySQL databases for visualization.
-- Robust CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
-- Redesigned the display page UI to produce a more mordern aesthetic 
-- Redesigned the UI for the login and signup pages to create a more user-friendly login experience
-- Improved Undo/Redo functionality
-- Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
-- Improve TDD coverage for Zustand stores.
+### 实例
 
-### Use Cases
-
-- Connecting to an existing remote PostgreSQL, MySQL, MicroSoftSQL, OracleSQL databases
-  - Renders an ER diagram for SCHEMA and DATA of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
-- Uploading your database's SQL file
-  - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
-- Seamlessly visualize relational databases (both SCHEMA and DATA)
-  - After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
-- Creating a database + ER diagram from scratch
-  - Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
+- 连接到现有的远程PostgreSQL、MySQL、MicroSoftSQL、OracleSQL数据库
+- 为现有数据库的SCHEMA和DATA生成ER图，并为用户提供一个界面，既可以修改现有表格，也可以创建新表格。更改的日志被存储起来，用户随时可以生成包含这些更改的查询，以便这些更改反映在现有数据库中。
+- 上传您的数据库SQL文件
+- 为提供的SQL文件（数据库转储）生成ER图，并为用户提供一个界面，既可以修改现有表格，也可以创建新表格。更改被转换为相应的查询，用户可以在dbSpy外部的自己的数据库上查看并执行这些查询。
+- 无缝可视化关系数据库（包括SCHEMA和DATA）
+- 在相互连接数据库表之后，用户可以通过点击表格来渲染个别表的关系连接。
+- 从头开始创建数据库+ER图
+- 提供一个画布，用户可以使用ER图创建数据库，从而为工程数据库结构创建蓝图。
 
 ---
 
-### Key Features
+### 主要功能
 
-1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
+1. **数据库上传：** 连接远程SQL数据库或上传本地SQL文件
 
-2. **ER Diagram Visuals:** Visualize the entity relationship diagram of a database with dynamic handle placement
+2. **ER图视觉效果：** 通过动态句柄放置来可视化数据库的实体关系图
 
-3. **Table Relationship Visuals** Relationships of individual tables are easily identified when clicking on a table
+3. **表格关系视觉效果** 单击表格时可以轻松识别各个表格的关系
 
-4. **Schema Modification:** Toggle between Schema and Data easily with a click of a button
+4. **架构修改：** 单击按钮即可轻松在架构和数据之间切换
 
-5. **Data/Schema Modification:** Easily modify a database's schema or data through a simple UI 
+5. **数据/架构修改：** 通过简单的 UI 轻松修改数据库的架构或数据
 
-5. **Guided Database Building:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
+5. **引导数据库构建：** 使用实体关系图从头开始创建新数据库，以确保数据库的完整性
 
-6. **Database Undo/Redo:** Provides a history of edits for easier backtracking
+6. **数据库撤消/重做：** 提供编辑历史记录，以便于回溯
 
-7. **Query Generator:** Query generator generates executable SQL queries
+7. **查询生成器：** 查询生成器生成可执行的SQL查询
 
-8. **User Sessions:** Sign up/Log in securely with either Google/Github OAuth or JWTs/Bcrypt
+8. **用户会话：** 使用 Google/Github OAuth 或 JWT/Bcrypt 安全地注册/登录
 
-9. **Save/Load:** Store and reload past database sessions through your user accoun
+9. **保存/加载：** 通过您的用户帐户存储和重新加载过去的数据库会话
 
-10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
+10. **深色模式：** 视觉设置，在弱光环境下提供更舒适的观看体验
 
 ## <img src="images/ConnectedToDB.png">
 

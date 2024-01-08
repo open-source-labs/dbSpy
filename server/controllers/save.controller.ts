@@ -106,10 +106,9 @@ const saveController = {
   //delete current save
   delete: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[deleteCtrl - deleteSchema] Begining to deleteing user's schema...");
-
-    const { SaveName, TableData } = req.body;
+    const { SaveName, TableData } = req.params;
     const { email } = req.session;
-    console.log(email, SaveName);
+    // console.log(email, SaveName);
     try {
       const deleteSaveQuery: string = `DELETE FROM saveddb WHERE email = ? AND SaveName = ?`;
       const values = [email, SaveName];
@@ -136,7 +135,7 @@ const saveController = {
       const values = [email, SaveName];
 
       const loadData = (await pool.query(loadQuery, values)) as RowDataPacket[];
-      console.log(loadData[0][0]);
+      // console.log("loadData[0][0]", loadData[0][0]);
       res.locals.data = loadData[0][0].SaveData;
       res.locals.tableData = loadData[0][0].TableData;
       return next();

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-export default function LoadDbModal({
-  closeLoadDbModal,
+export default function DeleteDbModal({
+  closeDeleteDbModal,
   nameArr,
 }: {
   nameArr: string[];
-  closeLoadDbModal: (input?: string) => void;
+  closeDeleteDbModal: (input?: string) => void;
 }) {
 
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -13,7 +13,7 @@ export default function LoadDbModal({
     const form = event.target as HTMLFormElement;
     const selectedItems = form.elements.namedItem('selectedItems') as HTMLSelectElement;
     const selectedOptionsValues = selectedItems.value; // Directly access the value of the selected option
-    closeLoadDbModal(selectedOptionsValues); // Close the modal after submission
+    closeDeleteDbModal(selectedOptionsValues); // Close the modal after submission
   }
   
   // handleclose from FeatureTab to toggle this modal off
@@ -41,14 +41,14 @@ export default function LoadDbModal({
         <button
           id="confirm"
           type="submit"
-          className="modalButton ml-5 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+          className="bg-red-500 text-white rounded-md px-2 py-1 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
         >
-          Confirm
+          Delete
         </button>
         <button
           id="cancel"
           type="button"
-          onClick={() => closeLoadDbModal()}
+          onClick={() => closeDeleteDbModal()}
           className="modalButton ml-5 text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
         >
           Cancel
