@@ -41,12 +41,25 @@ import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
 //import icon
-import { Home, ConnectDatabase, UploadSQLFile, ExportQuery, AddTable, DeleteTable, ClearCanvas, Undo, Redo, SaveDatabase, LoadDatabase, SignOut, BuildDatabase } from '../../FeatureTabIcon';
+import {
+  Home,
+  ConnectDatabase,
+  UploadSQLFile,
+  ExportQuery,
+  AddTable,
+  DeleteTable,
+  ClearCanvas,
+  Undo,
+  Redo,
+  SaveDatabase,
+  LoadDatabase,
+  SignOut,
+  BuildDatabase,
+} from '../../FeatureTabIcon';
 // Components imported:
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
-
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
@@ -155,12 +168,12 @@ export default function FeatureTab(props: any) {
 
   const closeSaveDbNameModal = (input?: string) => {
     //pull dbName from input field and send it to the database along with the schema.
-    if(input){
+    if (input) {
       saveSchema(input);
     }
     setSaveDbNameModalOpened(false);
   };
- 
+
   // LoadDbModal
   // Open loadDbName Modal and send get request to database to get&list all the databases name.
   const openLoadDbModal = async (): Promise<string[]> => {
@@ -188,7 +201,7 @@ export default function FeatureTab(props: any) {
   };
 
   const closeLoadDbModal = (input?: string) => {
-    if(input){
+    if (input) {
       loadSchema(input);
     }
     setLoadDbModalOpened(false);
@@ -237,7 +250,7 @@ export default function FeatureTab(props: any) {
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      console.log("schemaString212", schemaString.data)
+      console.log('schemaString212', schemaString.data);
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);
@@ -312,7 +325,7 @@ export default function FeatureTab(props: any) {
     }, 130); // Adjust the timeout value (in milliseconds) as needed
   }
   // function to clean up after the hover over affect - db 7.0
-  function clearImgSwap(event) {
+  function clearImgSwap(event: any) {
     if (theme === 'Light') {
       event.target.src = logo;
     } else {
@@ -323,7 +336,7 @@ export default function FeatureTab(props: any) {
 
   //on click function for revealing/hiding the nav bar db - 7.0
   let logoClicked = false;
-  function revealHideNav(event) {
+  function revealHideNav(event: any) {
     // Get the siblings
     logoClicked = !logoClicked;
     let time = 30;
@@ -387,7 +400,7 @@ export default function FeatureTab(props: any) {
             <NavLink to="/" className={linkbtn}>
               <div className="inline-flex h-10 w-[232px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
-                <Home/>
+                <Home />
                 <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
                   <span className="text-sm text-slate-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300">
                     Home
@@ -428,7 +441,7 @@ export default function FeatureTab(props: any) {
                   className="dark: flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   data-testid="connect-database"
                 >
-                  <ConnectDatabase/>
+                  <ConnectDatabase />
                   <span className="ml-3">Connect Database</span>
                 </a>
               </li>
@@ -437,7 +450,7 @@ export default function FeatureTab(props: any) {
                   onClick={uploadSQL}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <UploadSQLFile/>
+                  <UploadSQLFile />
                   <span className="ml-3 flex-1 whitespace-nowrap">Upload SQL File</span>
                   <span className="ml-3 inline-flex items-center justify-center rounded-full bg-gray-200 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"></span>
                 </a>
@@ -447,7 +460,7 @@ export default function FeatureTab(props: any) {
                   onClick={buildDb}
                   className=" flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <BuildDatabase/>
+                  <BuildDatabase />
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
@@ -457,7 +470,7 @@ export default function FeatureTab(props: any) {
                   onClick={openQueryModal}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                 >
-                  <ExportQuery/>
+                  <ExportQuery />
                   <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
               </li>
@@ -466,20 +479,20 @@ export default function FeatureTab(props: any) {
               <hr />
               {isSchema ? (
                 <li>
-                <a
-                  onClick={() => {
-                    props.openAddTableModal();
-                    // if schemaStore is empty, initialize
-                    if (!Object.keys(schemaStore).length) buildDatabase();
-                  }}
-                  id="addTable"
-                  className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
-                >
-                  <AddTable/>
-                  <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
-                </a>
-              </li>
-            ) : null}
+                  <a
+                    onClick={() => {
+                      props.openAddTableModal();
+                      // if schemaStore is empty, initialize
+                      if (!Object.keys(schemaStore).length) buildDatabase();
+                    }}
+                    id="addTable"
+                    className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                  >
+                    <AddTable />
+                    <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
+                  </a>
+                </li>
+              ) : null}
               {Object.keys(schemaStore).length ? (
                 <li>
                   <a
@@ -489,7 +502,7 @@ export default function FeatureTab(props: any) {
                     id="deleteTable"
                     className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <DeleteTable/>
+                    <DeleteTable />
                     <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
                   </a>
                 </li>
@@ -499,7 +512,7 @@ export default function FeatureTab(props: any) {
                   onClick={clearCanvas}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <ClearCanvas/>
+                  <ClearCanvas />
                   <span className="ml-3 flex-1 whitespace-nowrap">Clear Canvas</span>
                 </a>
               </li>
@@ -509,7 +522,7 @@ export default function FeatureTab(props: any) {
                   onClick={undoHandler}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <Undo/>
+                  <Undo />
                   <span className="ml-3 flex-1 whitespace-nowrap">Undo</span>
                 </a>
               </li>
@@ -518,7 +531,7 @@ export default function FeatureTab(props: any) {
                   onClick={redoHandler}
                   className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <Redo/>
+                  <Redo />
                   <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
                 </a>
               </li>
@@ -533,7 +546,7 @@ export default function FeatureTab(props: any) {
                     onClick={openSaveDbNameModal}
                     className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <SaveDatabase/>
+                    <SaveDatabase />
                     <span className="ml-3 flex-1 whitespace-nowrap">Save Database</span>
                   </a>
                 </li>
@@ -542,7 +555,7 @@ export default function FeatureTab(props: any) {
                     onClick={openLoadDbModal}
                     className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                   >
-                    <LoadDatabase/>
+                    <LoadDatabase />
                     <span className="ml-3 flex-1 whitespace-nowrap">Load Database</span>
                   </a>
                 </li>
@@ -552,7 +565,7 @@ export default function FeatureTab(props: any) {
                       onClick={() => signoutSession()}
                       className="flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                     >
-                      <SignOut/>
+                      <SignOut />
                       <span className="ml-3 flex-1 whitespace-nowrap">Sign Out</span>
                     </a>
                   </li>
@@ -569,7 +582,8 @@ export default function FeatureTab(props: any) {
           {/* <!-- Confirm Modal content --> */}
           <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
             <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
-              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved changes.
+              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
+              changes.
             </p>
             <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
               <button
@@ -591,8 +605,12 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
 
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
-        {saveDbNameModalOpened ? (<DbNameInput closeSaveDbNameModal={closeSaveDbNameModal}/>) : null}
-        {loadDbModalOpened ? (<LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />) : null}
+        {saveDbNameModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+        ) : null}
+        {loadDbModalOpened ? (
+          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
+        ) : null}
       </div>
     </>
   );

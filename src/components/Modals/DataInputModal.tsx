@@ -38,16 +38,13 @@ export default function DataInputModal({
   const currentTable = deepCopyDataStore[tableName as string]
     ? deepCopyDataStore[tableName as string]
     : [];
-  console.log('====== tableName (in DataInputModal) ======');
-  console.log(tableName);
-  console.log('====== currentTable (in DataInputModal) ======');
-  console.log(currentTable);
 
   // we get the column names from schemaStore IN CASE current table is EMPTY (because if table is EMPTY, it will
   // not pass in the column names)
   const secondaryColumnNames: string[] = Object.keys(schemaStore[tableName as string]);
 
-  const updatingDB = async (newRow: Array<DataObj>): Promise<void> => {
+  const updatingDB = async (newRow: DataObj): Promise<void> => {
+    console.log('==== updatingDB function FIRING ====');
     addTableData(tableName!, newRow);
     //new column data that will be sent in the post request body
     const dataToSend = {
@@ -78,8 +75,13 @@ export default function DataInputModal({
         });
       }
       currentTable.push(additionalRow);
-      console.log('currentTable', currentTable);
+      console.log('INSIDE OF handleSubmit ===> currentTable: ', currentTable);
+      console.log(
+        'INSIDE OF handleSubmit ===> currentTable[currentTable.length - 1]:',
+        currentTable[currentTable.length - 1]
+      );
       // send backend the new row ONLY to add this row to table we had
+
       await Promise.resolve(updatingDB(currentTable[currentTable.length - 1]));
     } catch (error) {
       window.alert(error);
