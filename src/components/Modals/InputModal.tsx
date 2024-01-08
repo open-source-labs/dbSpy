@@ -38,8 +38,7 @@ export default function InputModal({
   // TODO: FORCE USER TO CHOOSE ONE AND ONLY ONE COLUMN AS PK WHEN CREATING TABLE
   // AFTERWARDS, PK MAY NOT BE EDITED
   const { dbCredentials } = useCredentialsStore((state) => state);
-  console.log('===== dbCredentials Object =====', dbCredentials);
-  if (!dbCredentials.db_type) dbCredentials.db_type = 'postgres';
+
   const { setSchemaStore } = useSchemaStore((state) => state);
   const { setDataStore } = useDataStore((state) => state);
 
