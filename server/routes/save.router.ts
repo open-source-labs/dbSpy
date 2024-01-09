@@ -26,7 +26,7 @@ saveRouter.delete(
   '/deleteSave/:SaveName',
   saveController.delete,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals.message);
+    return res.status(204).json(res.locals.message);
   }
 );
 

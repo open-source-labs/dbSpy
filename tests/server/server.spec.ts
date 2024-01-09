@@ -1,6 +1,7 @@
 //// Run your application first to test server
 import request from 'supertest';
 import { swapiSchema, swapiString } from './utils/swapiSchema';
+import { swapiData, swapiDataString } from './utils/swapiData';
 import mysqlSchema from './utils/mysqlSchema';
 import dotenv from 'dotenv';
 import Chance from 'chance';
@@ -109,40 +110,41 @@ xdescribe('/api/verifyUser', () => {
   });
 });
 
-xdescribe('/api/saveSchema', () => {
-  it('responds with 200', async () => {
-    const response = await request(server).post('/api/saveSchema').send({
-      email: TEST_USER_EMAIL,
-      schema: swapiString,
-    });
-    expect(response.status).toBe(200);
-  });
+// DEPRECIATED SYSTEM
+// xdescribe('/api/saveSchema', () => {
+//   it('responds with 200', async () => {
+//     const response = await request(server).post('/api/saveSchema').send({
+//       email: TEST_USER_EMAIL,
+//       schema: swapiString,
+//     });
+//     expect(response.status).toBe(200);
+//   });
 
-  it('responds with 400 and error message for non-string data', async () => {
-    const response = await request(server).post('/api/saveSchema').send({
-      email: TEST_USER_EMAIL,
-      schema: swapiSchema,
-    });
-    expect(response.status).toBe(400);
-    expect(response.body).toBe('err: User data must be strings');
-  });
-});
+//   it('responds with 400 and error message for non-string data', async () => {
+//     const response = await request(server).post('/api/saveSchema').send({
+//       email: TEST_USER_EMAIL,
+//       schema: swapiSchema,
+//     });
+//     expect(response.status).toBe(400);
+//     expect(response.body).toBe('err: User data must be strings');
+//   });
+// });
 
-xdescribe('/api/retrieveSchema', () => {
-  it('responds with 200, content-type JSON, and correct body', async () => {
-    const response = await request(server).get(`/api/retrieveSchema/${TEST_USER_EMAIL}`);
-    expect(response.status).toBe(200);
-    expect(response.header['content-type']).toMatch(/json/);
-    expect(response.body).toEqual(swapiString);
-  });
+// xdescribe('/api/retrieveSchema', () => {
+//   it('responds with 200, content-type JSON, and correct body', async () => {
+//     const response = await request(server).get(`/api/retrieveSchema/${TEST_USER_EMAIL}`);
+//     expect(response.status).toBe(200);
+//     expect(response.header['content-type']).toMatch(/json/);
+//     expect(response.body).toEqual(swapiString);
+//   });
 
-  it('responds with 204 if user has no saved schema', async () => {
-    const response = await request(server).get(
-      `/api/retrieveSchema/no_database@email.com`
-    );
-    expect(response.status).toBe(204);
-  });
-});
+//   it('responds with 204 if user has no saved schema', async () => {
+//     const response = await request(server).get(
+//       `/api/retrieveSchema/no_database@email.com`
+//     );
+//     expect(response.status).toBe(204);
+//   });
+// });
 
 xdescribe('/api/sql/postgres/schema', () => {
   const pgDB = {
@@ -183,5 +185,105 @@ xdescribe('/api/sql/mysql/schema', () => {
       expect(response.body).toEqual(mysqlSchema);
     },
     15 * 1000 // 15 second timeout is more than enough
+  );
+});
+
+xdescribe('/api/saveFiles/deleteSave', () => {
+  it(
+    'responds with 204, and deletion message',
+    async () => {
+      const response = await request(server)
+        .delete(`/api/saveFiles/deleteSave/${TEST_USER_EMAIL}`)
+        .send({
+          SaveName: 'TestSave',
+          email: TEST_USER_EMAIL,
+        });
+      expect(response.status).toEqual(204);
+      expect(response.body.message).toEqual('Deletion Completed');
+    },
+    15 * 1000 // 15 second timeout is more than enough
+  );
+
+  it(
+    'responds with 400, and error',
+    async () => {
+      const response = await request(server).delete(
+        `/api/saveFiles/deleteSave/${TEST_USER_EMAIL}`
+      );
+      expect(response.status).toEqual(400);
+      expect(response.body.message).toEqual(
+        'something went wrong in the deletion process'
+      );
+    },
+    15 * 1000 // 15 second timeout is more than enough
+  );
+});
+
+xdescribe('/api/saveFiles/save', () => {
+  it(
+    'responds with 200, correct content type',
+    async () => {
+      const response = await request(server)
+        .get(`/api/saveFiles/loadSave/${TEST_USER_EMAIL}`)
+        .send({
+          SaveName: 'InvalidTestSave',
+          email: TEST_USER_EMAIL,
+        });
+      expect(response.status).toEqual(400);
+      expect(response.body.message).toEqual(
+        'something went wrong in the save schema process'
+      );
+    },
+    15 * 1000
+  );
+
+  it(
+    'responds with 400, and error',
+    async () => {
+      const response = await request(server)
+        .get(`/api/saveFiles/loadSave/${TEST_USER_EMAIL}`)
+        .send({
+          SaveName: 'InvalidTestSave',
+          email: TEST_USER_EMAIL,
+        });
+      expect(response.status).toEqual(400);
+      expect(response.body.message).toEqual(
+        'something went wrong in the save schema process'
+      );
+    },
+    15 * 1000
+  );
+});
+
+xdescribe('/api/saveFiles/loadSave', () => {
+  it(
+    'responds with 200, correct content type',
+    async () => {
+      const response = await request(server)
+        .get(`/api/saveFiles/loadSave/${TEST_USER_EMAIL}`)
+        .send({
+          SaveName: 'TestSave',
+          email: TEST_USER_EMAIL,
+        });
+      expect(response.status).toEqual(200);
+      expect(response.body.data).toEqual(swapiSchema);
+      expect(response.body.tableData).toEqual(swapiData);
+    },
+    15 * 1000 // 15 second timeout is more than enough
+  );
+
+  it(
+    'responds with 400, and error',
+    async () => {
+      const response = await request(server)
+        .get(`/api/saveFiles/loadSave/${TEST_USER_EMAIL}`)
+        .send({
+          SaveName: 'InvalidTestSave',
+          email: TEST_USER_EMAIL,
+        });
+      expect(response.body.status).toEqual(400);
+      expect(response.body.message).toEqual('something went wrong while trying to load');
+    },
+    15 * 1000
   );
 });
