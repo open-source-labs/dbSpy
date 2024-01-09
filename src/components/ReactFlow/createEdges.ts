@@ -12,8 +12,7 @@ export default function createEdges(schemaObject: SchemaStore) {
     for (const rowKey in table) {
       const row = table[rowKey];
 
-      if (row.IsForeignKey && schemaObject[row.References[0].PrimaryKeyTableName]) {
-        //(row.IsPrimaryKey && schemaObject[row.References[0].ReferencesTableName])
+      if (row.IsForeignKey) {
         edges.push({
           id: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
           source: row.References[0].ReferencesTableName,
