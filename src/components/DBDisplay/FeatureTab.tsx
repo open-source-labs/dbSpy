@@ -61,7 +61,7 @@ import {
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
-import DeleteDbModal from '../Modals/DeleteDBModal';
+import DeleteDbModal from '../Modals/DeleteDbModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
