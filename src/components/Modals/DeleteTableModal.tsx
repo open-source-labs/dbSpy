@@ -19,7 +19,7 @@ export default function DeleteTableModal({
   const { dbCredentials } = useCredentialsStore((state) => state);
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { dataStore, setDataStore } = useDataStore((state) => state);
-  const { edges, setEdges, nodes } = useFlowStore((state) => state);
+  const { edges, setEdges, nodes, setNodes } = useFlowStore((state) => state);
 
   useEffect(() => {
     const fetchTableNames = async () => {
@@ -46,46 +46,59 @@ export default function DeleteTableModal({
     //   edges[0].targetHandle
     // );
     console.log('tableName ', tableName);
-    console.log('SchemaStore', schemaStore[tableName]);
+    console.log('SchemaStore', schemaStore);
     console.log('nodes', nodes);
     //iterate through the tables, find the .isForeignKey attribute and also the
-    if (schemaStore[tableName].isForeignKey) {
-      let index;
-      for (let i = 0; i < edges.length; i++) {
-        console.log(edges[i].sourceHandle == tableName);
-        if (edges[i].sourceHandle == tableName) {
-          index = i;
-        }
-      }
-      edges.slice(index, 1);
-    }
-    const node = nodes.filter((element) => {
-      return element.id === tableName ? true : false;
-    });
-    if (schemaStore[tableName].isPrimaryKey) {
-    }
-    console.log('node ', node);
+    // if (schemaStore[tableName].isForeignKey) {
+    //   let index;
+    //   for (let i = 0; i < edges.length; i++) {
+    //     console.log(edges[i].sourceHandle == tableName);
+    //     if (edges[i].sourceHandle == tableName) {
+    //       index = i;
+    //     }
+    //   }
+    //   edges.slice(index, 1);
+    // }
+    // const node = nodes.filter((element) => {
+    //   return element.id === tableName ? true : false;
+    // });
+    // if (schemaStore[tableName].isPrimaryKey) {
+    // }
+    // console.log('node ', node);
     // const obj = {
     //   `${node[0].id,
     //   `${node[0]}`.position,
     //   `${node[0]}`.data
     // }
-    const connectedEdgesArr = getConnectedEdges([node[0]], edges);
+    // const connectedEdgesArr = getConnectedEdges([node[0]], edges);
     console.log('all edges ', edges);
-    console.log('connectedEdges ', connectedEdgesArr);
+    //console.log('connectedEdges ', connectedEdgesArr);
+    setNodes([]);
+    setEdges([]);
     delete schemaStore[tableName];
     delete dataStore[tableName];
-
-    let connectedEdges = [];
-    for (let edges of connectedEdgesArr) {
-      connectedEdges.push(edges.id);
+    //below code deletes the column of any foreign key that pointed to the deleted table - dbSpy 7.0
+    for (let tableKey in schemaStore) {
+      for (let rowKey in schemaStore[tableKey]) {
+        if (
+          schemaStore[tableKey][rowKey].IsForeignKey &&
+          schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName === tableName
+        ) {
+          delete schemaStore[tableKey][rowKey];
+        }
+      }
     }
+    // let connectedEdges = [];
+    // for (let edges of connectedEdgesArr) {
+    //   connectedEdges.push(edges.id);
+    // // }
 
-    const edgesNew = edges.filter((element) => {
-      return connectedEdges.includes(element.id) ? false : true;
-    });
-    console.log('new edges', edgesNew);
-    setEdges(edgesNew);
+    // const edgesNew = edges.filter((element) => {
+    //   return connectedEdges.includes(element.id) ? false : true;
+    // });
+    // console.log('new edges', edgesNew);
+    // setEdges(edgesNew);
+
     setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
     setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
 
@@ -93,52 +106,6 @@ export default function DeleteTableModal({
     setConnectPressed(false);
     closeDeleteTableModal();
   };
-  //   await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
-  //     method: 'DELETE',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ tableName: tableName }),
-  //   })
-  //     .then(() => {
-  //       //iterate through the tables, find the .isForeignKey attribute and also the
-  //       if (schemaStore[tableName].isForeignKey) {
-  //         let index;
-  //         for (let i = 0; i < edges.length; i++) {
-  //           console.log(edges[i].sourceHandle == tableName);
-  //           if (edges[i].sourceHandle == tableName) {
-  //             index = i;
-  //           }
-  //         }
-  //         edges.slice(index, 1);
-  //       }
-  //       if (schemaStore[tableName].isPrimaryKey) {
-  //       }
-  //       delete schemaStore[tableName];
-  //       delete dataStore[tableName];
-  //     })
-  //     .then(() => {
-  //       setEdges(edges);
-  //       setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
-  //       setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
-  //     })
-  //     .then(() => {
-  //       setTableName('');
-  //       setConnectPressed(false);
-  //       closeDeleteTableModal();
-  //     })
-  //     .catch((error) => {
-  //       console.log(
-  //         'dataStore.tableName: ',
-  //         dataStore.tableName,
-  //         'schemaStore.tableName: ',
-  //         schemaStore.tableName
-  //       );
-  //       closeDeleteTableModal();
-  //       setTableName('');
-  //       console.error('Error fetching table names:', error);
-  //     });
-  // };
 
   return (
     <div id="deleteTableModal" className="input-modal">

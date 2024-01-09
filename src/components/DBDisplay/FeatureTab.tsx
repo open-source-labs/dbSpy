@@ -393,7 +393,7 @@ export default function FeatureTab(props: any) {
     logoClicked = !logoClicked;
     let time = 30;
     if (logoClicked) {
-      //adding this class allows the canvas to be interacted with while being 'beneath' the divs
+      //adding this class allows the canvas to be interacted with despite being beneath the nav divs
       event.target.parentElement.classList.add('pointer-events-none');
       event.target.parentElement.parentElement.classList.add('pointer-events-none');
     }

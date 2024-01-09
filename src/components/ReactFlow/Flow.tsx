@@ -23,15 +23,19 @@ export default function Flow(): JSX.Element {
   // re-render every time schemaStore updates
 
   useEffect(() => {
+    console.log('useEffect trigger=============');
     reRender(schemaStore);
   }, [schemaStore]);
 
   function reRender(schemaStore: SchemaStore) {
+    console.log('rerender trigger=============');
     if (!schemaStore || !Object.keys(schemaStore).length) return;
     const initialEdges = createEdges(schemaStore);
     setEdges(initialEdges);
     const initialNodes = createNodes(schemaStore, initialEdges);
     setNodes(initialNodes);
+    console.log('Initial EDGESSSSSS', initialEdges);
+    console.log('new Nodes======', nodes);
   }
   // function for highlighting the edges associated with the current node - db 7.0
   const handleNodeClick = (event, node) => {
@@ -73,7 +77,6 @@ export default function Flow(): JSX.Element {
 
     setEdges(updatedEdges);
   };
-
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '98%', width: '100%', zIndex: 0 }}>

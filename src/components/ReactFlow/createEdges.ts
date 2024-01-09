@@ -5,13 +5,15 @@ import { Edge } from '@/Types';
 // Creates an array of all edges in the schema view
 export default function createEdges(schemaObject: SchemaStore) {
   const edges: Edge[] = [];
+  console.log('oldedges: ', edges);
   for (const tableKey in schemaObject) {
     const table = schemaObject[tableKey];
 
     for (const rowKey in table) {
       const row = table[rowKey];
 
-      if (row.IsForeignKey) {
+      if (row.IsForeignKey && schemaObject[row.References[0].PrimaryKeyTableName]) {
+        //(row.IsPrimaryKey && schemaObject[row.References[0].ReferencesTableName])
         edges.push({
           id: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
           source: row.References[0].ReferencesTableName,
@@ -36,5 +38,6 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
+  console.log('newEdges: ', edges);
   return edges;
 }
