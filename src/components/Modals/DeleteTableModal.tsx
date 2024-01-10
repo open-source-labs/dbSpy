@@ -3,7 +3,7 @@ import useSchemaStore from '../../store/schemaStore';
 import useCredentialsStore from '../../store/credentialsStore';
 import useDataStore from '../../store/dataStore';
 import useFlowStore from '../../store/flowStore';
-import ReactFlow, { getConnectedEdges } from 'reactflow'
+import ReactFlow, { getConnectedEdges } from 'reactflow';
 
 type DeleteTableModalProps = {
   closeDeleteTableModal: () => void;
@@ -12,14 +12,14 @@ type DeleteTableModalProps = {
 export default function DeleteTableModal({
   closeDeleteTableModal,
 }: DeleteTableModalProps) {
-  const [tableName, setTableName] = useState('');
+  const [tableName, setTableName] = useState<string>('');
   const [tableNames, setTableNames] = useState<string[]>([]);
   const [connectPressed, setConnectPressed] = useState(false);
 
   const { dbCredentials } = useCredentialsStore((state) => state);
   const { schemaStore, setSchemaStore } = useSchemaStore((state) => state);
   const { dataStore, setDataStore } = useDataStore((state) => state);
-  const { edges, setEdges, nodes } = useFlowStore((state) => state);
+  const { setEdges, setNodes } = useFlowStore((state) => state);
 
   useEffect(() => {
     const fetchTableNames = async () => {
@@ -36,112 +36,155 @@ export default function DeleteTableModal({
     fetchTableNames();
   }, []);
 
-  const deleteTable = () => {
-    setConnectPressed(true);
-    // console.log(
-    //   'THIS IS THE EDGESSSSSS!!!!!!',
-    //   edges[0].sourceHandle,
-    //   edges[0].source,
-    //   edges[0].target,
-    //   edges[0].targetHandle
-    // );
-    console.log("tableName ",tableName)
-    console.log("SchemaStore", schemaStore[tableName])
-    console.log("nodes", nodes)
-        //iterate through the tables, find the .isForeignKey attribute and also the
-        if (schemaStore[tableName].isForeignKey) {
-          let index;
-          for (let i = 0; i < edges.length; i++) {
-            console.log(edges[i].sourceHandle == tableName);
-            if (edges[i].sourceHandle == tableName) {
-              index = i;
-            }
-          }
-          edges.slice(index, 1);
-        }
-        const node = nodes.filter((element) => {
-          return element.id === tableName ? true : false
-          })
-        if (schemaStore[tableName].isPrimaryKey) {
-        }
-        console.log("node ", node)
-        // const obj = {
-        //   `${node[0].id,
-        //   `${node[0]}`.position,
-        //   `${node[0]}`.data
-        // }
-        const connectedEdgesArr = getConnectedEdges([node[0]], edges)
-        console.log("all edges ", edges)
-        console.log("connectedEdges ", connectedEdgesArr)
-        delete schemaStore[tableName];
-        delete dataStore[tableName];
-        
-        let connectedEdges = [];
-        for (let edges of connectedEdgesArr) {
-          connectedEdges.push(edges.id)
-        }
-
-        const edgesNew = edges.filter((element) => {
-          return connectedEdges.includes(element.id) ? false : true
-          })  
-        console.log("new edges", edgesNew)
-        setEdges(edgesNew);
-        setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
-        setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
-    
-        setTableName('');
-        setConnectPressed(false);
-        closeDeleteTableModal();
-      
-  
-  };
-  //   await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
-  //     method: 'DELETE',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ tableName: tableName }),
-  //   })
-  //     .then(() => {
-  //       //iterate through the tables, find the .isForeignKey attribute and also the
-  //       if (schemaStore[tableName].isForeignKey) {
-  //         let index;
-  //         for (let i = 0; i < edges.length; i++) {
-  //           console.log(edges[i].sourceHandle == tableName);
-  //           if (edges[i].sourceHandle == tableName) {
-  //             index = i;
-  //           }
-  //         }
-  //         edges.slice(index, 1);
-  //       }
-  //       if (schemaStore[tableName].isPrimaryKey) {
-  //       }
-  //       delete schemaStore[tableName];
-  //       delete dataStore[tableName];
-  //     })
-  //     .then(() => {
-  //       setEdges(edges);
-  //       setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
-  //       setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
-  //     })
-  //     .then(() => {
-  //       setTableName('');
-  //       setConnectPressed(false);
-  //       closeDeleteTableModal();
-  //     })
-  //     .catch((error) => {
-  //       console.log(
-  //         'dataStore.tableName: ',
-  //         dataStore.tableName,
-  //         'schemaStore.tableName: ',
-  //         schemaStore.tableName
-  //       );
-  //       closeDeleteTableModal();
-  //       setTableName('');
-  //       console.error('Error fetching table names:', error);
+  //modified to fix bugs by dbspy 7.0
+  // const deleteTable = async (): Promise<void> => {
+  //   try {
+  //     setConnectPressed(true);
+  //     console.log('schemmmmmmmaaaaaaa', schemaStore);
+  //     await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
+  //       method: 'DELETE',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ tableName: tableName }),
   //     });
-  // };
 
+  //     for (let tableKey in schemaStore) {
+  //       for (let rowKey in schemaStore[tableKey]) {
+  //         if (
+  //           schemaStore[tableKey][rowKey].IsForeignKey &&
+  //           schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName === tableName
+  //         ) {
+  //           let constraintName =
+  //             schemaStore[tableKey][rowKey].References[0].constraintName;
+  //           console.log(`constraint`, constraintName);
+  //           console.log(`tableKey`, tableKey);
+  //           console.log(`rowKey`, rowKey);
+  //           // Nested fetch call with await
+  //           await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+  //             method: 'DELETE',
+  //             headers: { 'Content-Type': 'application/json' },
+  //             body: JSON.stringify({
+  //               columnName: rowKey,
+  //               tableName: tableKey,
+  //               constraintName: constraintName,
+  //             }),
+  //           });
+
+  //           delete schemaStore[tableKey][rowKey];
+  //         }
+  //       }
+  //     }
+  //     //delete the table object from the schemaStore object
+  //     delete schemaStore[tableName];
+  //     delete dataStore[tableName];
+  //     setNodes([]);
+  //     setEdges([]);
+  //     //pass in modified schemaStore object which triggers a the rerender function in the flow.tsx component
+  //     setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
+  //     setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
+  //     setTableName('');
+  //     setConnectPressed(false);
+  //     closeDeleteTableModal();
+  //   } catch (error) {
+  //     console.log(
+  //       'dataStore.tableName: ',
+  //       dataStore.tableName,
+  //       'schemaStore.tableName: ',
+  //       schemaStore.tableName
+  //     );
+  //     console.error('Error fetching table names:', error);
+  //     closeDeleteTableModal();
+  //     setTableName('');
+  //   }
+
+  //   // .then(() => {
+  //   //   for (let tableKey in schemaStore) {
+  //   //     for (let rowKey in schemaStore[tableKey]) {
+  //   //       //rowKey.References[0].constraintName
+  //   //       if (
+  //   //         schemaStore[tableKey][rowKey].IsForeignKey &&
+  //   //         schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName ===
+  //   //           tableName
+  //   //       ) {
+  //   //         let constraintName =
+  //   //           schemaStore[tableKey][rowKey].References[0].constraintName;
+  //   //         fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
+  //   //           method: 'DELETE',
+  //   //           headers: {
+  //   //             'Content-Type': 'application/json',
+  //   //           },
+  //   //           body: JSON.stringify({
+  //   //             columnKey: rowKey,
+  //   //             tableName: tableKey,
+  //   //             constraintName: constraintName,
+  //   //           }),
+  //   //         }).then(() => delete schemaStore[tableKey][rowKey]);
+  //   //       }
+  //   //     }
+  //   //     //if nodes and edges state are not reset here the canvas re-renders with extra edges -- dbSpy 7.0
+  //   //     setNodes([]);
+  //   //     setEdges([]);
+  //   //   }
+  //   //   //delete the table object from the schemaStore object
+  //   //   delete schemaStore[tableName];
+  //   //   delete dataStore[tableName];
+  //   // })
+  //   // .then(() => {
+  //   //   //pass in modified schemaStore object which triggers a the rerender function in the flow.tsx component
+  //   //   setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
+  //   //   setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
+  //   // })
+  //   // .then(() => {
+  //   //   setTableName('');
+  //   //   setConnectPressed(false);
+  //   //   closeDeleteTableModal();
+  //   // })
+  //   // .catch((error) => {
+  //   //   console.log(
+  //   //     'dataStore.tableName: ',
+  //   //     dataStore.tableName,
+  //   //     'schemaStore.tableName: ',
+  //   //     schemaStore.tableName
+  //   //   );
+  //   //   closeDeleteTableModal();
+  //   //   setTableName('');
+  //   //   console.error('Error fetching table names:', error);
+  //   // });
+  // };
+  //=============
+  //if nodes and edges state are not reset here the canvas re-renders with extra edges -- dbSpy 7.0
+
+  //below code deletes the column of any foreign key that references the deleted table - dbSpy 7.0
+
+  //modified to fix bugs by dbspy 7.0
+  const deleteTable = (): void => {
+    setConnectPressed(true);
+    //if nodes and edges state are not reset here the canvas re-renders with extra edges -- dbSpy 7.0
+    setNodes([]);
+    setEdges([]);
+    //below code deletes the column of any foreign key that references the deleted table - dbSpy 7.0
+    for (let tableKey in schemaStore) {
+      for (let rowKey in schemaStore[tableKey]) {
+        if (
+          schemaStore[tableKey][rowKey].IsForeignKey &&
+          schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName === tableName
+        ) {
+          delete schemaStore[tableKey][rowKey];
+        }
+      }
+    }
+    //delete the table object from the schemaStore object
+    delete schemaStore[tableName];
+    delete dataStore[tableName];
+    //pass in modified schemaStore object which triggers a the rerender function in the flow.tsx component
+    setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
+    setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
+
+    setTableName('');
+    setConnectPressed(false);
+    closeDeleteTableModal();
+  };
   return (
     <div id="deleteTableModal" className="input-modal">
       <div className="modal-content w-96 rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">

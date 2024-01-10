@@ -11,7 +11,7 @@ import DownloadButton from './DownloadButton';
 import createDataEdges from './createDataEdges';
 import createDataNodes from './createDataNodes';
 import DataTableNode from './DataTableNode';
-
+import useSettingsStore from '../../store/settingsStore';
 //-----TYPES
 const nodeTypes = {
   table: DataTableNode,
@@ -24,6 +24,7 @@ export default function DataFlow(): JSX.Element {
     useFlowStore((state) => state);
   const { dataStore } = useDataStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
+  const { darkMode } = useSettingsStore((state) => state);
 
   // re-render every time dataStore updates
   useEffect(() => {
@@ -38,6 +39,49 @@ export default function DataFlow(): JSX.Element {
     setNodes(initialNodes);
   }
 
+  // function for highlighting the edges associated with the current node - db 7.0
+  const handleNodeClick = (event, node) => {
+    // Find edges connected to the clicked node and update their selected property using map method
+    const updatedEdges = edges.map((edge) => {
+      // below two lines are set up to be able to change the edge color if the darkMode state changes.
+      // Not currently being utalized.
+      let hlColor;
+      darkMode === true ? (hlColor = '#fedd0a') : (hlColor = '#fedd0a');
+      // The below condition checks to see if the selected node is either the source or the target of the current node in the edges array.
+      if (edge.source === node.id || edge.target === node.id) {
+        return {
+          ...edge,
+          type: 'smoothstep',
+          style: {
+            //strokeWidth: 2,
+            ...edge.style,
+            stroke: hlColor,
+          },
+          markerEnd: {
+            ...edge.markerEnd,
+            color: hlColor,
+          },
+        };
+      }
+      //if the current edge is not associated with the node then return this styling.
+      return {
+        ...edge,
+        type: 'bezier',
+        style: {
+          //strokeWidth: 2,
+          ...edge.style,
+          stroke: '#085c84',
+        },
+        markerEnd: {
+          ...edge.markerEnd,
+          color: '#085c84',
+        },
+      };
+    });
+    // pass in new edges array with altered stylings into setter function to update the state
+    setEdges(updatedEdges);
+  };
+
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '98%', width: '100%' }}>
@@ -47,6 +91,7 @@ export default function DataFlow(): JSX.Element {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={handleNodeClick} // dbSpy 7.0
         nodeTypes={nodeTypes}
         fitView
       >

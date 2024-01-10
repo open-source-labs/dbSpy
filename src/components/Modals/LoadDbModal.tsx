@@ -7,7 +7,6 @@ export default function LoadDbModal({
   nameArr: string[];
   closeLoadDbModal: (input?: string) => void;
 }) {
-
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -15,7 +14,7 @@ export default function LoadDbModal({
     const selectedOptionsValues = selectedItems.value; // Directly access the value of the selected option
     closeLoadDbModal(selectedOptionsValues); // Close the modal after submission
   }
-  
+
   // handleclose from FeatureTab to toggle this modal off
   return (
     <div className="modal" id="loadDbModal" style={{ display: 'block', zIndex: '100' }}>

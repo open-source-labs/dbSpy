@@ -23,24 +23,30 @@ export default function Flow(): JSX.Element {
   // re-render every time schemaStore updates
 
   useEffect(() => {
+    console.log('useEffect trigger=============');
     reRender(schemaStore);
   }, [schemaStore]);
 
   function reRender(schemaStore: SchemaStore) {
+    console.log('rerender trigger=============');
     if (!schemaStore || !Object.keys(schemaStore).length) return;
     const initialEdges = createEdges(schemaStore);
     setEdges(initialEdges);
     const initialNodes = createNodes(schemaStore, initialEdges);
     setNodes(initialNodes);
+    console.log('Initial EDGESSSSSS', initialEdges);
+    console.log('new Nodes======', nodes);
   }
+
   // function for highlighting the edges associated with the current node - db 7.0
   const handleNodeClick = (event, node) => {
-    // Find edges connected to the clicked node and update their selected property
-    //console.log('this is the event', event);
-    console.log('these are the nodes', nodes);
+    // Find edges connected to the clicked node and update their selected property using map method
     const updatedEdges = edges.map((edge) => {
+      // below two lines are set up to be able to change the edge color if the darkMode state changes.
+      // Not currently being utalized.
       let hlColor;
       darkMode === true ? (hlColor = '#fedd0a') : (hlColor = '#fedd0a');
+      // The below condition checks to see if the selected node is either the source or the target of the current node in the edges array.
       if (edge.source === node.id || edge.target === node.id) {
         return {
           ...edge,
@@ -56,6 +62,7 @@ export default function Flow(): JSX.Element {
           },
         };
       }
+      //if the current edge is not associated with the node then return this styling.
       return {
         ...edge,
         type: 'bezier',
@@ -70,10 +77,9 @@ export default function Flow(): JSX.Element {
         },
       };
     });
-
+    // pass in new edges array with altered stylings into setter function to update the state
     setEdges(updatedEdges);
   };
-
   // renders React Flow canvas
   return (
     <div className="flow" style={{ height: '98%', width: '100%', zIndex: 0 }}>
@@ -83,7 +89,7 @@ export default function Flow(): JSX.Element {
         edges={edges}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onNodeClick={handleNodeClick}
+        onNodeClick={handleNodeClick} // dbSpy 7.0
         nodeTypes={nodeTypes}
         fitView
       >

@@ -10,19 +10,21 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
 
     for (const rowKey in table) {
       const row = table[rowKey];
-  
-      if (row.IsForeignKey) {
 
-        if (row.References[0].ReferencesTableName || row.References[0].PrimaryKeyTableName) {
+      if (row.IsForeignKey) {
+        if (
+          row.References[0].ReferencesTableName ||
+          row.References[0].PrimaryKeyTableName
+        ) {
           edges.push({
-          id: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
-          source: row.References[0].ReferencesTableName,
-          sourceHandle: row.References[0].ReferencesPropertyName,
-          target: row.References[0].PrimaryKeyTableName,
-          targetHandle: row.References[0].PrimaryKeyName,
-          animated: true,
-          label: row.References[0].constraintName,
-          type: "smoothstep",
+            id: `${row.References[0].ReferencesPropertyName}-to-${row.References[0].PrimaryKeyName}`,
+            source: row.References[0].ReferencesTableName,
+            sourceHandle: row.References[0].ReferencesPropertyName,
+            target: row.References[0].PrimaryKeyTableName,
+            targetHandle: row.References[0].PrimaryKeyName,
+            animated: true,
+            label: row.References[0].constraintName,
+            type: 'bezier',
             style: {
               strokeWidth: 2,
               stroke: '#085c84',
@@ -35,9 +37,9 @@ export default function createDataEdges(schemaObject: SchemaStore): Edge[] {
               color: '#085c84',
             },
           });
-        };
-      };
-    };
-  };
+        }
+      }
+    }
+  }
   return edges;
-};
+}
