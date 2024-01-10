@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import useSettingsStore from '../../store/settingsStore';
 export default function LoadDbModal({
   closeLoadDbModal,
   nameArr,
@@ -9,6 +9,7 @@ export default function LoadDbModal({
 }) {
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    
     const form = event.target as HTMLFormElement;
     const selectedItems = form.elements.namedItem('selectedItems') as HTMLSelectElement;
     const selectedOptionsValues = selectedItems.value; // Directly access the value of the selected option
@@ -53,6 +54,7 @@ export default function LoadDbModal({
           Cancel
         </button>
       </form>
+      {/* {<DBDisplay/>} */}
     </div>
   );
 }

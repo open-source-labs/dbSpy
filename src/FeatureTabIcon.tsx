@@ -7,11 +7,11 @@ export const HomeIcon = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="1.0"
+      strokeWidth="1.0"
       stroke="currentColor"
       className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
     >
-      <g clip-path="url(#clip0_107_1134)">
+      <g clipPath="url(#clip0_107_1134)">
         <path
           d="M24.6255 25.5284H16.7504V18.2159H12.2503V25.5284H4.37524V13.7159C4.37524 13.4054 4.62668 13.1534 4.93775 13.1534C5.24882 13.1534 5.50026 13.4054 5.50026 13.7159V24.4034H11.1253V17.0909H17.8754V24.4034H23.5004V14.2784C23.5004 13.9679 23.7519 13.7159 24.0629 13.7159C24.374 13.7159 24.6255 13.9679 24.6255 14.2784V25.5284Z"
           fill="white"

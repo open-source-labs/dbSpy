@@ -106,7 +106,16 @@ const settingsStore = (
       'setDeleteTableModalState in /settingsStore'
     );
   },
-
+dbName: '',
+setDBName: (input: string) => {
+  set(
+    (state) => ({
+      ...state, dbName: input,
+    }),
+    false,
+    'setDbName in /settingsStore'
+  );
+},
   isSchema: true,
   setTableMode: (input: any) =>
     set(

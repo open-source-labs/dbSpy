@@ -15,6 +15,7 @@ import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
+import LoadDbModal from '@/components/Modals/LoadDbModal';
 import DeleteTableModal from '../components/Modals/DeleteTableModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
@@ -37,6 +38,8 @@ const DBDisplay: React.FC = () => {
     currentTable,
     isSchema,
     setTableMode,
+    dbName,
+    setDBName
   } = useSettingsStore((state) => state);
 
   // Input Modal state and handlers
@@ -186,6 +189,7 @@ const DBDisplay: React.FC = () => {
               >
                 Show data
               </button>
+              <span id="text" className="ml-5 text-white">Current Database: {dbName}</span>
             </>
           ) : (
             // If isSchema state is false, render Show Schema button and DataFlow component
@@ -198,6 +202,7 @@ const DBDisplay: React.FC = () => {
               >
                 Show Schema
               </button>
+              <span id="text" className="ml-5 text-white">Current Database: {dbName}</span>
             </>
           )}
         </div>

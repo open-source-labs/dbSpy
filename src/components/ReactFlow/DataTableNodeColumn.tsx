@@ -149,7 +149,7 @@ export default function DataTableNodeColumn({row, id, deleteRow, index, PK}: Dat
       </td>
       <td>
         { mode ==='default' ? (
-          <button id={`${id}-rowDeleteBtn`} onClick={()=>setMode('trash')}className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
+          <button id={`${id}-rowDeleteBtn`} onClick={()=>setMode('trash')} className="transition-colors duration-500 hover:text-[#618fa7] dark:text-[#fbf3de] dark:hover:text-[#618fa7]">
             <FaRegTrashAlt size={17} />
           </button>
         ) : (

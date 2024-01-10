@@ -2,9 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
-
-const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
-
 // Functions imported:
 import parseSql from '../../parse';
 // Images for logo animation db 7.0
@@ -41,7 +38,7 @@ import useSchemaStore from '../../store/schemaStore';
 import useFlowStore from '../../store/flowStore';
 import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
-//import icon
+//Icons import
 import {
   HomeIcon,
   ConnectDatabaseIcon,
@@ -57,7 +54,7 @@ import {
   SignOutIcon,
   BuildDatabaseIcon,
 } from '../../FeatureTabIcon';
-// Components imported:
+// Components imported(Pop up modals):
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
@@ -75,7 +72,7 @@ export default function FeatureTab(props: any) {
   );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema, setDarkMode, darkMode } = useSettingsStore(
+  const { setWelcome, isSchema, setDarkMode, darkMode, setDBName } = useSettingsStore(
     (state) => state
   );
   const [action, setAction] = useState(new Array());
@@ -183,11 +180,11 @@ export default function FeatureTab(props: any) {
   // LoadDbModal
   // Open loadDbName Modal and send get request to database to get&list all the databases name. - dbSpy 7.0
   const openLoadDbModal = async (): Promise<string[]> => {
-    buildDatabase();
     if (!user) {
       alert('Must sign in to load!');
       return Promise.reject('User not signed in');
     } else {
+      buildDatabase();
       const response = await axios
         .get<string[]>('/api/saveFiles/allSave')
         .then((res: AxiosResponse) => {
@@ -228,10 +225,11 @@ export default function FeatureTab(props: any) {
     }
     return [];
   };
-
+  // modified by db 7.0
   const closeLoadDbModal = (input?: string) => {
     if (input) {
       loadSchema(input);
+      setDBName(input);
     }
     setLoadDbModalOpened(false);
   };
@@ -297,7 +295,7 @@ export default function FeatureTab(props: any) {
       window.alert(err);
     }
   };
-
+  // modified by db 7.0
   const deleteSchema = (inputName: string) => {
     try {
       //send the inputName along with the delete request as query in the parameters.
@@ -428,7 +426,7 @@ export default function FeatureTab(props: any) {
           className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
+          <div className="menuBar light:bg-sky-800 ml-3 rounded px-10 py-6 transition-colors duration-500">
             {darkMode === true ? (
               <img
                 className=" pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter hover:cursor-pointer"
@@ -449,7 +447,7 @@ export default function FeatureTab(props: any) {
               />
             )}
 
-            <NavLink to="/" className={linkbtn}>
+            <NavLink to="/" className='mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4'>
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
                 <HomeIcon />
@@ -466,16 +464,16 @@ export default function FeatureTab(props: any) {
                 <svg
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.0"
+                  strokeWidth="1.0"
                   stroke="currentColor"
                   className=" ml-2 mr-2 h-[24] stroke-current text-gray-500 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M1.50488 10.7569C1.50488 16.4855 6.14803 21.1294 11.8756 21.1294C16.2396 21.1294 19.974 18.4335 21.5049 14.616C20.3104 15.0962 19.0033 15.3668 17.6372 15.3668C11.9095 15.3668 7.26642 10.7229 7.26642 4.99427C7.26642 3.63427 7.53299 2.3195 8.00876 1.12939C4.19637 2.66259 1.50488 6.39536 1.50488 10.7569Z"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
                 <span className="DarkMode text-sm font-normal leading-normal text-gray-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300 ">
@@ -637,7 +635,6 @@ export default function FeatureTab(props: any) {
         </aside>
 
         {/* MODALS */}
-
         {/* MODAL FOR CONFIRMATION POPUP */}
         <div ref={confirmModal} id="confirmModal" className="confirmModal">
           {/* <!-- Confirm Modal content --> */}
@@ -662,9 +659,7 @@ export default function FeatureTab(props: any) {
             </div>
           </div>
         </div>
-
         {/* Query Output Modal */}
-
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {saveDbNameModalOpened ? (
           <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
