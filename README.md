@@ -274,7 +274,10 @@ npm run cert:linux
 - Kevin Wang • [LinkedIn](https://www.linkedin.com/in/kevin-w-b841b13/) • [Github](https://github.com/kwang929)
 - Kris Magat • [LinkedIn](https://www.linkedin.com/in/kmag/) • [Github](https://github.com/KrisMagat)
 - Santiago Gil Maya • [LinkedIn](https://www.linkedin.com/in/santiago-gil-929721121/) • [Github](https://github.com/santiago-gil)
-  test
+- Donald Macak • [LinkedIn](https://www.linkedin.com/in/donald-macak-7b6592279/) • [Github](https://github.com/Donald-Macak)
+- Matthew Cummings • [LinkedIn](https://www.linkedin.com/in/matthew-cummings-a25179113/) • [Github](https://github.com/mcummings190)
+- Stanley Ho • [LinkedIn](https://www.linkedin.com/in/stanho347/) • [Github](https://github.com/Stanley7c114)
+- Matthew Jones • [LinkedIn](https://www.linkedin.com/in/matthew-jones-05a27840/) • [Github](https://github.com/TagiMagi)
 
 ---
 
