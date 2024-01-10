@@ -23,12 +23,15 @@ export default function Flow(): JSX.Element {
   // re-render every time schemaStore updates
 
   useEffect(() => {
+    console.log('Trigger useEffect to rerender...');
     reRender(schemaStore);
   }, [schemaStore]);
 
   function reRender(schemaStore: SchemaStore) {
+    console.log('Rerender...');
     if (!schemaStore || !Object.keys(schemaStore).length) return;
     const initialEdges = createEdges(schemaStore);
+    console.log('initialEdges', initialEdges);
     setEdges(initialEdges);
     const initialNodes = createNodes(schemaStore, initialEdges);
     setNodes(initialNodes);
@@ -58,7 +61,7 @@ export default function Flow(): JSX.Element {
       }
       return {
         ...edge,
-        type: 'bezier',
+        type: 'smoothstep',
         style: {
           //strokeWidth: 2,
           ...edge.style,
