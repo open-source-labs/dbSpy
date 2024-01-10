@@ -16,11 +16,11 @@ export type DataState = {
   setDataStore: (dataInfo: DataStore) => void;
   setSystem: (system: DataStore) => void;
   deleteTableData: (tableName: string) => void;
-  addTableData: (tableName: string, newRow: DataObj[]) => void;
+  addTableData: (tableName: string, newRow: DataObj) => void;
   setReferencesStore: (dataInfo: DataStore) => void;
 
   // Add _addRow function here
-  _addRow: (newStore: DataStore, tableName: string, newRow: DataObj[]) => DataStore;
+  _addRow: (newStore: DataStore, tableName: string, newRow: DataObj) => DataStore;
 };
 
 const useDataStore = create<DataState>()(
@@ -61,37 +61,58 @@ const useDataStore = create<DataState>()(
           (state) => {
             // write field_name const
             const newState = { ...state };
+            // console.log('====> INSIDE addTableData ==> newState: ', newState);
             newState.dataStore = get()._addRow(newState.dataStore, tableName, newRow);
+            console.log(
+              '====> INSIDE addTableData ==> newState.dataStore: ',
+              newState.dataStore
+            );
             return newState;
           },
           false,
           'addTableData in /dataStore'
         ),
-
+      // dbSpy v7.0 modified _addRow function below to maintain array structure through state
       _addRow: (newStore, tableName, newRow) => {
-        if (newRow.length > 0) {
-          for (const rowData of newRow) {
-            // const newRows: DataObj = rowData;
-            // reassigning newStore so subscriptions pick up on the change
-            newStore = {
-              ...newStore,
-              [tableName]: {
-                ...newStore[tableName],
-                [tableName]: rowData,
-              },
-            };
-          }
+        if (!newStore[tableName]) {
+          newStore[tableName] = [newRow];
         } else {
-          newStore = {
-            ...newStore,
-            [tableName]: {
-              ...newStore[tableName],
-              [tableName]: newRow,
-            },
-          };
+          newStore[tableName].push(newRow);
         }
         return newStore;
       },
+
+      // ***** Previous version of _addRow before change by dbSpy v7.0 *****
+      // _addRow: (newStore, tableName, newRow) => {
+      //   console.log('newStore INSIDE OF _addRow : ', newStore);
+      //   console.log('tableName INSIDE OF _addRow : ', tableName);
+      //   console.log('newRow INSIDE OF _addRow : ', newRow);
+      //   console.log('newRow.length INSIDE OF _addRow : ', newRow.length);
+      //   if (newRow.length > 0) {
+      //     for (const rowData of newRow) {
+      //       console.log('rowData of newRow Inside of _addRow', rowData);
+      //       const newRows: DataObj = rowData;
+      //       // reassigning newStore so subscriptions pick up on the change
+      //       newStore = {
+      //         ...newStore,
+      //         [tableName]: {
+      //           ...newStore[tableName],
+      //           [tableName]: rowData,
+      //         },
+      //       };
+      //     }
+      //   } else {
+      //     console.log('MADE IT TO else BLOCK OF _addRow');
+      //     newStore = {
+      //       ...newStore,
+      //       [tableName]: {
+      //         ...newStore[tableName],
+      //         [tableName]: newRow,
+      //       },
+      //     };
+      //   }
+      //   return newStore;
+      // },
     }))
   )
 );

@@ -26,7 +26,11 @@ import DJ from '../../assets/contributors/dj.png';
 import JR from '../../assets/contributors/JR.png';
 import PS from '../../assets/contributors/PS.png';
 import mc from '../../assets/contributors/mc.jpg';
-import DO from '../../assets/contributors/DO.jpeg'
+import DO from '../../assets/contributors/DO.jpeg';
+// import MattC from '../../assets/contributors/MattC.png';
+// import MattJ from '../../assets/contributors/MattJ.png';
+// import StanH from '../../assets/contributors/StanH.png';
+// import DonM from '../../assets/contributors/DonM.png';
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
 type profileInfo = {
@@ -167,7 +171,7 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'https://www.linkedin.com/in/yufa-li/',
     githubUrl: 'https://github.com/01001101CK',
   },
-    {
+  {
     imgUrl: DK,
     name: 'Das Kang',
     title: 'Software Engineer',
@@ -187,7 +191,7 @@ const profileList: profileInfo[] = [
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/stephen-havig-199340145/',
     githubUrl: 'https://github.com/Stephen-Havig',
-  },  
+  },
   {
     imgUrl: YC,
     name: 'Yichung Chiu',
@@ -202,7 +206,7 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'http://www.linkedin.com/in/davidjonesswe',
     githubUrl: 'https://github.com/david-jones-git',
   },
-    {
+  {
     imgUrl: DO,
     name: 'Darius Okafor',
     title: 'Software Engineer',
@@ -222,24 +226,52 @@ const profileList: profileInfo[] = [
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/minh-chang/',
     githubUrl: 'https://github.com/miha-cha',
-  },  
+  },
   {
     imgUrl: PS,
     name: 'Parwinder Singh',
     title: 'Software Engineer',
     linkedInUrl: 'http://www.linkedin.com/in/singh-parwinder',
     githubUrl: 'https://github.com/PintaAE86',
-  }
+  },
+  // {
+  //   imgUrl: MattC,
+  //   name: 'Matthew Cummings',
+  //   title: 'Just a Regular Guy',
+  //   linkedInUrl: 'https://www.linkedin.com/in/matthew-cummings-a25179113/',
+  //   githubUrl: 'https://github.com/mcummings190',
+  // },
+  // {
+  //   imgUrl: MattJ,
+  //   name: 'Matthew Jones',
+  //   title: 'Professional Hype-Man',
+  //   linkedInUrl: 'https://www.linkedin.com/in/matthew-jones-05a27840/',
+  //   githubUrl: 'https://github.com/TagiMagi',
+  // },
+  // {
+  //   imgUrl: StanH,
+  //   name: 'Stanley the Manley',
+  //   title: 'Professional Boxer',
+  //   linkedInUrl: 'https://www.linkedin.com/in/stanho347/',
+  //   githubUrl: 'https://github.com/Stanley7c114',
+  // },
+  // {
+  //   imgUrl: DonM,
+  //   name: 'Donald Macak Attack',
+  //   title: 'Datastructure Analyst',
+  //   linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
+  //   githubUrl: 'https://github.com/Donald-Macak',
+  // }
 ];
 
 export default function Contributors() {
   const profiles = [] as React.ReactNode[];
   for (let i = profileList.length - 1; i >= 0; i--) {
-    profiles.push(<Profile props={profileList[i]} key={`contributor${i}`} />)
-   };
-  
+    profiles.push(<Profile props={profileList[i]} key={`contributor${i}`} />);
+  }
+
   return (
-    <div className="contributors container my-24 mx-auto px-6">
+    <div className="contributors container mx-auto my-24 px-6">
       <section className="mb-32 text-center text-gray-800">
         <h2 className="team-header mb-32 text-3xl font-bold text-gray-900 dark:text-[#f8f4eb]">
           Meet the dbSpy Team
@@ -248,4 +280,4 @@ export default function Contributors() {
       </section>
     </div>
   );
-};
+}

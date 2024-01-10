@@ -58,17 +58,14 @@ import {
 import QueryModal from '../Modals/QueryModal';
 import DbNameInput from '../Modals/DbNameInput';
 import LoadDbModal from '../Modals/LoadDbModal';
-import DeleteDbModal from '../Modals/DeleteDBModal';
-
+import DeleteDbModal from '../Modals/DeleteDbModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
 
-  const { dataStore, setDataStore} = useDataStore(
-    (state) => state
-  );
+  const { dataStore, setDataStore } = useDataStore((state) => state);
 
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
@@ -181,7 +178,7 @@ export default function FeatureTab(props: any) {
   };
 
   // LoadDbModal
-  // Open loadDbName Modal and send get request to database to get&list all the databases name.
+  // Open loadDbName Modal and send get request to database to get&list all the databases name. - dbSpy 7.0
   const openLoadDbModal = async (): Promise<string[]> => {
     if (!user) {
       alert('Must sign in to load!');
@@ -281,7 +278,7 @@ export default function FeatureTab(props: any) {
     }
   };
 
-  // Reworked for multiple loads -  db 7.0
+  // Reworked for multiple loads -  dbSpy 7.0
   const loadSchema = async (inputName: string) => {
     try {
       //send the inputName along with the get request as query in the parameters.
@@ -289,7 +286,7 @@ export default function FeatureTab(props: any) {
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
       //console.log('tabledataString', schemaString.tableData)
-       setDataStore(JSON.parse(schemaString.tableData))
+      setDataStore(JSON.parse(schemaString.tableData));
       //console.log('schemaString212', schemaString.data);
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
@@ -303,9 +300,9 @@ export default function FeatureTab(props: any) {
     try {
       //send the inputName along with the delete request as query in the parameters.
       axios
-          .delete(`/api/saveFiles/deleteSave/${inputName}`)
-          .then(response => console.log("response ", response))
-          .catch((err) => console.error('err', err));
+        .delete(`/api/saveFiles/deleteSave/${inputName}`)
+        .then((response) => console.log('response ', response))
+        .catch((err) => console.error('err', err));
     } catch (err) {
       console.log(err);
       console.error('err retrieve', err);
@@ -328,7 +325,7 @@ export default function FeatureTab(props: any) {
     setDarkMode();
   };
 
-  //Create logo image hover over animation - db 7.0
+  //Create logo button hover over animation - dbSpy 7.0
   let ImgSwap;
   function logoImageFlow(event) {
     //let currentLogoImg = event.target.src;
@@ -375,9 +372,9 @@ export default function FeatureTab(props: any) {
       }
       event.target.src = logoImgArr[currIndex];
       currIndex++;
-    }, 130); // Adjust the timeout value (in milliseconds) as needed
+    }, 130); // Adjust the timeout value between image swaps as needed
   }
-  // function to clean up after the hover over affect - db 7.0
+  // function to clean up after the hover over affect. Must clear the interval set by setInterval() - dbSpy 7.0
   function clearImgSwap(event) {
     if (darkMode === true) {
       event.target.src = logo;
@@ -387,14 +384,14 @@ export default function FeatureTab(props: any) {
     clearInterval(ImgSwap);
   }
 
-  //on click function for revealing/hiding the nav bar db - 7.0
+  //on click function for revealing/hiding the nav bar - dbSpy 7.0
   let logoClicked = false;
-  function revealHideNav(event) {
+  function revealHideNav(event: any) {
     // Get the siblings
     logoClicked = !logoClicked;
     let time = 30;
     if (logoClicked) {
-      //adding this class allows the canvas to be interacted with while being 'beneath' the divs
+      //adding this class allows the canvas to be interacted with despite being beneath the nav divs
       event.target.parentElement.classList.add('pointer-events-none');
       event.target.parentElement.parentElement.classList.add('pointer-events-none');
     }
@@ -432,16 +429,16 @@ export default function FeatureTab(props: any) {
           <div className="menuBar light:bg-sky-800 ml-3 rounded px-10 py-6 transition-colors duration-500">
             {darkMode === true ? (
               <img
-                className=" hover:cursor-pointer pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter"
+                className=" pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter hover:cursor-pointer"
                 src={logo}
                 alt="Logo"
-                onMouseOver={logoImageFlow} //db 7.0
-                onMouseOut={clearImgSwap} //db 7.0
-                onClick={revealHideNav} //db 7.0
+                onMouseOver={logoImageFlow} // dbSpy 7.0
+                onMouseOut={clearImgSwap} // dbSpy 7.0
+                onClick={revealHideNav} // dbSpy 7.0
               />
             ) : (
               <img
-                className="hover:cursor-pointer pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter"
+                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter hover:cursor-pointer"
                 src={darkLogo}
                 alt="Logo"
                 onMouseOver={logoImageFlow}

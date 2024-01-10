@@ -7,15 +7,22 @@ export default function DeleteDbModal({
   nameArr: string[];
   closeDeleteDbModal: (input?: string) => void;
 }) {
-
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const selectedItems = form.elements.namedItem('selectedItems') as HTMLSelectElement;
     const selectedOptionsValues = selectedItems.value; // Directly access the value of the selected option
-    closeDeleteDbModal(selectedOptionsValues); // Close the modal after submission
+    if (confirmDeletion()) {
+      closeDeleteDbModal(selectedOptionsValues); // Close the modal after submission
+    }
   }
-  
+  function confirmDeletion(): boolean {
+    // Display the confirmation dialog
+    return window.confirm(
+      'Are you sure you want to delete this database? This action cannot be undone.'
+    );
+  }
+
   // handleclose from FeatureTab to toggle this modal off
   return (
     <div className="modal" id="loadDbModal" style={{ display: 'block', zIndex: '100' }}>
@@ -41,7 +48,7 @@ export default function DeleteDbModal({
         <button
           id="confirm"
           type="submit"
-          className="bg-red-500 text-white rounded-md px-2 py-1 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+          className="rounded-md bg-red-500 px-2 py-1 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
         >
           Delete
         </button>

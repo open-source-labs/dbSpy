@@ -35,7 +35,6 @@ const useFlowStore = create<FlowState>()(
           false,
           'onEdgesChange in /flowStore'
         ),
-
       onConnect: (connection) =>
         set(
           (state) => ({
