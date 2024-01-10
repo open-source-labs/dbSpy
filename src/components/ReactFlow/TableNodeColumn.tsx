@@ -2,7 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import useSchemaStore from '../../store/schemaStore';
 import useSettingsStore from '../../store/settingsStore';
-import { FaRegEdit, FaRegTrashAlt, FaRegSave, FaRegCheckSquare, FaRegWindowClose, } from 'react-icons/fa';
+import {
+  FaRegEdit,
+  FaRegTrashAlt,
+  FaRegSave,
+  FaRegCheckSquare,
+  FaRegWindowClose,
+} from 'react-icons/fa';
 import DataTypeOptions from '../Modals/DataTypeOptions';
 import { ColumnSchema, SQLDataType } from '@/Types';
 import useCredentialsStore from '../../store/credentialsStore';
@@ -23,20 +29,19 @@ export default function TableNodeColumn({
   // Columns can be in one of three modes: default, edit, or delete
   const [mode, setMode] = useState('default');
 
-
-  const newColumn = JSON.parse(JSON.stringify(column))
+  const newColumn = JSON.parse(JSON.stringify(column));
   const [columnData, setColumnData] = useState<ColumnSchema>({ ...newColumn });
   const [selectedConstraint, setSelectedConstraint] = useState('NA');
 
-    const handleConstraintChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      e.preventDefault();
-      setSelectedConstraint(e.target.value);
-    };
+  const handleConstraintChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    setSelectedConstraint(e.target.value);
+  };
 
-  useEffect(()=> {
-    setColumnData({...newColumn})
-  },[column])
-  
+  useEffect(() => {
+    setColumnData({ ...newColumn });
+  }, [column]);
+
   // THIS IS WHERE YOU CAN FINISH UP THE FUNCTION TO UPDATE COLUMNS
   const onSave = async () => {
     const currentSchema = { ...schemaStore };
@@ -68,66 +73,74 @@ export default function TableNodeColumn({
     try {
       const tableRef = columnData.TableName;
       const colRef = columnData.field_name;
-      const constraintName = columnData.References.length > 0 ? columnData.References[0].constraintName : '';
+      const constraintName =
+        columnData.References.length > 0 ? columnData.References[0].constraintName : '';
 
       // console.log('schemaStore[tableRef][colRef].References[0].isDestination: ', schemaStore[tableRef][colRef].References[0].isDestination)
 
-      if (columnData.References.length > 0 && schemaStore[tableRef][colRef].References[0].isDestination === true) {
-        window.alert(`Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`);
-        console.error(`Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`);
+      if (
+        columnData.References.length > 0 &&
+        schemaStore[tableRef][colRef].References[0].isDestination === true
+      ) {
+        window.alert(
+          `Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`
+        );
+        console.error(
+          `Cannot delete column: ${colRef} because it is being used in a Foreign Key constraint`
+        );
         return;
-      };
+      }
 
       await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
-        method:'DELETE',
-        headers:{
-          'Content-Type':'application/json'
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        body:JSON.stringify({tableName: tableRef, columnName: colRef, constraintName: constraintName})
+        body: JSON.stringify({
+          tableName: tableRef,
+          columnName: colRef,
+          constraintName: constraintName,
+        }),
       })
-      .then(() => {
-      // To clean up the references of Primary keys that were being used in foreign keys
-      for (const tableName in schemaStore) {
-        const tableData = schemaStore[tableName];
+        .then(() => {
+          // To clean up the references of Primary keys that were being used in foreign keys
+          for (const tableName in schemaStore) {
+            const tableData = schemaStore[tableName];
 
-        for (const columnName in tableData) {
-          const columnData = tableData[columnName];
+            for (const columnName in tableData) {
+              const columnData = tableData[columnName];
 
-          if (
-            columnData.IsPrimaryKey === true && 
-            columnData.References.length > 0
-          ) { 
-            const references = columnData.References;
+              if (columnData.IsPrimaryKey === true && columnData.References.length > 0) {
+                const references = columnData.References;
 
-            for (let i = references.length - 1; i >= 0; i--) {
-              const element = references[i];
+                for (let i = references.length - 1; i >= 0; i--) {
+                  const element = references[i];
 
-              if (element.isDestination === true &&
-                element.ReferencesPropertyName === colRef &&
-                element.ReferencesTableName === tableRef
-              ) {
-                references.splice(i, 1);
-                return;
-              }; 
-            };
-          };
-        };
-      };
-    })
-    .then(() => {
-      deleteColumnSchema(tableRef, colRef);
-
-      
-    })
-    .catch((err) => {
+                  if (
+                    element.isDestination === true &&
+                    element.ReferencesPropertyName === colRef &&
+                    element.ReferencesTableName === tableRef
+                  ) {
+                    references.splice(i, 1);
+                    return;
+                  }
+                }
+              }
+            }
+          }
+        })
+        .then(() => {
+          deleteColumnSchema(tableRef, colRef);
+        })
+        .catch((err) => {
+          window.alert(err);
+          console.error(err);
+        });
+      return;
+    } catch (err) {
       window.alert(err);
       console.error(err);
-    })
-    return;
-    } catch(err) {
-      window.alert(err);
-      console.error(err);
-    };
+    }
   };
 
   const openAddReferenceModal = () => {
@@ -222,7 +235,7 @@ export default function TableNodeColumn({
               }}
             />
           ) : (
-              `${columnData.IsForeignKey}`
+            `${columnData.IsForeignKey}`
           )}
         </td>
         <td className="dark:text-[#f8f4eb]">

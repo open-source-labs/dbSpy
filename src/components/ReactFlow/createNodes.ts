@@ -2,8 +2,10 @@
 import { SchemaStore } from '@/store/schemaStore';
 import { Edge, DataNode } from '@/Types';
 
-export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): DataNode[] {
-
+export default function createNodes(
+  schemaObject: SchemaStore,
+  edges: Edge[]
+): DataNode[] {
   // renders each table on the React Flow schema canvas
   const nodes: DataNode[] = [];
 
@@ -16,7 +18,7 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): D
     nodes.push({
       id: tableName,
       type: 'table',
-      position: {x, y},
+      position: { x, y },
       data: { table: [tableName, columnData], edges },
     });
 
@@ -24,8 +26,8 @@ export default function createNodes(schemaObject: SchemaStore, edges: Edge[]): D
     if (y > 1700) {
       y = 0;
       x += 600;
-    };
-  };
+    }
+  }
 
   return nodes;
 }

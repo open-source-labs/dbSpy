@@ -39,7 +39,7 @@
 
 /* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
 .dark {
-  background-color: #334155;
+  background-color: #0f192a;
 }
 
 .testing {
@@ -59,6 +59,9 @@
   left: 0;
 }
 .react-flow__pane {
+  /* position: absolute;
+  top: 0px;     /* Adjust these values */
+  /* left: 300px;    */
   z-index: 1;
   cursor: -webkit-grab;
   cursor: grab;
@@ -118,7 +121,8 @@
   pointer-events: all;
 }
 .react-flow__edge-textbg {
-  fill: #4a7187;
+  fill: #0f192a;
+  border: 1px solid #ffc444;
 }
 
 .react-flow__edge-text {
@@ -212,6 +216,8 @@
   cursor: move;
   pointer-events: all;
 }
+
+/* tiny tool bar */
 .react-flow__panel {
   position: absolute;
   z-index: 5;
@@ -295,6 +301,10 @@
   box-shadow: 0 0 0 0.5px #1a192b;
   outline: none;
 }
+.react-flow__node.selected {
+  border: 4px solid #ffc444; /* Change the border color for selected nodes */
+  /* Change the background color for selected nodes */
+}
 .react-flow__node-group {
   background-color: rgba(240, 240, 240, 0.25);
 }
@@ -343,11 +353,10 @@
 /*custom react flow styling*/
 
 .flow {
-  border: 1px solid #273943;
-  background: #fbf3de;
-  border-width: 5px;
-  border-radius: 5px;
-  margin: 10px;
+  position: absolute;
+  top: 56px;
+  right: 0px;
+  background: #f8f4eb;
 }
 
 .table-node {
@@ -357,7 +366,7 @@
   /* padding: 5px; */
   border-radius: 4px;
   color: #f8f4eb;
-  background-color: f8f4eb;
+  background-color: #fffefd;
 }
 
 .table-node label {
@@ -531,7 +540,7 @@ tr {
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
   transition: margin-left 0.5s;
-  padding: 20px;
+  padding: 0px;
   /* margin-top: 50px; */
   margin-left: 300px;
 }
@@ -685,7 +694,7 @@ select:focus {
   justify-content: space-between;
   border-bottom: 1px solid gray;
   padding: 10px 0px;
-  width: 100%
+  width: 100%;
 }
 
 .column-input > div {
@@ -699,7 +708,6 @@ select:focus {
   width: 100%;
   height: 25px;
 }
-
 
 .column-input select {
   font-size: 0.9rem;
@@ -729,6 +737,17 @@ select:focus {
   /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
+}
+
+.z-index-0 {
+  z-index: 0;
+}
+
+.z-index-1 {
+  z-index: 1;
+}
+.z-index-10 {
+  z-index: 10;
 }
 
 /* Add Reference  */

@@ -15,6 +15,7 @@ import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
+import LoadDbModal from '@/components/Modals/LoadDbModal';
 import DeleteTableModal from '../components/Modals/DeleteTableModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
@@ -37,6 +38,8 @@ const DBDisplay: React.FC = () => {
     currentTable,
     isSchema,
     setTableMode,
+    dbName,
+    setDBName,
   } = useSettingsStore((state) => state);
 
   // Input Modal state and handlers
@@ -49,7 +52,7 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
-    const { user } = useCredentialsStore((state): any => state);
+  const { user } = useCredentialsStore((state): any => state);
   //create references for HTML elements
   const mySideBarId: any = useRef();
   const mainId: any = useRef();
@@ -68,7 +71,8 @@ const DBDisplay: React.FC = () => {
     const state = urlParams.get('state');
 
     // Replaces client's URL in window to remove OAuth code/state
-    const newURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+    const newURL =
+      window.location.protocol + '//' + window.location.host + window.location.pathname;
     window.history.replaceState({}, document.title, newURL);
 
     fetch('/api/oauth', {
@@ -81,7 +85,8 @@ const DBDisplay: React.FC = () => {
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
           return data.json();
-        } else throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
+        } else
+          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
       })
       .then((res) => {
         setUser(res);
@@ -125,38 +130,34 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-      <div className='flex justify-end pt-5 pr-5'>
-            {user ? (
-              <>
-                <span className="mt-4 inline-block text-black-200 lg:mt-0 dark:text-white">
-                  {user.full_name}
-                </span>
-                <img
-                  className="ml-2 mr-2 inline-block h-[25] rounded-full dark:invert"
-                  src={default_pfp}
-                />
-              </>
-            ) : (
-              <div className='flex justify-end'>
-        <NavLink
-          to="/login"
-
-          className="text-black text-base font-bold leading-normal p-6 dark:text-white"
-          >
-          <span>Login</span>
-          <img className="mr-3 ml-3 inline-block h-[20] dark:invert" src={login} />
-        </NavLink>
+      <div className="flex h-2 justify-end pr-5">
+        {user ? (
+          <>
+            <span className="text-black-200 inline-block pt-4 dark:text-white lg:mt-0">
+              {user.full_name}
+            </span>
+            <img
+              className="ml-2 mr-2 mt-4 inline-block h-[25] rounded-full dark:invert"
+              src={default_pfp}
+            />
+          </>
+        ) : (
+          <div className="flex justify-end">
+            <NavLink
+              to="/login"
+              className="p-4 text-base font-bold leading-normal text-black dark:text-white"
+            >
+              <span>Login</span>
+              <img className="ml-3 mr-3 inline-block h-[20] dark:invert" src={login} />
+            </NavLink>
+          </div>
+        )}
       </div>
-            )}
-          </div>      
-      <div
-        id="DBDisplay"
-        className="bg-[#f8f4eb] transition-colors duration-500 dark:bg-slate-700"
-      >
+      <div id="DBDisplay" className=" transition-colors duration-500">
         <div
           ref={mySideBarId}
           id="mySidenav"
-          className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-gray-800"
+          className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-gray-900"
         >
           <a href="#" className="closebtn" onClick={closeNav}>
             &times;
@@ -165,49 +166,55 @@ const DBDisplay: React.FC = () => {
           {/* "AddReference" => change reference in schema */}
           {editRefMode ? <AddReference /> : <></>}
         </div>
-        {/* <!-- Use any element to open the sidenav --> */}
-        <FeatureTab
-          handleSidebar={handleSidebar}
-          openAddTableModal={openAddTableModal}
-          openDeleteTableModal={openDeleteTableModal}
-        />
         {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
         <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
+          {/* <div>"Current Database Name:"</div> */}
           {welcome ? (
             <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
               <h3 className="text-center">Welcome to dbSpy!</h3>
               <p className="text-center">
-                Please connect your database, upload a SQL file, or build your database from
-                scratch!
+                Please connect your database, upload a SQL file, or build your database
+                from scratch!
               </p>
             </div>
           ) : // If welcome state is false, check isSchema condition
           isSchema ? (
             // If isSchema state is true, render Show Data button and Flow component
             <>
+              <Flow />
               <button
                 id="showSchema"
-                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                className=" rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show data
               </button>
-              <Flow />
+              <span id="text" className="ml-5 text-black dark:text-white">
+                Current Database: {dbName}
+              </span>
             </>
           ) : (
             // If isSchema state is false, render Show Schema button and DataFlow component
             <>
+              <DataFlow />
               <button
                 id="showSchema"
-                className="rounded bg-sky-800 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show Schema
               </button>
-              <DataFlow />
+              <span id="text" className="ml-5 text-white">
+                Current Database: {dbName}
+              </span>
             </>
           )}
         </div>
+        <FeatureTab
+          handleSidebar={handleSidebar}
+          openAddTableModal={openAddTableModal}
+          openDeleteTableModal={openDeleteTableModal}
+        />
         {inputModalState.isOpen ? (
           <InputModal
             mode={inputModalState.mode as 'table' | 'column'}
@@ -223,7 +230,9 @@ const DBDisplay: React.FC = () => {
           />
         ) : null}
         {deleteTableModalState.isOpen ? (
-          <DeleteTableModal closeDeleteTableModal={() => setDeleteTableModalState(false)} />
+          <DeleteTableModal
+            closeDeleteTableModal={() => setDeleteTableModalState(false)}
+          />
         ) : null}
       </div>
     </>

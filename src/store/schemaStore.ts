@@ -31,7 +31,9 @@ export type SchemaState = {
   undoHandler: () => void;
   redoHandler: () => void;
   addForeignKeySchema: (referenceData: InnerReference) => void;
-  setSystem: (system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite') => void;
+  setSystem: (
+    system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite'
+  ) => void;
 
   // VALIDATION HELPER METHODS
   _checkNameValidity: (...names: string[]) => void;
@@ -64,8 +66,14 @@ const useSchemaStore = create<SchemaState>()(
         system: 'PostgreSQL',
         history: [],
         historyCounter: 0,
-        setSystem: (system) => set((state) => ({ ...state, system })),
-        setSchemaStore: (schema) => set((state) => ({ ...state, schemaStore: schema })),
+        setSystem: (system) =>
+          set((state) => ({ ...state, system }), false, 'setSystem in /schemaStore'),
+        setSchemaStore: (schema) =>
+          set(
+            (state) => ({ ...state, schemaStore: schema }),
+            false,
+            'setSchemaStore in /schemaStore'
+          ),
         _addHistory: (newState) => {
           newState.historyCounter += 1;
           newState.history[newState.historyCounter] = JSON.parse(
@@ -76,116 +84,144 @@ const useSchemaStore = create<SchemaState>()(
           }
         },
         addTableSchema: (tableName, columnDataArr) =>
-          set((state) => {
-            // Check data validity first. If invalid, error is thrown
-            get()._checkTableValidity(tableName, columnDataArr);
-            const newState = {
-              ...state,
-              schemaStore: {
-                ...state.schemaStore,
-                [tableName]: {},
-              },
-            };
-            newState.schemaStore = get()._addColumns(
-              newState.schemaStore,
-              tableName,
-              columnDataArr
-            );
-            get()._addHistory(newState);
-            return newState;
-          }),
+          set(
+            (state) => {
+              // Check data validity first. If invalid, error is thrown
+              get()._checkTableValidity(tableName, columnDataArr);
+              const newState = {
+                ...state,
+                schemaStore: {
+                  ...state.schemaStore,
+                  [tableName]: {},
+                },
+              };
+              newState.schemaStore = get()._addColumns(
+                newState.schemaStore,
+                tableName,
+                columnDataArr
+              );
+              get()._addHistory(newState);
+              return newState;
+            },
+            false,
+            'addTableSchema in /schemaStore'
+          ),
         deleteTableSchema: (tableName) =>
-          set((state) => {
-            const newState = { ...state };
-            delete newState.schemaStore[tableName];
-            get()._addHistory(newState);
-            return newState;
-          }),
+          set(
+            (state) => {
+              const newState = { ...state };
+              delete newState.schemaStore[tableName];
+              get()._addHistory(newState);
+              return newState;
+            },
+            false,
+            'deleteTableSchema in /schemaStore'
+          ),
         addColumnSchema: (tableName, columnDataArr) =>
-          set((state) => {
-            get()._checkColumnValidity(tableName, columnDataArr);
-            // write field_name const
-            const newState = { ...state };
-            newState.schemaStore = get()._addColumns(
-              newState.schemaStore,
-              tableName,
-              columnDataArr
-            );
-            get()._addHistory(newState);
-            return newState;
-          }),
+          set(
+            (state) => {
+              get()._checkColumnValidity(tableName, columnDataArr);
+              // write field_name const
+              const newState = { ...state };
+              newState.schemaStore = get()._addColumns(
+                newState.schemaStore,
+                tableName,
+                columnDataArr
+              );
+              get()._addHistory(newState);
+              return newState;
+            },
+            false,
+            'addColumnSchema in /schemaStore'
+          ),
         addForeignKeySchema(referenceData) {
-          set((state) => {
-            // TODO: ADD VALIDATION
-            const originTable: string = referenceData.ReferencesTableName;
-            const originColumn: string = referenceData.ReferencesPropertyName;
-            const destinationTable: string = referenceData.PrimaryKeyTableName;
-            const destinationColumn: string = referenceData.PrimaryKeyName;
-            const newState = {
-              ...state,
-              schemaStore: {
-                ...state.schemaStore,
-                [originTable]: {
-                  ...state.schemaStore[originTable],
-                  [originColumn]: {
-                    ...state.schemaStore[originTable][originColumn],
-                    References: [
-                      {
-                        ...referenceData,
-                        IsDestination: false,
-                        PrimaryKeyName: originColumn,
-                      },
-                    ],
-                    IsForeignKey: true,
+          set(
+            (state) => {
+              // TODO: ADD VALIDATION
+              const originTable: string = referenceData.ReferencesTableName;
+              const originColumn: string = referenceData.ReferencesPropertyName;
+              const destinationTable: string = referenceData.PrimaryKeyTableName;
+              const destinationColumn: string = referenceData.PrimaryKeyName;
+              const newState = {
+                ...state,
+                schemaStore: {
+                  ...state.schemaStore,
+                  [originTable]: {
+                    ...state.schemaStore[originTable],
+                    [originColumn]: {
+                      ...state.schemaStore[originTable][originColumn],
+                      References: [
+                        {
+                          ...referenceData,
+                          IsDestination: false,
+                          PrimaryKeyName: originColumn,
+                        },
+                      ],
+                      IsForeignKey: true,
+                    },
+                  },
+                  [destinationTable]: {
+                    ...state.schemaStore[destinationTable],
+                    [destinationColumn]: {
+                      ...state.schemaStore[destinationTable][destinationColumn],
+                      References: [
+                        {
+                          ...referenceData,
+                          IsDestination: true,
+                        },
+                      ],
+                    },
                   },
                 },
-                [destinationTable]: {
-                  ...state.schemaStore[destinationTable],
-                  [destinationColumn]: {
-                    ...state.schemaStore[destinationTable][destinationColumn],
-                    References: [
-                      {
-                        ...referenceData,
-                        IsDestination: true,
-                      },
-                    ],
-                  },
-                },
-              },
-            };
-            get()._addHistory(newState);
-            return newState;
-          });
+              };
+              get()._addHistory(newState);
+              return newState;
+            },
+            false,
+            'addForeignKeySchema in /schemaStore'
+          );
         },
         //---------------------------------
         deleteColumnSchema: (tableRef, columnRef) =>
-          set((state) => {
-            const newState = JSON.parse(JSON.stringify(state));
-            delete newState.schemaStore[tableRef][columnRef];
-            get()._addHistory(newState);
-            return newState;
-          }),
-        undoHandler: () => {
-          set((state) => {
-            const newState = { ...state };
-            if (newState.historyCounter === 1) newState.historyCounter -= 1;
-            if (newState.history.length === 0 || newState.historyCounter === 0) {
-              newState.schemaStore = {};
+          set(
+            (state) => {
+              const newState = JSON.parse(JSON.stringify(state));
+              delete newState.schemaStore[tableRef][columnRef];
+              get()._addHistory(newState);
               return newState;
-            }
-            newState.historyCounter -= 1;
-            newState.schemaStore = newState.history[newState.historyCounter];
-            return newState;
-          });
+            },
+            false,
+            'deleteColumnSchema in /schemaStore'
+          ),
+        undoHandler: () => {
+          set(
+            (state) => {
+              const newState = { ...state };
+              if (newState.historyCounter === 1) newState.historyCounter -= 1;
+              if (newState.history.length === 0 || newState.historyCounter === 0) {
+                newState.schemaStore = {};
+                return newState;
+              }
+              newState.historyCounter -= 1;
+              newState.schemaStore = newState.history[newState.historyCounter];
+              return newState;
+            },
+            false,
+            'undoHandler in /schemaStore'
+          );
         },
         redoHandler: () => {
-          set((state) => {
-            const newState = { ...state };
-            if (newState.historyCounter >= newState.history.length - 1) return newState;
-            newState.historyCounter += 1;
-            newState.schemaStore = newState.history[newState.historyCounter];
-            return newState;
-          });
+          set(
+            (state) => {
+              const newState = { ...state };
+              if (newState.historyCounter >= newState.history.length - 1) return newState;
+              newState.historyCounter += 1;
+              newState.schemaStore = newState.history[newState.historyCounter];
+              return newState;
+            },
+            false,
+            'redoHandler in /schemaStore'
+          );
         },
         // TODO: delete setReference after refactoring adding reference functionality
         // setReference: (newRef: any) => set((state: any) => ({ ...state, reference: newRef })),

@@ -20,6 +20,7 @@ export default function createEdges(schemaObject: SchemaStore) {
           targetHandle: row.References[0].PrimaryKeyName,
           animated: true,
           label: row.References[0].constraintName,
+          type: 'smoothstep',
           style: {
             strokeWidth: 2,
             stroke: '#085c84',
@@ -32,8 +33,8 @@ export default function createEdges(schemaObject: SchemaStore) {
             color: '#085c84',
           },
         });
-      };
-    };
-  };
+      }
+    }
+  }
   return edges;
-};
+}

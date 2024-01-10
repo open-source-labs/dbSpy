@@ -15,10 +15,10 @@ type InputDataModalProps = {
 };
 
 type DataObj = {
-  [key: string]: string | number | boolean | null
-}
+  [key: string]: string | number | boolean | null;
+};
 
-type DataRowArray = Array<string | number | boolean | null>
+type DataRowArray = Array<string | number | boolean | null>;
 
 //----- SENDING COLLECTED INPUTS FROM ROWINPUT.TSX TO BACKEND
 export default function DataInputModal({
@@ -26,7 +26,6 @@ export default function DataInputModal({
   closeDataInputModal,
   tableNameProp,
 }: InputDataModalProps) {
-
   const [tableName] = useState(tableNameProp);
   const [rowData, setRowData] = useState<DataRowArray>([]);
   const [rowDataArr, setRowDataArr] = useState<RowsOfData[]>([]);
@@ -34,30 +33,32 @@ export default function DataInputModal({
   const { dbCredentials } = useCredentialsStore((state) => state);
   const { dataStore, setDataStore, addTableData } = useDataStore((state) => state);
 
-    //entire rows we currently have
-    const deepCopyDataStore = JSON.parse(JSON.stringify(dataStore)) 
-    const currentTable = deepCopyDataStore[tableName as string]
-    
-    // we get the column names from schemaStore IN CASE current table is EMPTY (because if table is EMPTY, it will
-    // not pass in the column names) 
-    const secondaryColumnNames: string[] = Object.keys(schemaStore[tableName as string])
+  //entire rows we currently have
+  const deepCopyDataStore = JSON.parse(JSON.stringify(dataStore));
+  const currentTable = deepCopyDataStore[tableName as string]
+    ? deepCopyDataStore[tableName as string]
+    : [];
 
-  const updatingDB = async (newRow: Array<DataObj>): Promise<void> => {
+  // we get the column names from schemaStore IN CASE current table is EMPTY (because if table is EMPTY, it will
+  // not pass in the column names)
+  const secondaryColumnNames: string[] = Object.keys(schemaStore[tableName as string]);
+
+  const updatingDB = async (newRow: DataObj): Promise<void> => {
     addTableData(tableName!, newRow);
-      //new column data that will be sent in the post request body
+    //new column data that will be sent in the post request body
     const dataToSend = {
       tableName: tableName,
       newRow: newRow,
     };
-      //adds new column to the selected table
+    //adds new column to the selected table
     await fetch(`/api/sql/${dbCredentials.db_type}/addRow`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify(dataToSend)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataToSend),
     });
   };
 
-  const handleSubmit = async (): Promise<void> => { 
+  const handleSubmit = async (): Promise<void> => {
     try {
       const additionalRow: Record<string, string | number | boolean | null> = {};
       // in case current table is EMPTY
@@ -65,36 +66,34 @@ export default function DataInputModal({
         secondaryColumnNames.forEach((columnName, i) => {
           additionalRow[columnName] = rowData[i];
         });
+        //currentTable = [];
       } else {
-      // in case current table is NOT EMPTY
+        // in case current table is NOT EMPTY
         Object.keys(currentTable[0]).forEach((columnName, i) => {
           additionalRow[columnName] = rowData[i];
         });
       }
-      currentTable.push(additionalRow)
-      console.log('currentTable', currentTable)
+      currentTable.push(additionalRow);
+
       // send backend the new row ONLY to add this row to table we had
-      await Promise.resolve(updatingDB(currentTable[currentTable.length - 1]))
+
+      await Promise.resolve(updatingDB(currentTable[currentTable.length - 1]));
     } catch (error) {
       window.alert(error);
       console.error(error);
     }
   };
- 
 
-  const handleRowChange = (
-    index: number,
-    value: string | number | boolean | null
-  ) => {
+  const handleRowChange = (index: number, value: string | number | boolean | null) => {
     //updating rowData (row of inputs for each column)
     setRowData((prevRows) => {
       prevRows[index] = value;
-      return [...prevRows]
-    })
-  }
+      return [...prevRows];
+    });
+  };
 
   return (
-    <div id="inputModal" className="input-modal" >
+    <div id="inputModal" className="input-modal">
       <form
         autoComplete="off"
         onSubmit={(e) => {
@@ -106,9 +105,9 @@ export default function DataInputModal({
       >
         <div className="table-name">
           {<h1 className="flex justify-center">{`Table: ${tableName}`}</h1>}
-        </div>        
-        <div className="column-header" >
-          <h1 className="flex justify-center text-slate-900 dark:text-[#f8f4eb] flex-auto">
+        </div>
+        <div className="column-header">
+          <h1 className="flex flex-auto justify-center text-slate-900 dark:text-[#f8f4eb]">
             {'New Row'}
           </h1>
         </div>
