@@ -106,7 +106,7 @@ const saveController = {
   //delete current save
   delete: async (req: Request, res: Response, next: NextFunction) => {
     log.info("[deleteCtrl - deleteSchema] Begining to deleteing user's schema...");
-    const { SaveName, TableData } = req.params;
+    const { SaveName} = req.params;
     const { email } = req.session;
     // console.log(email, SaveName);
     try {
