@@ -50,7 +50,6 @@ export default function DeleteTableModal({
           }
         }
       }
-      console.log('schemmmmmmmaaaaaaa', schemaStore);
       const response = await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
         method: 'DELETE',
         headers: {
@@ -58,7 +57,7 @@ export default function DeleteTableModal({
         },
         body: JSON.stringify({ tableName: tableName }),
       });
-      console.log('response on deleting tableName: ', response);
+
       //delete the table object from the schemaStore object
       delete schemaStore[tableName];
       delete dataStore[tableName];
