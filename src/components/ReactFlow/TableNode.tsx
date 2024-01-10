@@ -40,7 +40,6 @@ export default function TableNode({ data }) {
       //make handle placement dynamic, we need to know the column of our target
       let columnNumberTarget =
         columnData.findIndex((obj) => obj.Name === data.edges[i].targetHandle) + 1;
-      //console.log("columnNumberTarget", columnNumberTarget)
       if (columnNumberTarget === 0) columnNumberTarget = 1;
       tableHandles.push(
         <Handle

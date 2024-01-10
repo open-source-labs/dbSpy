@@ -285,9 +285,9 @@ export default function FeatureTab(props: any) {
       const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
       if (data.status === 204) return alert('No database stored!');
       const schemaString = await data.json();
-      //console.log('tabledataString', schemaString.tableData)
+
       setDataStore(JSON.parse(schemaString.tableData));
-      //console.log('schemaString212', schemaString.data);
+
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
       console.log(err);
@@ -301,7 +301,6 @@ export default function FeatureTab(props: any) {
       //send the inputName along with the delete request as query in the parameters.
       axios
         .delete(`/api/saveFiles/deleteSave/${inputName}`)
-        .then((response) => console.log('response ', response))
         .catch((err) => console.error('err', err));
     } catch (err) {
       console.log(err);
@@ -326,10 +325,10 @@ export default function FeatureTab(props: any) {
   };
 
   //Create logo button hover over animation - dbSpy 7.0
-  let ImgSwap;
-  function logoImageFlow(event) {
+  let ImgSwap: NodeJS.Timeout;
+  function logoImageFlow(event: any) {
     //let currentLogoImg = event.target.src;
-    let logoImgArr;
+    let logoImgArr: string[];
     if (darkMode === true) {
       logoImgArr = [
         logo1,
@@ -375,7 +374,7 @@ export default function FeatureTab(props: any) {
     }, 130); // Adjust the timeout value between image swaps as needed
   }
   // function to clean up after the hover over affect. Must clear the interval set by setInterval() - dbSpy 7.0
-  function clearImgSwap(event) {
+  function clearImgSwap(event: any) {
     if (darkMode === true) {
       event.target.src = logo;
     } else {
@@ -386,6 +385,7 @@ export default function FeatureTab(props: any) {
 
   //on click function for revealing/hiding the nav bar - dbSpy 7.0
   let logoClicked = false;
+
   function revealHideNav(event: any) {
     // Get the siblings
     logoClicked = !logoClicked;
@@ -399,7 +399,7 @@ export default function FeatureTab(props: any) {
       event.target.parentElement.classList.remove('pointer-events-none');
       event.target.parentElement.parentElement.classList.remove('pointer-events-none');
     }
-    const siblings = Array.from(event.target.parentElement.children).filter(
+    const siblings: any[] = Array.from(event.target.parentElement.children).filter(
       (child) => child !== event.target
     );
     // if (logoClicked) {
@@ -447,7 +447,10 @@ export default function FeatureTab(props: any) {
               />
             )}
 
-            <NavLink to="/" className='mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4'>
+            <NavLink
+              to="/"
+              className="mr-4 mt-4 inline-block text-blue-200 hover:text-white lg:mt-0"
+            >
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
                 <HomeIcon />

@@ -29,7 +29,6 @@ export default function RowInput({
   const columns: JSX.Element[] = [];
   const inputs: JSX.Element[] = [];
   let columnNames: string[];
-  // console.log('dbCredentials', dbCredentials);
   let maxConstraintNameLength: number;
   switch (dbCredentials.db_type) {
     case 'mysql':
@@ -47,20 +46,13 @@ export default function RowInput({
       }
   }
 
-  // console.log(
-  //   '====== currentTable (in RowInput) ** BEFORE ternary ** ======',
-  //   currentTable
-  // );
-
   //adding first row of data current table = [], with length=0, and _prototype
   //when it runs through the function it ends up being [{with properties}]
+
+  // the following ternary checks to see if currentTable exists and if not defaults it to an empty array.
+  // This helps stabilize the data structure in the case of creating fresh tables (NOT loading/connecting to a database)
   currentTable = currentTable ? currentTable : [];
 
-  // console.log('ternery test');
-  // console.log(
-  //   '====== currentTable (in RowInput) ** AFTER ternary ** ======',
-  //   currentTable
-  // );
   // If current table is EMPTY, we are going to use secondaryColumnNames we got from schemaStore in DataInputModal
   if (!currentTable.length) {
     columnNames = secondaryColumnNames;

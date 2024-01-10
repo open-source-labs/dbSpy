@@ -5,7 +5,6 @@ import { Edge } from '@/Types';
 // Creates an array of all edges in the schema view
 export default function createEdges(schemaObject: SchemaStore) {
   const edges: Edge[] = [];
-  console.log('oldedges: ', edges);
   for (const tableKey in schemaObject) {
     const table = schemaObject[tableKey];
 
@@ -37,6 +36,5 @@ export default function createEdges(schemaObject: SchemaStore) {
       }
     }
   }
-  console.log('newEdges: ', edges);
   return edges;
 }

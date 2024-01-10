@@ -1,7 +1,12 @@
 import useFlowStore from '../../store/flowStore';
 import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React, { useEffect } from 'react';
-import ReactFlow, { Controls, ControlButton, Background } from 'reactflow';
+import ReactFlow, {
+  Controls,
+  ControlButton,
+  Background,
+  ReactFlowProps,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import TableNode from './TableNode';
@@ -27,19 +32,16 @@ export default function Flow(): JSX.Element {
   }, [schemaStore]);
 
   function reRender(schemaStore: SchemaStore) {
-
     if (!schemaStore || !Object.keys(schemaStore).length) return;
     const initialEdges = createEdges(schemaStore);
-    console.log('initialEdges', initialEdges);
+
     setEdges(initialEdges);
     const initialNodes = createNodes(schemaStore, initialEdges);
     setNodes(initialNodes);
-    console.log('Initial EDGESSSSSS', initialEdges);
-    console.log('new Nodes======', nodes);
   }
 
   // function for highlighting the edges associated with the current node - db 7.0
-  const handleNodeClick = (event, node) => {
+  const handleNodeClick = (event: any, node: ReactFlowProps) => {
     // Find edges connected to the clicked node and update their selected property using map method
     const updatedEdges = edges.map((edge) => {
       // below two lines are set up to be able to change the edge color if the darkMode state changes.

@@ -5,7 +5,12 @@ import { DataStore, Edge } from '@/Types';
 import useSchemaStore, { SchemaStore } from '../../store/schemaStore';
 import React from 'react';
 import { useEffect } from 'react';
-import ReactFlow, { Controls, ControlButton, Background } from 'reactflow';
+import ReactFlow, {
+  Controls,
+  ControlButton,
+  Background,
+  ReactFlowProps,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import DownloadButton from './DownloadButton';
 import createDataEdges from './createDataEdges';
@@ -40,7 +45,7 @@ export default function DataFlow(): JSX.Element {
   }
 
   // function for highlighting the edges associated with the current node - db 7.0
-  const handleNodeClick = (event, node) => {
+  const handleNodeClick = (event: any, node: ReactFlowProps) => {
     // Find edges connected to the clicked node and update their selected property using map method
     const updatedEdges = edges.map((edge) => {
       // below two lines are set up to be able to change the edge color if the darkMode state changes.

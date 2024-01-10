@@ -97,7 +97,7 @@ export default function InputModal({
           });
       } else if (mode === 'column') {
         addColumnSchema(tableName, columnData);
-        console.log('columnData: ', columnData);
+
         //new column data that will be sent in the post request body
         const dataToSend = {
           tableName: tableName,

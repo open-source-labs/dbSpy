@@ -44,7 +44,6 @@ export default function DataInputModal({
   const secondaryColumnNames: string[] = Object.keys(schemaStore[tableName as string]);
 
   const updatingDB = async (newRow: DataObj): Promise<void> => {
-    console.log('==== updatingDB function FIRING ====');
     addTableData(tableName!, newRow);
     //new column data that will be sent in the post request body
     const dataToSend = {
@@ -75,11 +74,7 @@ export default function DataInputModal({
         });
       }
       currentTable.push(additionalRow);
-      console.log('INSIDE OF handleSubmit ===> currentTable: ', currentTable);
-      console.log(
-        'INSIDE OF handleSubmit ===> currentTable[currentTable.length - 1]:',
-        currentTable[currentTable.length - 1]
-      );
+
       // send backend the new row ONLY to add this row to table we had
 
       await Promise.resolve(updatingDB(currentTable[currentTable.length - 1]));
