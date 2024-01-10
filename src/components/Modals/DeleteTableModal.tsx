@@ -8,7 +8,7 @@ import ReactFlow, { getConnectedEdges } from 'reactflow';
 type DeleteTableModalProps = {
   closeDeleteTableModal: () => void;
 };
-
+let counter: number = 0;
 export default function DeleteTableModal({
   closeDeleteTableModal,
 }: DeleteTableModalProps) {
@@ -40,41 +40,25 @@ export default function DeleteTableModal({
   const deleteTable = async (): Promise<void> => {
     try {
       setConnectPressed(true);
-      console.log('schemmmmmmmaaaaaaa', schemaStore);
-      await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ tableName: tableName }),
-      });
-
       for (let tableKey in schemaStore) {
         for (let rowKey in schemaStore[tableKey]) {
           if (
             schemaStore[tableKey][rowKey].IsForeignKey &&
             schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName === tableName
           ) {
-            let constraintName =
-              schemaStore[tableKey][rowKey].References[0].constraintName;
-            console.log(`constraint`, constraintName);
-            console.log(`tableKey`, tableKey);
-            console.log(`rowKey`, rowKey);
-            // Nested fetch call with await
-            await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                columnName: rowKey,
-                tableName: tableKey,
-                constraintName: constraintName,
-              }),
-            });
-
-            delete schemaStore[tableKey][rowKey];
+            schemaStore[tableKey][rowKey].IsForeignKey = false;
           }
         }
       }
+      console.log('schemmmmmmmaaaaaaa', schemaStore);
+      const response = await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tableName: tableName }),
+      });
+      console.log('response on deleting tableName: ', response);
       //delete the table object from the schemaStore object
       delete schemaStore[tableName];
       delete dataStore[tableName];
@@ -97,93 +81,6 @@ export default function DeleteTableModal({
       closeDeleteTableModal();
       setTableName('');
     }
-
-    // .then(() => {
-    //   for (let tableKey in schemaStore) {
-    //     for (let rowKey in schemaStore[tableKey]) {
-    //       //rowKey.References[0].constraintName
-    //       if (
-    //         schemaStore[tableKey][rowKey].IsForeignKey &&
-    //         schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName ===
-    //           tableName
-    //       ) {
-    //         let constraintName =
-    //           schemaStore[tableKey][rowKey].References[0].constraintName;
-    //         fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
-    //           method: 'DELETE',
-    //           headers: {
-    //             'Content-Type': 'application/json',
-    //           },
-    //           body: JSON.stringify({
-    //             columnKey: rowKey,
-    //             tableName: tableKey,
-    //             constraintName: constraintName,
-    //           }),
-    //         }).then(() => delete schemaStore[tableKey][rowKey]);
-    //       }
-    //     }
-    //     //if nodes and edges state are not reset here the canvas re-renders with extra edges -- dbSpy 7.0
-    //     setNodes([]);
-    //     setEdges([]);
-    //   }
-    //   //delete the table object from the schemaStore object
-    //   delete schemaStore[tableName];
-    //   delete dataStore[tableName];
-    // })
-    // .then(() => {
-    //   //pass in modified schemaStore object which triggers a the rerender function in the flow.tsx component
-    //   setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
-    //   setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
-    // })
-    // .then(() => {
-    //   setTableName('');
-    //   setConnectPressed(false);
-    //   closeDeleteTableModal();
-    // })
-    // .catch((error) => {
-    //   console.log(
-    //     'dataStore.tableName: ',
-    //     dataStore.tableName,
-    //     'schemaStore.tableName: ',
-    //     schemaStore.tableName
-    //   );
-    //   closeDeleteTableModal();
-    //   setTableName('');
-    //   console.error('Error fetching table names:', error);
-    // });
-  };
-  //=============
-  //if nodes and edges state are not reset here the canvas re-renders with extra edges -- dbSpy 7.0
-
-  //below code deletes the column of any foreign key that references the deleted table - dbSpy 7.0
-
-  //modified to fix bugs by dbspy 7.0
-  // const deleteTable = (): void => {
-  //   setConnectPressed(true);
-  //   //if nodes and edges state are not reset here the canvas re-renders with extra edges -- dbSpy 7.0
-  //   setNodes([]);
-  //   setEdges([]);
-  //   //below code deletes the column of any foreign key that references the deleted table - dbSpy 7.0
-  //   for (let tableKey in schemaStore) {
-  //     for (let rowKey in schemaStore[tableKey]) {
-  //       if (
-  //         schemaStore[tableKey][rowKey].IsForeignKey &&
-  //         schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName === tableName
-  //       ) {
-  //         delete schemaStore[tableKey][rowKey];
-  //       }
-  //     }
-  //   }
-  //   //delete the table object from the schemaStore object
-  //   delete schemaStore[tableName];
-  //   delete dataStore[tableName];
-  //   //pass in modified schemaStore object which triggers a the rerender function in the flow.tsx component
-  //   setSchemaStore(Object.keys(schemaStore).length > 0 ? { ...schemaStore } : {});
-  //   setDataStore(Object.keys(dataStore).length > 0 ? { ...dataStore } : {});
-
-  //   setTableName('');
-  //   setConnectPressed(false);
-  //   closeDeleteTableModal();
   };
   return (
     <div id="deleteTableModal" className="input-modal">

@@ -225,10 +225,10 @@ const postgresController = {
   postgresDeleteColumn: async (req: Request, res: Response, next: NextFunction) => {
     try {
       deleteColumn(req, res, next);
-      //console.log("postgresDeleteColumn function has concluded");
+      console.log('postgresDeleteColumn function has concluded');
       return next();
     } catch (err: unknown) {
-      //console.log('Error occurred in the postgresDeleteColumn middleware: ', err);
+      console.log('Error occurred in the postgresDeleteColumn middleware: ', err);
       return next(err);
     }
   },
@@ -262,10 +262,10 @@ const postgresController = {
   postgresDeleteTable: async (req: Request, res: Response, next: NextFunction) => {
     try {
       await Promise.resolve(deleteTable(req, res, next));
-      //console.log("postgresDeleteTable function has concluded");
+      console.log('postgresDeleteTable function has concluded');
       return next();
     } catch (err: unknown) {
-      //console.log('Error occurred in the postgresDeleteTable middleware: ', err);
+      console.log('Error occurred in the postgresDeleteTable middleware: ', err);
       return next(err);
     }
   },

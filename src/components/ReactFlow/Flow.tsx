@@ -27,7 +27,6 @@ export default function Flow(): JSX.Element {
   }, [schemaStore]);
 
   function reRender(schemaStore: SchemaStore) {
-
     if (!schemaStore || !Object.keys(schemaStore).length) return;
     const initialEdges = createEdges(schemaStore);
     console.log('initialEdges', initialEdges);

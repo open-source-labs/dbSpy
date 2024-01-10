@@ -361,7 +361,7 @@ export const deleteColumn: RequestHandler = async (
     console.log('deletedColumn in helper: ', deletedColumn);
     return deletedColumn;
   } catch (err: unknown) {
-    console.log('Error occurred in the addNewTable middleware: ', err);
+    console.log('Error occurred in the addNewTable middleware364: ', err);
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     return next(err);
@@ -398,7 +398,7 @@ export const addNewTable: RequestHandler = async (
     console.log('Database has been disconnected');
     return;
   } catch (err: unknown) {
-    console.log('Error occurred in the addNewTable middleware: ', err);
+    console.log('Error occurred in the addNewTable middleware401: ', err);
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     return next(err);
@@ -460,7 +460,7 @@ export const getTableNames: RequestHandler = async (
     console.log('Database has been disconnected');
     return tables;
   } catch (err: unknown) {
-    console.log('Error occurred in the addNewTable middleware: ', err);
+    console.log('Error occurred in the addNewTable middleware463: ', err);
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     return next(err);
@@ -480,7 +480,7 @@ export const deleteTable: RequestHandler = async (
 
   try {
     const deletedTable: Promise<unknown> = await dbDataSource.query(
-      `DROP TABLE ${tableName}`
+      `DROP TABLE ${tableName} CASCADE`
     );
 
     dbDataSource.destroy();
@@ -488,7 +488,7 @@ export const deleteTable: RequestHandler = async (
     console.log('deletedTable in helper: ', deletedTable);
     return deletedTable;
   } catch (err: unknown) {
-    console.log('Error occurred in the addNewTable middleware: ', err);
+    console.log('Error occurred in the addNewTable middleware491: ', err);
     dbDataSource.destroy();
     console.log('Database has been disconnected');
     return next(err);
