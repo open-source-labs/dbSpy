@@ -8,7 +8,7 @@ import ReactFlow, { getConnectedEdges } from 'reactflow';
 type DeleteTableModalProps = {
   closeDeleteTableModal: () => void;
 };
-
+let counter: number = 0;
 export default function DeleteTableModal({
   closeDeleteTableModal,
 }: DeleteTableModalProps) {
@@ -40,38 +40,25 @@ export default function DeleteTableModal({
   const deleteTable = async (): Promise<void> => {
     try {
       setConnectPressed(true);
-      await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ tableName: tableName }),
-      });
-
       for (let tableKey in schemaStore) {
         for (let rowKey in schemaStore[tableKey]) {
           if (
             schemaStore[tableKey][rowKey].IsForeignKey &&
             schemaStore[tableKey][rowKey].References[0].PrimaryKeyTableName === tableName
           ) {
-            let constraintName =
-              schemaStore[tableKey][rowKey].References[0].constraintName;
-
-            // Nested fetch call with await
-            await fetch(`/api/sql/${dbCredentials.db_type}/deleteColumn`, {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                columnName: rowKey,
-                tableName: tableKey,
-                constraintName: constraintName,
-              }),
-            });
-
-            delete schemaStore[tableKey][rowKey];
+            schemaStore[tableKey][rowKey].IsForeignKey = false;
           }
         }
       }
+      console.log('schemmmmmmmaaaaaaa', schemaStore);
+      const response = await fetch(`/api/sql/${dbCredentials.db_type}/deleteTable`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tableName: tableName }),
+      });
+      console.log('response on deleting tableName: ', response);
       //delete the table object from the schemaStore object
       delete schemaStore[tableName];
       delete dataStore[tableName];
@@ -89,7 +76,6 @@ export default function DeleteTableModal({
       setTableName('');
     }
   };
-
   return (
     <div id="deleteTableModal" className="input-modal">
       <div className="modal-content w-96 rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">

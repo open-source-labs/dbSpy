@@ -71,7 +71,7 @@ export default function DataFlow(): JSX.Element {
       //if the current edge is not associated with the node then return this styling.
       return {
         ...edge,
-        type: 'bezier',
+        type: 'smoothstep',
         style: {
           //strokeWidth: 2,
           ...edge.style,

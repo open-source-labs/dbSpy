@@ -39,7 +39,7 @@ const DBDisplay: React.FC = () => {
     isSchema,
     setTableMode,
     dbName,
-    setDBName
+    setDBName,
   } = useSettingsStore((state) => state);
 
   // Input Modal state and handlers
@@ -189,7 +189,9 @@ const DBDisplay: React.FC = () => {
               >
                 Show data
               </button>
-              <span id="text" className="ml-5 text-white">Current Database: {dbName}</span>
+              <span id="text" className="ml-5 text-black dark:text-white">
+                Current Database: {dbName}
+              </span>
             </>
           ) : (
             // If isSchema state is false, render Show Schema button and DataFlow component
@@ -202,7 +204,9 @@ const DBDisplay: React.FC = () => {
               >
                 Show Schema
               </button>
-              <span id="text" className="ml-5 text-white">Current Database: {dbName}</span>
+              <span id="text" className="ml-5 text-white">
+                Current Database: {dbName}
+              </span>
             </>
           )}
         </div>
