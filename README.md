@@ -9,7 +9,7 @@
 
 <div align="center">
   
-![logo](https://user-images.githubusercontent.com/101940529/198836631-31a657f7-feaa-4247-8abc-cedb86540e21.png)
+![logo](https://im2.ezgif.com/tmp/ezgif-2-fe2855caf9.gif)
 
 </div>
 
@@ -18,17 +18,13 @@
 
 ### New Features with Version 7.0
 
-### New Features with Version 6.0
-
-- Enchanced JWT-based user authentication to maintain user login sessions 
-- Securely manage user-specific database storage and retrieval 
-- Expanded database connnectivity to include MySQL databases for visualization.
-- Robust CRUD functionality enabling the addition, modification, and deletion of rows in DATA tables within the database.
-- Redesigned the display page UI to produce a more mordern aesthetic 
-- Redesigned the UI for the login and signup pages to create a more user-friendly login experience
-- Improved Undo/Redo functionality
-- Implementation of Google and GitHub OAuth log-ins for streamlined user authentication.
-- Improve TDD coverage for Zustand stores.
+-UI is now full widescreen with a drop down menu to allow for more workspace.
+-The Save, Load, and Delete features now take filename, and can save schema, and data.
+-Deleting certain elements in tables now locates, and also properly delete depedent elements on other tables
+-Implemented an algorithm to highlight all edges connected to currently selected table
+-Fixed several Issues where certain Elements would not be deleted from a connected database
+-Fixed several Issues with show Data terminating react flow
+-Fixed several Issues with Edges being rendered too many times, and not deleted
 
 ### Use Cases
 
@@ -53,22 +49,21 @@
 
 4. **Schema Modification:** Toggle between Schema and Data easily with a click of a button
 
-5. **Data/Schema Modification:** Easily modify a database's schema or data through a simple UI 
+5. **Data/Schema Modification:** Easily modify a database's schema or data through a simple UI
 
-5. **Guided Database Building:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
+6. **Guided Database Building:** Create a new database from scratch using entity relationship diagrams to ensure the integrity of the database
 
-6. **Database Undo/Redo:** Provides a history of edits for easier backtracking
+7. **Database Undo/Redo:** Provides a history of edits for easier backtracking
 
-7. **Query Generator:** Query generator generates executable SQL queries
+8. **Query Generator:** Query generator generates executable SQL queries
 
-8. **User Sessions:** Sign up/Log in securely with either Google/Github OAuth or JWTs/Bcrypt
+9. **User Sessions:** Sign up/Log in securely with either Google/Github OAuth or JWTs/Bcrypt
 
-9. **Save/Load:** Store and reload past database sessions through your user accoun
+10. **Save/Load:** Store and reload past database sessions through your user accoun
 
-10. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
+11. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-## <img src="images/ConnectedToDB.png">
-
+## <img src="images/dbSpy7_canvas.png">
 
 ### Getting started
 
@@ -162,9 +157,6 @@ mkcert --version
 npm run cert:linux
 ```
 
-
-
-
 ---
 
 # How to Use
@@ -175,11 +167,7 @@ npm run cert:linux
 2. Select the database type from the dropdown.
 3. Input your database URI information OR database connection credentials and click on "Connect".
 4. Once the connection to your database is established, the canvas will render and generate the tables and their relationships.
-    * OracleSQL requires the download of the OCI - [here](https://www.oracle.com/cloud/free/)
-
-
-
-
+   - OracleSQL requires the download of the OCI - [here](https://www.oracle.com/cloud/free/)
 
 ### Uploading your database's SQL file
 
@@ -193,18 +181,16 @@ npm run cert:linux
 
 ## Adding column(s) to a SCHEMA table or row(s) to a DATA table
 
-1. To add a new column/row in a table, click on the add/plus icon on the top right of the table node. 
-2. This will render a new column/row in the table in edit mode. 
-3. Add in the data you would like in each column/row. 
-4. Click on the confirm icon to save the column/row. 
-5. The changes made in DATA table will be updated in your database. 
+1. To add a new column/row in a table, click on the add/plus icon on the top right of the table node.
+2. This will render a new column/row in the table in edit mode.
+3. Add in the data you would like in each column/row.
+4. Click on the confirm icon to save the column/row.
+5. The changes made in DATA table will be updated in your database.
 6. Click on the cancel icon to cancel the addition.
-
 
    <img src="images/zuckOverWaz.png">
 
    <img src="images/zuckTables.png">
-
 
 ### Editing an existing row of a DATA table
 
@@ -219,9 +205,7 @@ npm run cert:linux
 2. Click on the confirm icon to delete the column.
 3. Click on the cancel icon to cancel the deletion.
 
-
-## <img src="images/DbSpy Gif.gif">
-
+## <img src="images/dbspy7.gif">
 
 ### Adding a foreign key reference to a column
 
@@ -235,7 +219,7 @@ npm run cert:linux
 1. When on the display page, click the 'Add Table' icon after you have either connected to a database or clicked 'Build Database'.
 2. Fill in the required information about the first column of your table along with a name.
 3. If you would like to include additional columns, click the 'Add Column' button in the top right corner.
-3. Click confirm to create your table.
+4. Click confirm to create your table.
 
 ### Deleting a table from a database
 
@@ -263,6 +247,7 @@ npm run cert:linux
 ---
 
 ### Credits/Contributors
+
 - David Jones • [LinkedIn](http://www.linkedin.com/in/davidjonesswe/) • [Github](https://github.com/david-jones-git)
 - John Ruiz • [LinkedIn](https://www.linkedin.com/in/john-ruiz-profile/) • [Github](https://github.com/johnruiz17)
 - Minh Chang • [LinkedIn](https://www.linkedin.com/in/minh-chang/) • [Github](https://github.com/miha-cha)
@@ -289,7 +274,8 @@ npm run cert:linux
 - Kevin Wang • [LinkedIn](https://www.linkedin.com/in/kevin-w-b841b13/) • [Github](https://github.com/kwang929)
 - Kris Magat • [LinkedIn](https://www.linkedin.com/in/kmag/) • [Github](https://github.com/KrisMagat)
 - Santiago Gil Maya • [LinkedIn](https://www.linkedin.com/in/santiago-gil-929721121/) • [Github](https://github.com/santiago-gil)
-test
+  test
+
 ---
 
 ### License

@@ -27,10 +27,10 @@ import JR from '../../assets/contributors/JR.png';
 import PS from '../../assets/contributors/PS.png';
 import mc from '../../assets/contributors/mc.jpg';
 import DO from '../../assets/contributors/DO.jpeg';
-// import MattC from '../../assets/contributors/MattC.png';
-// import MattJ from '../../assets/contributors/MattJ.png';
-// import StanH from '../../assets/contributors/StanH.png';
-// import DonM from '../../assets/contributors/DonM.png';
+import MattC from '../../assets/contributors/MattC.jpg';
+import MattJ from '../../assets/contributors/Matthew_Jones.jpeg';
+import StanH from '../../assets/contributors/Stan.jpg';
+import DonM from '../../assets/contributors/DonM.jpg';
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
 type profileInfo = {
@@ -234,34 +234,34 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'http://www.linkedin.com/in/singh-parwinder',
     githubUrl: 'https://github.com/PintaAE86',
   },
-  // {
-  //   imgUrl: MattC,
-  //   name: 'Matthew Cummings',
-  //   title: 'Just a Regular Guy',
-  //   linkedInUrl: 'https://www.linkedin.com/in/matthew-cummings-a25179113/',
-  //   githubUrl: 'https://github.com/mcummings190',
-  // },
-  // {
-  //   imgUrl: MattJ,
-  //   name: 'Matthew Jones',
-  //   title: 'Professional Hype-Man',
-  //   linkedInUrl: 'https://www.linkedin.com/in/matthew-jones-05a27840/',
-  //   githubUrl: 'https://github.com/TagiMagi',
-  // },
-  // {
-  //   imgUrl: StanH,
-  //   name: 'Stanley the Manley',
-  //   title: 'Professional Boxer',
-  //   linkedInUrl: 'https://www.linkedin.com/in/stanho347/',
-  //   githubUrl: 'https://github.com/Stanley7c114',
-  // },
-  // {
-  //   imgUrl: DonM,
-  //   name: 'Donald Macak Attack',
-  //   title: 'Datastructure Analyst',
-  //   linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
-  //   githubUrl: 'https://github.com/Donald-Macak',
-  // }
+  {
+    imgUrl: MattC,
+    name: 'Matthew Cummings',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/matthew-cummings-a25179113/',
+    githubUrl: 'https://github.com/mcummings190',
+  },
+  {
+    imgUrl: MattJ,
+    name: 'Matthew Jones',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/matthew-jones-05a27840/',
+    githubUrl: 'https://github.com/TagiMagi',
+  },
+  {
+    imgUrl: StanH,
+    name: 'Stanley Ho',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/stanho347/',
+    githubUrl: 'https://github.com/Stanley7c114',
+  },
+  {
+    imgUrl: DonM,
+    name: 'Donald Macak',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
+    githubUrl: 'https://github.com/Donald-Macak',
+  },
 ];
 
 export default function Contributors() {
