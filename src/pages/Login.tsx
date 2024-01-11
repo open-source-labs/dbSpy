@@ -56,7 +56,7 @@ export default function Login() {
     const options: Options = {
       redirect_uri: 'http://db-spy.io/display/',
       client_id:
-        '507124943654-nd7fhcdfvmendo2ntsrpj0pifg7paa36.apps.googleusercontent.com',
+        '1050970973422-4am2mv6e621f83lggfcjubkl3hqtoj0k.apps.googleusercontent.com',
       access_type: 'offline',
       response_type: 'code',
       prompt: 'consent',
