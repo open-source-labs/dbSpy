@@ -9,7 +9,7 @@
 
 <div align="center">
   
-![logo](https://cdn.discordapp.com/attachments/317784599612882945/1195056316796907552/ezgif-2-bd51918994.gif?ex=65b299ec&is=65a024ec&hm=9aebeef87988708d822df637cca617a50dd0dec7deb41d0d155e6074cab954bf&)
+![logo](https://cdn.discordapp.com/attachments/1183814244337197206/1195092444446990446/ezgif-1-23210e8723.gif?ex=65b2bb92&is=65a04692&hm=e15f2020978f330894341c93cdfa54244436eed9d3e71ea4b6a65d16720ab5b9&)
 
 </div>
 
