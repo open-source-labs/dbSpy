@@ -5,17 +5,14 @@ import useCredentialsStore from '../../store/credentialsStore';
 
 //-----TYPES
 type EachRow = {
-  [key: string | number]: string | number | boolean | null
+  [key: string | number]: string | number | boolean | null;
 };
 
 type RowInputProps = {
   tableName: string | undefined;
   currentTable: EachRow[];
-  handleRowChange: (
-    index: number,
-    value: string | boolean
-  ) => void;
-  secondaryColumnNames: string[]
+  handleRowChange: (index: number, value: string | boolean) => void;
+  secondaryColumnNames: string[];
 };
 
 //-----MODAL for new row inputs
@@ -23,19 +20,17 @@ export default function RowInput({
   tableName,
   currentTable,
   handleRowChange,
-  secondaryColumnNames
+  secondaryColumnNames,
 }: RowInputProps) {
-
   const { dbCredentials } = useCredentialsStore((state) => state);
   const { schemaStore } = useSchemaStore((state) => state);
-  
-  const arrOfDataType = schemaStore[tableName as string]
+
+  const arrOfDataType = schemaStore[tableName as string];
   const columns: JSX.Element[] = [];
   const inputs: JSX.Element[] = [];
   let columnNames: string[];
-
   let maxConstraintNameLength: number;
-  switch(dbCredentials.db_type) {
+  switch (dbCredentials.db_type) {
     case 'mysql':
       maxConstraintNameLength = 64;
     case 'mssql':
@@ -46,9 +41,19 @@ export default function RowInput({
       maxConstraintNameLength = 255;
     default:
       maxConstraintNameLength = 63; //Postgres
-  };
+      if (!dbCredentials.db_type) {
+        dbCredentials.db_type = 'postgres';
+      }
+  }
 
-  // If current table is EMPTY, we are going to use secondaryColumnNames we got from schemaStore in DataInputModal 
+  //adding first row of data current table = [], with length=0, and _prototype
+  //when it runs through the function it ends up being [{with properties}]
+
+  // the following ternary checks to see if currentTable exists and if not defaults it to an empty array.
+  // This helps stabilize the data structure in the case of creating fresh tables (NOT loading/connecting to a database)
+  currentTable = currentTable ? currentTable : [];
+
+  // If current table is EMPTY, we are going to use secondaryColumnNames we got from schemaStore in DataInputModal
   if (!currentTable.length) {
     columnNames = secondaryColumnNames;
   } else {
@@ -56,7 +61,10 @@ export default function RowInput({
   }
   columnNames.forEach((each, i) => {
     columns.push(
-      <label key={i + each} className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]">
+      <label
+        key={i + each}
+        className=" m-2 text-center text-slate-900 dark:text-[#f8f4eb]"
+      >
         {each}
       </label>
     );
@@ -65,7 +73,7 @@ export default function RowInput({
     inputs.push(
       <input
         key={i}
-        className='m-2'
+        className="m-2"
         type="text"
         placeholder={arrOfDataType[columnNames[i]].data_type}
         maxLength={maxConstraintNameLength}
@@ -75,17 +83,11 @@ export default function RowInput({
       />
     );
   }
-  
+
   return (
     <div className="column-input">
-      <div>
-        {columns}
-      </div>
-      <div>
-        {inputs}
-      </div>
+      <div>{columns}</div>
+      <div>{inputs}</div>
     </div>
   );
 }
-
-

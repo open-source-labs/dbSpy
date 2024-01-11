@@ -49,7 +49,7 @@ export default function Login() {
   };
 
   // in development mode, change redirect_uri to 'http://localhost:8080/display/'
-  // in production mode, change redirect_uri back to 'http://db-spy.io/display/' before deploying 
+  // in production mode, change redirect_uri back to 'http://db-spy.io/display/' before deploying
   function getGoogle(): void {
     const rootUrl: string = 'https://accounts.google.com/o/oauth2/v2/auth';
 

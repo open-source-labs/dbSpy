@@ -12,6 +12,7 @@ import { microsoftRouter } from './microsoft.router';
 import { oracleRouter } from './oracle.router';
 import { mysqlRouter } from './mysql.router';
 import { sqliteRouter } from './sqlite.router';
+import { saveRouter } from './save.router';
 import { config } from 'dotenv';
 import log from '../logger/index';
 import type { DefaultErr } from '../../src/Types';
@@ -87,6 +88,8 @@ const routes = (app: Express) => {
 
   app.use('/api/sql/sqlite', cookieSession, sqliteRouter);
 
+  app.use('/api/saveFiles', cookieSession, saveRouter);
+
   app.post('/api/saveSchema', saveSchema, (_req: Request, res: Response) => {
     return res.sendStatus(200);
   });
@@ -140,7 +143,6 @@ export const cookieSession = (req: Request, _res: Response, next: NextFunction) 
       req.session.service_name = service_name;
     }
     console.log('Cookie has been set and is saving session data');
-    console.log('req.session: ', req.session);
   } catch (err: unknown) {
     console.log('error was found in cookeSession: ', err);
     return next(err);
