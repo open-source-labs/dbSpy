@@ -9,7 +9,7 @@
 
 <div align="center">
   
-![logo](https://im2.ezgif.com/tmp/ezgif-2-fe2855caf9.gif)
+![logo]([https://im2.ezgif.com/tmp/ezgif-2-fe2855caf9.gif](https://cdn.discordapp.com/attachments/317784599612882945/1195056316796907552/ezgif-2-bd51918994.gif?ex=65b299ec&is=65a024ec&hm=9aebeef87988708d822df637cca617a50dd0dec7deb41d0d155e6074cab954bf&))
 
 </div>
 
