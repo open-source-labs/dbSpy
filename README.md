@@ -140,7 +140,7 @@ npm install -g mkcert
 2. Run the following script
 
 ```bash
-npm run cert
+npm run cert:mac
 ```
 
 ### Linux
