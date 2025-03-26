@@ -2,12 +2,13 @@ import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
 import log from '../logger/index';
-import { DataSource } from 'typeorm'
-import { User } from '../entities/user.entity'
+import { DataSource } from 'typeorm';
+import { User } from '../entities/user.entity';
 // // Connect to SQL db and create users table
 if (!process.env.USER_DB_URL) {
-  console.info('We are in the first error')
-  throw new Error('USER_DB_URL not found');}
+  console.error('We are in the first error');
+  throw new Error('USER_DB_URL not found');
+}
 const connection = mysql.createConnection(process.env.USER_DB_URL);
 
 // const loadData = () => {
@@ -35,18 +36,14 @@ const connection = mysql.createConnection(process.env.USER_DB_URL);
 
 // loadData();
 
-
-
 const MysqlDataSource = new DataSource({
-  type: "mysql",
-  host: "process.env.USER_DB_URL",
+  type: 'mysql',
+  host: 'process.env.USER_DB_URL',
   port: 3306,
-  username: "admin",
-  password: "Codesmith",
-  database: "dbSpy",
-  entities: [
-      User
-  ],
-})
+  username: 'admin',
+  password: 'Codesmith',
+  database: 'dbSpy',
+  entities: [User],
+});
 
 process.exit(0);

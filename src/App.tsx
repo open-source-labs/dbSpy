@@ -5,11 +5,14 @@ import DBDisplay from './pages/DBDisplay';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Shared from './pages/Shared';
+//-- used to store and access login info. using Zustand (state management library)
 import useCredentialsStore from './store/credentialsStore';
 import './styles/index.css';
 
 const App: React.FC = () => {
   //STATE DECLARATION (dbSpy3.0)
+  //-- calling this custom hook to get the current user
+  //-- state.user is a bool or obj? if trythy -> user is logged in, if falsy (null / undefined) -> user is not logged in
   const user = useCredentialsStore((state) => state.user);
   //END: STATE DECLARATION
 
@@ -26,11 +29,12 @@ const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Shared />}>
-          {/* index renders root directory */}
+          {/* index is default page | visitng `/` loads Home page */}
           <Route index element={<Home />} />
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
         </Route>
+        {/* main dashboard? route does not live inside the Shared layout */}
         <Route path="display" element={<DBDisplay />} />
       </Routes>
     </BrowserRouter>
