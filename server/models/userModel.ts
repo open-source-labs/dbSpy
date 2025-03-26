@@ -1,11 +1,12 @@
 import mysql from 'mysql2';
 import fs from 'fs';
 import log from '../logger';
+import path from 'path';
 
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { USER_DB_URL_MYSQL, USER_DB_USER_MYSQL, USER_DB_PW_MYSQL } = process.env;
+const { USER_DB_URL_MYSQL, USER_DB_USER_MYSQL, USER_DB_PW_MYSQL, DB_PORT } = process.env;
 
 // SSL data stored as environment variable for GitHub Actions access
 // Also stored in .cert file because Elastic Beanstalk has a ~4000 char limit for its environment variables
@@ -18,23 +19,41 @@ const { USER_DB_URL_MYSQL, USER_DB_USER_MYSQL, USER_DB_PW_MYSQL } = process.env;
 //     ? Buffer.from(process.env.SSL_CERT, 'base64').toString('ascii')
 //     : fs.readFileSync('./.cert/cert.pem').toString();
 
+// Load CA certificate
+const caCertPath = path.resolve(__dirname, '../certs/ca.pem'); // Make sure this file exists
+const caCert = fs.readFileSync(caCertPath, 'utf-8');
+
 const pool = mysql
   .createPool({
-    connectionLimit: 10,
     host: USER_DB_URL_MYSQL,
     user: USER_DB_USER_MYSQL,
     password: USER_DB_PW_MYSQL,
-    database: 'user',
+    port: Number(DB_PORT),
+    database: 'dbspy',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    ssl: {
+      rejectUnauthorized: true,
+      ca: caCert, // ✅ Provide Aiven's CA certificate
+    },
     // ssl: {
     //   key: SSL_KEY,
     //   cert: SSL_CERT,
     // },
   })
   .promise(); // wrap with promise API
-//connect used to be a var in the function below but it didn't do anything -Stephen
-pool.on('connection', () => {
-  log.info(`MySQL pool connection established`);
-});
+
+// Test Connection
+pool
+  .getConnection()
+  .then((connection) => {
+    log.info(`✅ MySQL pool connection established`);
+    connection.release();
+  })
+  .catch((err) => {
+    log.error(`❌ MySQL connection error:`, err);
+  });
 
 /**
  * User Database Schema

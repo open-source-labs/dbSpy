@@ -11,10 +11,12 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api/': {
-        target: 'http://localhost:3000/',
+        // TODO - vite proxy error
+        // Vite is unable to recognize localhost IPv6 equivalent, so have to change target to the loopback address for IPv4 (http://localhost:3000/ -> http://127.0.0.1:3000/)
+        target: 'http://127.0.0.1:3000/',
         changeOrigin: true,
         secure: false,
-      }
+      },
     },
   },
   build: {

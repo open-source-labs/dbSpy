@@ -9,3 +9,4 @@ temp/
 ca.crt/
 ca.key/
 coverage/
+certs/
