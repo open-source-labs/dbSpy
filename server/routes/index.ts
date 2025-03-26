@@ -97,6 +97,12 @@ const routes = (app: Express) => {
   // Status code being handled in middleware
   app.get('/api/retrieveSchema', retrieveSchema);
 
+  // TODO - look into this in vite.config.ts
+  // Added /api/ route to resolve vite http proxy error?
+  app.get('/api/', (req, res) => {
+    res.json({ message: 'Reached /api/ route' });
+  });
+
   app.get('/*', (_req, res) => {
     res.status(404).send('Not found');
   });

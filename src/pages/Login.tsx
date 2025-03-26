@@ -54,7 +54,8 @@ export default function Login() {
     const rootUrl: string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     const options: Options = {
-      redirect_uri: 'http://db-spy.io/display/',
+      // redirect_uri: 'http://db-spy.io/display/',
+      redirect_uri: 'http://localhost:8080/display/',
       client_id:
         '1050970973422-4am2mv6e621f83lggfcjubkl3hqtoj0k.apps.googleusercontent.com',
       access_type: 'offline',
@@ -76,7 +77,8 @@ export default function Login() {
   const getGithub = (): void => {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
     const options: Options = {
-      redirect_uri: 'http://db-spy.io/display/',
+      // redirect_uri: 'http://db-spy.io/display/',
+      redirect_uri: 'http://localhost:8080/display/',
       client_id: '18d4ecdcc6ed1cb25240',
       state: 'randomstring',
       allow_signup: 'true',
