@@ -75,8 +75,8 @@ export default function FeatureTab(props: any) {
     setSchemaStore,
     undoHandler,
     redoHandler,
-    testDropdown,
-    toggleTestDropdown,
+    testTab,
+    toggleTestTab,
   } = useSchemaStore((state) => state);
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
@@ -422,7 +422,6 @@ export default function FeatureTab(props: any) {
       }
     }
   }
-
   // END: HELPER FUNCTIONS
 
   return (
@@ -532,109 +531,32 @@ export default function FeatureTab(props: any) {
                 </a>
               </li>
               <br />
-              <p className="text-slate-900 dark:text-[#f8f4eb]">Edit</p>
+              {/* ----------- 💙💙💙💙 Test Tab -------------------------- */}
+              <p className="text-slate-900 dark:text-[#f8f4eb]">Test</p>
               <hr />
               {isSchema ? (
                 <li>
-                  <a
-                    onClick={() => {
-                      props.openAddTableModal();
-                      // if schemaStore is empty, initialize
-                      if (!Object.keys(schemaStore).length) buildDatabase();
-                    }}
-                    id="addTable"
+                  {/* ----- 💙💙 Test New Query Button -------- */}
+                  <NavLink
+                    to="/test-new-query"
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                   >
                     <AddTableIcon />
-                    <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
-                  </a>
-                </li>
-              ) : null}
-              {Object.keys(schemaStore).length ? (
-                <li>
-                  <a
-                    onClick={() => {
-                      props.openDeleteTableModal();
-                    }}
-                    id="deleteTable"
-                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
-                  >
-                    <DeleteTableIcon />
-                    <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
-                  </a>
+                    <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
+                  </NavLink>
                 </li>
               ) : null}
               <li>
-                <a
-                  onClick={clearCanvas}
+                {/* ----- 💙💙 View Saved Queries Button -------- */}
+                <NavLink
+                  to="/view-saved-queries"
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
-                  <DeleteIcon />
-                  <span className="ml-3 flex-1 whitespace-nowrap">Clear Canvas</span>
-                </a>
-              </li>
-              {/* TODO: Add UNDO & REDO feature */}
-              <li>
-                <a
-                  onClick={undoHandler}
-                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
-                >
-                  <UndoIcon />
-                  <span className="ml-3 flex-1 whitespace-nowrap">Undo</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={redoHandler}
-                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
-                >
-                  <RedoIcon />
-                  <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
-                </a>
-              </li>
-              {/* 💙💙💙💙 Test section -------------*/}
-              <br />
-              <div className="flex items-center justify-between">
-                <p className="text-slate-900 dark:text-[#f8f4eb]">TEST</p>
-                <button
-                  onClick={toggleTestDropdown}
-                  className="text-lg font-bold text-slate-900 dark:text-[#f8f4eb]"
-                >
-                  {testDropdown ? '-' : '+'}
-                </button>
-              </div>
-              <hr />
-              {/* Test New Query */}
-              <li>
-                <a
-                  onClick={() => {
-                    props.openAddTableModal();
-                    // if schemaStore is empty, initialize
-                    if (!Object.keys(schemaStore).length) buildDatabase();
-                  }}
-                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
-                >
-                  {/* 💙💙💙💙 Test New Query Button -------------*/}
-                  <AddTableIcon />
-                  <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
-                </a>
-              </li>
-              {/* View Saved Queries */}
-              <li>
-                <a
-                  onClick={() => {
-                    props.openAddTableModal();
-                    // if schemaStore is empty, initialize
-                    if (!Object.keys(schemaStore).length) buildDatabase();
-                  }}
-                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
-                >
-                  {/* 💙💙💙💙 View Saved Queries Button -------------*/}
                   <AddTableIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">
                     View Saved Queries
                   </span>
-                </a>
+                </NavLink>
               </li>
             </ul>
             <br />

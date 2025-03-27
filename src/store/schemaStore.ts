@@ -30,9 +30,6 @@ export type SchemaState = {
   _addHistory: (newState: any) => void;
   undoHandler: () => void;
   redoHandler: () => void;
-  //-- 💙💙 Test Button (must manage button/ dropdown in global store)
-  testDropdown: boolean;
-  toggleTestDropdown: () => void;
   addForeignKeySchema: (referenceData: InnerReference) => void;
   setSystem: (
     system: 'PostgreSQL' | 'MySQL' | 'Microsoft SQL' | 'Oracle SQL' | 'SQLite'
@@ -224,19 +221,6 @@ const useSchemaStore = create<SchemaState>()(
             },
             false,
             'redoHandler in /schemaStore'
-          );
-        },
-        //-- 💙💙 Test Button --------------------------
-        // checks to see if dropdown is open
-        testDropdown: false,
-        toggleTestDropdown: () => {
-          set(
-            (state) => ({
-              ...state,
-              testDropdown: !state.testDropdown,
-            }),
-            false,
-            'toggleTestDropdown in /schemaStore'
           );
         },
         // TODO: delete setReference after refactoring adding reference functionality

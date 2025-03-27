@@ -5,6 +5,9 @@ import DBDisplay from './pages/DBDisplay';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Shared from './pages/Shared';
+import TestNewQuery from './pages/TestNewQuery';
+import ViewSavedQueries from './pages/ViewSavedQueries';
+
 //-- used to store and access login info. using Zustand (state management library)
 import useCredentialsStore from './store/credentialsStore';
 import './styles/index.css';
@@ -36,6 +39,8 @@ const App: React.FC = () => {
         </Route>
         {/* main dashboard? route does not live inside the Shared layout */}
         <Route path="display" element={<DBDisplay />} />
+        <Route path="test-new-query" element={<TestNewQuery />} />
+        <Route path="view-saved-queries" element={<ViewSavedQueries />} />
       </Routes>
     </BrowserRouter>
   );
