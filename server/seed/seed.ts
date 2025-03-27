@@ -25,16 +25,35 @@ const loadData = async () => {
       \`picture\` varchar(240) DEFAULT NULL,
       \`pg_schema\` text,
       \`password\` varchar(240) NOT NULL,
-      PRIMARY KEY (\`id\`)
+      PRIMARY KEY (\`id\`),
+      KEY \`FOREIGN\` (\`email\`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 40 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci`;
   try {
-    console.log('🔹 Executing SQL Query...');
+    console.log('🔹 Seeding createUserTable...');
     await connection.promise().query(createUserTable);
-    console.log('data seeded!!');
+    console.log('🌱 users table seeded!');
+  } catch (err) {
+    log.info(err);
+  }
+
+  const createSavedDbTable: string = `CREATE TABLE 
+  \`saveddb\` (
+  \`id\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`SaveName\` varchar(240) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  \`email\` varchar(240) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  \`SaveData\` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  \`TableData\` text,
+  PRIMARY KEY (\`id\`),
+  KEY \`email\` (\`email\`),
+  CONSTRAINT \`email\` FOREIGN KEY (\`email\`) REFERENCES \`users\` (\`email\`))`;
+  try {
+    console.log('🔹 Seeding createSavedDbTable...');
+    await connection.promise().query(createSavedDbTable);
+    console.log('🌱 saveddb table seeded!');
   } catch (err) {
     log.info(err);
   } finally {
-    connection.end(); // Close connection after execution
+    connection.end(); // close connection after execution
   }
 };
 
