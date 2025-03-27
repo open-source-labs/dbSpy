@@ -20,6 +20,7 @@ import pool from '../models/userModel';
 import { config } from 'dotenv';
 import { findUser } from './user.controller';
 import { BsInfoSquareFill } from 'react-icons/bs';
+import { Table } from 'typeorm';
 config();
 
 interface GlobalError {
@@ -31,8 +32,8 @@ interface GlobalError {
 const saveController = {
   // clone an existing save
   clone: async (req: Request, res: Response, next: NextFunction) => {
-    log.info('[saveCtrl - cloneSchema] Begining cloneing process');
-    //necesary information to complete request
+    log.info('[saveCtrl - cloneSchema] Beginning cloning process');
+    //necessary information to complete request
     const { SaveName } = req.body;
     const { email } = req.session;
     //type checking
@@ -45,9 +46,9 @@ const saveController = {
     }
     const newName: string = SaveName + '_new';
     try {
-      //querys
+      //queries
       //first we need to retrieve the schema
-      //second we create a new table entry with that schema data as an arguement
+      //second we create a new table entry with that schema data as an argument
       const getSchemaQuery: string =
         'SELECT SaveData FROM saveddb WHERE email = ? AND SaveName = ?';
       const getSchemaValues = [email, SaveName];
@@ -65,13 +66,13 @@ const saveController = {
       const createCloneValues = [email, newName, type, schema, tableData];
       const newEntry = await pool.query(createCloneQuery, createCloneValues);
       console.log(newEntry);
-      res.locals.message = 'new Entry Succesfully created';
+      res.locals.message = 'new Entry Successfully created';
 
       log.info('[saveCtrl - cloneSchema] Queries to database did not throw an error');
       return next();
     } catch (err) {
       return next({
-        log: 'mySQL query failed inside saveController.clone',
+        log: 'MySQL query failed inside saveController.clone',
         message: 'something went wrong in the clone process',
         status: 400,
       });
@@ -80,23 +81,28 @@ const saveController = {
 
   //save over currently selected save
   save: async (req: Request, res: Response, next: NextFunction) => {
-    log.info("[saveCtrl - saveSchema] Begining to save user's schema...");
+    log.info("[saveCtrl - saveSchema] Beginning to save user's schema...");
     //const {email} = req.session; // this will change to session when live
     const { SaveName, schema, TableData } = req.body;
+    console.log('savename: ', SaveName);
+    console.log('schema: ', schema);
+    console.log('TABLEDATA: ', TableData);
     const { email } = req.session;
+    console.log('here in saveSchema: email, SaveName, schema');
     console.log(email, SaveName, schema);
     try {
       // all schema data is on table saveddb in the SaveData Column.
       const saveSchemaQuery: string =
         'UPDATE saveddb SET SaveData = ?, TableData = ? WHERE email = ? AND SaveName = ?'; // update existing with schema
       const values = [schema, TableData, email, SaveName];
-
+      console.log('values: ', values);
       const dataSlot = (await pool.query(saveSchemaQuery, values)) as RowDataPacket[];
       res.locals.message = 'Schema Save Completed';
+      console.log('schema saved! in res.locals.message');
       return next();
     } catch (err) {
       return next({
-        log: 'An error occured in saveController.save',
+        log: `An error occurred in saveController.save: ${err}`,
         message: 'something went wrong in the save schema process',
         status: 400,
       });
@@ -105,8 +111,8 @@ const saveController = {
 
   //delete current save
   delete: async (req: Request, res: Response, next: NextFunction) => {
-    log.info("[deleteCtrl - deleteSchema] Begining to deleteing user's schema...");
-    const { SaveName} = req.params;
+    log.info("[deleteCtrl - deleteSchema] Beginning to delete user's schema...");
+    const { SaveName } = req.params;
     const { email } = req.session;
     // console.log(email, SaveName);
     try {
@@ -117,7 +123,7 @@ const saveController = {
       return next();
     } catch (err) {
       return next({
-        log: 'An error occured in saveController.delete',
+        log: 'An error occurred in saveController.delete',
         message: 'something went wrong in the deletion process',
         status: 400,
       });
@@ -126,9 +132,11 @@ const saveController = {
 
   //load current save
   load: async (req: Request, res: Response, next: NextFunction) => {
-    log.info("[loadCtrl - loadSchema] Begining to load user's schema...");
+    log.info("[loadCtrl - loadSchema] Beginning to load user's schema...");
     const { SaveName } = req.query;
     const { email } = req.session;
+    console.log('SaveName: ', req.query);
+    console.log('email: ', req.session);
 
     try {
       const loadQuery: string = `SELECT SaveData,TableData FROM saveddb WHERE email = ? AND SaveName = ?`;
@@ -141,17 +149,17 @@ const saveController = {
       return next();
     } catch (err) {
       return next({
-        log: 'An error occured in saveController.load',
+        log: 'An error occurred in saveController.load',
         message: 'something went wrong while trying to load',
         status: 400,
       });
     }
-    // will need to request current database selected from front end (by email/name)
+    //will need to request current database selected from front end (by email/name)
     //include an initial error for no database selected
   },
   //create new save
   newSave: async (req: Request, res: Response, next: NextFunction) => {
-    log.info("[saveCtrl - newSave] Begining to load user's schema...");
+    log.info("[saveCtrl - newSave] Beginning to load user's schema...");
     const { SaveName } = req.body;
     const { email } = req.session;
     console.log('157', email, SaveName);
@@ -160,19 +168,19 @@ const saveController = {
     const values = [email, SaveName, '{}'];
     try {
       const saveData = await pool.query(newSaveQuery, values);
-      console.log(saveData);
+      console.log('saveDataaa: ', saveData);
       return next();
     } catch (err) {
       return next({
-        log: 'An error occured in saveController.newSave',
+        log: 'An error occurred in saveController.newSave',
         message: 'something went wrong in the creation process',
         status: 400,
       });
     }
   },
-  //update a saves name in the database
+  //update a saved name in the database
   renameSave: async (req: Request, res: Response, next: NextFunction) => {
-    log.info("[saveCtrl - renameSave] Begining to load user's schema...");
+    log.info("[saveCtrl - renameSave] Beginning to load user's schema...");
     const { SaveName, OldName } = req.body;
     const { email } = req.session;
     console.log(email, OldName, SaveName);
@@ -195,7 +203,7 @@ const saveController = {
       return next();
     } catch (err) {
       return next({
-        log: 'An error occured in saveController.renameSave',
+        log: 'An error occurred in saveController.renameSave',
         message: 'something went wrong in the deletion process',
         status: 400,
       });
@@ -203,7 +211,7 @@ const saveController = {
   },
 
   getAllSaves: async (req: Request, res: Response, next: NextFunction) => {
-    log.info("[saveCtrl - renameSave] Begining to load user's schema...");
+    log.info("[saveCtrl - renameSave] Beginning to load user's schema...");
     const { email } = req.session;
     console.log(email);
     try {
