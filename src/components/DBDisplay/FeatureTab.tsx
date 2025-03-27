@@ -70,9 +70,14 @@ export default function FeatureTab(props: any) {
 
   const { dataStore, setDataStore } = useDataStore((state) => state);
 
-  const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
-    (state) => state
-  );
+  const {
+    schemaStore,
+    setSchemaStore,
+    undoHandler,
+    redoHandler,
+    testDropdown,
+    toggleTestDropdown,
+  } = useSchemaStore((state) => state);
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
   const { setWelcome, isSchema, setDarkMode, darkMode, setDBName } = useSettingsStore(
@@ -587,8 +592,53 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
                 </a>
               </li>
+              {/* 💙💙💙💙 Test section -------------*/}
+              <br />
+              <div className="flex items-center justify-between">
+                <p className="text-slate-900 dark:text-[#f8f4eb]">TEST</p>
+                <button
+                  onClick={toggleTestDropdown}
+                  className="text-lg font-bold text-slate-900 dark:text-[#f8f4eb]"
+                >
+                  {testDropdown ? '-' : '+'}
+                </button>
+              </div>
+              <hr />
+              {/* Test New Query */}
+              <li>
+                <a
+                  onClick={() => {
+                    props.openAddTableModal();
+                    // if schemaStore is empty, initialize
+                    if (!Object.keys(schemaStore).length) buildDatabase();
+                  }}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                >
+                  {/* 💙💙💙💙 Test New Query Button -------------*/}
+                  <AddTableIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
+                </a>
+              </li>
+              {/* View Saved Queries */}
+              <li>
+                <a
+                  onClick={() => {
+                    props.openAddTableModal();
+                    // if schemaStore is empty, initialize
+                    if (!Object.keys(schemaStore).length) buildDatabase();
+                  }}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                >
+                  {/* 💙💙💙💙 View Saved Queries Button -------------*/}
+                  <AddTableIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">
+                    View Saved Queries
+                  </span>
+                </a>
+              </li>
             </ul>
             <br />
+
             <div className="historyBlock">
               <p className=" text-slate-900 dark:text-[#f8f4eb]">Account</p>
               <hr />
