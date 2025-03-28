@@ -1,3 +1,4 @@
+//* main dashboard page
 // React & React Router & React Query Modules;
 import React, { useRef, useEffect, useState } from 'react';
 
@@ -6,17 +7,20 @@ import logo from '../assets/newLogoWhite.png';
 import login from '../assets/right-to-bracket-solid.svg';
 import default_pfp from '../assets/default_pfp.svg';
 
+//-- this linkbtn isn't being used in this file, delete?
 const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
-// Components Imported;
+// Dashboard Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
+//-- Modals (pop ups) Components Imports;
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
 import LoadDbModal from '@/components/Modals/LoadDbModal';
 import DeleteTableModal from '../components/Modals/DeleteTableModal';
+//-- State Stores Imports;
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
@@ -48,7 +52,7 @@ const DBDisplay: React.FC = () => {
     mode: 'table' | 'column';
     tableName?: string;
   };
-
+  //-- helper functions to open specific modals
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
@@ -61,6 +65,7 @@ const DBDisplay: React.FC = () => {
    * Future iterations may want to modify this to not run every time client(s) load
    * dbDisplay when they're not signed in.
    */
+  //-- OAuth Login Handler
   useEffect((): void => {
     // Retrieves the query string from the current URL
     const windowUrl = window.location.search;
