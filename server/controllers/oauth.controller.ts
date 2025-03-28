@@ -14,7 +14,7 @@ export const getAccesToken: RequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  log.info('[oauthCtrl - getAccToken] Getting user access token...')
+  log.info('[oauthCtrl - getAccToken] Getting user access token...');
   if (typeof req.session.user === 'string') return res.redirect('/api/me');
   type code = string;
   type state = string | null;
@@ -27,7 +27,7 @@ export const getAccesToken: RequestHandler = (
    * If the 'state' parameter is present, it indicates GitHub OAuth process is being used.
    * rootUrl is updated to point to GitHub's access token endpoint and the 'type'
    * is set to GitHub.
-   */ 
+   */
   if (state) {
     log.info('[oauthCtrl - getAccToken] Client signing in with GitHub OAuth');
     rootUrl = 'https://github.com/login/oauth/access_token';
@@ -66,7 +66,9 @@ export const getAccesToken: RequestHandler = (
   })
     .then((data) => {
       if (data.status >= 200 && data.status < 300) {
-        log.info(`[oauthCtrl - getAccToken] Successful response from ${type} OAuth server`)
+        log.info(
+          `[oauthCtrl - getAccToken] Successful response from ${type} OAuth server`
+        );
         if (type === 'GITHUB') return data.text();
         else return data.json();
       } else {
@@ -94,7 +96,7 @@ export const getAccesToken: RequestHandler = (
         log: `[oauthCtrl - getAccToken] Error in ${type} OAuth process: ${err.message}`,
         status: 500,
         message: `Error occurred: ${err.message}`,
-      }
+      };
       return next(error);
     });
 };
@@ -108,6 +110,8 @@ export const getUserInfo: RequestHandler = async (
 
   const { access_token, expires_in, refresh_token, token_type, id_token, type } =
     res.locals.token;
+  console.log('res.locals.token from GH Oauth: ', res.locals.token);
+
   try {
     let data: any;
     // For Github Oauth
