@@ -1,10 +1,13 @@
+//* State Management for User and dbCredentials
 //
-// State Management for User and dbCredentials
-//
+//-- This file sets up a global state using Zustand
+//-- stores and shares the logged-in user credentials
+//-- create is a function from Zustand that lets you make a store (backpack) for the apps memory
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { dbCredentials } from '@/Types';
 
+//-- set function (provided by Zustand) updates the store
 let credentialsStore = (
   set: (
     arg0: { (state: any): any; (state: any): any },
@@ -12,9 +15,9 @@ let credentialsStore = (
     arg2?: string
   ) => any
 ) => ({
-  //user state
+  //-- stores current user info, starts as null
   user: null,
-  //user
+  //-- updates the user state
   setUser: (userObject: any) =>
     set(
       (state: any) => ({ ...state, user: userObject }),
@@ -22,10 +25,11 @@ let credentialsStore = (
       'setUser in /credentialsStore'
     ),
 
-  //dbCredentials state
+  //-- updates the dbCredentials state
   dbCredentials: {} as dbCredentials,
   //dbFormInput is an object
   setDbCredentials: (dbFormInput: any) =>
+    //-- how app knows what database it's connecting to
     set(
       (state: any) => ({ ...state, dbCredentials: dbFormInput }),
       false,
@@ -33,6 +37,8 @@ let credentialsStore = (
     ),
 });
 
+//-- creates the Zustand store
+//-- able to use useCredentialsStore() in any component to access user or dbCredentials
 const useCredentialsStore = create(devtools(credentialsStore));
 
 export default useCredentialsStore;
