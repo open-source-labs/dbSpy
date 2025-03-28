@@ -69,15 +69,13 @@ export default function FeatureTab(props: any) {
   const { setEdges, setNodes } = useFlowStore((state) => state);
 
   const { dataStore, setDataStore } = useDataStore((state) => state);
+  //-- TO DELETE
+  // const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
+  //   (state) => state
+  // );
 
-  const {
-    schemaStore,
-    setSchemaStore,
-    undoHandler,
-    redoHandler,
-    testTab,
-    toggleTestTab,
-  } = useSchemaStore((state) => state);
+  const { schemaStore, setSchemaStore, undoHandler, redoHandler, testTab } =
+    useSchemaStore((state) => state);
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
   const { setWelcome, isSchema, setDarkMode, darkMode, setDBName } = useSettingsStore(
@@ -536,12 +534,42 @@ export default function FeatureTab(props: any) {
               <hr />
               {isSchema ? (
                 <li>
+                  {/* To DELETE */}
+                  {/* <p className="text-slate-900 dark:text-[#f8f4eb]">Edit</p>
+                <a
+                    onClick={() => {
+                      props.openAddTableModal();
+                      // if schemaStore is empty, initialize
+                      if (!Object.keys(schemaStore).length) buildDatabase();
+                    }}
+                    id="addTable" */}
+
                   {/* ----- 💙💙 Test New Query Button -------- */}
                   <NavLink
                     to="/test-new-query"
                     className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
                   >
                     <AddTableIcon />
+                    {/* TO DELETE */}
+                    {/* <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
+                  </a>
+                </li>
+              ) : null}
+              {Object.keys(schemaStore).length ? (
+                <li>
+                  <a
+                    onClick={() => {
+                      props.openDeleteTableModal();
+                    }}
+                    id="deleteTable"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  >
+                    <DeleteTableIcon />
+                    <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
+                  </a> 
+                   <a
+                  onClick={clearCanvas}
+                  */}
                     <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
                   </NavLink>
                 </li>
@@ -552,6 +580,31 @@ export default function FeatureTab(props: any) {
                   to="/view-saved-queries"
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
                 >
+                  {/* TO DELETE */}
+                  {/* TODO: Add UNDO & REDO feature---- OLD CODE COMMENT */}
+                  {/* 
+                   <DeleteIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Clear Canvas</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={undoHandler}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <UndoIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Undo</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={redoHandler}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <RedoIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
+                </a>
+                  */}
                   <AddTableIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">
                     View Saved Queries
