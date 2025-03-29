@@ -36,10 +36,10 @@ const App: React.FC = () => {
           <Route index element={<Home />} />
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
+          <Route path="display" element={<DBDisplay />} />
+          <Route path="test-new-query" element={<TestNewQuery />} />
         </Route>
         {/* main dashboard? route does not live inside the Shared layout */}
-        <Route path="display" element={<DBDisplay />} />
-        <Route path="test-new-query" element={<TestNewQuery />} />
         <Route path="view-saved-queries" element={<ViewSavedQueries />} />
       </Routes>
     </BrowserRouter>
