@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
 import logo from '../assets/newLogoWhite.png';
 import login from '../assets/right-to-bracket-solid.svg';
 import default_pfp from '../assets/default_pfp.svg';
 
+// dbSpy 8.0: add icons for toggle button to control FeatureTab
+import sidebarOpen from '../assets/sidebarOpen.svg';
+import sidebarClose from '../assets/sidebarClose.svg';
+
 // Images for logo animation db 7.0
-//import logo from '../../assets/newLogoWhite.png';
+// dbSpy 8.0: moved logo animation from FeatureTab to Navbar and only kept light version logo
 import logo1 from '../assets/newLogoWhite_color1.png';
 import logo2 from '../assets/newLogoWhite_color2.png';
 import logo3 from '../assets/newLogoWhite_color3.png';
@@ -23,56 +27,35 @@ import logo12 from '../assets/newLogoWhite_color12.png';
 const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 
 function Navbar() {
+  // dbSpy 8.0: removed theme state and add state for the animated logo
+  const [currentLogo, setCurrentLogo] = useState<string>(logo);
   //STATE DECLARATION (dbSpy3.0)
-  const [theme, setTheme] = useState('Dark');
   const { user } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
 
-  //Create logo button hover over animation - dbSpy 7.0
-  let ImgSwap: NodeJS.Timeout;
-  function logoImageFlow(event: any) {
-    //let currentLogoImg = event.target.src;
-    let logoImgArr: string[];
-
-      logoImgArr = [
-        logo1,
-        logo2,
-        logo3,
-        logo4,
-        logo5,
-        logo6,
-        logo7,
-        logo8,
-        logo9,
-        logo10,
-        logo11,
-        logo12,
-        logo12,
-        logo,
-      ];
-
+  // dbSpy 8.0: made logo animation sparkling in the navbar
+  const logoImgArr: string[] = [
+    logo1, logo2, logo3, logo4, logo5, logo6, 
+    logo7, logo8, logo9, logo10, logo11, logo12, 
+    logo12, logo12, logo12, logo
+  ];
+  // Effect to cycle through images automatically
+  useEffect(() => {
     let currIndex = 0;
-    ImgSwap = setInterval(function () {
-      if (currIndex > 12) {
-        currIndex = 0;
-      }
-      event.target.src = logoImgArr[currIndex];
-      currIndex++;
-    }, 130); // Adjust the timeout value between image swaps as needed
-  }
-  // function to clean up after the hover over affect. Must clear the interval set by setInterval() - dbSpy 7.0
-  function clearImgSwap(event: any) {
-      event.target.src = logo;
-    clearInterval(ImgSwap);
-  }
+    const interval = setInterval(() => {
+      setCurrentLogo(logoImgArr[currIndex]);
+      currIndex = (currIndex + 1) % logoImgArr.length;
+    }, 200); // Adjust speed as needed
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   return (
     <>
       <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between  bg-sky-800 p-2">
         <div className="navItems text-base">
-          <img className="mr-5 inline-block h-[45] fill-current" src={logo} alt="Logo"
-                onMouseOver={logoImageFlow} 
-                onMouseOut={clearImgSwap} />
+          {/* Sparkling logo */}
+          <img className="mr-5 inline-block h-[45] fill-current" src={currentLogo} alt="Logo"/>
           <NavLink to="/" className={linkbtn}>
             Home
           </NavLink>
