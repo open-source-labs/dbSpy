@@ -39,7 +39,7 @@ export default function Login() {
 
   type Options = {
     redirect_uri: string;
-    client_id: string;
+    client_id?: string;
     access_type?: string;
     response_type?: string;
     prompt?: string;
@@ -79,7 +79,8 @@ export default function Login() {
     const options: Options = {
       // redirect_uri: 'http://db-spy.io/display/',
       redirect_uri: 'http://localhost:8080/display/',
-      client_id: '18d4ecdcc6ed1cb25240',
+      // TODO - figure out way to hide client_id, dotenv doesn't work in React components on FE
+      client_id: 'Ov23lip6dXsoIJIInyHD',
       state: 'randomstring',
       allow_signup: 'true',
       scope: ['read:user', 'user:email'].join(' '),

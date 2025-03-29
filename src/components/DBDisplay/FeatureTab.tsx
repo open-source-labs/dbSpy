@@ -530,6 +530,68 @@ export default function FeatureTab(props: any) {
                 </a>
               </li>
               <br />
+                        {/* ----------- 💙💙💙💙 Edit Tab (Build Tab) ------------------------- */}
+                        <p className="text-slate-900 dark:text-[#f8f4eb]">Edit</p>
+              <hr />
+              {isSchema ? (
+                <li>
+                  <a
+                    onClick={() => {
+                      props.openAddTableModal();
+                      // if schemaStore is empty, initialize
+                      if (!Object.keys(schemaStore).length) buildDatabase();
+                    }}
+                    id="addTable"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                  >
+                    <AddTableIcon />
+                    <span className="ml-3 flex-1 whitespace-nowrap">Add Table</span>
+                  </a>
+                </li>
+              ) : null}
+              {Object.keys(schemaStore).length ? (
+                <li>
+                  <a
+                    onClick={() => {
+                      props.openDeleteTableModal();
+                    }}
+                    id="deleteTable"
+                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                  >
+                    <DeleteTableIcon />
+                    <span className="ml-3 flex-1 whitespace-nowrap">Delete Table</span>
+                  </a>
+                </li>
+              ) : null}
+              <li>
+                <a
+                  onClick={clearCanvas}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900  hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <DeleteIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Clear Canvas</span>
+                </a>
+              </li>
+              {/* TODO: Add UNDO & REDO feature */}
+              <li>
+                <a
+                  onClick={undoHandler}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <UndoIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Undo</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={redoHandler}
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <RedoIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Redo</span>
+                </a>
+              </li>
+              <br />
               {/* ----------- 💙💙💙💙 Test Tab -------------------------- */}
               <p className="text-slate-900 dark:text-[#f8f4eb]">Test</p>
               <hr />

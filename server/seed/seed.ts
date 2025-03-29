@@ -4,7 +4,7 @@ dotenv.config();
 import log from '../logger/index';
 import { DataSource } from 'typeorm';
 import { User } from '../entities/user.entity';
-// // Connect to SQL db and create users table
+// Connect to SQL db and create users table
 if (!process.env.USER_DB_URL) {
   console.info('We are in the first error');
   throw new Error('USER_DB_URL not found');
@@ -25,6 +25,7 @@ const loadData = async () => {
       \`picture\` varchar(240) DEFAULT NULL,
       \`pg_schema\` text,
       \`password\` varchar(240) NOT NULL,
+      \`type\` varchar(40) DEFAULT NULL,
       PRIMARY KEY (\`id\`),
       KEY \`FOREIGN\` (\`email\`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 40 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci`;
