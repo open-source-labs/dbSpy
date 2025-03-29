@@ -1,6 +1,8 @@
-//* this will be coming from the Sidebar, Test Tab
+//* this will be coming from the sidebar (FeatureTab)
 import React from 'react';
 import { useEffect, useState } from 'react';
+import FeatureTab from '../components/DBDisplay/FeatureTab';
+import { NavLink } from 'react-router-dom';
 
 // db selecting from prev connected by user
 type Database = {
@@ -12,10 +14,12 @@ type Database = {
 type QueryResult = any;
 
 const TestNewQuery: React.FC = () => {
+  // holds the list of dbs user can select from
+  const [dbInput, setDbInput] = useState<Database[] | null>(null);
   // holds the user's query input
   const [textInput, setTextInput] = useState<string>('');
-  // holds the selected / connected db
-  const [dbInput, setDbInput] = useState<Database | null>(null);
+  // holds the selected db which will be from an arr of all saved dbs from user
+  const [selectedDb, setSelectedDb] = useState<Database | null>(null);
   // holds the result of the query after post req
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
 
@@ -23,7 +27,7 @@ const TestNewQuery: React.FC = () => {
   useEffect(() => {
     const fetchUserDatabase = async () => {
       try {
-        //TODO whats the backend route??
+        //TODO where is it getting sent to?? backend route??
         const response = await fetch('');
         if (!response.ok) {
           throw new Error('HTTP error! status: ${response.status}');
@@ -36,7 +40,7 @@ const TestNewQuery: React.FC = () => {
       } catch (error) {
         // TODO DELETE when backend works
         // fake data to test calling state w/ successful api call
-        setDbInput({ id: 12345, name: 'Fake Db Name' });
+        setDbInput([{ id: 12345, name: 'Fake Db Name' }]);
         console.error('Failed to fetch user database', error);
       }
     };
@@ -47,13 +51,13 @@ const TestNewQuery: React.FC = () => {
   const sendQuery = async () => {
     try {
       // conditional to prevent missing input
-      if (!textInput || !dbInput) {
+      if (!textInput || !selectedDb) {
         alert('Please enter a query and make sure a database is connected');
         return;
       }
 
       // post req
-      //TODO where is it getting sent to??
+      //TODO where is it getting sent to?? backend route??
       const response = await fetch('', {
         method: 'POST',
         headers: {
@@ -61,7 +65,7 @@ const TestNewQuery: React.FC = () => {
         },
         body: JSON.stringify({
           query: textInput,
-          databaseId: dbInput.id,
+          databaseId: selectedDb.id,
         }),
       });
 
@@ -84,13 +88,13 @@ const TestNewQuery: React.FC = () => {
   const saveQuery = async () => {
     try {
       // conditional to check that a query was run and that it had results
-      if (!queryResult || !dbInput) {
+      if (!queryResult || !selectedDb) {
         alert('Please ensure you have ran a query and you received results');
         return;
       }
 
       // post req
-      //TODO where is it getting sent to??
+      //TODO where is it getting sent to?? backend route??
       const response = await fetch('', {
         method: 'POST',
         headers: {
@@ -98,7 +102,7 @@ const TestNewQuery: React.FC = () => {
         },
         body: JSON.stringify({
           query: textInput,
-          databaseId: dbInput.id,
+          databaseId: selectedDb.id,
           result: queryResult,
         }),
       });
@@ -116,13 +120,13 @@ const TestNewQuery: React.FC = () => {
   const improveWithAi = async () => {
     try {
       // conditional to check that a query was run and that it had results
-      if (!queryResult || !dbInput) {
+      if (!queryResult || !selectedDb) {
         alert('Coming Soon!');
         return;
       }
 
       // post req
-      //TODO where is it getting sent to??
+      //TODO where is it getting sent to?? backend route??
       const response = await fetch('', {
         method: 'POST',
         headers: {
@@ -130,7 +134,7 @@ const TestNewQuery: React.FC = () => {
         },
         body: JSON.stringify({
           query: textInput,
-          databaseId: dbInput.id,
+          databaseId: selectedDb.id,
           result: queryResult,
         }),
       });
@@ -143,15 +147,16 @@ const TestNewQuery: React.FC = () => {
       console.error('Coming Soon!', error);
     }
   };
-
+  //TODO get the FeatureTab to not sit on top of content in the page
   return (
     <div>
-      <div className="text-center">
+      {/* <FeatureTab></FeatureTab> */}
+      <div className="pt-20 text-center">
         <h1 className="mb-12 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl">
-          <span className="text-yellow-600">Test New Query Page</span> <br />
-          <span className="text-blue-600">TBD</span>
+          <span className="text-yellow-400">Test New Query Page</span> <br />
         </h1>
       </div>
+
       {/* 💙💙 Improve w/ AI Button -------------- */}
       <div className="mr-2 flex justify-end">
         <button
@@ -161,9 +166,35 @@ const TestNewQuery: React.FC = () => {
           Improve with AI
         </button>
       </div>
+      {/* 💙💙 Select db dropdown ------------------- */}
+      {dbInput && (
+        <div className="my-4">
+          <label htmlFor="database-select" className="mr-2">
+            Select a Database:
+          </label>
+          <select
+            id="database-select"
+            onChange={(e) => {
+              const selected = dbInput.find((db) => db.id.toString() === e.target.value);
+              setSelectedDb(selected || null);
+            }}
+            className="rounded border px-3 py-2 text-black"
+            value={selectedDb?.id ?? ''}
+          >
+            <option value="" disabled>
+              -- Choose a database --
+            </option>
+            {dbInput.map((db) => (
+              <option key={db.id} value={db.id}>
+                {db.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
-      {dbInput ? (
-        <span className="text-white-200">Connected to: {dbInput.name}</span>
+      {selectedDb ? (
+        <span className="text-white-200">Connected to: {selectedDb.name}</span>
       ) : (
         <p>Loading database...</p>
       )}
@@ -177,7 +208,7 @@ const TestNewQuery: React.FC = () => {
           style={{ width: '100%', padding: '0.5rem' }}
         />
         {/* this wrap aligns the 2 buttons together */}
-        <div className="mt-4 flex gap-x-8">
+        <div className="mt-4 flex justify-end gap-x-8">
           {/* 💙💙 Run Query Button -------------- */}
           <button
             onClick={sendQuery}
