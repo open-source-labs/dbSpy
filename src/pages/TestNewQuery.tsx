@@ -199,13 +199,13 @@ const TestNewQuery: React.FC = () => {
         <p>Loading database...</p>
       )}
       {/* 💙💙 Query Input ------------- */}
-      <div style={{ marginTop: '1rem' }}>
+      <div className="ml-2 mt-4">
         <textarea
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
           rows={2}
           placeholder="Write your SQL query here"
-          style={{ width: '100%', padding: '0.5rem' }}
+          className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {/* this wrap aligns the 2 buttons together */}
         <div className="mt-4 flex justify-end gap-x-8">
