@@ -12,6 +12,14 @@ postgresRouter.get(
   }
 );
 
+postgresRouter.post(
+  '/run-query',
+  postgresController.postgresGetMetrics,
+  (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals);
+  }
+);
+
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 postgresRouter.post(

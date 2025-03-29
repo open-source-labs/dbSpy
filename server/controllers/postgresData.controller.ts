@@ -23,6 +23,7 @@ const postgresController = {
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
     console.log('MADE IT TO postgresQuery MIDDLEWARE');
+
     /*
      * Used for storing Primary Key table and column names that are
      *  part of Foreign Keys to adjust IsDestination to be true.
@@ -146,17 +147,50 @@ const postgresController = {
       // Storage of queried results into res.locals
       res.locals.schema = schema;
       res.locals.data = tableData;
+      res.locals.database_link = req.query.database_link;
+      res.locals.db_connection = PostgresDataSource;
 
       // Disconnecting after data has been received
-      PostgresDataSource.destroy();
-      console.log('Database has been disconnected');
+      // PostgresDataSource.destroy();
+      // console.log('Database has been disconnected');
       return next();
     } catch (err: unknown) {
       console.log('Error during Data Source: ', err);
-      PostgresDataSource.destroy();
+      // PostgresDataSource.destroy();
       console.log('Database has been disconnected');
       return next(err);
     }
+  },
+
+  //----------Function to gather query metrics from database-----------------------------------------------------------------
+  postgresGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
+    // if we pass database_link from FE then we might not need to initialize dbConnect again
+    // database_link and query can be passed in from FE
+    // const PostgresGetMetrics = await dbConnect(req);
+    console.log('dblink check: ', res.locals.database_link);
+    console.log('REACHED postgresGetMetrics MIDDLEWARE');
+
+    // const { database_link, queryToRun } = req.query;
+    // console.log('req.body: ', req);
+
+    // dummy data for now
+    // db_link + query will be passed from FE, into req.query
+    const database_link =
+      'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+    const sqlString = `SELECT * FROM public.products`;
+    const queryStr = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${sqlString};`;
+
+    // view result of Explain query
+    // const result = await PostgresGetMetrics.query(queryStr);
+    // console.log('result of queryStr: ', result);
+    // console.log('QUERY PLAN: ', result[0]['QUERY PLAN']);
+
+    // add line to pull execution time from results
+    // const executionTime = result.
+    // send date and execution time on response
+    // res.locals.queryResult = {date: Date.now(), executionTime: executionTime}
+
+    // console.log('done w getMetrics controller');
   },
 
   //-------------------------------------DATA TABLE ROWS-------------------------------------------------
