@@ -203,12 +203,14 @@ const DBDisplay: React.FC = () => {
           {/* m-auto = margin: auto in CSS */}
           {/* w-50%: set width to 50% of parent, flex-col: stack children vertically */}
           {welcome ? (
-            <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
-              <h3 className="text-center">Welcome to dbSpy!</h3>
-              <p className="text-center">
-                Please connect your database, upload a SQL file, or build your database
-                from scratch!
-              </p>
+            <div className="pt-20">
+              <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
+                <h3 className="text-center">Welcome to dbSpy!</h3>
+                <p className="text-center">
+                  Please connect your database, upload a SQL file, or build your database
+                  from scratch!
+                </p>
+              </div>
             </div>
           ) : // If welcome state is false, check isSchema condition
           isSchema ? (

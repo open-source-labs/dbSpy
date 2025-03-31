@@ -1,4 +1,4 @@
-//* this will be coming from the Sidebar, Test Button
+//* this will be coming from the sidebar(FeatureTab), Test Tab
 import React from 'react';
 
 const ViewSavedQueries = () => {
