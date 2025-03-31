@@ -12,11 +12,11 @@ postgresRouter.get(
   }
 );
 
-postgresRouter.post(
+postgresRouter.get(
   '/run-query',
   postgresController.postgresGetMetrics,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals);
+    return res.status(200).json(res.locals.metrics);
   }
 );
 

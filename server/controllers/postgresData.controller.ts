@@ -167,32 +167,46 @@ const postgresController = {
   postgresGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
     // if we pass database_link from FE then we might not need to initialize dbConnect again
     // database_link and query can be passed in from FE
-    console.log('reqqq: ', req);
+    // console.log('FULL REQUEST: ', req);
     const PostgresGetMetrics = await dbConnect(req);
     // console.log('dblink check: ', res.locals.database_link);
     console.log('REACHED postgresGetMetrics MIDDLEWARE');
-    console.log('REQ QUERY: ', req.body);
-    const { query } = req.body;
-    // console.log('req.body: ', req);
+    console.log('REQ QUERY: ', req.query);
+    const { queryString } = req.query;
+    console.log('❓ QUERY FROM FE IS: ', queryString);
 
-    // dummy data for now
-    // db_link + query will be passed from FE, into req.query
-    // const database_link =
-    //   'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
-    // const sqlString = `SELECT * FROM public.products`;
-    // const queryStr = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${sqlString};`;
-    const queryStr = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${query};`;
+    // Query string (EXPLAIN) to access performance data 
+    const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
     // view result of Explain query
-    // const result = await PostgresGetMetrics.query(queryStr);
-    // console.log('result of queryStr: ', result);
-    // console.log('QUERY PLAN: ', result[0]['QUERY PLAN']);
+    const result = await PostgresGetMetrics.query(testQuery);
+    // console.log('🌟 result of testing: ', result);
+    console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
 
-    // add line to pull execution time from results
-    // const executionTime = result.
-    // send date and execution time on response
-    // res.locals.queryResult = {date: Date.now(), executionTime: executionTime}
+    // Pull Execution time only
+    const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}`;
+    // console.log('⏰ EXECUTION TIME METRIC', executionTime);
 
-    console.log('done w getMetrics controller');
+    // Create date metric to add to response
+    const now = new Date();
+    const options: any = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
+      // second: 'numeric',
+      // hour12: true, // Use 12-hour time format
+      timeZone: 'America/New_York', // Set to US Eastern Time
+    };
+    const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
+    // console.log(`🗓️ TODAY'S DATE`, formattedDate);
+   
+    // console.log('done w getMetrics controller');
+ 
+    // Send date and execution time on response
+    res.locals.metrics = [formattedDate, executionTime] ;
+
+    return next();
   },
 
   //-------------------------------------DATA TABLE ROWS-------------------------------------------------
