@@ -187,7 +187,7 @@ const TestNewQuery: React.FC = () => {
       <div>
         {/* <FeatureTab></FeatureTab> */}
         <div className="pt-20 text-center">
-          <h1 className="mb-12 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl">
+RRRRRRF                                                            
             <span className="text-yellow-400">Test New Query Page</span> <br />
           </h1>
         </div>
