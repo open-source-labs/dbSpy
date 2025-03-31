@@ -22,7 +22,9 @@ const postgresController = {
   //----------Function to collect all schema and data from database-----------------------------------------------------------------
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
+    console.log('postgresQuery REQ: ', req);
     console.log('MADE IT TO postgresQuery MIDDLEWARE');
+
     /*
      * Used for storing Primary Key table and column names that are
      *  part of Foreign Keys to adjust IsDestination to be true.
@@ -146,6 +148,8 @@ const postgresController = {
       // Storage of queried results into res.locals
       res.locals.schema = schema;
       res.locals.data = tableData;
+      // res.locals.database_link = req.query.database_link;
+      // res.locals.db_connection = PostgresDataSource;
 
       // Disconnecting after data has been received
       PostgresDataSource.destroy();
@@ -157,6 +161,52 @@ const postgresController = {
       console.log('Database has been disconnected');
       return next(err);
     }
+  },
+
+  //----------Function to gather query metrics from database-----------------------------------------------------------------
+  postgresGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
+    // if we pass database_link from FE then we might not need to initialize dbConnect again
+    // database_link and query can be passed in from FE
+    // console.log('FULL REQUEST: ', req);
+    const PostgresGetMetrics = await dbConnect(req);
+    // console.log('dblink check: ', res.locals.database_link);
+    console.log('REACHED postgresGetMetrics MIDDLEWARE');
+    console.log('REQ QUERY: ', req.query);
+    const { queryString } = req.query;
+    console.log('❓ QUERY FROM FE IS: ', queryString);
+
+    // Query string (EXPLAIN) to access performance data 
+    const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
+    // view result of Explain query
+    const result = await PostgresGetMetrics.query(testQuery);
+    // console.log('🌟 result of testing: ', result);
+    console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
+
+    // Pull Execution time only
+    const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}`;
+    // console.log('⏰ EXECUTION TIME METRIC', executionTime);
+
+    // Create date metric to add to response
+    const now = new Date();
+    const options: any = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
+      // second: 'numeric',
+      // hour12: true, // Use 12-hour time format
+      timeZone: 'America/New_York', // Set to US Eastern Time
+    };
+    const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
+    // console.log(`🗓️ TODAY'S DATE`, formattedDate);
+   
+    // console.log('done w getMetrics controller');
+ 
+    // Send date and execution time on response
+    res.locals.metrics = [formattedDate, executionTime] ;
+
+    return next();
   },
 
   //-------------------------------------DATA TABLE ROWS-------------------------------------------------
