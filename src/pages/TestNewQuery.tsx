@@ -150,7 +150,7 @@ const TestNewQuery: React.FC = () => {
   //TODO get the FeatureTab to not sit on top of content in the page
   return (
     <div>
-      {/* <FeatureTab></FeatureTab> */}
+      <FeatureTab></FeatureTab>
       <div className="pt-20 text-center">
         <h1 className="mb-12 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl">
           <span className="text-yellow-400">Test New Query Page</span> <br />

@@ -6,8 +6,9 @@ import login from '../assets/right-to-bracket-solid.svg';
 import default_pfp from '../assets/default_pfp.svg';
 
 // dbSpy 8.0: add icons for toggle button to control FeatureTab
-import sidebarOpen from '../assets/sidebarOpen.svg';
-import sidebarClose from '../assets/sidebarClose.svg';
+import sidebarOpen from '../assets/sidebarOpen.png';
+import sidebarClose from '../assets/sidebarClose.png';
+import { useNavStore } from '../store/navStore';
 
 // Images for logo animation db 7.0
 // dbSpy 8.0: moved logo animation from FeatureTab to Navbar and only kept light version logo
@@ -29,6 +30,9 @@ const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 function Navbar() {
   // dbSpy 8.0: removed theme state and add state for the animated logo
   const [currentLogo, setCurrentLogo] = useState<string>(logo);
+  const toggleClicked = useNavStore((state) => state.toggleClicked);
+  const toggleNav = useNavStore((state):any => state.toggleNav);
+  // toggleNav();
   //STATE DECLARATION (dbSpy3.0)
   const { user } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION
@@ -52,10 +56,19 @@ function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between  bg-sky-800 p-2">
+      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between  bg-sky-800 p-2 z-50">
         <div className="navItems text-base">
+          {/* dbSpy 8.0: added toggle button to control FeatureTab */}
+          <img
+            className="pointer-events-auto mb-1 mt-1 inline-block h-[40px] w-[50px] pr-3 filter hover:cursor-pointer hover:translate-y-[-3px] transition-transform duration-200"
+            src={toggleClicked ? sidebarClose : sidebarOpen}
+            alt="Toggle Sidebar"
+            onClick={toggleNav}
+          />
+
           {/* Sparkling logo */}
           <img className="mr-5 inline-block h-[45] fill-current" src={currentLogo} alt="Logo"/>
+
           <NavLink to="/" className={linkbtn}>
             Home
           </NavLink>

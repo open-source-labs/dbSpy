@@ -2,38 +2,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
+import { useNavStore } from '../../store/navStore';
 
 const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 
 // Functions imported:
 import parseSql from '../../parse';
-// Images for logo animation db 7.0
-import logo from '../../assets/newLogoWhite.png';
-import logo1 from '../../assets/newLogoWhite_color1.png';
-import logo2 from '../../assets/newLogoWhite_color2.png';
-import logo3 from '../../assets/newLogoWhite_color3.png';
-import logo4 from '../../assets/newLogoWhite_color4.png';
-import logo5 from '../../assets/newLogoWhite_color5.png';
-import logo6 from '../../assets/newLogoWhite_color6.png';
-import logo7 from '../../assets/newLogoWhite_color7.png';
-import logo8 from '../../assets/newLogoWhite_color8.png';
-import logo9 from '../../assets/newLogoWhite_color9.png';
-import logo10 from '../../assets/newLogoWhite_color10.png';
-import logo11 from '../../assets/newLogoWhite_color11.png';
-import logo12 from '../../assets/newLogoWhite_color12.png';
-import darkLogo from '../../assets/newLogoBlack.png';
-import darkLogo1 from '../../assets/newLogoBlack_color1.png';
-import darkLogo2 from '../../assets/newLogoBlack_color2.png';
-import darkLogo3 from '../../assets/newLogoBlack_color3.png';
-import darkLogo4 from '../../assets/newLogoBlack_color4.png';
-import darkLogo5 from '../../assets/newLogoBlack_color5.png';
-import darkLogo6 from '../../assets/newLogoBlack_color6.png';
-import darkLogo7 from '../../assets/newLogoBlack_color7.png';
-import darkLogo8 from '../../assets/newLogoBlack_color8.png';
-import darkLogo9 from '../../assets/newLogoBlack_color9.png';
-import darkLogo10 from '../../assets/newLogoBlack_color10.png';
-import darkLogo11 from '../../assets/newLogoBlack_color11.png';
-import darkLogo12 from '../../assets/newLogoBlack_color12.png';
 
 // Stores imported:
 import useDataStore from '../../store/dataStore';
@@ -65,6 +39,9 @@ import DeleteDbModal from '../Modals/DeleteDbModal';
 
 /** "FeatureTab" Component - a tab positioned in the left of the page to access features of the app; */
 export default function FeatureTab(props: any) {
+  // dbSpy 8.0: get the state store in Zustand
+  const toggleClicked = useNavStore((state) => state.toggleClicked);
+
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
 
@@ -328,129 +305,23 @@ export default function FeatureTab(props: any) {
     page!.classList.toggle('dark');
     setDarkMode();
   };
-
-  //Create logo button hover over animation - dbSpy 7.0
-  let ImgSwap: NodeJS.Timeout;
-  function logoImageFlow(event: any) {
-    //let currentLogoImg = event.target.src;
-    let logoImgArr: string[];
-    if (darkMode === true) {
-      logoImgArr = [
-        logo1,
-        logo2,
-        logo3,
-        logo4,
-        logo5,
-        logo6,
-        logo7,
-        logo8,
-        logo9,
-        logo10,
-        logo11,
-        logo12,
-        logo12,
-        logo,
-      ];
-    } else {
-      logoImgArr = [
-        darkLogo1,
-        darkLogo2,
-        darkLogo3,
-        darkLogo4,
-        darkLogo5,
-        darkLogo6,
-        darkLogo7,
-        darkLogo8,
-        darkLogo9,
-        darkLogo10,
-        darkLogo11,
-        darkLogo12,
-        darkLogo12,
-        darkLogo,
-      ];
-    }
-    let currIndex = 0;
-    ImgSwap = setInterval(function () {
-      if (currIndex > 12) {
-        currIndex = 0;
-      }
-      event.target.src = logoImgArr[currIndex];
-      currIndex++;
-    }, 130); // Adjust the timeout value between image swaps as needed
-  }
-  // function to clean up after the hover over affect. Must clear the interval set by setInterval() - dbSpy 7.0
-  function clearImgSwap(event: any) {
-    if (darkMode === true) {
-      event.target.src = logo;
-    } else {
-      event.target.src = darkLogo;
-    }
-    clearInterval(ImgSwap);
-  }
-
-  //on click function for revealing/hiding the nav bar - dbSpy 7.0
-  let logoClicked = false;
-
-  function revealHideNav(event: any) {
-    // Get the siblings
-    logoClicked = !logoClicked;
-    let time = 30;
-    if (logoClicked) {
-      //adding this class allows the canvas to be interacted with despite being beneath the nav divs
-      event.target.parentElement.classList.add('pointer-events-none');
-      event.target.parentElement.parentElement.classList.add('pointer-events-none');
-    }
-    if (!logoClicked) {
-      event.target.parentElement.classList.remove('pointer-events-none');
-      event.target.parentElement.parentElement.classList.remove('pointer-events-none');
-    }
-    const siblings: any[] = Array.from(event.target.parentElement.children).filter(
-      (child) => child !== event.target
-    );
-    // if (logoClicked) {
-    //   event.target.parentElement.remove('');
-    // }
-    for (let element of siblings) {
-      if (logoClicked) {
-        setTimeout(() => element.classList.add('hidden'), time);
-        time += 30;
-      } else {
-        setTimeout(() => element.classList.remove('hidden'), time);
-        time += 30;
-      }
-    }
-  }
   // END: HELPER FUNCTIONS
 
   return (
     <>
       {/* PAGE */}
-      <div className="mx-auto max-w-2xl">
+      {/* dbSpy 8.0: added toggle button in Navbar to control FeatureTab */}
+      <div
+        className={`fixed top-10 left-0 h-full w-64 bg-blue z-10 transition-transform duration-300 ${
+        toggleClicked ? '-translate-x-full' : 'translate-x-0'
+        }`}
+      >
         {/* TODO research / fix how to make the FeatureTab sit on pages like a regular block and not on top of other content -------------------------- */}
         <aside
           className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
-            {darkMode === true ? (
-              <img
-                className=" pointer-events-auto mb-1 mt-14 inline-block h-[88px] w-[200px] fill-current pr-3 filter hover:cursor-pointer"
-                src={logo}
-                alt="Logo"
-                onMouseOver={logoImageFlow} // dbSpy 7.0
-                onMouseOut={clearImgSwap} // dbSpy 7.0
-                onClick={revealHideNav} // dbSpy 7.0
-              />
-            ) : (
-              <img
-                className="pointer-events-auto mb-1 mt-14 inline-block h-[45] h-[88px] w-[200px] pr-3 filter hover:cursor-pointer"
-                src={darkLogo}
-                alt="Logo"
-                onMouseOver={logoImageFlow}
-                onMouseOut={clearImgSwap}
-                onClick={revealHideNav}
-              />
-            )}
 
             <NavLink to="/" className={linkbtn}>
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
@@ -712,3 +583,4 @@ export default function FeatureTab(props: any) {
     </>
   );
 }
+
