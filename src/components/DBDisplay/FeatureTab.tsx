@@ -74,8 +74,9 @@ export default function FeatureTab(props: any) {
   //   (state) => state
   // );
 
-  const { schemaStore, setSchemaStore, undoHandler, redoHandler, testTab } =
-    useSchemaStore((state) => state);
+  const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
+    (state) => state
+  );
   const { user, setUser } = useCredentialsStore((state: any) => state);
 
   const { setWelcome, isSchema, setDarkMode, darkMode, setDBName } = useSettingsStore(
@@ -487,7 +488,7 @@ export default function FeatureTab(props: any) {
               </div>
             </button>
 
-            <p className=" mt-4 text-slate-900 dark:text-[#f8f4eb]">Action</p>
+            <p className=" mt-4 text-slate-900 dark:text-[#f8f4eb]">Connect</p>
             <hr />
             <ul className=" space-y-0">
               <li>
@@ -519,8 +520,9 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
+              {/* Commented code is for Export Query Button */}
               {/* TODO: Add SAVE feature */}
-              <li>
+              {/* <li>
                 <a
                   onClick={openQueryModal}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
@@ -528,10 +530,11 @@ export default function FeatureTab(props: any) {
                   <ExportQueryIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
-              </li>
+              </li> */}
               <br />
-                        {/* ----------- 💙💙💙💙 Edit Tab (Build Tab) ------------------------- */}
-                        <p className="text-slate-900 dark:text-[#f8f4eb]">Edit</p>
+              {/* ----------- 💙💙💙💙 Edit Tab ------------------------- */}
+              {/* Adding a Table and its features will be going inside the Main Functionalities from Connect Tab  (STRETCH) */}
+              <p className="text-slate-900 dark:text-[#f8f4eb]">Edit</p>
               <hr />
               {isSchema ? (
                 <li>
