@@ -15,14 +15,9 @@ interface NewColumn {
 let dbDataSource: DataSource | null = null;
 
 export const dbConnect = async (req: Request) => {
-  // check if database is already initialized and return if it already is
-  if (dbDataSource && dbDataSource.isInitialized) {
-    return dbDataSource;
-  }
-
   const { db_type, hostname, password, port, username, database_name, service_name } =
     req.session;
-  // let dbDataSource: DataSource;
+  let dbDataSource: DataSource;
 
   const commonOptions = {
     ...(db_type !== 'sqlite' ? { host: hostname as string } : {}),

@@ -1,8 +1,10 @@
 //* this will be coming from the sidebar (FeatureTab)
 import React from 'react';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import { NavLink } from 'react-router-dom';
+import useCredentialsStore from '../store/credentialsStore';
 
 // db selecting from prev connected by user
 type Database = {
@@ -22,6 +24,24 @@ const TestNewQuery: React.FC = () => {
   const [selectedDb, setSelectedDb] = useState<Database | null>(null);
   // holds the result of the query after post req
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
+  // TEMPORARY USE STATE FOR DB TEST LINK
+  const [databaseLink, setDatabaseLink] = useState<string>('');
+  // const [dbTextInput, setDbTextInput] = useState<string>('');
+  const setDbCredentials = useCredentialsStore((state) => state.setDbCredentials);
+
+  //form state hooks
+  const [dbValues, setDbValues] = useState<{
+    db_type: string;
+    database_link?: string;
+    hostname?: string;
+    port?: string;
+    username?: string;
+    password?: string;
+    database_name?: string;
+    service_name?: string;
+    file_path?: string;
+  }>({ db_type: 'postgres' });
+  //END: STATE DECLARATION
 
   // getting req to query / select db user is using
   useEffect(() => {
@@ -51,36 +71,90 @@ const TestNewQuery: React.FC = () => {
   const sendQuery = async () => {
     try {
       // conditional to prevent missing input
-      if (!textInput || !selectedDb) {
-        alert('Please enter a query and make sure a database is connected');
-        return;
-      }
+      // if (!textInput || !selectedDb) {
+      //   alert('Please enter a query and make sure a database is connected');
+      //   return;
+      // }
 
       // post req
       //TODO where is it getting sent to?? backend route??
-      const response = await fetch('', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: textInput,
-          databaseId: selectedDb.id,
-        }),
-      });
+      // const response = await fetch('', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     query: textInput,
+      //     databaseId: selectedDb.id,
+      //   }),
+      // });
 
-      // conditional for failed resp
-      if (!response.ok) {
-        throw new Error('HTTP error! status: ${response.status}');
+      // TEMPORARY BE TEST EFFICIENCY ROUTE ///////////////////////////////////////////////////////////////////////////////
+      const values: any = dbValues;
+      if (databaseLink) {
+        const fullLink = databaseLink;
+        const splitURI = fullLink.split('/');
+
+        const postgresName = splitURI[3];
+        const postgresPort = splitURI[2].split(':')[2];
+        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+        values.hostname = internalLinkArray_Postgres[1];
+        values.username = splitURI[2].split(':')[0];
+        values.password = internalLinkArray_Postgres[0];
+        values.port = postgresPort ? postgresPort : '5432';
+        values.database_name = postgresName;
+        // values.database_link = fullLink;
+        values.db_type = 'postgres';
       }
 
+      setDbCredentials(values);
+      const dataFromBackend = await axios
+        .get(`/api/sql/${values.db_type}/run-query`, { params: values })
+        .then((res) => {
+          console.log('metrics from BE: ', res);
+          return res.data;
+        })
+        .catch((err: ErrorEvent) => console.error('getSchema error', err));
+      // TBD this line
+      setQueryResult(dataFromBackend.result);
+
+      // const testResponse = await fetch(
+      //   'http://localhost:3000/api/sql/postgres/run-query',
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //       query: textInput,
+      //       database_link: databaseLink,
+      //     }),
+      //   }
+      // )
+      //   .then((res) => {
+      //     if (!res.ok) {
+      //       console.log('error');
+      //     }
+      //     console.log('metrics from BE: ', res);
+      //     setQueryResult(res);
+      //   })
+      //   .catch((err) => {
+      //     console.error('Failed to save query results', err);
+      //   });
+      // END TEMPORARY BE TEST EFFICIENCY ROUTE ///////////////////////////////////////////////////////////////////////////////
+
+      // conditional for failed resp
+      // if (!response.ok) {
+      //   throw new Error('HTTP error! status: ${response.status}');
+      // }
+
       // parsing and saving the resp (query result)
-      const result = await response.json();
+      // const result = await response.json();
       // updates state
-      setQueryResult(result);
+      // setQueryResult(result);
     } catch (error) {
       console.error('Failed to run query', error);
-      setQueryResult({ error: 'Something went wrong with running the query' });
+      // setQueryResult({ error: 'Something went wrong with running the query' });
     }
   };
 
@@ -106,7 +180,6 @@ const TestNewQuery: React.FC = () => {
           result: queryResult,
         }),
       });
-
       // conditional for failed resp
       if (!response.ok) {
         throw new Error('HTTP error! status: ${response.status}');
@@ -166,6 +239,19 @@ const TestNewQuery: React.FC = () => {
           Improve with AI
         </button>
       </div>
+
+      {/* TEMPORARY BE - test db + query */}
+      {/* revas link: 
+      postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+      */}
+      <textarea
+        value={databaseLink}
+        onChange={(e) => setDatabaseLink(e.target.value)}
+        rows={1}
+        placeholder="enter db link here"
+        className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+
       {/* 💙💙 Select db dropdown ------------------- */}
       {dbInput && (
         <div className="my-4">

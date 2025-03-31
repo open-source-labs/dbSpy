@@ -92,7 +92,7 @@ const Sidebar = (props: any) => {
           values.password = internalLinkArray_Postgres[0];
           values.port = postgresPort ? postgresPort : '5432';
           values.database_name = postgresName;
-          values.database_link = fullLink;
+          // values.database_link = fullLink;
           values.db_type = 'postgres';
           break;
       }
