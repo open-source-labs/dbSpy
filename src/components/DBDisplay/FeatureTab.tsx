@@ -313,16 +313,16 @@ export default function FeatureTab(props: any) {
       {/* PAGE */}
       {/* dbSpy 8.0: added toggle button in Navbar to control FeatureTab */}
       <div
-        className={`fixed top-10 left-0 h-full w-64 bg-blue z-10 transition-transform duration-300 ${
+        className={`fixed top-12 left-0 h-full w-64 bg-blue z-10 transition-transform duration-300 ${
         toggleClicked ? '-translate-x-full' : 'translate-x-0'
         }`}
       >
-        {/* TODO research / fix how to make the FeatureTab sit on pages like a regular block and not on top of other content -------------------------- */}
+        {/* dbSpy 8.0: modify other pages to make sure they change with the state of FeatureTab */}
         <aside
-          className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-64"
+          className="featureTab z-index-10 light:bg-sky-800 absolute inset-y-0 left-0 top-24 w-56"
           aria-label="FeatureTab"
         >
-          <div className="menuBar light:bg-sky-800 ml-3 overflow-auto rounded px-10 py-6 transition-colors duration-500">
+          <div className="menuBar light:bg-sky-800 overflow-auto rounded px-5 py-6 transition-colors duration-500">
 
             <NavLink to="/" className={linkbtn}>
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">

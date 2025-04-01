@@ -60,7 +60,7 @@ function Navbar() {
         <div className="navItems text-base">
           {/* dbSpy 8.0: added toggle button to control FeatureTab */}
           <img
-            className="pointer-events-auto mb-1 mt-1 inline-block h-[40px] w-[50px] pr-3 filter hover:cursor-pointer hover:translate-y-[-3px] transition-transform duration-200"
+            className="pointer-events-auto mb-1 mt-1 inline-block h-[40px] w-[50px] pr-3 filter hover:cursor-pointer hover:translate-y-[-2px] transition-transform duration-200"
             src={toggleClicked ? sidebarClose : sidebarOpen}
             alt="Toggle Sidebar"
             onClick={toggleNav}
@@ -79,20 +79,23 @@ function Navbar() {
         <div>
           {user ? (
             <>
+            {/* inline-block: behave like an inline element but allows width and height modifications */}
+            {/* pt: padding to top, dark:text-white: change text color to white in dark mode */}
+            {/* lg: large screens, mt-0: margin-top: 0, on lg mode */}
               <span className="mt-4 inline-block mx-auto text-blue-200 lg:mt-0">
                 {user.full_name}
               </span>
+              {/* ml: margin left, mr: margin right, rounded-full: make the image circular, dark:invert: invert color in dark mode */}
               <img
                 className="ml-2 mr-2 inline-block h-[25] rounded-full invert"
                 src={default_pfp}
               />
             </>
           ) : (
-            <div>
+            <div className="flex justify-end">
               <NavLink
                 to="/login"
-                className="text-white text-base font-bold leading-normal"
-              >
+                className="text-white text-base font-bold leading-normal">
                 Login
               </NavLink>
               <img className="mr-3 ml-3 inline-block h-[20] invert" src={login} />
