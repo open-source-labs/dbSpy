@@ -37,6 +37,25 @@ const loadData = async () => {
     log.info(err);
   }
 
+  const createSaveQueriesTable: string = `CREATE TABLE 
+  \`queries\` (
+  \`id\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`email\` varchar(240) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  \`query\` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  \`db_link\` varchar(240) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  \`db_name\` varchar(40) NOT NULL,
+  \`exec_time\` double NOT NULL,
+  PRIMARY KEY (\`id\`),
+  KEY \`email_queries\` (\`email\`),
+  CONSTRAINT \`email_queries\` FOREIGN KEY (\`email\`) REFERENCES \`users\` (\`email\`))`;
+  try {
+    console.log('🔹 Seeding createSaveQueriesTable...');
+    await connection.promise().query(createSaveQueriesTable);
+    console.log('🌱 save queries table seeded!');
+  } catch (err) {
+    log.info(err);
+  }
+
   const createSavedDbTable: string = `CREATE TABLE 
   \`saveddb\` (
   \`id\` int unsigned NOT NULL AUTO_INCREMENT,
