@@ -313,8 +313,8 @@ export default function FeatureTab(props: any) {
       {/* PAGE */}
       {/* dbSpy 8.0: added toggle button in Navbar to control FeatureTab */}
       <div
-        className={`fixed top-12 left-0 h-full w-64 bg-blue z-10 transition-transform duration-300 ${
-        toggleClicked ? '-translate-x-full' : 'translate-x-0'
+        className={`bg-blue fixed left-0 top-12 z-10 h-full w-64 transition-transform duration-300 ${
+          toggleClicked ? '-translate-x-full' : 'translate-x-0'
         }`}
       >
         {/* dbSpy 8.0: modify other pages to make sure they change with the state of FeatureTab */}
@@ -323,7 +323,6 @@ export default function FeatureTab(props: any) {
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 overflow-auto rounded px-5 py-6 transition-colors duration-500">
-
             <NavLink to="/" className={linkbtn}>
               <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
                 {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
@@ -393,6 +392,21 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
+              {/* ------ View Saved Databases ----- */}
+              <li>
+                {/* TODO: onClick must get updated */}
+
+                <a
+                  onClick={buildDb}
+                  className=" group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <BuildDatabaseIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">
+                    View Saved Databases
+                  </span>
+                </a>
+              </li>
+
               {/* Commented code is for Export Query Button */}
               {/* TODO: Add SAVE feature */}
               {/* <li>
@@ -588,4 +602,3 @@ export default function FeatureTab(props: any) {
     </>
   );
 }
-

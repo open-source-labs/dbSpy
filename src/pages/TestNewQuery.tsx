@@ -25,6 +25,8 @@ const TestNewQuery: React.FC = () => {
   const [dbInput, setDbInput] = useState<Database[] | null>(null);
   // holds the user's query input
   const [queryInput, setQueryInput] = useState<string>('');
+  // holds the query name input from user
+  const [queryName, setQueryName] = useState<string>('');
   // holds the selected db which will be from an arr of all saved dbs from user
   const [selectedDb, setSelectedDb] = useState<Database | null>(null);
   // holds the result of the query after post req
@@ -49,6 +51,7 @@ const TestNewQuery: React.FC = () => {
     service_name?: string;
     file_path?: string;
     queryString?: string;
+    queryName?: string;
   }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
@@ -96,6 +99,7 @@ const TestNewQuery: React.FC = () => {
         values.database_name = postgresName;
         values.db_type = 'postgres';
         values.queryString = queryInput; // include query string on params
+        values.queryName = queryName;
       }
 
       // View values array
@@ -126,30 +130,38 @@ const TestNewQuery: React.FC = () => {
   const saveQuery = async () => {
     try {
       // conditional to check that a query was run and that it had results
-      if (!queryResult || !selectedDb) {
+      if (!queryResult) {
         alert('Please ensure you have ran a query and you received results');
         return;
       }
 
-      // post req
+      const payload = {
+        queryName,
+        queryInput,
+        queryResult,
+        databaseId: selectedDb?.id ?? null,
+      };
+
+      // post req to save query results
       //TODO where is it getting sent to?? backend route??
-      // const response = await fetch('', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     query: textInput,
-      //     databaseId: selectedDb.id,
-      //     result: queryResult,
-      //   }),
-      // });
-      // // conditional for failed resp
-      // if (!response.ok) {
-      //   throw new Error('HTTP error! status: ${response.status}');
-      // }
+      const response = await fetch('', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      // conditional for failed resp
+      if (!response.ok) {
+        throw new Error('HTTP error! status: ${response.status}');
+      }
+
+      const data = await response.json();
+      console.log('Query Saved ‼️:', data);
+      // alert user query was saved?
+      alert('Query was saved successfully!');
     } catch (error) {
-      //   console.error('Failed to save query results', error);
+      console.error('Failed to save query', error);
     }
   };
 
@@ -218,8 +230,8 @@ const TestNewQuery: React.FC = () => {
             value={databaseLink}
             onChange={(e) => setDatabaseLink(e.target.value)}
             rows={1}
-            placeholder="enter db link here"
-            className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter DB link here"
+            className="w-2/3 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           {/* 💙💙 Select db dropdown ------------------- */}
@@ -251,13 +263,22 @@ const TestNewQuery: React.FC = () => {
             </div>
           )}
           {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
-          {selectedDb ? (
+          {/* Uncoment code when user has access to dropdown to select DB  */}
+          {/* {selectedDb ? (
             <span className="text-white">Connected to: {selectedDb.name}</span>
           ) : (
             <p className="dark:text-white">Loading database...</p>
-          )}
-          {/* 💙💙 Query Input ------------- */}
-          <div className="ml-2 mt-4">
+          )} */}
+          {/* 💙💙 Naming Query ------------- */}
+          <div className="ml-2 mt-4 flex flex-col space-y-4">
+            <textarea
+              value={queryName}
+              onChange={(e) => setQueryName(e.target.value)}
+              rows={1}
+              placeholder="Name your query"
+              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {/* Query Input ------------- */}
             <textarea
               value={queryInput}
               onChange={(e) => setQueryInput(e.target.value)}
@@ -299,21 +320,28 @@ const TestNewQuery: React.FC = () => {
                 <table className="mx-auto w-fit table-fixed border-collapse border border-white">
                   <thead>
                     <tr className="bg-blue-950 ">
-                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
-                        Query Name
+                      <th className="w-[250px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Name
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Query
+                      </th>
+                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
                         Date Run
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
                         Execution Time
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      {/* Query Name Goes HERE */}
-                      <td className="border border-white px-6 py-4 text-center text-xl text-black dark:text-white">
+                      {/* Query Name */}
+                      <td className="border border-white px-6 py-4 text-center text-lg text-black dark:text-white">
+                        {queryName}
+                      </td>
+                      {/* Query Ran */}
+                      <td className="border border-white px-6 py-4 text-center text-lg text-black dark:text-white">
                         {queryInput}
                       </td>
                       {/* dynamically extracting values from queryResult */}
@@ -322,7 +350,7 @@ const TestNewQuery: React.FC = () => {
                         return (
                           <td
                             key={index}
-                            className="border px-4 py-2 text-center text-xl text-black dark:text-white"
+                            className="border px-4 py-2 text-center text-lg text-black dark:text-white"
                           >
                             {value.trim()}
                           </td>
