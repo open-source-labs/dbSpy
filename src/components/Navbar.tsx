@@ -6,8 +6,8 @@ import login from '../assets/right-to-bracket-solid.svg';
 import default_pfp from '../assets/default_pfp.svg';
 
 // dbSpy 8.0: add icons for toggle button to control FeatureTab
-import sidebarOpen from '../assets/sidebarOpen.png';
-import sidebarClose from '../assets/sidebarClose.png';
+import sidebarOpen from '../assets/sidebarOpen.svg';
+import sidebarClose from '../assets/sidebarClose.svg';
 import { useNavStore } from '../store/navStore';
 
 // Images for logo animation db 7.0
