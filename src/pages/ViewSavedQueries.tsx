@@ -1,7 +1,7 @@
 //* this will be coming from the sidebar(FeatureTab), Test Tab
 import React from 'react';
 
-const ViewSavedQueries = () => {
+const ViewSavedQueries: React.FC = () => {
   //
   return (
     //
