@@ -363,7 +363,6 @@ export default function FeatureTab(props: any) {
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 overflow-auto rounded px-5 py-6 transition-colors duration-500">
-
             <button onClick={toggleClass}>
               <div className="ItemLink group inline-flex h-10 w-[160px] items-center justify-start gap-0 rounded-lg py-2 pl-0 pr-0">
                 <svg
@@ -421,6 +420,21 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
+              {/* ------ View Saved Databases ----- */}
+              <li>
+                {/* TODO: onClick must get updated */}
+
+                <a
+                  onClick={buildDb}
+                  className=" group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <BuildDatabaseIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">
+                    View Saved Databases
+                  </span>
+                </a>
+              </li>
+
               {/* Commented code is for Export Query Button */}
               {/* TODO: Add SAVE feature */}
               {/* <li>
