@@ -112,14 +112,12 @@ const TestNewQuery: React.FC = () => {
         .catch((err: ErrorEvent) => console.error('getSchema error', err));
       // set query result state with data from response (array)
       setQueryResult(dataFromBackend);
+      setQueryInput('');
+      setDatabaseLink('');
     } catch (error) {
       console.error('sendQuery Error: Failed to test query', error);
     }
   };
-
-  // pull metrics from data array before display
-  const metrics = queryResult?.map((metric) => <pre>{metric}</pre>);
-  console.log('queryResult‼️:', queryResult);
 
   // ! Is saveQuery needed?
   // post req to save query
@@ -288,7 +286,9 @@ const TestNewQuery: React.FC = () => {
           {/* {queryResult && (
             <div style={{ marginTop: '2rem', color: 'white' }}>
               <h3>Query Result:</h3>
-              <div> {metrics}</div>
+              {queryResult?.map((metric) => (
+                <pre>{metric}</pre>
+              ))}
             </div>
           )} */}
           {/* this wrap aligns the title 'Query Results' w/ the table  together */}
