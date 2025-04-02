@@ -112,13 +112,12 @@ const TestNewQuery: React.FC = () => {
         .catch((err: ErrorEvent) => console.error('getSchema error', err));
       // set query result state with data from response (array)
       setQueryResult(dataFromBackend);
+      setQueryInput('');
+      setDatabaseLink('');
     } catch (error) {
       console.error('sendQuery Error: Failed to test query', error);
     }
   };
-
-  // pull metrics from data array before display
-  const metrics = queryResult?.map((metric) => <pre>{metric}</pre>);
 
   // ! Is saveQuery needed?
   // post req to save query
@@ -203,7 +202,7 @@ const TestNewQuery: React.FC = () => {
           <div className="mr-2 flex justify-end">
             <button
               onClick={improveWithAi}
-              className="rounded border border-gray-400 px-4 py-2 text-black dark:bg-blue-100 hover:cursor-pointer hover:translate-y-[-2px]"
+              className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
             >
               Improve with AI
             </button>
@@ -269,14 +268,14 @@ const TestNewQuery: React.FC = () => {
               {/* 💙💙 Run Query Button -------------- */}
               <button
                 onClick={sendQuery}
-                className="rounded border border-gray-400 px-4 py-2 text-black dark:bg-blue-100 hover:cursor-pointer hover:translate-y-[-2px]"
+                className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
               >
                 Run Query
               </button>
               {/* 💙💙 Save Query Button -------------- */}
               <button
                 onClick={saveQuery}
-                className="rounded border border-gray-400 px-4 py-2 text-black dark:bg-blue-100 hover:cursor-pointer hover:translate-y-[-2px]"
+                className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
               >
                 Save Query
               </button>
@@ -286,7 +285,9 @@ const TestNewQuery: React.FC = () => {
           {queryResult && (
             <div style={{ marginTop: '2rem', color: 'white' }}>
               <h3>Query Result:</h3>
-              <div> {metrics}</div>
+              {queryResult?.map((metric) => (
+                <pre>{metric}</pre>
+              ))}
             </div>
           )}
         </div>
