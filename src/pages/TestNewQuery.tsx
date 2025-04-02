@@ -7,6 +7,8 @@ import { NavLink } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
 import { QueryRunnerAlreadyReleasedError } from 'typeorm';
 
+import { useNavStore } from '../store/navStore';
+
 // db selecting from prev connected by user
 type Database = {
   name: string;
@@ -17,6 +19,8 @@ type Database = {
 type QueryResult = string[];
 
 const TestNewQuery: React.FC = () => {
+  // get state of FeatureTab from Zustand store
+  const toggleClicked = useNavStore((state) => state.toggleClicked);
   // holds the list of dbs user can select from
   const [dbInput, setDbInput] = useState<Database[] | null>(null);
   // holds the user's query input
@@ -185,96 +189,107 @@ const TestNewQuery: React.FC = () => {
   //TODO get the FeatureTab to not sit on top of content in the page
   return (
     <>
-      <div>
-        <FeatureTab></FeatureTab>
-        <div className="pt-20 text-center">
-          <h1 className="mb-12 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl">
-            <span className="text-yellow-400">Test New Query Page</span> <br />
+      <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2">
+        {/* <FeatureTab></FeatureTab> */}
+        <FeatureTab />
+        <div className="ml-20 pt-20 text-center">
+          <h1 className="mb-12 text-5xl font-bold tracking-tight text-yellow-400 md:text-6xl xl:text-7xl">
+            Test New Query Page
           </h1>
         </div>
+        <div
+          className={`transition-all duration-300 ${toggleClicked ? 'ml-16' : 'ml-64'}`}
+        >
+          {/* 💙💙 Improve w/ AI Button -------------- */}
+          <div className="mr-2 flex justify-end">
+            <button
+              onClick={improveWithAi}
+              className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
+            >
+              Improve with AI
+            </button>
+          </div>
 
-        {/* 💙💙 Improve w/ AI Button -------------- */}
-        <div className="mr-2 flex justify-end">
-          <button
-            onClick={improveWithAi}
-            className="rounded border border-gray-400 px-4 py-2 text-black hover:bg-gray-100"
-          >
-            Improve with AI
-          </button>
-        </div>
-
-        {/* TEMPORARY BE - test db + query */}
-        {/* revas link: 
+          {/* TEMPORARY BE - test db + query */}
+          {/* revas link: 
       postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres
       */}
-        <textarea
-          value={databaseLink}
-          onChange={(e) => setDatabaseLink(e.target.value)}
-          rows={1}
-          placeholder="enter db link here"
-          className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        {/* 💙💙 Select db dropdown ------------------- */}
-        {dbInput && (
-          <div className="my-4">
-            <label htmlFor="database-select" className="mr-2">
-              Select a Database:
-            </label>
-            <select
-              id="database-select"
-              onChange={(e) => {
-                const selected = dbInput.find(
-                  (db) => db.id.toString() === e.target.value
-                );
-                setSelectedDb(selected || null);
-              }}
-              className="rounded border px-3 py-2 text-black"
-              value={selectedDb?.id ?? ''}
-            >
-              <option value="" disabled>
-                -- Choose a database --
-              </option>
-              {dbInput.map((db) => (
-                <option key={db.id} value={db.id}>
-                  {db.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
-        {selectedDb ? (
-          <span className="text-white-200">Connected to: {selectedDb.name}</span>
-        ) : (
-          <p>Loading database...</p>
-        )}
-        {/* 💙💙 Query Input ------------- */}
-        <div className="ml-2 mt-4">
           <textarea
-            value={queryInput}
-            onChange={(e) => setQueryInput(e.target.value)}
-            rows={2}
-            placeholder="Write your SQL query here"
+            value={databaseLink}
+            onChange={(e) => setDatabaseLink(e.target.value)}
+            rows={1}
+            placeholder="enter db link here"
             className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {/* this wrap aligns the 2 buttons together */}
-          <div className="mt-4 flex justify-end gap-x-8">
-            {/* 💙💙 Run Query Button -------------- */}
-            <button
-              onClick={sendQuery}
-              className="rounded border border-gray-400 px-4 py-2 text-black hover:bg-gray-100"
-            >
-              Run Query
-            </button>
-            {/* 💙💙 Save Query Button -------------- */}
-            <button
-              onClick={saveQuery}
-              className="rounded border border-gray-400 px-4 py-2 text-black hover:bg-gray-100"
-            >
-              Save Query
-            </button>
+
+          {/* 💙💙 Select db dropdown ------------------- */}
+          {dbInput && (
+            <div className="my-4">
+              <label htmlFor="database-select" className="mr-2">
+                Select a Database:
+              </label>
+              <select
+                id="database-select"
+                onChange={(e) => {
+                  const selected = dbInput.find(
+                    (db) => db.id.toString() === e.target.value
+                  );
+                  setSelectedDb(selected || null);
+                }}
+                className="rounded border px-3 py-2 text-black"
+                value={selectedDb?.id ?? ''}
+              >
+                <option value="" disabled>
+                  -- Choose a database --
+                </option>
+                {dbInput.map((db) => (
+                  <option key={db.id} value={db.id}>
+                    {db.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
+          {selectedDb ? (
+            <span className="text-white">Connected to: {selectedDb.name}</span>
+          ) : (
+            <p className="dark:text-white">Loading database...</p>
+          )}
+          {/* 💙💙 Query Input ------------- */}
+          <div className="ml-2 mt-4">
+            <textarea
+              value={queryInput}
+              onChange={(e) => setQueryInput(e.target.value)}
+              rows={2}
+              placeholder="Write your SQL query here"
+              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {/* this wrap aligns the 2 buttons together */}
+            <div className="mt-4 flex justify-end gap-x-8">
+              {/* 💙💙 Run Query Button -------------- */}
+              <button
+                onClick={sendQuery}
+                className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
+              >
+                Run Query
+              </button>
+              {/* 💙💙 Save Query Button -------------- */}
+              <button
+                onClick={saveQuery}
+                className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
+              >
+                Save Query
+              </button>
+            </div>
           </div>
+          {/* 💙💙 Query Result --------------- */}
+          {queryResult && (
+            <div style={{ marginTop: '2rem', color: 'white' }}>
+              <h3>Query Result:</h3>
+              <div> {metrics}</div>
+            </div>
+          )}
         </div>
         {/* 💙💙 Query Result --------------- */}
         {queryResult && (

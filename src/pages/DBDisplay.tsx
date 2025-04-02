@@ -152,35 +152,7 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-      {/* flex: flexbox layout, h: height, 2: 8px, pr: padding to the right, 5: 20px */}
-      <div className="flex h-2 justify-end pr-5">
-        {user ? (
-          <>
-            {/* inline-block: behave like an inline element but allows width and height modifications */}
-            {/* pt: padding to top, dark:text-white: change text color to white in dark mode */}
-            {/* lg: large screens, mt-0: margin-top: 0, on lg mode */}
-            <span className="inline-block pt-4 text-black dark:text-white lg:mt-0">
-              {user.full_name}
-            </span>
-            {/* ml: margin left, mr: margin right, rounded-full: make the image circular, dark:invert: invert color in dark mode */}
-            <img
-              className="ml-2 mr-2 mt-4 inline-block h-[25] rounded-full dark:invert"
-              src={default_pfp}
-            />
-          </>
-        ) : (
-          <div className="flex justify-end">
-            {/* p: padding for all sides, text-base: default text size, leading-normal: normal line height */}
-            <NavLink
-              to="/login"
-              className="p-4 text-base font-bold leading-normal text-black dark:text-white"
-            >
-              <span>Login</span>
-              <img className="ml-3 mr-3 inline-block h-[20px] dark:invert" src={login} />
-            </NavLink>
-          </div>
-        )}
-      </div>
+
       <div id="DBDisplay" className=" transition-colors duration-500">
         {/* shadow-2xl: strong box-shadow for depth, bg-gray-900: change background color */}
         <div
