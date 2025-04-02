@@ -20,6 +20,14 @@ postgresRouter.get(
   }
 );
 
+postgresRouter.post(
+  '/save-query',
+  postgresController.postgresSaveQuery,
+  (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.savedQuery);
+  }
+);
+
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 postgresRouter.post(

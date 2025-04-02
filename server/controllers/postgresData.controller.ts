@@ -169,20 +169,14 @@ const postgresController = {
 
   //----------Function to gather query metrics from database-----------------------------------------------------------------
   postgresGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
-    // if we pass database_link from FE then we might not need to initialize dbConnect again
-    // database_link and query can be passed in from FE
-    // console.log('FULL REQUEST: ', req);
     const PostgresGetMetrics = await dbConnect(req);
-    // console.log('dblink check: ', res.locals.database_link);
     console.log('REACHED postgresGetMetrics MIDDLEWARE');
     console.log('REQ QUERY: ', req.query);
     const { queryString } = req.query;
     console.log('❓ QUERY FROM FE IS: ', queryString);
 
     // destructuing the below 2 fields to store to the queries table in mysql db
-    const { hostname } = req.query;
-    const { database_name } = req.query;
-
+    const { hostname, database_name } = req.query;
     console.log('hostname:', hostname);
     console.log('database_name', database_name);
 
@@ -193,16 +187,14 @@ const postgresController = {
     // console.log('🌟 result of testing: ', result);
     console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
 
-     //pull exec time alone for the mysql update when storing queries
-     const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
-     console.log('exec_time:', exec_time);
+    //pull exec time alone for the mysql update when storing queries
+    const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
+    console.log('exec_time:', exec_time);
 
     // Pull Execution time only
-    const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}`;
-  
+    const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}ms`;
+    const queryName = `Query Name: ${queryString}`;
     // console.log('⏰ EXECUTION TIME METRIC', executionTime);
-
-  
 
     // Create date metric to add to response
     const now = new Date();
@@ -227,18 +219,46 @@ const postgresController = {
     //const email = 'https://api.github.com/users/reva2024';
     //const db_link = 'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
     //const db_name = 'dbSpy';
-    
-    const insertQuery = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date)
-    VALUES(?,?,?,?,CURDATE())`;
+
+    // Send query string, date, and execution time on response
+    res.locals.metrics = [queryName, formattedDate, executionTime];
+
+    return next();
+  },
+
+  //----------Function to save query metrics after running query-----------------------------------------------------------------
+  postgresSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
+    const PostgresSaveMetrics = await dbConnect(req);
+    console.log('REACHED postgresSaveMetrics MIDDLEWARE');
+    console.log('REQ BODY: ', req.body.params);
+
+    const { query_date, exec_time } = req.body.params.extractedQueryRes;
+    const { queryString, hostname, database_name } = req.body.params.dbValues;
+
+    // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
+    const date = new Date(query_date);
+    const formatDateForMySql = date.toISOString().split('T')[0];
+    console.log('formatted date: ', formatDateForMySql);
+
+    const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date) VALUES(?,?,?,?,?)`;
 
     //connect to mysql pool imorted from userModel and send the query to update table
-    await pool.query(insertQuery, [queryString, hostname, exec_time, database_name]);
-    console.log('completed mysql query update');
-    /***** mysql query update done *****/
+    const savingQuery = await pool.query(insertQueryStr, [
+      queryString,
+      hostname,
+      exec_time,
+      database_name,
+      formatDateForMySql,
+    ]);
+    console.log('savingQuery completed!');
 
-    // Send date and execution time on response
-    res.locals.metrics = [formattedDate, executionTime];
-
+    res.locals.savedQuery = [
+      queryString,
+      hostname,
+      exec_time,
+      database_name,
+      formatDateForMySql,
+    ];
     return next();
   },
 
