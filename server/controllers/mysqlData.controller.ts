@@ -227,6 +227,7 @@ const mysqlController = {
     // call helper function to get Execution Time
     const totalExecutionTime = await measureExecutionTime(queryString!);
     console.log('⏰ TOTAL EXECUTION TIME', totalExecutionTime);
+    const executionTimeFE = `Execution Time: ${totalExecutionTime}`;
 
     // Create date metric to add to response
     const now = new Date();
@@ -245,7 +246,7 @@ const mysqlController = {
     // console.log('done w getMetrics controller');
 
     // Send date and execution time on response
-    res.locals.metrics = [formattedDate, totalExecutionTime];
+    res.locals.metrics = [formattedDate, executionTimeFE];
 
     return next();
   },
