@@ -95,7 +95,7 @@ const TestNewQuery: React.FC = () => {
       }
 
       // View values array
-      // console.log('VALUES FROM testNewQuery FE: ', values);
+      console.log('VALUES FROM testNewQuery FE: ', values);
 
       // Update DB credential store with values from passed in link
       setDbCredentials(values);
