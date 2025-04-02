@@ -14,7 +14,7 @@ type Database = {
 };
 
 // defining type of query result
-type QueryResult = [];
+type QueryResult = string[];
 
 const TestNewQuery: React.FC = () => {
   // holds the list of dbs user can select from
@@ -115,6 +115,7 @@ const TestNewQuery: React.FC = () => {
 
   // pull metrics from data array before display
   const metrics = queryResult?.map((metric) => <pre>{metric}</pre>);
+  console.log('queryResult‼️:', queryResult);
 
   // ! Is saveQuery needed?
   // post req to save query
@@ -185,7 +186,7 @@ const TestNewQuery: React.FC = () => {
   return (
     <>
       <div>
-        {/* <FeatureTab></FeatureTab> */}
+        <FeatureTab></FeatureTab>
         <div className="pt-20 text-center">
           <h1 className="mb-12 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl">
             <span className="text-yellow-400">Test New Query Page</span> <br />
@@ -277,11 +278,38 @@ const TestNewQuery: React.FC = () => {
         </div>
         {/* 💙💙 Query Result --------------- */}
         {queryResult && (
+          <div className="mt-8 text-white">
+            <h3 className="mb-4 text-lg font-semibold">Query Result:</h3>
+            <table className="w-1/2 table-auto border-collapse border border-gray-300">
+              <tbody>
+                {queryResult.map((metric, index) => {
+                  const [label, value] = (metric as string).split(':');
+                  return (
+                    <tr key={index} className="border-b border-gray-300">
+                      <td className="px-4 py-2 text-left font-medium text-white">
+                        {label.trim()}
+                      </td>
+                      <td className="px-4 py-2 text-right text-white">{value.trim()}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* {queryResult && (
+          <div className="mt-8 text-white">
+            <h3 className="text-lg font-semibold">Query Result:</h3>
+            <div>{metrics}</div>
+          </div>
+        )} */}
+        {/* old code */}
+        {/* {queryResult && (
           <div style={{ marginTop: '2rem', color: 'white' }}>
             <h3>Query Result:</h3>
             <div> {metrics}</div>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
