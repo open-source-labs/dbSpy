@@ -54,28 +54,28 @@ const TestNewQuery: React.FC = () => {
 
   // ! Not sure if this useEffect is needed. we aren't loading any data on render
   // getting req to query / select db user is using
-  useEffect(() => {
-    const fetchUserDatabase = async () => {
-      try {
-        //TODO where is it getting sent to?? backend route??
-        const response = await fetch('');
-        if (!response.ok) {
-          throw new Error('HTTP error! status: ${response.status}');
-        }
-        // parsing the json data
-        const data = await response.json();
+  // useEffect(() => {
+  //   const fetchUserDatabase = async () => {
+  //     try {
+  //       //TODO where is it getting sent to?? backend route??
+  //       const response = await fetch('');
+  //       if (!response.ok) {
+  //         throw new Error('HTTP error! status: ${response.status}');
+  //       }
+  //       // parsing the json data
+  //       const data = await response.json();
 
-        // saving data to state
-        setDbInput(data);
-      } catch (error) {
-        // TODO DELETE when backend works
-        // fake data to test calling state w/ successful api call
-        setDbInput([{ id: 12345, name: 'Fake Db Name' }]);
-        console.error('Failed to fetch user database', error);
-      }
-    };
-    // fetchUserDatabase();
-  }, []); // leave empty dependency array to run once on mount
+  //       // saving data to state
+  //       setDbInput(data);
+  //     } catch (error) {
+  //       // TODO DELETE when backend works
+  //       // fake data to test calling state w/ successful api call
+  //       setDbInput([{ id: 12345, name: 'Fake Db Name' }]);
+  //       console.error('Failed to fetch user database', error);
+  //     }
+  //   };
+  //   // fetchUserDatabase();
+  // }, []); // leave empty dependency array to run once on mount
 
   // Send DB link and query string to BE for testing
   const sendQuery = async () => {
@@ -86,16 +86,85 @@ const TestNewQuery: React.FC = () => {
       if (databaseLink) {
         const fullLink = databaseLink;
         const splitURI = fullLink.split('/');
-        const postgresName = splitURI[3];
-        const postgresPort = splitURI[2].split(':')[2];
-        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_Postgres[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_Postgres[0];
-        values.port = postgresPort ? postgresPort : '5432';
-        values.database_name = postgresName;
-        values.db_type = 'postgres';
-        values.queryString = queryInput; // include query string on params
+        console.log('FULL LINK:', fullLink);
+        console.log('SPLIT URI:', splitURI);
+        switch (splitURI[0]) {
+          case 'mysql:':
+            const mysqlName = splitURI[3].split('?');
+            const mysqlPort = splitURI[2].split(':')[2];
+            const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+            values.hostname = internalLinkArray_mySQL[1];
+            values.username = splitURI[2].split(':')[0];
+            values.password = internalLinkArray_mySQL[0];
+            values.port = mysqlPort ? mysqlPort : '3306';
+            values.database_name = mysqlName[0];
+            values.db_type = 'mysql';
+            values.queryString = queryInput;
+            break;
+          default:
+            const postgresName = splitURI[3];
+            const postgresPort = splitURI[2].split(':')[2];
+            const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+            values.hostname = internalLinkArray_Postgres[1];
+            values.username = splitURI[2].split(':')[0];
+            values.password = internalLinkArray_Postgres[0];
+            values.port = postgresPort ? postgresPort : '5432';
+            values.database_name = postgresName;
+            values.db_type = 'postgres';
+            values.queryString = queryInput;
+            break;
+        }
+        // switch (splitURI[0]) {
+        //   case 'mysql:':
+        //     const mysqlName = splitURI[3].split('?');
+        //     const mysqlPort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_mySQL[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_mySQL[0];
+        //     values.port = mysqlPort ? mysqlPort : '3306';
+        //     values.database_name = mysqlName[0];
+        //     values.db_type = 'mysql';
+        //     break;
+        //   case 'mssql:':
+        //     const mssqlName = splitURI[3];
+        //     const mssqlPort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_mssql[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_mssql[0];
+        //     values.port = mssqlPort ? mssqlPort : '1433';
+        //     values.database_name = mssqlName;
+        //     values.db_type = 'mssql';
+        //     break;
+        //   case 'oracle:':
+        //     const oracleName = splitURI[3];
+        //     const oraclePort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_oracle[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_oracle[0];
+        //     values.port = oraclePort ? oraclePort : '1521';
+        //     values.database_name = oracleName;
+        //     values.db_type = 'oracle';
+        //     values.service_name = values.service_name;
+        //     break;
+        //   default:
+        //     const postgresName = splitURI[3];
+        //     const postgresPort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_Postgres[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_Postgres[0];
+        //     values.port = postgresPort ? postgresPort : '5432';
+        //     values.database_name = postgresName;
+        //     values.db_type = 'postgres';
+        //     values.queryString = queryInput; // include query string on params
+        //     break;
+        // }
+        // } else if (values.file_path) {
+        //   values.db_type = 'sqlite';
+        //   values.database_name = values.file_path;
       }
 
       // View values array

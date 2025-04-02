@@ -8,6 +8,14 @@ mysqlRouter.get('/schema', mysqlController.mysqlQuery, (_req: Request, res: Resp
   return res.status(200).json(res.locals);
 });
 
+mysqlRouter.get(
+  '/run-query',
+  mysqlController.mysqlGetMetrics,
+  (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.metrics);
+  }
+);
+
 //-------------------------------------DATA TABLE ROWS----------------------------------------------------------------------------------------
 //-------------------ADD NEW ROW-----------------------------------------------------------------------------------------
 mysqlRouter.post('/addRow', mysqlController.mysqlAddNewRow, (_req: Request, res: Response) => {
