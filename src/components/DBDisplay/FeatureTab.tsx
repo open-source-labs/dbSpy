@@ -358,7 +358,7 @@ export default function FeatureTab(props: any) {
                 </span>
               </div>
             </button>
-
+            {/* ConnectDB code */}
             <p className=" mt-4 text-slate-900 dark:text-[#f8f4eb]">Connect</p>
             <hr />
             <ul className=" space-y-0">
@@ -372,6 +372,8 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3">Connect Database</span>
                 </a>
               </li>
+
+              {/* -----------------Upload SQL File Button---------------------- */}
               <li>
                 <a
                   onClick={uploadSQL}

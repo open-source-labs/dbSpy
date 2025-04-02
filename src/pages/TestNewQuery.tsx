@@ -16,7 +16,7 @@ type Database = {
 };
 
 // defining type of query result
-type QueryResult = [];
+type QueryResult = string[];
 
 const TestNewQuery: React.FC = () => {
   // get state of FeatureTab from Zustand store
@@ -192,7 +192,7 @@ const TestNewQuery: React.FC = () => {
         <FeatureTab />
         <div className="ml-20 pt-20 text-center">
           <h1 className="mb-12 text-5xl font-bold tracking-tight text-yellow-400 md:text-6xl xl:text-7xl">
-            Test New Query Page
+            Test New Query
           </h1>
         </div>
         <div
@@ -259,7 +259,7 @@ const TestNewQuery: React.FC = () => {
             <textarea
               value={queryInput}
               onChange={(e) => setQueryInput(e.target.value)}
-              rows={2}
+              rows={1}
               placeholder="Write your SQL query here"
               className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -282,14 +282,58 @@ const TestNewQuery: React.FC = () => {
             </div>
           </div>
           {/* 💙💙 Query Result --------------- */}
-          {queryResult && (
+          {/* To Delete- old rendering of metrics */}
+          {/* {queryResult && (
             <div style={{ marginTop: '2rem', color: 'white' }}>
               <h3>Query Result:</h3>
               {queryResult?.map((metric) => (
                 <pre>{metric}</pre>
               ))}
             </div>
-          )}
+          )} */}
+          {/* this wrap aligns the title 'Query Results' w/ the table  together */}
+          <div className="mt-4 flex gap-x-8">
+            {queryResult && (
+              <div className="mt-8 text-white">
+                <h3 className="mb-4 text-xl font-semibold">Query Results:</h3>
+                <table className="mx-auto w-fit table-fixed border-collapse border border-white">
+                  <thead>
+                    <tr className="bg-blue-950 ">
+                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Query Name
+                      </th>
+                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                        Date Run
+                      </th>
+                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                        Execution Time
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {/* Query Name Goes HERE */}
+                      <td className="border border-white px-6 py-4 text-center text-xl text-black dark:text-white">
+                        {queryInput}
+                      </td>
+                      {/* dynamically extracting values from queryResult */}
+                      {queryResult.map((metric, index) => {
+                        const [, value] = (metric as string).split(':');
+                        return (
+                          <td
+                            key={index}
+                            className="border px-4 py-2 text-center text-xl text-black dark:text-white"
+                          >
+                            {value.trim()}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
