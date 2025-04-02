@@ -204,7 +204,7 @@ const postgresController = {
     // console.log('done w getMetrics controller');
  
     // Send date and execution time on response
-    res.locals.metrics = [formattedDate, executionTime] ;
+    res.locals.metrics = [formattedDate, executionTime];
 
     return next();
   },

@@ -15,6 +15,7 @@ import {
   removeForeignKey,
   getTableNames,
 } from './helperFunctions/universal.helpers';
+import { exec } from 'child_process';
 
 // Object containing all of the middleware
 const mysqlController = {
@@ -164,6 +165,89 @@ const mysqlController = {
       console.log('Database has been disconnected');
       return next(err);
     }
+  },
+
+  //----------Function to gather query metrics from database-----------------------------------------------------------------
+  mysqlGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
+    // if we pass database_link from FE then we might not need to initialize dbConnect again
+    // database_link and query can be passed in from FE
+    // console.log('FULL REQUEST: ', req);
+
+    // grab queryString from FE
+    console.log('REACHED mysqlGetMetrics MIDDLEWARE');
+    console.log('REQ QUERY: ', req.query);
+    const { queryString }: { queryString?: string } = req.query;
+    console.log('❓ QUERY FROM FE IS: ', queryString);
+    
+    // Declare helper function to run EXPLAIN ANALYZE query and pull execution time
+    const measureExecutionTime = async (query: string ): Promise<string | void> => {
+      // Step 1: Connect to MySQL
+      const mysqlGetMetrics = await dbConnect(req);
+    
+      try {
+        // Step 2: Run EXPLAIN ANALYZE Query
+        const [rows] = await mysqlGetMetrics.query(
+          `EXPLAIN ANALYZE ${queryString}`
+        );
+        const row = rows['EXPLAIN'];
+        console.log('🌟 Rows returned by EXPLAIN ANALYZE:', row);
+
+    
+        // Step 3: Parse the output for actual times
+        let totalExecutionTime = 0;
+    
+          // Regex to extract actual time values from the EXPLAIN ANALYZE output
+          const times = row.match(/actual time=(\d+\.\d+)\.\.(\d+\.\d+)/);
+          // console.log('🌟 RESULT OF TIMES', times);
+          
+          if (times) {
+            // Extract the start and end times (in milliseconds)
+            const startTime = parseFloat(times[1]);
+            const endTime = parseFloat(times[2]);
+    
+            // Calculate the execution time for this step
+            const executionTime = endTime - startTime;
+            totalExecutionTime += executionTime; // Add to total execution time
+          }
+    
+        // Step 4: Log the total execution time
+        // console.log(`Total Execution Time: ${totalExecutionTime.toFixed(6)} ms`);
+        // console log 3 decimals for return to front end
+        const executionTime = totalExecutionTime.toFixed(3);
+        // console.log(`🌟 Total Execution Time: ${executionTime}`);
+        return executionTime;
+      } catch (error) {
+        console.error('Error executing query:', error);
+      } finally {
+        // Step 5: Close the database connection
+        await mysqlGetMetrics.destroy();
+      }
+    }
+   
+    // call helper function to get Execution Time
+    const totalExecutionTime = await measureExecutionTime(queryString!);
+    console.log('⏰ TOTAL EXECUTION TIME', totalExecutionTime);
+
+    // Create date metric to add to response
+    const now = new Date();
+    const options: any = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
+      // second: 'numeric',
+      // hour12: true, // Use 12-hour time format
+      timeZone: 'America/New_York', // Set to US Eastern Time
+    };
+    const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
+    // console.log(`🗓️ TODAY'S DATE`, formattedDate);
+    // console.log('done w getMetrics controller');
+
+    // Send date and execution time on response
+    res.locals.metrics = [formattedDate, totalExecutionTime];
+
+    return next();
   },
 
   //-------------------------------------DATA TABLE ROWS-------------------------------------------------
