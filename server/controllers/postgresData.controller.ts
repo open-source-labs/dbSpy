@@ -16,6 +16,10 @@ import {
   removeForeignKey,
 } from './helperFunctions/universal.helpers';
 import { resourceLimits } from 'worker_threads';
+import pool from './../models/userModel';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Object containing all of the middleware
 const postgresController = {
@@ -175,16 +179,30 @@ const postgresController = {
     const { queryString } = req.query;
     console.log('❓ QUERY FROM FE IS: ', queryString);
 
-    // Query string (EXPLAIN) to access performance data 
+    // destructuing the below 2 fields to store to the queries table in mysql db
+    const { hostname } = req.query;
+    const { database_name } = req.query;
+
+    console.log('hostname:', hostname);
+    console.log('database_name', database_name);
+
+    // Query string (EXPLAIN) to access performance data
     const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
     // view result of Explain query
     const result = await PostgresGetMetrics.query(testQuery);
     // console.log('🌟 result of testing: ', result);
     console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
 
+     //pull exec time alone for the mysql update when storing queries
+     const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
+     console.log('exec_time:', exec_time);
+
     // Pull Execution time only
     const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}`;
+  
     // console.log('⏰ EXECUTION TIME METRIC', executionTime);
+
+  
 
     // Create date metric to add to response
     const now = new Date();
@@ -199,10 +217,25 @@ const postgresController = {
       timeZone: 'America/New_York', // Set to US Eastern Time
     };
     const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
-    // console.log(`🗓️ TODAY'S DATE`, formattedDate);
-   
+    //console.log(`🗓️ TODAY'S DATE`, formattedDate);
+
     // console.log('done w getMetrics controller');
- 
+
+    /************* mysql querymetrics db insert for saved query page retrieval ******/
+    // creating insert query for mysql query metrics db
+    //Todo: figure out how to get the email from the session, if an user logs in and then tests query performance
+    //const email = 'https://api.github.com/users/reva2024';
+    //const db_link = 'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+    //const db_name = 'dbSpy';
+    
+    const insertQuery = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date)
+    VALUES(?,?,?,?,CURDATE())`;
+
+    //connect to mysql pool imorted from userModel and send the query to update table
+    await pool.query(insertQuery, [queryString, hostname, exec_time, database_name]);
+    console.log('completed mysql query update');
+    /***** mysql query update done *****/
+
     // Send date and execution time on response
     res.locals.metrics = [formattedDate, executionTime];
 
