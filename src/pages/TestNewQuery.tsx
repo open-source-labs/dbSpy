@@ -24,7 +24,7 @@ const TestNewQuery: React.FC = () => {
   // holds the list of dbs user can select from
   const [dbInput, setDbInput] = useState<Database[] | null>(null);
   // holds the user's query input
-  const [queryInput, setQueryInput] = useState<string>('');
+  const [queryString, setQueryString] = useState<string>('');
   // holds the query name input from user
   const [queryName, setQueryName] = useState<string>('');
   // holds the selected db which will be from an arr of all saved dbs from user
@@ -102,7 +102,8 @@ const TestNewQuery: React.FC = () => {
             values.port = mysqlPort ? mysqlPort : '3306';
             values.database_name = mysqlName[0];
             values.db_type = 'mysql';
-            values.queryString = queryInput;
+            values.queryString = queryString;
+            values.queryName = queryName;
             break;
           default:
             const postgresName = splitURI[3];
@@ -114,7 +115,8 @@ const TestNewQuery: React.FC = () => {
             values.port = postgresPort ? postgresPort : '5432';
             values.database_name = postgresName;
             values.db_type = 'postgres';
-            values.queryString = queryInput;
+            values.queryString = queryString;
+            values.queryName = queryName;
             break;
         }
         // switch (splitURI[0]) {
@@ -184,14 +186,15 @@ const TestNewQuery: React.FC = () => {
         .catch((err: ErrorEvent) => console.error('getSchema error', err));
       // set query result state with data from response (array)
       setQueryResult(dataFromBackend);
-      setQueryInput('');
+      setQueryName('');
+      setQueryString('');
       setDatabaseLink('');
     } catch (error) {
       console.error('sendQuery Error: Failed to test query', error);
     }
   };
 
-  // ! Is saveQuery needed?
+  // ! Is saveQuery needed? -- YES
   // post req to save query
   const saveQuery = async () => {
     try {
@@ -203,7 +206,7 @@ const TestNewQuery: React.FC = () => {
 
       const payload = {
         queryName,
-        queryInput,
+        queryString,
         queryResult,
         databaseId: selectedDb?.id ?? null,
       };
@@ -346,8 +349,8 @@ const TestNewQuery: React.FC = () => {
             />
             {/* Query Input ------------- */}
             <textarea
-              value={queryInput}
-              onChange={(e) => setQueryInput(e.target.value)}
+              value={queryString}
+              onChange={(e) => setQueryString(e.target.value)}
               rows={1}
               placeholder="Write your SQL query here"
               className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -410,7 +413,7 @@ const TestNewQuery: React.FC = () => {
                       </td>
                       {/* Query Ran */}
                       <td className="border border-white px-6 py-4 text-center text-lg text-black dark:text-white">
-                        {queryInput}
+                        {queryString}
                       </td>
                       {/* dynamically extracting values from queryResult */}
                       {queryResult.map((metric, index) => {
