@@ -47,6 +47,7 @@ const loadData = async () => {
   \`exec_time\` double NOT NULL,
   \`created_date\` timestamp NULL DEFAULT NULL,
   \`query_date\` date DEFAULT NULL,
+  \`name\` varchar(40) DEFAULT NULL,
   PRIMARY KEY (\`id\`),
   KEY \`email_queries\` (\`email\`),
   CONSTRAINT \`email_queries\` FOREIGN KEY (\`email\`) REFERENCES \`users\` (\`email\`))`;
