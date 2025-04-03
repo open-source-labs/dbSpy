@@ -172,11 +172,10 @@ const postgresController = {
     const PostgresGetMetrics = await dbConnect(req);
     console.log('REACHED postgresGetMetrics MIDDLEWARE');
     console.log('REQ QUERY: ', req.query);
-    const { queryString } = req.query;
-    console.log('❓ QUERY FROM FE IS: ', queryString);
 
     // destructuing the below 2 fields to store to the queries table in mysql db
-    const { hostname, database_name } = req.query;
+    const { queryString, queryName, hostname, database_name } = req.query;
+    console.log('❓ QUERY FROM FE IS: ', queryString);
     console.log('hostname:', hostname);
     console.log('database_name', database_name);
 
@@ -193,7 +192,8 @@ const postgresController = {
 
     // Pull Execution time only
     const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}ms`;
-    const queryName = `Query Name: ${queryString}`;
+    const namedQuery = `Query Name: ${queryName}`;
+    const queryStr = `Query: ${queryString}`;
     // console.log('⏰ EXECUTION TIME METRIC', executionTime);
 
     // Create date metric to add to response
@@ -221,7 +221,7 @@ const postgresController = {
     //const db_name = 'dbSpy';
 
     // Send query string, date, and execution time on response
-    res.locals.metrics = [queryName, formattedDate, executionTime];
+    res.locals.metrics = [namedQuery, queryStr, formattedDate, executionTime];
 
     return next();
   },
@@ -233,14 +233,14 @@ const postgresController = {
     console.log('REQ BODY: ', req.body.params);
 
     const { query_date, exec_time } = req.body.params.extractedQueryRes;
-    const { queryString, hostname, database_name } = req.body.params.dbValues;
+    const { queryString, queryName, hostname, database_name } = req.body.params.dbValues;
 
     // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
     const date = new Date(query_date);
     const formatDateForMySql = date.toISOString().split('T')[0];
     console.log('formatted date: ', formatDateForMySql);
 
-    const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date) VALUES(?,?,?,?,?)`;
+    const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
 
     //connect to mysql pool imorted from userModel and send the query to update table
     const savingQuery = await pool.query(insertQueryStr, [
@@ -249,7 +249,9 @@ const postgresController = {
       exec_time,
       database_name,
       formatDateForMySql,
+      queryName,
     ]);
+
     console.log('savingQuery completed!');
 
     res.locals.savedQuery = [
@@ -258,6 +260,7 @@ const postgresController = {
       exec_time,
       database_name,
       formatDateForMySql,
+      queryName,
     ];
     return next();
   },

@@ -1,7 +1,7 @@
 // React & React Router & React Query Modules
 import React, { useState, useRef, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useNavStore } from '../../store/navStore';
 
 const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
@@ -41,6 +41,7 @@ import DeleteDbModal from '../Modals/DeleteDbModal';
 export default function FeatureTab(props: any) {
   // dbSpy 8.0: get the state store in Zustand
   const toggleClicked = useNavStore((state) => state.toggleClicked);
+  const navigate = useNavigate();
 
   //STATE DECLARATION (dbSpy3.0)
   const { setEdges, setNodes } = useFlowStore((state) => state);
@@ -84,10 +85,20 @@ export default function FeatureTab(props: any) {
   // HELPER FUNCTIONS
 
   const connectDb = () => {
-    //if Flow is rendered, openModal
-    if (document.querySelector('.flow')) openModal(props.handleSidebar);
-    else props.handleSidebar();
+    // dbSpy 8.0: add function to Connect Database to redirect back if not on Display
+    if (window.location.pathname !== '/display') {
+      openModal(() => {
+        // Navigate to the display page if the user confirms
+        navigate('/display');
+      });
+    } else {
+      // Already on display page, proceed with connecting the database
+      //if Flow is rendered, openModal
+      if (document.querySelector('.flow')) openModal(props.handleSidebar);
+      else props.handleSidebar();
+    }
   };
+
   const uploadSQL = () => {
     //if Flow is rendered, openModal
     if (document.querySelector('.flow')) openModal(getSchemaFromFile);
@@ -311,10 +322,39 @@ export default function FeatureTab(props: any) {
   return (
     <>
       {/* PAGE */}
+      {/* MODAL FOR CONFIRMATION POPUP */}
+      {/* dbSpy 8.0: move confirmModal out from FeatureTab */}
+      <div
+        ref={confirmModal}
+        id="confirmModal"
+        className="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50"
+      >
+        {/* <!-- Confirm Modal content --> */}
+        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
+          <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
+            Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
+            changes.
+          </p>
+          <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
+            <button
+              onClick={() => closeModal(true)}
+              className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+            >
+              Confirm
+            </button>
+            <button
+              onClick={() => closeModal(false)}
+              className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
       {/* dbSpy 8.0: added toggle button in Navbar to control FeatureTab */}
       <div
-        className={`fixed top-12 left-0 h-full w-64 bg-blue z-10 transition-transform duration-300 ${
-        toggleClicked ? '-translate-x-full' : 'translate-x-0'
+        className={`bg-blue fixed left-0 top-12 z-10 h-full w-64 transition-transform duration-300 ${
+          toggleClicked ? '-translate-x-full' : 'translate-x-0'
         }`}
       >
         {/* dbSpy 8.0: modify other pages to make sure they change with the state of FeatureTab */}
@@ -323,19 +363,6 @@ export default function FeatureTab(props: any) {
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 overflow-auto rounded px-5 py-6 transition-colors duration-500">
-
-            <NavLink to="/" className={linkbtn}>
-              <div className="group inline-flex h-10 w-[160px] items-center justify-start gap-3 rounded-lg py-2 pl-1 pr-[54.52px]">
-                {/* width="28" height="28" viewBox="0 0 35 28" fill="none"   */}
-                <HomeIcon />
-                <div className="inline-flex flex-col items-start justify-start pr-[2.48px]">
-                  <span className="text-sm text-slate-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300">
-                    Home
-                  </span>
-                </div>
-              </div>
-            </NavLink>
-
             <button onClick={toggleClass}>
               <div className="ItemLink group inline-flex h-10 w-[160px] items-center justify-start gap-0 rounded-lg py-2 pl-0 pr-0">
                 <svg
@@ -393,6 +420,21 @@ export default function FeatureTab(props: any) {
                   <span className="ml-3 flex-1 whitespace-nowrap">Build Database</span>
                 </a>
               </li>
+              {/* ------ View Saved Databases ----- */}
+              <li>
+                {/* TODO: onClick must get updated */}
+
+                <a
+                  onClick={buildDb}
+                  className=" group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
+                >
+                  <BuildDatabaseIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">
+                    View Saved Databases
+                  </span>
+                </a>
+              </li>
+
               {/* Commented code is for Export Query Button */}
               {/* TODO: Add SAVE feature */}
               {/* <li>
@@ -547,31 +589,6 @@ export default function FeatureTab(props: any) {
 
         {/* MODALS */}
 
-        {/* MODAL FOR CONFIRMATION POPUP */}
-        <div ref={confirmModal} id="confirmModal" className="confirmModal">
-          {/* <!-- Confirm Modal content --> */}
-          <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
-            <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
-              Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
-              changes.
-            </p>
-            <div className="mx-auto flex w-[50%] max-w-[200px] justify-between">
-              <button
-                onClick={() => closeModal(true)}
-                className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => closeModal(false)}
-                className="modalButton text-slate-900 hover:opacity-70 dark:text-[#f8f4eb]"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Query Output Modal */}
         {/* Sending props to child components. */}
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
@@ -588,4 +605,3 @@ export default function FeatureTab(props: any) {
     </>
   );
 }
-

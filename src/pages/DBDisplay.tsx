@@ -192,7 +192,7 @@ const DBDisplay: React.FC = () => {
               {/* rounded: rounded corner, px: padding horizontal, py: padding vertical */}
               <button
                 id="showSchema"
-                className=" rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500 hover:text-black"
+                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500 hover:text-black"
                 onClick={setTableMode}
               >
                 Show data

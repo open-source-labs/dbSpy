@@ -24,7 +24,9 @@ const TestNewQuery: React.FC = () => {
   // holds the list of dbs user can select from
   const [dbInput, setDbInput] = useState<Database[] | null>(null);
   // holds the user's query input
-  const [queryInput, setQueryInput] = useState<string>('');
+  const [queryString, setQueryString] = useState<string>('');
+  // holds the query name input from user
+  const [queryName, setQueryName] = useState<string>('');
   // holds the selected db which will be from an arr of all saved dbs from user
   const [selectedDb, setSelectedDb] = useState<Database | null>(null);
   // holds the result of the query after post req
@@ -51,33 +53,34 @@ const TestNewQuery: React.FC = () => {
     service_name?: string;
     file_path?: string;
     queryString?: string;
+    queryName?: string;
   }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
   // ! Not sure if this useEffect is needed. we aren't loading any data on render
   // getting req to query / select db user is using
-  useEffect(() => {
-    const fetchUserDatabase = async () => {
-      try {
-        //TODO where is it getting sent to?? backend route??
-        const response = await fetch('');
-        if (!response.ok) {
-          throw new Error('HTTP error! status: ${response.status}');
-        }
-        // parsing the json data
-        const data = await response.json();
+  // useEffect(() => {
+  //   const fetchUserDatabase = async () => {
+  //     try {
+  //       //TODO where is it getting sent to?? backend route??
+  //       const response = await fetch('');
+  //       if (!response.ok) {
+  //         throw new Error('HTTP error! status: ${response.status}');
+  //       }
+  //       // parsing the json data
+  //       const data = await response.json();
 
-        // saving data to state
-        setDbInput(data);
-      } catch (error) {
-        // TODO DELETE when backend works
-        // fake data to test calling state w/ successful api call
-        setDbInput([{ id: 12345, name: 'Fake Db Name' }]);
-        console.error('Failed to fetch user database', error);
-      }
-    };
-    // fetchUserDatabase();
-  }, []); // leave empty dependency array to run once on mount
+  //       // saving data to state
+  //       setDbInput(data);
+  //     } catch (error) {
+  //       // TODO DELETE when backend works
+  //       // fake data to test calling state w/ successful api call
+  //       setDbInput([{ id: 12345, name: 'Fake Db Name' }]);
+  //       console.error('Failed to fetch user database', error);
+  //     }
+  //   };
+  //   // fetchUserDatabase();
+  // }, []); // leave empty dependency array to run once on mount
 
   // Send DB link and query string to BE for testing
   const sendQuery = async () => {
@@ -91,16 +94,87 @@ const TestNewQuery: React.FC = () => {
       if (databaseLink) {
         const fullLink = databaseLink;
         const splitURI = fullLink.split('/');
-        const postgresName = splitURI[3];
-        const postgresPort = splitURI[2].split(':')[2];
-        const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
-        values.hostname = internalLinkArray_Postgres[1];
-        values.username = splitURI[2].split(':')[0];
-        values.password = internalLinkArray_Postgres[0];
-        values.port = postgresPort ? postgresPort : '5432';
-        values.database_name = postgresName;
-        values.db_type = 'postgres';
-        values.queryString = queryInput; // include query string on params
+        console.log('FULL LINK:', fullLink);
+        console.log('SPLIT URI:', splitURI);
+        switch (splitURI[0]) {
+          case 'mysql:':
+            const mysqlName = splitURI[3].split('?');
+            const mysqlPort = splitURI[2].split(':')[2];
+            const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+            values.hostname = internalLinkArray_mySQL[1];
+            values.username = splitURI[2].split(':')[0];
+            values.password = internalLinkArray_mySQL[0];
+            values.port = mysqlPort ? mysqlPort : '3306';
+            values.database_name = mysqlName[0];
+            values.db_type = 'mysql';
+            values.queryString = queryString;
+            values.queryName = queryName;
+            break;
+          default:
+            const postgresName = splitURI[3];
+            const postgresPort = splitURI[2].split(':')[2];
+            const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+            values.hostname = internalLinkArray_Postgres[1];
+            values.username = splitURI[2].split(':')[0];
+            values.password = internalLinkArray_Postgres[0];
+            values.port = postgresPort ? postgresPort : '5432';
+            values.database_name = postgresName;
+            values.db_type = 'postgres';
+            values.queryString = queryString;
+            values.queryName = queryName;
+            break;
+        }
+        // switch (splitURI[0]) {
+        //   case 'mysql:':
+        //     const mysqlName = splitURI[3].split('?');
+        //     const mysqlPort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_mySQL[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_mySQL[0];
+        //     values.port = mysqlPort ? mysqlPort : '3306';
+        //     values.database_name = mysqlName[0];
+        //     values.db_type = 'mysql';
+        //     break;
+        //   case 'mssql:':
+        //     const mssqlName = splitURI[3];
+        //     const mssqlPort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_mssql[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_mssql[0];
+        //     values.port = mssqlPort ? mssqlPort : '1433';
+        //     values.database_name = mssqlName;
+        //     values.db_type = 'mssql';
+        //     break;
+        //   case 'oracle:':
+        //     const oracleName = splitURI[3];
+        //     const oraclePort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_oracle[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_oracle[0];
+        //     values.port = oraclePort ? oraclePort : '1521';
+        //     values.database_name = oracleName;
+        //     values.db_type = 'oracle';
+        //     values.service_name = values.service_name;
+        //     break;
+        //   default:
+        //     const postgresName = splitURI[3];
+        //     const postgresPort = splitURI[2].split(':')[2];
+        //     const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
+        //     values.hostname = internalLinkArray_Postgres[1];
+        //     values.username = splitURI[2].split(':')[0];
+        //     values.password = internalLinkArray_Postgres[0];
+        //     values.port = postgresPort ? postgresPort : '5432';
+        //     values.database_name = postgresName;
+        //     values.db_type = 'postgres';
+        //     values.queryString = queryInput; // include query string on params
+        //     break;
+        // }
+        // } else if (values.file_path) {
+        //   values.db_type = 'sqlite';
+        //   values.database_name = values.file_path;
       }
 
       // View values array
@@ -119,9 +193,9 @@ const TestNewQuery: React.FC = () => {
         .catch((err: ErrorEvent) => console.error('Run query error', err));
       // set query result state with data from response (array)
       setQueryResult(dataFromBackend);
-      setQueryInput('');
+      setQueryName('');
+      setQueryString('');
       setDatabaseLink('');
-      // console.log('queryresult: ', queryResult);
     } catch (error) {
       console.error('sendQuery Error: Failed to test query', error);
     }
@@ -129,6 +203,7 @@ const TestNewQuery: React.FC = () => {
 
   const saveQuery = async () => {
     try {
+      // TODO remove commented out if not used selectedDb later
       // conditional to check that a query was run and that it had results
       // if (!queryResult || !selectedDb) {
       if (!queryResult) {
@@ -139,8 +214,9 @@ const TestNewQuery: React.FC = () => {
       // the BE returns back formatted query results
       // we want to extract just the data portion and send to the BE to save the query - since it's in str format, convert to obj
       const extractedQueryRes = {
-        query_date: queryResult[1].split(': ')[1],
-        exec_time: queryResult[2].split(': ')[1],
+        queryName: queryResult[1].split(': ')[1],
+        query_date: queryResult[2].split(': ')[1],
+        exec_time: parseFloat(queryResult[3].split(': ')[1]),
       };
 
       const savingQuery = await axios
@@ -185,7 +261,7 @@ const TestNewQuery: React.FC = () => {
       //     }),
       //   });
 
-      //   // conditional for failed resp
+      //   conditional for failed resp
       //   if (!response.ok) {
       //     throw new Error('HTTP error! status: ${response.status}');
       //   }
@@ -226,8 +302,8 @@ const TestNewQuery: React.FC = () => {
             value={databaseLink}
             onChange={(e) => setDatabaseLink(e.target.value)}
             rows={1}
-            placeholder="enter db link here"
-            className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter DB link here"
+            className="w-2/3 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           {/* 💙💙 Select db dropdown ------------------- */}
@@ -259,16 +335,25 @@ const TestNewQuery: React.FC = () => {
             </div>
           )} */}
           {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
+          {/* Uncoment code when user has access to dropdown to select DB  */}
           {/* {selectedDb ? (
             <span className="text-white">Connected to: {selectedDb.name}</span>
           ) : (
             <p className="dark:text-white">Loading database...</p>
           )} */}
-          {/* 💙💙 Query Input ------------- */}
-          <div className="ml-2 mt-4">
+          {/* 💙💙 Naming Query ------------- */}
+          <div className="ml-2 mt-4 flex flex-col space-y-4">
             <textarea
-              value={queryInput}
-              onChange={(e) => setQueryInput(e.target.value)}
+              value={queryName}
+              onChange={(e) => setQueryName(e.target.value)}
+              rows={1}
+              placeholder="Name your query"
+              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {/* Query Input ------------- */}
+            <textarea
+              value={queryString}
+              onChange={(e) => setQueryString(e.target.value)}
               rows={1}
               placeholder="Write your SQL query here"
               className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -310,13 +395,16 @@ const TestNewQuery: React.FC = () => {
                 <table className="mx-auto w-fit table-fixed border-collapse border border-white">
                   <thead>
                     <tr className="bg-blue-950 ">
-                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
-                        Query Name
+                      <th className="w-[250px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Name
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Query
+                      </th>
+                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
                         Date Run
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
                         Execution Time
                       </th>
                     </tr>
@@ -329,7 +417,7 @@ const TestNewQuery: React.FC = () => {
                         return (
                           <td
                             key={index}
-                            className="border px-4 py-2 text-center text-xl text-black dark:text-white"
+                            className="border px-4 py-2 text-center text-lg text-black dark:text-white"
                           >
                             {value.trim()}
                           </td>
