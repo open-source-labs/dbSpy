@@ -158,7 +158,7 @@ const DBDisplay: React.FC = () => {
         <div
           ref={mySideBarId}
           id="mySidenav"
-          className="sidenav bg-[#fbf3de] shadow-2xl dark:bg-gray-900"
+          className="sidenav bg-[#fbf3de] shadow-2xl bg-gradient-to-b from-[#f8f4eb] dark:from-sky-800 to-transparent bg-opacity-10"
         >
           <a href="#" className="closebtn" onClick={closeNav}>
             &times;

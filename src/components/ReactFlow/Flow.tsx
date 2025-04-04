@@ -13,12 +13,14 @@ import TableNode from './TableNode';
 import createEdges from './createEdges';
 import createNodes from './createNodes';
 import useSettingsStore from '../../store/settingsStore';
+import { useNavStore } from '../../store/navStore';
 
 const nodeTypes = {
   table: TableNode,
 };
 
 export default function Flow(): JSX.Element {
+  const toggleClicked = useNavStore((state) => state.toggleClicked);
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
