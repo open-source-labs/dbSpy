@@ -14,30 +14,13 @@ type Database = {
 // defining type of query result
 type QueryResult = string[];
 
-// updating state to disaplay multiple queries
-type SaveQuery = {
-  queryName: string;
-  queryString: string;
-  dateRun: string;
-  execTime: number;
-};
-
 const ViewSavedQueries: React.FC = () => {
   //
   // get state of FeatureTab from Zustand store
   const toggleClicked = useNavStore((state) => state.toggleClicked);
 
-  //------------------- TO DELETE, for testing table rendering
-  // const [queryResult, setQueryResult] = useState<QueryResult | null>([
-  //   'Date Run: April 1, 2025',
-  //   'Execution Time: 0.043',
-  // ]);
-  // const [queryName, setQueryName] = useState<string>('Testing');
-  // const [queryString, setQueryString] = useState<string>('SELECT _id FROM people');
-  //---------------------------------
-
   // holds saved Queries
-  const [savedQueries, setSavedQueries] = useState<SaveQuery[]>([]);
+  const [savedQueries, setSavedQueries] = useState<QueryResult[]>([]);
 
   // fetch queries data req
   useEffect(() => {
@@ -90,21 +73,21 @@ const ViewSavedQueries: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* values from savedQueries */}
+                    {/* values from savedQueries to get us each row */}
                     {savedQueries.map((query, index) => (
                       <tr key={index}>
-                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.queryName}
-                        </td>
-                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.queryString}
-                        </td>
-                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.dateRun}
-                        </td>
-                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.execTime}s
-                        </td>
+                        {/* dynamically extracting values from queryResult to show each column in individuality row */}
+                        {query.map((metric, index) => {
+                          const [, value] = (metric as string).split(':');
+                          return (
+                            <td
+                              key={index}
+                              className="border px-4 py-2 text-center text-lg text-black dark:text-white"
+                            >
+                              {value.trim()}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
