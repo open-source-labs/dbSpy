@@ -192,7 +192,7 @@ export default function InputModal({
           const isSuccessful: boolean = handleSubmit();
           if (isSuccessful) closeInputModal();
         }}
-        className="modal-content rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+        className="modal-content rounded-md bg-gradient-to-b from-[#f8f4eb] dark:from-sky-700 to-transparent bg-opacity-80 shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="table-name">
           {mode === 'table' ? (
@@ -201,7 +201,7 @@ export default function InputModal({
                 htmlFor="table-modal-name"
                 className="  text-slate-900 dark:text-[#f8f4eb]"
               >
-                Table Name
+                Table Name:    
               </label>
               <input
                 id="table-modal-name"

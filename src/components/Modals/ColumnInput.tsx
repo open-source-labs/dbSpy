@@ -63,7 +63,7 @@ function ColumnInput({
           className=" text-center text-slate-900 dark:text-[#f8f4eb]"
           htmlFor={`column-${index}-name`}
         >
-          Column Name
+          Name
         </label>
         <input
           type="text"
