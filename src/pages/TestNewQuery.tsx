@@ -24,13 +24,17 @@ const TestNewQuery: React.FC = () => {
   // holds the list of dbs user can select from
   const [dbInput, setDbInput] = useState<Database[] | null>(null);
   // holds the user's query input
-  const [queryInput, setQueryInput] = useState<string>('');
+  const [queryString, setQueryString] = useState<string>('');
+  // holds the query name input from user
+  const [queryName, setQueryName] = useState<string>('');
   // holds the selected db which will be from an arr of all saved dbs from user
   const [selectedDb, setSelectedDb] = useState<Database | null>(null);
   // holds the result of the query after post req
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
   // holds database link to test query on
   const [databaseLink, setDatabaseLink] = useState<string>('');
+  // holds saved queries
+  const [isQuerySaved, setIsQuerySaved] = useState<boolean>(false);
 
   // sets state of db credentials to allow connection on BE
   // TODO: Review the use of Store in this case
@@ -49,6 +53,7 @@ const TestNewQuery: React.FC = () => {
     service_name?: string;
     file_path?: string;
     queryString?: string;
+    queryName?: string;
   }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
 
@@ -79,6 +84,9 @@ const TestNewQuery: React.FC = () => {
 
   // Send DB link and query string to BE for testing
   const sendQuery = async () => {
+    // reset query saved state
+    setIsQuerySaved(false);
+
     try {
       // Define params to be sent to BE
       const values: any = dbValues;
@@ -99,7 +107,8 @@ const TestNewQuery: React.FC = () => {
             values.port = mysqlPort ? mysqlPort : '3306';
             values.database_name = mysqlName[0];
             values.db_type = 'mysql';
-            values.queryString = queryInput;
+            values.queryString = queryString;
+            values.queryName = queryName;
             break;
           default:
             const postgresName = splitURI[3];
@@ -111,7 +120,8 @@ const TestNewQuery: React.FC = () => {
             values.port = postgresPort ? postgresPort : '5432';
             values.database_name = postgresName;
             values.db_type = 'postgres';
-            values.queryString = queryInput;
+            values.queryString = queryString;
+            values.queryName = queryName;
             break;
         }
         // switch (splitURI[0]) {
@@ -172,51 +182,58 @@ const TestNewQuery: React.FC = () => {
 
       // Update DB credential store with values from passed in link
       setDbCredentials(values);
+      // set values to use in save query function
+      setDbValues(values);
       const dataFromBackend = await axios
         .get(`/api/sql/${values.db_type}/run-query`, { params: values })
         .then((res) => {
           console.log('response from BE: ', res.data);
           return res.data; // data is an array
         })
-        .catch((err: ErrorEvent) => console.error('getSchema error', err));
+        .catch((err: ErrorEvent) => console.error('Run query error', err));
       // set query result state with data from response (array)
       setQueryResult(dataFromBackend);
-      setQueryInput('');
+      setQueryName('');
+      setQueryString('');
       setDatabaseLink('');
     } catch (error) {
       console.error('sendQuery Error: Failed to test query', error);
     }
   };
 
-  // ! Is saveQuery needed?
-  // post req to save query
   const saveQuery = async () => {
     try {
+      // TODO remove commented out if not used selectedDb later
       // conditional to check that a query was run and that it had results
-      if (!queryResult || !selectedDb) {
+      // if (!queryResult || !selectedDb) {
+      if (!queryResult) {
         alert('Please ensure you have ran a query and you received results');
         return;
       }
 
-      // post req
-      //TODO where is it getting sent to?? backend route??
-      // const response = await fetch('', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     query: textInput,
-      //     databaseId: selectedDb.id,
-      //     result: queryResult,
-      //   }),
-      // });
-      // // conditional for failed resp
-      // if (!response.ok) {
-      //   throw new Error('HTTP error! status: ${response.status}');
-      // }
+      // the BE returns back formatted query results
+      // we want to extract just the data portion and send to the BE to save the query - since it's in str format, convert to obj
+      const extractedQueryRes = {
+        queryName: queryResult[1].split(': ')[1],
+        query_date: queryResult[2].split(': ')[1],
+        exec_time: parseFloat(queryResult[3].split(': ')[1]),
+      };
+
+      const savingQuery = await axios
+        .post(`/api/sql/${dbValues.db_type}/save-query`, {
+          params: { dbValues, extractedQueryRes },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          console.log('Query saved successfully! ', res.data);
+          return res.data;
+        })
+        .catch((err: ErrorEvent) => console.error('Save query error', err));
+      setIsQuerySaved(true);
     } catch (error) {
-      //   console.error('Failed to save query results', error);
+      console.error('Failed to save query results', error);
     }
   };
 
@@ -244,7 +261,7 @@ const TestNewQuery: React.FC = () => {
       //     }),
       //   });
 
-      //   // conditional for failed resp
+      //   conditional for failed resp
       //   if (!response.ok) {
       //     throw new Error('HTTP error! status: ${response.status}');
       //   }
@@ -285,12 +302,12 @@ const TestNewQuery: React.FC = () => {
             value={databaseLink}
             onChange={(e) => setDatabaseLink(e.target.value)}
             rows={1}
-            placeholder="enter db link here"
-            className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter DB link here"
+            className="w-2/3 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           {/* 💙💙 Select db dropdown ------------------- */}
-          {dbInput && (
+          {/* {dbInput && (
             <div className="my-4">
               <label htmlFor="database-select" className="mr-2">
                 Select a Database:
@@ -316,18 +333,27 @@ const TestNewQuery: React.FC = () => {
                 ))}
               </select>
             </div>
-          )}
+          )} */}
           {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
-          {selectedDb ? (
+          {/* Uncoment code when user has access to dropdown to select DB  */}
+          {/* {selectedDb ? (
             <span className="text-white">Connected to: {selectedDb.name}</span>
           ) : (
             <p className="dark:text-white">Loading database...</p>
-          )}
-          {/* 💙💙 Query Input ------------- */}
-          <div className="ml-2 mt-4">
+          )} */}
+          {/* 💙💙 Naming Query ------------- */}
+          <div className="ml-2 mt-4 flex flex-col space-y-4">
             <textarea
-              value={queryInput}
-              onChange={(e) => setQueryInput(e.target.value)}
+              value={queryName}
+              onChange={(e) => setQueryName(e.target.value)}
+              rows={1}
+              placeholder="Name your query"
+              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {/* Query Input ------------- */}
+            <textarea
+              value={queryString}
+              onChange={(e) => setQueryString(e.target.value)}
               rows={1}
               placeholder="Write your SQL query here"
               className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -364,34 +390,34 @@ const TestNewQuery: React.FC = () => {
           <div className="mt-4 flex gap-x-8">
             {queryResult && (
               <div className="mt-8 text-white">
+                {isQuerySaved ? 'Query Saved!' : ''}
                 <h3 className="mb-4 text-xl font-semibold">Query Results:</h3>
                 <table className="mx-auto w-fit table-fixed border-collapse border border-white">
                   <thead>
                     <tr className="bg-blue-950 ">
-                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
-                        Query Name
+                      <th className="w-[250px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Name
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
+                        Query
+                      </th>
+                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
                         Date Run
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
                         Execution Time
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      {/* Query Name Goes HERE */}
-                      <td className="border border-white px-6 py-4 text-center text-xl text-black dark:text-white">
-                        {queryInput}
-                      </td>
                       {/* dynamically extracting values from queryResult */}
                       {queryResult.map((metric, index) => {
                         const [, value] = (metric as string).split(':');
                         return (
                           <td
                             key={index}
-                            className="border px-4 py-2 text-center text-xl text-black dark:text-white"
+                            className="border px-4 py-2 text-center text-lg text-black dark:text-white"
                           >
                             {value.trim()}
                           </td>
