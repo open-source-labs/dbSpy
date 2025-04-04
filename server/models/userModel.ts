@@ -31,6 +31,7 @@ const pool = mysql
     port: Number(DB_PORT),
     database: 'dbspy',
     waitForConnections: true,
+    connectTimeout: 10000, // Timeout for establishing a connection
     connectionLimit: 10,
     queueLimit: 0,
     ssl: {

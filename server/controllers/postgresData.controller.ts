@@ -172,97 +172,115 @@ const postgresController = {
     const PostgresGetMetrics = await dbConnect(req);
     console.log('REACHED postgresGetMetrics MIDDLEWARE');
     console.log('REQ QUERY: ', req.query);
+    try {
+      // destructuing the below 2 fields to store to the queries table in mysql db
+      const { queryString, queryName, hostname, database_name } = req.query;
+      console.log('❓ QUERY FROM FE IS: ', queryString);
+      console.log('hostname:', hostname);
+      console.log('database_name', database_name);
 
-    // destructuing the below 2 fields to store to the queries table in mysql db
-    const { queryString, queryName, hostname, database_name } = req.query;
-    console.log('❓ QUERY FROM FE IS: ', queryString);
-    console.log('hostname:', hostname);
-    console.log('database_name', database_name);
+      // Query string (EXPLAIN) to access performance data
+      const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
+      const result = await PostgresGetMetrics.query(testQuery);
 
-    // Query string (EXPLAIN) to access performance data
-    const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
-    // view result of Explain query
-    const result = await PostgresGetMetrics.query(testQuery);
-    // console.log('🌟 result of testing: ', result);
-    console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
+      // console.log('🌟 result of testing: ', result);
+      console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
 
-    //pull exec time alone for the mysql update when storing queries
-    const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
-    console.log('exec_time:', exec_time);
+      //pull exec time alone for the mysql update when storing queries
+      const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
+      console.log('exec_time:', exec_time);
 
-    // Pull Execution time only
-    const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}ms`;
-    const namedQuery = `Query Name: ${queryName}`;
-    const queryStr = `Query: ${queryString}`;
-    // console.log('⏰ EXECUTION TIME METRIC', executionTime);
+      // Pull Execution time only
+      const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}ms`;
+      const namedQuery = `Query Name: ${queryName}`;
+      const queryStr = `Query: ${queryString}`;
+      // console.log('⏰ EXECUTION TIME METRIC', executionTime);
 
-    // Create date metric to add to response
-    const now = new Date();
-    const options: any = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      // hour: 'numeric',
-      // minute: 'numeric',
-      // second: 'numeric',
-      // hour12: true, // Use 12-hour time format
-      timeZone: 'America/New_York', // Set to US Eastern Time
-    };
-    const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
-    //console.log(`🗓️ TODAY'S DATE`, formattedDate);
+      // Create date metric to add to response
+      const now = new Date();
+      const options: any = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        // hour: 'numeric',
+        // minute: 'numeric',
+        // second: 'numeric',
+        // hour12: true, // Use 12-hour time format
+        timeZone: 'America/New_York', // Set to US Eastern Time
+      };
+      const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
+      //console.log(`🗓️ TODAY'S DATE`, formattedDate);
 
-    // console.log('done w getMetrics controller');
+      // console.log('done w getMetrics controller');
 
-    /************* mysql querymetrics db insert for saved query page retrieval ******/
-    // creating insert query for mysql query metrics db
-    //Todo: figure out how to get the email from the session, if an user logs in and then tests query performance
-    //const email = 'https://api.github.com/users/reva2024';
-    //const db_link = 'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
-    //const db_name = 'dbSpy';
+      /************* mysql querymetrics db insert for saved query page retrieval ******/
+      // creating insert query for mysql query metrics db
+      //Todo: figure out how to get the email from the session, if an user logs in and then tests query performance
+      //const email = 'https://api.github.com/users/reva2024';
+      //const db_link = 'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+      //const db_name = 'dbSpy';
 
-    // Send query string, date, and execution time on response
-    res.locals.metrics = [namedQuery, queryStr, formattedDate, executionTime];
-
-    return next();
+      // Send query string, date, and execution time on response
+      res.locals.metrics = [namedQuery, queryStr, formattedDate, executionTime];
+      PostgresGetMetrics.destroy();
+      return next();
+    } catch (err) {
+      console.error('Error during query execution: ', err);
+      PostgresGetMetrics.destroy();
+      // In case of an error, respond with a message
+      res.status(500).json({ error: 'Error executing query', message: err });
+    }
   },
 
   //----------Function to save query metrics after running query-----------------------------------------------------------------
   postgresSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
-    const PostgresSaveMetrics = await dbConnect(req);
-    console.log('REACHED postgresSaveMetrics MIDDLEWARE');
-    console.log('REQ BODY: ', req.body.params);
+    try {
+      console.log('REACHED postgresSaveMetrics MIDDLEWARE');
+      console.log('REQ BODY: ', req.body.params);
 
-    const { query_date, exec_time } = req.body.params.extractedQueryRes;
-    const { queryString, queryName, hostname, database_name } = req.body.params.dbValues;
+      const { query_date, exec_time } = req.body.params.extractedQueryRes;
+      const { queryString, queryName, hostname, database_name } =
+        req.body.params.dbValues;
 
-    // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
-    const date = new Date(query_date);
-    const formatDateForMySql = date.toISOString().split('T')[0];
-    console.log('formatted date: ', formatDateForMySql);
+      // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
+      const date = new Date(query_date);
+      const formatDateForMySql = date.toISOString().split('T')[0];
+      console.log('formatted date: ', formatDateForMySql);
 
-    const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
+      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
 
-    //connect to mysql pool imorted from userModel and send the query to update table
-    const savingQuery = await pool.query(insertQueryStr, [
-      queryString,
-      hostname,
-      exec_time,
-      database_name,
-      formatDateForMySql,
-      queryName,
-    ]);
+      //connect to mysql pool imorted from userModel and send the query to update table
+      const [savingQuery]: any = await pool.query(insertQueryStr, [
+        queryString,
+        hostname,
+        exec_time,
+        database_name,
+        formatDateForMySql,
+        queryName,
+      ]);
 
-    console.log('savingQuery completed!');
-
-    res.locals.savedQuery = [
-      queryString,
-      hostname,
-      exec_time,
-      database_name,
-      formatDateForMySql,
-      queryName,
-    ];
-    return next();
+      // Check if insertion was successful
+      // MySQL2 returns an array [result, fields]
+      // result is of type ResultSetHeader for INSERT queries
+      // affectedRows is a property of ResultSetHeader
+      if (savingQuery.affectedRows > 0) {
+        console.log('savingQuery completed!');
+        res.locals.savedQuery = [
+          queryString,
+          hostname,
+          exec_time,
+          database_name,
+          formatDateForMySql,
+          queryName,
+        ];
+        return next();
+      } else {
+        throw new Error('Database insertion failed. No rows affected.');
+      }
+    } catch (error) {
+      console.error('Error in postgresSaveQuery: ', error);
+      return res.status(500).json({ error: 'Failed to save query to database.' });
+    }
   },
 
   //-------------------------------------DATA TABLE ROWS-------------------------------------------------
