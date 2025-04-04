@@ -35,6 +35,8 @@ const TestNewQuery: React.FC = () => {
   const [databaseLink, setDatabaseLink] = useState<string>('');
   // holds saved queries
   const [isQuerySaved, setIsQuerySaved] = useState<boolean>(false);
+  // holds error state
+  const [error, setError] = useState<string | null>(null);
 
   // sets state of db credentials to allow connection on BE
   // TODO: Review the use of Store in this case
@@ -84,9 +86,10 @@ const TestNewQuery: React.FC = () => {
 
   // Send DB link and query string to BE for testing
   const sendQuery = async () => {
-    // reset query saved state
+    // reset states
     setIsQuerySaved(false);
-
+    setError(null);
+    setQueryResult(null);
     try {
       // Define params to be sent to BE
       const values: any = dbValues;
@@ -184,20 +187,26 @@ const TestNewQuery: React.FC = () => {
       setDbCredentials(values);
       // set values to use in save query function
       setDbValues(values);
+
       const dataFromBackend = await axios
         .get(`/api/sql/${values.db_type}/run-query`, { params: values })
         .then((res) => {
           console.log('response from BE: ', res.data);
-          return res.data; // data is an array
+          // set query result state with data from response (array)
+          setQueryResult(res.data);
+          // clears errors on success
+          setError(null);
+          setQueryName('');
+          setQueryString('');
+          setDatabaseLink('');
         })
-        .catch((err: ErrorEvent) => console.error('Run query error', err));
-      // set query result state with data from response (array)
-      setQueryResult(dataFromBackend);
-      setQueryName('');
-      setQueryString('');
-      setDatabaseLink('');
+        .catch((err: ErrorEvent) => {
+          console.error('Run query error', err);
+          setError(err.error || 'Failed to run query');
+        });
     } catch (error) {
       console.error('sendQuery Error: Failed to test query', error);
+      setError('An unexpected error occurred while running the query.');
     }
   };
 
@@ -214,7 +223,7 @@ const TestNewQuery: React.FC = () => {
       // the BE returns back formatted query results
       // we want to extract just the data portion and send to the BE to save the query - since it's in str format, convert to obj
       const extractedQueryRes = {
-        queryName: queryResult[1].split(': ')[1],
+        queryString: queryResult[1].split(': ')[1],
         query_date: queryResult[2].split(': ')[1],
         exec_time: parseFloat(queryResult[3].split(': ')[1]),
       };
@@ -273,7 +282,8 @@ const TestNewQuery: React.FC = () => {
   //TODO get the FeatureTab to not sit on top of content in the page
   return (
     <>
-      <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2">
+      {/* <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2"> */}
+      <div className="justify-space-around flex-auto justify-end">
         {/* <FeatureTab></FeatureTab> */}
         <FeatureTab />
         <div className="ml-20 pt-20 text-center">
@@ -298,16 +308,25 @@ const TestNewQuery: React.FC = () => {
           {/* revas link: 
       postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres
       */}
-          <textarea
-            value={databaseLink}
-            onChange={(e) => setDatabaseLink(e.target.value)}
-            rows={1}
-            placeholder="Enter DB link here"
-            className="w-2/3 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          {/* 💙💙 Naming Query ------------- */}
+          <div className="ml-2 mt-4 flex flex-col space-y-4">
+            <textarea
+              value={queryName}
+              onChange={(e) => setQueryName(e.target.value)}
+              rows={1}
+              placeholder="Name your query"
+              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <textarea
+              value={databaseLink}
+              onChange={(e) => setDatabaseLink(e.target.value)}
+              rows={1}
+              placeholder="Enter DB link here"
+              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
-          {/* 💙💙 Select db dropdown ------------------- */}
-          {/* {dbInput && (
+            {/* 💙💙 Select db dropdown ------------------- */}
+            {/* {dbInput && (
             <div className="my-4">
               <label htmlFor="database-select" className="mr-2">
                 Select a Database:
@@ -334,22 +353,13 @@ const TestNewQuery: React.FC = () => {
               </select>
             </div>
           )} */}
-          {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
-          {/* Uncoment code when user has access to dropdown to select DB  */}
-          {/* {selectedDb ? (
+            {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
+            {/* Uncoment code when user has access to dropdown to select DB  */}
+            {/* {selectedDb ? (
             <span className="text-white">Connected to: {selectedDb.name}</span>
           ) : (
             <p className="dark:text-white">Loading database...</p>
           )} */}
-          {/* 💙💙 Naming Query ------------- */}
-          <div className="ml-2 mt-4 flex flex-col space-y-4">
-            <textarea
-              value={queryName}
-              onChange={(e) => setQueryName(e.target.value)}
-              rows={1}
-              placeholder="Name your query"
-              className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
             {/* Query Input ------------- */}
             <textarea
               value={queryString}
@@ -388,6 +398,11 @@ const TestNewQuery: React.FC = () => {
           )} */}
           {/* this wrap aligns the title 'Query Results' w/ the table  together */}
           <div className="mt-4 flex gap-x-8">
+            {error && (
+              <div className="mt-8 text-white">
+                Error running query. Check DB link and/or SQL query.
+              </div>
+            )}
             {queryResult && (
               <div className="mt-8 text-white">
                 {isQuerySaved ? 'Query Saved!' : ''}

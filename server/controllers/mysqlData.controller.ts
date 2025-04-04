@@ -16,6 +16,7 @@ import {
   getTableNames,
 } from './helperFunctions/universal.helpers';
 import { exec } from 'child_process';
+import pool from './../models/userModel';
 
 // Object containing all of the middleware
 const mysqlController = {
@@ -169,47 +170,41 @@ const mysqlController = {
 
   //----------Function to gather query metrics from database-----------------------------------------------------------------
   mysqlGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
-    // if we pass database_link from FE then we might not need to initialize dbConnect again
-    // database_link and query can be passed in from FE
-    // console.log('FULL REQUEST: ', req);
-
     // grab queryString from FE
     console.log('REACHED mysqlGetMetrics MIDDLEWARE');
     console.log('REQ QUERY: ', req.query);
-    const { queryString }: { queryString?: string } = req.query;
+    const { queryString, queryName }: { queryString?: string; queryName?: string } =
+      req.query;
     console.log('❓ QUERY FROM FE IS: ', queryString);
-    
+
     // Declare helper function to run EXPLAIN ANALYZE query and pull execution time
-    const measureExecutionTime = async (query: string ): Promise<string | void> => {
+    const measureExecutionTime = async (query: string): Promise<string | void> => {
       // Step 1: Connect to MySQL
       const mysqlGetMetrics = await dbConnect(req);
-    
+
       try {
         // Step 2: Run EXPLAIN ANALYZE Query
-        const [rows] = await mysqlGetMetrics.query(
-          `EXPLAIN ANALYZE ${queryString}`
-        );
+        const [rows] = await mysqlGetMetrics.query(`EXPLAIN ANALYZE ${queryString}`);
         const row = rows['EXPLAIN'];
         console.log('🌟 Rows returned by EXPLAIN ANALYZE:', row);
 
-    
         // Step 3: Parse the output for actual times
         let totalExecutionTime = 0;
-    
-          // Regex to extract actual time values from the EXPLAIN ANALYZE output
-          const times = row.match(/actual time=(\d+\.\d+)\.\.(\d+\.\d+)/);
-          // console.log('🌟 RESULT OF TIMES', times);
-          
-          if (times) {
-            // Extract the start and end times (in milliseconds)
-            const startTime = parseFloat(times[1]);
-            const endTime = parseFloat(times[2]);
-    
-            // Calculate the execution time for this step
-            const executionTime = endTime - startTime;
-            totalExecutionTime += executionTime; // Add to total execution time
-          }
-    
+
+        // Regex to extract actual time values from the EXPLAIN ANALYZE output
+        const times = row.match(/actual time=(\d+\.\d+)\.\.(\d+\.\d+)/);
+        // console.log('🌟 RESULT OF TIMES', times);
+
+        if (times) {
+          // Extract the start and end times (in milliseconds)
+          const startTime = parseFloat(times[1]);
+          const endTime = parseFloat(times[2]);
+
+          // Calculate the execution time for this step
+          const executionTime = endTime - startTime;
+          totalExecutionTime += executionTime; // Add to total execution time
+        }
+
         // Step 4: Log the total execution time
         // console.log(`Total Execution Time: ${totalExecutionTime.toFixed(6)} ms`);
         // console log 3 decimals for return to front end
@@ -218,37 +213,97 @@ const mysqlController = {
         return executionTime;
       } catch (error) {
         console.error('Error executing query:', error);
+        // Throw the error to propagate it to the middleware
+        throw new Error(`Invalid query or execution error: ${error}`);
       } finally {
         // Step 5: Close the database connection
         await mysqlGetMetrics.destroy();
       }
-    }
-   
-    // call helper function to get Execution Time
-    const totalExecutionTime = await measureExecutionTime(queryString!);
-    console.log('⏰ TOTAL EXECUTION TIME', totalExecutionTime);
-    const executionTimeFE = `Execution Time: ${totalExecutionTime}`;
-
-    // Create date metric to add to response
-    const now = new Date();
-    const options: any = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      // hour: 'numeric',
-      // minute: 'numeric',
-      // second: 'numeric',
-      // hour12: true, // Use 12-hour time format
-      timeZone: 'America/New_York', // Set to US Eastern Time
     };
-    const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
-    // console.log(`🗓️ TODAY'S DATE`, formattedDate);
-    // console.log('done w getMetrics controller');
 
-    // Send date and execution time on response
-    res.locals.metrics = [formattedDate, executionTimeFE];
+    try {
+      // call helper function to get Execution Time
+      const totalExecutionTime = await measureExecutionTime(queryString!);
+      console.log('⏰ TOTAL EXECUTION TIME', totalExecutionTime);
 
-    return next();
+      // Create date metric to add to response
+      const now = new Date();
+      const options: any = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        // hour: 'numeric',
+        // minute: 'numeric',
+        // second: 'numeric',
+        // hour12: true, // Use 12-hour time format
+        timeZone: 'America/New_York', // Set to US Eastern Time
+      };
+
+      // format data with correct strings to pass to FE
+      const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
+      const executionTimeFE = `Execution Time: ${totalExecutionTime}ms`;
+      const queryStr = `Query: ${queryString}`;
+      const queryNme = `Name: ${queryName}`;
+
+      // Send name of query, query string, date, and execution time in response
+      res.locals.metrics = [queryNme, queryStr, formattedDate, executionTimeFE];
+
+      return next();
+    } catch (error) {
+      console.error('Error during query execution: ', error);
+
+      // Send an error response to the client
+      res.status(400).json({ error: 'Query execution failed: ', message: error });
+    }
+  },
+
+  //----------Function to save query metrics from database-----------------------------------------------------------------
+  mysqlSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // grab queryString from FE
+      console.log('REACHED mysqlSaveQuery MIDDLEWARE');
+      console.log('REQ QUERY: ', req.body.params);
+      const { query_date, exec_time } = req.body.params.extractedQueryRes;
+      const { queryString, queryName, hostname, database_name } =
+        req.body.params.dbValues;
+
+      const date = new Date(query_date);
+      const formatDateForMySql = date.toISOString().split('T')[0];
+      console.log('formatted date: ', formatDateForMySql);
+
+      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
+
+      const [saveQuery]: any = await pool.query(insertQueryStr, [
+        queryString,
+        hostname,
+        exec_time,
+        database_name,
+        formatDateForMySql,
+        queryName,
+      ]);
+
+      // Check if insertion was successful
+      // MySQL2 returns an array [result, fields]
+      // result is of type ResultSetHeader for INSERT queries
+      // affectedRows is a property of ResultSetHeader
+      if (saveQuery.affectedRows > 0) {
+        console.log('saveQuery completed!');
+        res.locals.savedQuery = [
+          queryString,
+          hostname,
+          exec_time,
+          database_name,
+          formatDateForMySql,
+          queryName,
+        ];
+        return next();
+      } else {
+        throw new Error('Database insertion failed. No rows affected.');
+      }
+    } catch (error) {
+      console.error('Error in mysqlSaveQuery: ', error);
+      return res.status(500).json({ error: 'Failed to save query to database.' });
+    }
   },
 
   //-------------------------------------DATA TABLE ROWS-------------------------------------------------

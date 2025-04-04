@@ -45,7 +45,6 @@ const loadData = async () => {
   \`db_link\` varchar(240) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   \`db_name\` varchar(40) NOT NULL,
   \`exec_time\` double NOT NULL,
-  \`created_date\` timestamp NULL DEFAULT NULL,
   \`query_date\` date DEFAULT NULL,
   \`name\` varchar(40) DEFAULT NULL,
   PRIMARY KEY (\`id\`),
