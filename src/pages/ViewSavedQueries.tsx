@@ -2,8 +2,8 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
-import { NavLink } from 'react-router-dom';
 import { useNavStore } from '../store/navStore';
+import axios from 'axios';
 
 // db selecting from prev connected by user
 type Database = {
@@ -14,27 +14,50 @@ type Database = {
 // defining type of query result
 type QueryResult = string[];
 
+// updating state to disaplay multiple queries
+type SaveQuery = {
+  queryName: string;
+  queryString: string;
+  dateRun: string;
+  execTime: number;
+};
+
 const ViewSavedQueries: React.FC = () => {
   //
   // get state of FeatureTab from Zustand store
   const toggleClicked = useNavStore((state) => state.toggleClicked);
-  // holds the list of dbs user can select from
-  const [dbInput, setDbInput] = useState<Database[] | null>(null);
-  // holds the user's query input
-  const [queryString, setQueryString] = useState<string>('');
-  // holds the query name input from user
-  const [queryName, setQueryName] = useState<string>('');
-  // holds the selected db which will be from an arr of all saved dbs from user
-  const [selectedDb, setSelectedDb] = useState<Database | null>(null);
-  // holds the result of the query after post req
-  const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
-  // holds database link to test query on
-  const [databaseLink, setDatabaseLink] = useState<string>('');
+
+  //------------------- TO DELETE, for testing table rendering
+  // const [queryResult, setQueryResult] = useState<QueryResult | null>([
+  //   'Date Run: April 1, 2025',
+  //   'Execution Time: 0.043',
+  // ]);
+  // const [queryName, setQueryName] = useState<string>('Testing');
+  // const [queryString, setQueryString] = useState<string>('SELECT _id FROM people');
+  //---------------------------------
+
+  // holds saved Queries
+  const [savedQueries, setSavedQueries] = useState<SaveQuery[]>([]);
+
+  // fetch queries data req
+  useEffect(() => {
+    const fetchSavedQueries = async () => {
+      try {
+        //
+        const { data } = await axios.get(''); // where is req going to in the be??
+
+        setSavedQueries(data); // must update our state
+      } catch (error) {
+        console.error('Error fetching saved queries:', error);
+      }
+    };
+    fetchSavedQueries();
+    // runs on load, empty arr -> no reruns
+  }, []);
+
   return (
-    //
     <>
       <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2">
-        {/* <FeatureTab></FeatureTab> */}
         <FeatureTab />
         <div className="ml-20 pt-20 text-center">
           <h1 className="mb-12 text-5xl font-bold tracking-tight text-yellow-400 md:text-6xl xl:text-7xl">
@@ -46,7 +69,7 @@ const ViewSavedQueries: React.FC = () => {
         >
           {/* this wrap aligns the title 'Queries Saved w/ the table  together */}
           <div className="mt-4 flex gap-x-8">
-            {queryResult && (
+            {savedQueries.length > 0 && (
               <div className="mt-8 text-white">
                 <h3 className="mb-4 text-xl font-semibold">Queries:</h3>
                 <table className="mx-auto w-fit table-fixed border-collapse border border-white">
@@ -67,28 +90,23 @@ const ViewSavedQueries: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      {/* Query Name */}
-                      <td className="border border-white px-6 py-4 text-center text-lg text-black dark:text-white">
-                        {queryName}
-                      </td>
-                      {/* Query Ran */}
-                      <td className="border border-white px-6 py-4 text-center text-lg text-black dark:text-white">
-                        {queryString}
-                      </td>
-                      {/* dynamically extracting values from queryResult */}
-                      {/* {queryResult.map((metric, index) => {
-                            const [, value] = (metric as string).split(':');
-                            return (
-                              <td
-                                key={index}
-                                className="border px-4 py-2 text-center text-lg text-black dark:text-white"
-                              >
-                                {value.trim()}
-                              </td>
-                            );
-                          })} */}
-                    </tr>
+                    {/* values from savedQueries */}
+                    {savedQueries.map((query, index) => (
+                      <tr key={index}>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.queryName}
+                        </td>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.queryString}
+                        </td>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.dateRun}
+                        </td>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.execTime}s
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
