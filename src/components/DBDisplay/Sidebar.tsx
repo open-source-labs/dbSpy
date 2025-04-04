@@ -133,7 +133,7 @@ const Sidebar = (props: any) => {
   //END: HELPER FUNCTIONS
 
   return (
-    <form id="dbconnect" className="bg-[#fbf3de] dark:bg-gray-800">
+    <form id="dbconnect" className="bg-[#fbf3de] bg-gradient-to-b from-[#f8f4eb] dark:from-sky-800 to-transparent bg-opacity-0">
       <label className="dark:text-[#f8f4eb]">
         <h3>Connect to Database</h3>
       </label>

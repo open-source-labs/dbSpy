@@ -25,7 +25,7 @@ import logo10 from '../assets/newLogoWhite_color10.png';
 import logo11 from '../assets/newLogoWhite_color11.png';
 import logo12 from '../assets/newLogoWhite_color12.png';
 
-const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
+const linkbtn = 'mt-4 inline-block lg:mt-0 text-white hover:text-white mr-4';
 
 function Navbar() {
   // dbSpy 8.0: removed theme state and add state for the animated logo
@@ -56,7 +56,8 @@ function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between  bg-sky-800 p-2 z-50">
+      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between bg-gradient-to-b from-sky-700 to-transparent bg-opacity-80 p-3 z-50 backdrop-blur-md">
+
         <div className="navItems text-base">
           {/* dbSpy 8.0: added toggle button to control FeatureTab */}
           <img
