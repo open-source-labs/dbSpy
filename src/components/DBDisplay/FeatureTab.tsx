@@ -330,7 +330,8 @@ export default function FeatureTab(props: any) {
         className="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50"
       >
         {/* <!-- Confirm Modal content --> */}
-        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
+        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-gradient-to-b from-[#f8f4eb] to-transparent bg-opacity-80 shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
+
           <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
             Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
             changes.

@@ -77,7 +77,7 @@ export default function DeleteTableModal({
   };
   return (
     <div id="deleteTableModal" className="input-modal">
-      <div className="modal-content w-96 rounded-md bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]">
+      <div className="modal-content w-96 rounded-md bg-gradient-to-b from-[#f8f4eb] dark:from-sky-700 to-transparent bg-opacity-80 shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:shadow-[0px_5px_10px_#1e293b]">
         <h2 className="pb-4 text-xl text-slate-900 dark:text-[#f8f4eb]">
           Select a table to delete:
         </h2>
