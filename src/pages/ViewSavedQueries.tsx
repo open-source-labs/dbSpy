@@ -11,9 +11,6 @@ type Database = {
   id: string | number;
 };
 
-// defining type of query result
-// type QueryResult = string[];
-
 // updating state to display multiple queries
 type SaveQuery = {
   name: string;
