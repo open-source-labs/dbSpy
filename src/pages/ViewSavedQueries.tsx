@@ -16,10 +16,10 @@ type QueryResult = string[];
 
 // updating state to disaplay multiple queries
 type SaveQuery = {
-  queryName: string;
-  queryString: string;
-  dateRun: string;
-  execTime: number;
+  name: string;
+  query: string;
+  query_date: string;
+  exec_time: number;
 };
 
 const ViewSavedQueries: React.FC = () => {
@@ -43,16 +43,15 @@ const ViewSavedQueries: React.FC = () => {
   useEffect(() => {
     const fetchSavedQueries = async () => {
       try {
-        //
-        const { data } = await axios.get(''); // where is req going to in the be??
-
-        setSavedQueries(data); // must update our state
+        const res = await axios.get(`/api/saveFiles/saved-queries`);
+        // console.log('response from BE: ', res.data[0]);
+        setSavedQueries(res.data[0]); // update state with data from BE
       } catch (error) {
         console.error('Error fetching saved queries:', error);
       }
     };
     fetchSavedQueries();
-    // runs on load, empty arr -> no reruns
+    // runs on load, empty arr -> ensures fetch runs only once when the component mounts
   }, []);
 
   return (
@@ -94,16 +93,20 @@ const ViewSavedQueries: React.FC = () => {
                     {savedQueries.map((query, index) => (
                       <tr key={index}>
                         <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.queryName}
+                          {query.name}
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.queryString}
+                          {query.query}
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.dateRun}
+                          {new Date(query.query_date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-xl text-white">
-                          {query.execTime}s
+                          {query.exec_time}ms
                         </td>
                       </tr>
                     ))}

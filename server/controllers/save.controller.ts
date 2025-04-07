@@ -30,6 +30,24 @@ interface GlobalError {
 }
 
 const saveController = {
+  getSavedQueries: async (req: Request, res: Response, next: NextFunction) => {
+    log.info('[saveCtrl - getSavedQueries] Beginning to load saved queries');
+    try {
+      // query to get all necessary data to the FE
+      // TODO - add in user data to filter per user
+      const getQueries: string = `SELECT name, query, query_date, exec_time FROM queries`;
+      const queryVal = await pool.query(getQueries);
+      res.locals.savedQueries = queryVal;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'An error occurred in saveController.getSavedQueries',
+        message: 'Something went wrong in the loading process',
+        status: 400,
+      });
+    }
+  },
+
   // clone an existing save
   clone: async (req: Request, res: Response, next: NextFunction) => {
     log.info('[saveCtrl - cloneSchema] Beginning cloning process');
