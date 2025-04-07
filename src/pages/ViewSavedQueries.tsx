@@ -12,9 +12,9 @@ type Database = {
 };
 
 // defining type of query result
-type QueryResult = string[];
+// type QueryResult = string[];
 
-// updating state to disaplay multiple queries
+// updating state to display multiple queries
 type SaveQuery = {
   name: string;
   query: string;
@@ -23,18 +23,8 @@ type SaveQuery = {
 };
 
 const ViewSavedQueries: React.FC = () => {
-  //
   // get state of FeatureTab from Zustand store
   const toggleClicked = useNavStore((state) => state.toggleClicked);
-
-  //------------------- TO DELETE, for testing table rendering
-  // const [queryResult, setQueryResult] = useState<QueryResult | null>([
-  //   'Date Run: April 1, 2025',
-  //   'Execution Time: 0.043',
-  // ]);
-  // const [queryName, setQueryName] = useState<string>('Testing');
-  // const [queryString, setQueryString] = useState<string>('SELECT _id FROM people');
-  //---------------------------------
 
   // holds saved Queries
   const [savedQueries, setSavedQueries] = useState<SaveQuery[]>([]);
@@ -89,7 +79,8 @@ const ViewSavedQueries: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* values from savedQueries */}
+                    {/* values from savedQueries to get us each row */}
+
                     {savedQueries.map((query, index) => (
                       <tr key={index}>
                         <td className="border border-white px-6 py-3 text-center text-xl text-white">
