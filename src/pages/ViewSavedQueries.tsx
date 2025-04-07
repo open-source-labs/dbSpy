@@ -11,31 +11,34 @@ type Database = {
   id: string | number;
 };
 
-// defining type of query result
-type QueryResult = string[];
+// updating state to display multiple queries
+type SaveQuery = {
+  name: string;
+  query: string;
+  query_date: string;
+  exec_time: number;
+};
 
 const ViewSavedQueries: React.FC = () => {
-  //
   // get state of FeatureTab from Zustand store
   const toggleClicked = useNavStore((state) => state.toggleClicked);
 
   // holds saved Queries
-  const [savedQueries, setSavedQueries] = useState<QueryResult[]>([]);
+  const [savedQueries, setSavedQueries] = useState<SaveQuery[]>([]);
 
   // fetch queries data req
   useEffect(() => {
     const fetchSavedQueries = async () => {
       try {
-        //
-        const { data } = await axios.get(''); // where is req going to in the be??
-
-        setSavedQueries(data); // must update our state
+        const res = await axios.get(`/api/saveFiles/saved-queries`);
+        // console.log('response from BE: ', res.data[0]);
+        setSavedQueries(res.data[0]); // update state with data from BE
       } catch (error) {
         console.error('Error fetching saved queries:', error);
       }
     };
     fetchSavedQueries();
-    // runs on load, empty arr -> no reruns
+    // runs on load, empty arr -> ensures fetch runs only once when the component mounts
   }, []);
 
   return (
@@ -74,20 +77,25 @@ const ViewSavedQueries: React.FC = () => {
                   </thead>
                   <tbody>
                     {/* values from savedQueries to get us each row */}
+
                     {savedQueries.map((query, index) => (
                       <tr key={index}>
-                        {/* dynamically extracting values from queryResult to show each column in individuality row */}
-                        {query.map((metric, index) => {
-                          const [, value] = (metric as string).split(':');
-                          return (
-                            <td
-                              key={index}
-                              className="border px-4 py-2 text-center text-lg text-black dark:text-white"
-                            >
-                              {value.trim()}
-                            </td>
-                          );
-                        })}
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.name}
+                        </td>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.query}
+                        </td>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {new Date(query.query_date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </td>
+                        <td className="border border-white px-6 py-3 text-center text-xl text-white">
+                          {query.exec_time}ms
+                        </td>
                       </tr>
                     ))}
                   </tbody>
