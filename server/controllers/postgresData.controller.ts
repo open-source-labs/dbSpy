@@ -249,7 +249,7 @@ const postgresController = {
 
       const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
 
-      //connect to mysql pool imorted from userModel and send the query to update table
+      //connect to mysql pool imported from userModel and send the query to update table
       const [savingQuery]: any = await pool.query(insertQueryStr, [
         queryString,
         hostname,
