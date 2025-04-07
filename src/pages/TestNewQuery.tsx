@@ -283,22 +283,22 @@ const TestNewQuery: React.FC = () => {
   return (
     <>
       {/* <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2"> */}
-      <div className="justify-space-around flex-auto justify-end">
-        {/* <FeatureTab></FeatureTab> */}
+      <div className="justify-space-around min-h-screen w-full flex-auto justify-around bg-[#c9ced1] dark:bg-slate-700 ">
         <FeatureTab />
-        <div className="ml-20 pt-20 text-center">
-          <h1 className="mb-12 text-5xl font-bold tracking-tight text-yellow-400 md:text-6xl xl:text-7xl">
-            Test New Query
-          </h1>
-        </div>
+        {/* Must wrap the page title in the toggle div in order for the title to shift w/ the rest of the page */}
         <div
           className={`transition-all duration-300 ${toggleClicked ? 'ml-16' : 'ml-64'}`}
         >
+          <div className="flex w-full justify-center pt-20">
+            <h1 className="mb-12 text-5xl font-bold tracking-tight text-slate-700 dark:text-white md:text-6xl xl:text-7xl">
+              Test Your Query!
+            </h1>
+          </div>
           {/* 💙💙 Improve w/ AI Button -------------- */}
           <div className="mr-2 flex justify-end">
             <button
               onClick={improveWithAi}
-              className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
+              className="rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
             >
               Improve with AI
             </button>
@@ -373,14 +373,14 @@ const TestNewQuery: React.FC = () => {
               {/* 💙💙 Run Query Button -------------- */}
               <button
                 onClick={sendQuery}
-                className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
+                className="rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
               >
                 Run Query
               </button>
               {/* 💙💙 Save Query Button -------------- */}
               <button
                 onClick={saveQuery}
-                className="rounded border border-gray-400 px-4 py-2 text-black hover:translate-y-[-2px] hover:cursor-pointer dark:bg-blue-100"
+                className="mr-2 rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
               >
                 Save Query
               </button>
@@ -406,20 +406,22 @@ const TestNewQuery: React.FC = () => {
             {queryResult && (
               <div className="mt-8 text-white">
                 {isQuerySaved ? 'Query Saved!' : ''}
-                <h3 className="mb-4 text-xl font-semibold">Query Results:</h3>
-                <table className="mx-auto w-fit table-fixed border-collapse border border-white">
+                <h3 className="mb-4 text-xl font-semibold text-slate-700 dark:text-white">
+                  Query Results:
+                </h3>
+                <table className="mx-auto mr-2 w-fit border-collapse border border-white">
                   <thead>
-                    <tr className="bg-blue-950 ">
-                      <th className="w-[250px] border border-white px-6 py-3 text-center text-xl text-white">
+                    <tr className="bg-slate-700 dark:bg-slate-800">
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
                         Name
                       </th>
-                      <th className="w-[300px] border border-white px-6 py-3 text-center text-xl text-white">
+                      <th className="w-[250px] border border-white px-6 py-3 text-center text-base text-white">
                         Query
                       </th>
-                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[200px] border border-white px-6 py-3  text-center text-base text-white">
                         Date Run
                       </th>
-                      <th className="w-[250px] border border-white px-6 py-3  text-center text-xl text-white">
+                      <th className="w-[200px] border border-white px-6 py-3  text-center text-base text-white">
                         Execution Time
                       </th>
                     </tr>
@@ -432,7 +434,7 @@ const TestNewQuery: React.FC = () => {
                         return (
                           <td
                             key={index}
-                            className="border px-4 py-2 text-center text-lg text-black dark:text-white"
+                            className="border border-slate-700 px-4 py-2 text-center text-base text-black dark:border-white dark:text-white"
                           >
                             {value.trim()}
                           </td>
