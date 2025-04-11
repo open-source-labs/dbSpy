@@ -18,6 +18,18 @@ type Database = {
 // defining type of query result
 type QueryResult = string[];
 
+type MoreMetricsResult = {
+  planningTime: number;
+  totalCost: number;
+  actualTotalTime: number;
+  nodeType: string;
+  relationName: string;
+  planRows: number;
+  actualRows: number;
+  sharedHit: number;
+  sharedRead: number;
+};
+
 const TestNewQuery: React.FC = () => {
   // get state of FeatureTab from Zustand store
   const toggleClicked = useNavStore((state) => state.toggleClicked);
@@ -31,6 +43,8 @@ const TestNewQuery: React.FC = () => {
   const [selectedDb, setSelectedDb] = useState<Database | null>(null);
   // holds the result of the query after post req
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
+  // holds the result of other query metrics after post req
+  const [moreMetrics, setMoreMetrics] = useState<MoreMetricsResult | null>(null);
   // holds database link to test query on
   const [databaseLink, setDatabaseLink] = useState<string>('');
   // holds saved queries
@@ -90,6 +104,7 @@ const TestNewQuery: React.FC = () => {
     setIsQuerySaved(false);
     setError(null);
     setQueryResult(null);
+    setMoreMetrics(null);
     try {
       // Define params to be sent to BE
       const values: any = dbValues;
@@ -193,7 +208,9 @@ const TestNewQuery: React.FC = () => {
         .then((res) => {
           console.log('response from BE: ', res.data);
           // set query result state with data from response (array)
-          setQueryResult(res.data);
+          // and set more metrics array of objects state
+          setQueryResult(res.data.metrics);
+          setMoreMetrics(res.data.otherMetrics[0]);
           // clears errors on success
           setError(null);
           setQueryName('');
@@ -230,7 +247,7 @@ const TestNewQuery: React.FC = () => {
 
       const savingQuery = await axios
         .post(`/api/sql/${dbValues.db_type}/save-query`, {
-          params: { dbValues, extractedQueryRes },
+          params: { dbValues, extractedQueryRes, moreMetrics },
           headers: {
             'Content-Type': 'application/json',
           },
@@ -289,27 +306,31 @@ const TestNewQuery: React.FC = () => {
         <div
           className={`transition-all duration-300 ${toggleClicked ? 'ml-16' : 'ml-64'}`}
         >
-          <div className="flex w-full justify-center pt-20">
-            <h1 className="mb-12 text-5xl font-bold tracking-tight text-slate-700 dark:text-white md:text-6xl xl:text-7xl">
-              Test Your Query!
-            </h1>
+          <div className="mb-12 mr-2 flex w-full items-center justify-end pt-20">
+            <div className="flex w-full">
+              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-white">
+                Test New Query
+              </h1>
+            </div>
+            <button
+              onClick={improveWithAi}
+              className="mr-4 h-11 w-auto whitespace-nowrap rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+            >
+              Improve with AI
+            </button>
           </div>
           {/* 💙💙 Improve w/ AI Button -------------- */}
-          <div className="mr-2 flex justify-end">
+          {/* <div className="mr-2 flex justify-end">
             <button
               onClick={improveWithAi}
               className="rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
             >
               Improve with AI
             </button>
-          </div>
+          </div> */}
 
-          {/* TEMPORARY BE - test db + query */}
-          {/* revas link: 
-      postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres
-      */}
           {/* 💙💙 Naming Query ------------- */}
-          <div className="ml-2 mt-4 flex flex-col space-y-4">
+          <div className="ml-2 mr-2 mt-4 flex flex-col space-y-4">
             <textarea
               value={queryName}
               onChange={(e) => setQueryName(e.target.value)}
@@ -387,15 +408,6 @@ const TestNewQuery: React.FC = () => {
             </div>
           </div>
           {/* 💙💙 Query Result --------------- */}
-          {/* To Delete- old rendering of metrics */}
-          {/* {queryResult && (
-            <div style={{ marginTop: '2rem', color: 'white' }}>
-              <h3>Query Result:</h3>
-              {queryResult?.map((metric) => (
-                <pre>{metric}</pre>
-              ))}
-            </div>
-          )} */}
           {/* this wrap aligns the title 'Query Results' w/ the table  together */}
           <div className="mt-4 flex gap-x-8">
             {error && (
@@ -409,7 +421,8 @@ const TestNewQuery: React.FC = () => {
                 <h3 className="mb-4 text-xl font-semibold text-slate-700 dark:text-white">
                   Query Results:
                 </h3>
-                <table className="mx-auto mr-2 w-fit border-collapse border border-white">
+                {/* <table className="mx-auto mr-2 w-fit border-collapse border border-white"> */}
+                <table className="mr-2 w-fit border-collapse border border-white">
                   <thead>
                     <tr className="bg-slate-700 dark:bg-slate-800">
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
@@ -418,10 +431,10 @@ const TestNewQuery: React.FC = () => {
                       <th className="w-[250px] border border-white px-6 py-3 text-center text-base text-white">
                         Query
                       </th>
-                      <th className="w-[200px] border border-white px-6 py-3  text-center text-base text-white">
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
                         Date Run
                       </th>
-                      <th className="w-[200px] border border-white px-6 py-3  text-center text-base text-white">
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
                         Execution Time
                       </th>
                     </tr>
@@ -440,6 +453,70 @@ const TestNewQuery: React.FC = () => {
                           </td>
                         );
                       })}
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="mr-2 w-fit border-collapse border border-white">
+                  <thead>
+                    <tr className="bg-slate-700 dark:bg-slate-800">
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Planning Time
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Total Cost
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Actual Total Time
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Node Type
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Relation Name
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Plan Rows
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Actual Rows
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Shared Hit Blocks
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        Shared Read Blocks
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.planningTime}ms
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.totalCost}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.actualTotalTime}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.nodeType}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.relationName}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.planRows}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.actualRows}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.sharedHit}
+                      </th>
+                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                        {moreMetrics?.sharedRead}
+                      </th>
                     </tr>
                   </tbody>
                 </table>
