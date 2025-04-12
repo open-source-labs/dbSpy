@@ -133,7 +133,7 @@ const ViewSavedQueries: React.FC = () => {
                           {query.exec_time}ms
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-base text-white">
-                          {query.planning_time ? query.planning_time + 'ms' : 'NULL'}
+                          {query.planning_time ? query.planning_time + 'ms' : 'N/A'}
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-base text-white">
                           {query.total_cost}
@@ -154,10 +154,10 @@ const ViewSavedQueries: React.FC = () => {
                           {query.actual_rows}
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-base text-white">
-                          {query.shared_hit_blocks ? query.shared_hit_blocks : 'NULL'}
+                          {query.shared_hit_blocks ? query.shared_hit_blocks : 'N/A'}
                         </td>
                         <td className="border border-white px-6 py-3 text-center text-base text-white">
-                          {query.shared_read_blocks ? query.shared_hit_blocks : 'NULL'}
+                          {query.shared_read_blocks ? query.shared_hit_blocks : 'N/A'}
                         </td>
                       </tr>
                     ))}
