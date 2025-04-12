@@ -12,7 +12,7 @@ mysqlRouter.get(
   '/run-query',
   mysqlController.mysqlGetMetrics,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals.metrics);
+    return res.status(200).json(res.locals);
   }
 );
 
