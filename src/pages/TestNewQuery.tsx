@@ -491,7 +491,9 @@ const TestNewQuery: React.FC = () => {
                   <tbody>
                     <tr>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        {moreMetrics?.planningTime}ms
+                        {moreMetrics?.planningTime
+                          ? moreMetrics.planningTime + 'ms'
+                          : 'N/A'}
                       </th>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
                         {moreMetrics?.totalCost}
@@ -512,10 +514,10 @@ const TestNewQuery: React.FC = () => {
                         {moreMetrics?.actualRows}
                       </th>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        {moreMetrics?.sharedHit}
+                        {moreMetrics?.sharedHit ? moreMetrics.sharedHit : 'N/A'}
                       </th>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        {moreMetrics?.sharedRead}
+                        {moreMetrics?.sharedRead ? moreMetrics?.sharedRead : 'N/A'}
                       </th>
                     </tr>
                   </tbody>
