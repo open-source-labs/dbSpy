@@ -4,8 +4,6 @@ import axios, { AxiosResponse } from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useNavStore } from '../../store/navStore';
 
-const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
-
 // Functions imported:
 import parseSql from '../../parse';
 

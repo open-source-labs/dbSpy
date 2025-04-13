@@ -2,13 +2,6 @@
 // React & React Router & React Query Modules;
 import React, { useRef, useEffect, useState } from 'react';
 
-import { NavLink } from 'react-router-dom';
-import logo from '../assets/newLogoWhite.png';
-import login from '../assets/right-to-bracket-solid.svg';
-import default_pfp from '../assets/default_pfp.svg';
-
-//-- this linkbtn isn't being used in this file, delete?
-const linkbtn = 'mt-4 inline-block lg:mt-0 text-blue-200 hover:text-white mr-4';
 // Dashboard Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
