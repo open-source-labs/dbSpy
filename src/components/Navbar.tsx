@@ -25,13 +25,13 @@ import logo10 from '../assets/newLogoWhite_color10.png';
 import logo11 from '../assets/newLogoWhite_color11.png';
 import logo12 from '../assets/newLogoWhite_color12.png';
 
-const linkbtn = 'mt-4 inline-block lg:mt-0 text-white hover:text-white mr-4';
+const linkbtn = 'inline-block text-white hover:text-white mr-4';
 
 function Navbar() {
   // dbSpy 8.0: removed theme state and add state for the animated logo
   const [currentLogo, setCurrentLogo] = useState<string>(logo);
   const toggleClicked = useNavStore((state) => state.toggleClicked);
-  const toggleNav = useNavStore((state):any => state.toggleNav);
+  const toggleNav = useNavStore((state): any => state.toggleNav);
   // toggleNav();
   //STATE DECLARATION (dbSpy3.0)
   const { user } = useCredentialsStore((state): any => state);
@@ -39,9 +39,22 @@ function Navbar() {
 
   // dbSpy 8.0: made logo animation sparkling in the navbar
   const logoImgArr: string[] = [
-    logo1, logo2, logo3, logo4, logo5, logo6, 
-    logo7, logo8, logo9, logo10, logo11, logo12, 
-    logo12, logo12, logo12, logo
+    logo1,
+    logo2,
+    logo3,
+    logo4,
+    logo5,
+    logo6,
+    logo7,
+    logo8,
+    logo9,
+    logo10,
+    logo11,
+    logo12,
+    logo12,
+    logo12,
+    logo12,
+    logo,
   ];
   // Effect to cycle through images automatically
   useEffect(() => {
@@ -56,51 +69,53 @@ function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 flex w-full flex-wrap items-center justify-between bg-gradient-to-b from-sky-700 to-transparent bg-opacity-80 p-3 z-50 backdrop-blur-md">
-
-        <div className="navItems text-base">
+      <nav className="fixed top-0 z-50 flex w-full flex-wrap items-center justify-between bg-opacity-80 bg-gradient-to-b from-sky-700 to-transparent p-3 backdrop-blur-md">
+        <div className="navItems flex min-w-0 items-center gap-3">
           {/* dbSpy 8.0: added toggle button to control FeatureTab */}
           <img
-            className="pointer-events-auto mb-1 mt-1 inline-block h-[40px] w-[50px] pr-3 filter hover:cursor-pointer hover:translate-y-[-2px] transition-transform duration-200"
+            className="w-[25px] shrink-0 filter transition-transform duration-200 hover:translate-y-[-2px] hover:cursor-pointer"
             src={toggleClicked ? sidebarClose : sidebarOpen}
             alt="Toggle Sidebar"
             onClick={toggleNav}
           />
 
           {/* Sparkling logo */}
-          <img className="mr-5 inline-block h-[45] fill-current" src={currentLogo} alt="Logo"/>
+          <img className="mr-3 h-[45px] w-auto shrink-0" src={currentLogo} alt="Logo" />
 
-          <NavLink to="/" className={linkbtn}>
-            Home
-          </NavLink>
-          <NavLink to="/display" data-testid="navbar-display" className={linkbtn}>
-            Display
-          </NavLink>
+          <div className="flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap">
+            <NavLink to="/" className={`${linkbtn} flex items-center`}>
+              Home
+            </NavLink>
+            <NavLink to="/display" data-testid="navbar-display" className={`${linkbtn} flex items-center`}>
+              Display
+            </NavLink>
+          </div>
         </div>
-        <div>
+        <div className="flex items-center justify-end gap-2">
           {user ? (
             <>
-            {/* inline-block: behave like an inline element but allows width and height modifications */}
-            {/* pt: padding to top, dark:text-white: change text color to white in dark mode */}
-            {/* lg: large screens, mt-0: margin-top: 0, on lg mode */}
-              <span className="mt-4 inline-block mx-auto text-blue-200 lg:mt-0">
+              {/* inline-block: behave like an inline element but allows width and height modifications */}
+              {/* pt: padding to top, dark:text-white: change text color to white in dark mode */}
+              {/* lg: large screens, mt-0: margin-top: 0, on lg mode */}
+              <span className="text-blue-200">
                 {user.full_name}
               </span>
               {/* ml: margin left, mr: margin right, rounded-full: make the image circular, dark:invert: invert color in dark mode */}
               <img
-                className="ml-2 mr-2 inline-block h-[25] rounded-full invert"
+                className="h-[25px] w-[25px] rounded-full invert"
                 src={default_pfp}
               />
             </>
           ) : (
-            <div className="flex justify-end">
+            <>
               <NavLink
                 to="/login"
-                className="text-white text-base font-bold leading-normal">
+                className="text-white text-base font-bold"
+              >
                 Login
               </NavLink>
-              <img className="mr-3 ml-3 inline-block h-[20] invert" src={login} />
-            </div>
+              <img className="h-[20px] w-[20px] invert" src={login} />
+            </>
           )}
         </div>
       </nav>

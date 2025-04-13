@@ -35,7 +35,7 @@ const saveController = {
     try {
       // query to get all necessary data to the FE
       // TODO - add in user data to filter per user
-      const getQueries: string = `SELECT name, query, query_date, exec_time FROM queries`;
+      const getQueries: string = `SELECT name, query, query_date, exec_time, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks FROM queries ORDER BY id DESC`;
       const queryVal = await pool.query(getQueries);
       res.locals.savedQueries = queryVal;
       return next();

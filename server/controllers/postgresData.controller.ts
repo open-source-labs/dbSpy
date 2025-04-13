@@ -183,18 +183,45 @@ const postgresController = {
       const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
       const result = await PostgresGetMetrics.query(testQuery);
 
-      // console.log('🌟 result of testing: ', result);
       console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
+      // 🌟🌟🌟
+      /*
+      Key Metrics Explanation:
+      - Execution Time: total time it takes to execute the query (in ms)
+      - Planning Time: time spent preparing the query plan (shows if the query is complex to plan)
+      - Actual Total Time: actual runtime of query (helps show real-time performance)
+      - Node Type (Seq Scan, Index Scan, Hash Join): tells you what scan/join is used - seq scan on big tables is a red flag
+      - Relation Name: table being queried (context for which part is being scanned)
+      - Plan Rows vs Actual Rows: estimated vs actual rows (if they differ a lot = bad stats or inefficient plan)
+      - Shared Hit Blocks / Read Blocks: pages read from cache vs. disk (shows I/O behavior -> disk access = slower)
+      */
 
       //pull exec time alone for the mysql update when storing queries
       const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
       console.log('exec_time:', exec_time);
 
       // Pull Execution time only
-      const executionTime = `Execution Time: ${result[0]['QUERY PLAN'][0]['Execution Time']}ms`;
+      const resObj = result[0]['QUERY PLAN'][0];
+      const resObjPlan = resObj['Plan'];
+      const executionTime = `Execution Time: ${resObj['Execution Time']}ms`;
       const namedQuery = `Query Name: ${queryName}`;
       const queryStr = `Query: ${queryString}`;
       // console.log('⏰ EXECUTION TIME METRIC', executionTime);
+
+      const otherMetrics: Array<object> = [
+        {
+          planningTime: resObj['Planning Time'],
+          actualTotalTime: resObjPlan['Actual Total Time'],
+          totalCost: resObjPlan['Total Cost'],
+          nodeType: resObjPlan['Node Type'],
+          relationName: resObjPlan['Relation Name'],
+          planRows: resObjPlan['Plan Rows'],
+          actualRows: resObjPlan['Actual Rows'],
+          sharedHit: resObjPlan['Shared Hit Blocks'],
+          sharedRead: resObjPlan['Shared Read Blocks'],
+        },
+      ];
+      // console.log('OTHER METRICCSSSS: ', otherMetrics);
 
       // Create date metric to add to response
       const now = new Date();
@@ -202,16 +229,9 @@ const postgresController = {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        // hour: 'numeric',
-        // minute: 'numeric',
-        // second: 'numeric',
-        // hour12: true, // Use 12-hour time format
         timeZone: 'America/New_York', // Set to US Eastern Time
       };
       const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
-      //console.log(`🗓️ TODAY'S DATE`, formattedDate);
-
-      // console.log('done w getMetrics controller');
 
       /************* mysql querymetrics db insert for saved query page retrieval ******/
       // creating insert query for mysql query metrics db
@@ -220,8 +240,9 @@ const postgresController = {
       //const db_link = 'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
       //const db_name = 'dbSpy';
 
-      // Send query string, date, and execution time on response
+      // Send query name, query string, date, and execution time on response
       res.locals.metrics = [namedQuery, queryStr, formattedDate, executionTime];
+      res.locals.otherMetrics = otherMetrics;
       PostgresGetMetrics.destroy();
       return next();
     } catch (err) {
@@ -241,17 +262,24 @@ const postgresController = {
       const { query_date, exec_time } = req.body.params.extractedQueryRes;
       const { queryString, queryName, hostname, database_name } =
         req.body.params.dbValues;
+      const {
+        planningTime,
+        totalCost,
+        actualTotalTime,
+        nodeType,
+        relationName,
+        planRows,
+        actualRows,
+        sharedHit,
+        sharedRead,
+      } = req.body.params.moreMetrics;
 
       // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
       const date = new Date(query_date);
       const formatDateForMySql = date.toISOString().split('T')[0];
       console.log('formatted date: ', formatDateForMySql);
 
-      // UNCOMMENT code below
-      // const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
-
-      // DELETE this after Vicky does her PR (mock data)
-      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?, 0, 0, 0, 'test', 'test', 0, 0, 0, 0)`;
+      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       //connect to mysql pool imported from userModel and send the query to update table
       const [savingQuery]: any = await pool.query(insertQueryStr, [
@@ -261,6 +289,15 @@ const postgresController = {
         database_name,
         formatDateForMySql,
         queryName,
+        planningTime,
+        totalCost,
+        actualTotalTime,
+        nodeType,
+        relationName,
+        planRows,
+        actualRows,
+        sharedHit,
+        sharedRead,
       ]);
 
       // Check if insertion was successful
@@ -276,6 +313,15 @@ const postgresController = {
           database_name,
           formatDateForMySql,
           queryName,
+          planningTime,
+          totalCost,
+          actualTotalTime,
+          nodeType,
+          relationName,
+          planRows,
+          actualRows,
+          sharedHit,
+          sharedRead,
         ];
         return next();
       } else {

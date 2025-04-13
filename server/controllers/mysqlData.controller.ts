@@ -191,6 +191,51 @@ const mysqlController = {
         // Step 3: Parse the output for actual times
         let totalExecutionTime = 0;
 
+        // Regex to extract the additional metrics
+        const match = row.match(
+          /-> (\w+ \w+) on (\w+).*cost=([\d.]+) rows=(\d+).*actual time=([\d.]+)\.\.([\d.]+) rows=(\d+)/
+        );
+
+        if (match) {
+          const [
+            _,
+            nodeType,
+            relationName,
+            totalCost,
+            planRows,
+            actualTimeStart,
+            actualTimeEnd,
+            actualRows,
+          ] = match;
+
+          const actualTotalTime = parseFloat(actualTimeEnd) - parseFloat(actualTimeStart);
+          console.log({
+            nodeType,
+            relationName,
+            totalCost: parseFloat(totalCost),
+            planRows: parseInt(planRows),
+            actualRows: parseInt(actualRows),
+            actualTotalTime: parseFloat(actualTotalTime.toFixed(4)), // in ms
+          });
+
+          // MySQL, doesn't have planningTime, sharedHit, and sharedRead so setting as null
+          const moreMets: Array<object> = [
+            {
+              planningTime: null,
+              actualTotalTime: parseFloat(actualTotalTime.toFixed(4)),
+              totalCost: parseFloat(totalCost),
+              nodeType,
+              relationName,
+              planRows: parseInt(planRows),
+              actualRows: parseInt(actualRows),
+              sharedHit: null,
+              sharedRead: null,
+            },
+          ];
+
+          res.locals.otherMetrics = moreMets;
+        }
+
         // Regex to extract actual time values from the EXPLAIN ANALYZE output
         const times = row.match(/actual time=(\d+\.\d+)\.\.(\d+\.\d+)/);
         // console.log('🌟 RESULT OF TIMES', times);
@@ -232,10 +277,6 @@ const mysqlController = {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        // hour: 'numeric',
-        // minute: 'numeric',
-        // second: 'numeric',
-        // hour12: true, // Use 12-hour time format
         timeZone: 'America/New_York', // Set to US Eastern Time
       };
 
@@ -261,17 +302,27 @@ const mysqlController = {
   mysqlSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
     try {
       // grab queryString from FE
-      console.log('REACHED mysqlSaveQuery MIDDLEWARE');
       console.log('REQ QUERY: ', req.body.params);
       const { query_date, exec_time } = req.body.params.extractedQueryRes;
       const { queryString, queryName, hostname, database_name } =
         req.body.params.dbValues;
+      const {
+        planningTime,
+        totalCost,
+        actualTotalTime,
+        nodeType,
+        relationName,
+        planRows,
+        actualRows,
+        sharedHit,
+        sharedRead,
+      } = req.body.params.moreMetrics;
 
       const date = new Date(query_date);
       const formatDateForMySql = date.toISOString().split('T')[0];
       console.log('formatted date: ', formatDateForMySql);
 
-      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
+      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       const [saveQuery]: any = await pool.query(insertQueryStr, [
         queryString,
@@ -280,6 +331,15 @@ const mysqlController = {
         database_name,
         formatDateForMySql,
         queryName,
+        planningTime,
+        totalCost,
+        actualTotalTime,
+        nodeType,
+        relationName,
+        planRows,
+        actualRows,
+        sharedHit,
+        sharedRead,
       ]);
 
       // Check if insertion was successful
@@ -295,6 +355,15 @@ const mysqlController = {
           database_name,
           formatDateForMySql,
           queryName,
+          planningTime,
+          totalCost,
+          actualTotalTime,
+          nodeType,
+          relationName,
+          planRows,
+          actualRows,
+          sharedHit,
+          sharedRead,
         ];
         return next();
       } else {
