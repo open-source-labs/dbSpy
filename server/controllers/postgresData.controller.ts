@@ -247,7 +247,11 @@ const postgresController = {
       const formatDateForMySql = date.toISOString().split('T')[0];
       console.log('formatted date: ', formatDateForMySql);
 
-      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
+      // UNCOMMENT code below
+      // const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name) VALUES(?,?,?,?,?,?)`;
+
+      // DELETE this after Vicky does her PR (mock data)
+      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?, 0, 0, 0, 'test', 'test', 0, 0, 0, 0)`;
 
       //connect to mysql pool imported from userModel and send the query to update table
       const [savingQuery]: any = await pool.query(insertQueryStr, [
