@@ -23,7 +23,7 @@ describe('Test New Query Component', () => {
   it('renders the Test New Query heading', () => {
     renderWithRouter(<TestNewQuery />);
     // will check if the heading 'Test Your Query!' is rendering on the screen
-    expect(screen.getByText(/Test Your Query!/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Test New Query/i })).toBeInTheDocument();
   });
 
   //? Testing (2): input fields render
@@ -106,13 +106,28 @@ describe('Test New Query Component', () => {
   //? Testing (6): clicking Save Query button triggers Post Req
   it('checks if clicking Save Query button triggers req to the BE', async () => {
     // mocking running a query so we have queryResult
-    const getMockResponse: AxiosResponse<string[]> = {
-      data: [
-        'Name: My Test Query',
-        'Query: SELECT * FROM users',
-        'Date Run: 2025-04-11',
-        'Execution Time: 0.42',
-      ],
+    const getMockResponse: AxiosResponse<{ metrics: string[]; otherMetrics: any[] }> = {
+      data: {
+        metrics: [
+          'Query Name: Testing Sunday',
+          'Query: SELECT * FROM people',
+          'Date Run: 2025-04-11',
+          'Execution Time: 0.042',
+        ],
+        otherMetrics: [
+          {
+            planningTime: 1.932,
+            actualTotalTime: 0.025,
+            totalCost: 2.87,
+            nodeType: 'Seq Scan',
+            relationName: 'people',
+            planRows: 87,
+            actualRows: 87,
+            sharedHit: 2,
+            sharedRead: 0,
+          },
+        ],
+      },
       status: 200,
       statusText: 'OK',
       headers: {},
@@ -128,7 +143,7 @@ describe('Test New Query Component', () => {
     };
     // mocking the axios Get Req w/ a mocked response
     const mockGet = jest.spyOn(axios, 'get').mockResolvedValue(getMockResponse);
-    const mockPost = jest.spyOn(axios, 'post').mockResolvedValue({ getMockResponse });
+    const mockPost = jest.spyOn(axios, 'post').mockResolvedValue(postMockResponse);
 
     renderWithRouter(<TestNewQuery />);
 
@@ -171,14 +186,29 @@ describe('Test New Query Component', () => {
   it('checks if clicking Run Query button renders a table with results', async (): Promise<void> => {
     // mocking the axios Get Req w/ a mocked response
     // using TS to define the response
-    const mockData: string[] = [
-      'Query Name: My Test Query',
-      'Query: SELECT * FROM users',
-      'Query Date: 2025-04-11',
-      'Exec Time: 0.42',
-    ];
+    const mockData = {
+      metrics: [
+        'Query Name: My Test Query',
+        'Query: SELECT * FROM users',
+        'Date Run: 2025-04-11',
+        'Execution Time: 0.042',
+      ],
+      otherMetrics: [
+        {
+          planningTime: 1.932,
+          actualTotalTime: 0.025,
+          totalCost: 2.87,
+          nodeType: 'Seq Scan',
+          relationName: 'people',
+          planRows: 87,
+          actualRows: 87,
+          sharedHit: 2,
+          sharedRead: 0,
+        },
+      ],
+    };
     // using TS to define the response
-    const mockResponse: AxiosResponse<string[]> = {
+    const mockResponse: AxiosResponse<{ metrics: string[]; otherMetrics: any[] }> = {
       data: mockData,
       status: 200,
       statusText: 'OK',
@@ -210,6 +240,7 @@ describe('Test New Query Component', () => {
     });
 
     await userEvent.click(runQueryButton);
+    screen.debug();
 
     // will wait for QUery Results heading to render
     await waitFor(() => {
@@ -220,7 +251,7 @@ describe('Test New Query Component', () => {
     expect(screen.getByText(/My Test Query/i)).toBeInTheDocument();
     expect(screen.getByText(/SELECT \* FROM users/i)).toBeInTheDocument();
     expect(screen.getByText(/2025-04-11/i)).toBeInTheDocument();
-    expect(screen.getByText(/0.42/i)).toBeInTheDocument();
+    expect(screen.getByText(/0.042/i)).toBeInTheDocument();
 
     // remove mock before next test
     mockGet.mockRestore();

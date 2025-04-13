@@ -228,6 +228,7 @@ const TestNewQuery: React.FC = () => {
   };
 
   const saveQuery = async () => {
+    console.log('Testing In Save Query ⭐️');
     try {
       // TODO remove commented out if not used selectedDb later
       // conditional to check that a query was run and that it had results
@@ -236,6 +237,7 @@ const TestNewQuery: React.FC = () => {
         alert('Please ensure you have ran a query and you received results');
         return;
       }
+      console.log('Testing After If ⭐️');
 
       // the BE returns back formatted query results
       // we want to extract just the data portion and send to the BE to save the query - since it's in str format, convert to obj
