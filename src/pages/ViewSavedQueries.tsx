@@ -54,19 +54,17 @@ const ViewSavedQueries: React.FC = () => {
     <>
       <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2">
         <FeatureTab />
-        <div className="ml-20 pt-20 text-center">
-          <h1 className="mb-12 text-5xl font-bold tracking-tight text-yellow-400">
-            Saved Queries
-          </h1>
-        </div>
         <div
           className={`h-screen transition-all duration-300 ${
             toggleClicked ? 'ml-16' : 'ml-64'
           }`}
         >
-          {/* this wrap aligns the title 'Queries Saved w/ the table  together */}
+          <h1 className="flex items-center justify-center pt-20 text-5xl font-bold tracking-tight text-slate-700 dark:text-white">
+            Saved Queries
+          </h1>
+          {/* this wrap aligns the title 'Saved Queries w/ the table together */}
           <div className="mt-4 flex gap-x-8">
-            {savedQueries.length > 0 && (
+            {savedQueries.length > 0 ? (
               <div className="mt-8 w-full max-w-[1300px] shrink-0 overflow-x-auto px-4 text-white">
                 <table className="min-w-full table-fixed border-collapse border border-white text-white">
                   <thead>
@@ -163,6 +161,10 @@ const ViewSavedQueries: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-white">
+                No queries saved.
               </div>
             )}
           </div>

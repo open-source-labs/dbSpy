@@ -9,13 +9,24 @@ interface GlobalError {
   message: string | { err: string };
 }
 
+interface GitHubUser {
+  id: number;
+  url: string; // this is equivalent to the user email, is stored in the db as well
+  login: string;
+  type: string;
+}
+
 export const getAccesToken: RequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   log.info('[oauthCtrl - getAccToken] Getting user access token...');
-  if (typeof req.session.user === 'string') return res.redirect('/api/me');
+  // checks if user email already exists
+  if (req.session.user?.email) {
+    return res.redirect('/api/me');
+  }
+
   type code = string;
   type state = string | null;
   const { code, state } = req.body;
@@ -115,7 +126,7 @@ export const getUserInfo: RequestHandler = async (
   try {
     let data: any;
     // For Github Oauth
-    let userInfo: {};
+    let userInfo: GitHubUser;
 
     if (type === 'GITHUB') {
       data = await fetch('https://api.github.com/user', {
@@ -129,6 +140,17 @@ export const getUserInfo: RequestHandler = async (
 
         userInfo = await data.json();
         userInfo = { ...userInfo, type: 'github' };
+
+        console.log('userInfo from Github: ', userInfo);
+        if (req.session) {
+          req.session.user = {
+            id: userInfo.id,
+            email: userInfo.url,
+            username: userInfo.login,
+            type: 'github',
+          };
+        }
+        console.log('checking req.session.user: ', req.session.user);
       } else {
         throw new Error(
           `[oauthCtrl - getUserInfo] middleware error (GitHub): Unexpected response status ${data.status}`
