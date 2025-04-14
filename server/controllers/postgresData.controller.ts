@@ -255,10 +255,17 @@ const postgresController = {
 
   //----------Function to save query metrics after running query-----------------------------------------------------------------
   postgresSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
+    // getting user info to save query
+    const user = req.session.user;
+    if (!user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
     try {
       console.log('REACHED postgresSaveMetrics MIDDLEWARE');
       console.log('REQ BODY: ', req.body.params);
 
+      const userEmail = user.email;
       const { query_date, exec_time } = req.body.params.extractedQueryRes;
       const { queryString, queryName, hostname, database_name } =
         req.body.params.dbValues;
@@ -279,10 +286,11 @@ const postgresController = {
       const formatDateForMySql = date.toISOString().split('T')[0];
       console.log('formatted date: ', formatDateForMySql);
 
-      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      const insertQueryStr = `INSERT INTO queries (email, query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       //connect to mysql pool imported from userModel and send the query to update table
       const [savingQuery]: any = await pool.query(insertQueryStr, [
+        userEmail,
         queryString,
         hostname,
         exec_time,
@@ -307,6 +315,7 @@ const postgresController = {
       if (savingQuery.affectedRows > 0) {
         console.log('savingQuery completed!');
         res.locals.savedQuery = [
+          userEmail,
           queryString,
           hostname,
           exec_time,
