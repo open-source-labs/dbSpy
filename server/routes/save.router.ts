@@ -3,6 +3,8 @@
 import { Router, Response, Request } from 'express';
 import bodyParser from 'body-parser';
 import saveController from '../controllers/save.controller';
+import { isAuthenticated } from '../controllers/user.controller';
+
 const saveRouter = Router();
 
 // Apply bodyParser with a larger limit
@@ -13,6 +15,7 @@ const saveRouter = Router();
 //Load Saved Queries
 saveRouter.get(
   '/saved-queries',
+  isAuthenticated,
   saveController.getSavedQueries,
   (_req: Request, res: Response) => {
     return res.status(200).json(res.locals.savedQueries);

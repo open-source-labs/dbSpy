@@ -233,13 +233,6 @@ const postgresController = {
       };
       const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
 
-      /************* mysql querymetrics db insert for saved query page retrieval ******/
-      // creating insert query for mysql query metrics db
-      //Todo: figure out how to get the email from the session, if an user logs in and then tests query performance
-      //const email = 'https://api.github.com/users/reva2024';
-      //const db_link = 'postgresql://postgres.gcfszuopjvbjtllgmenw:store2025@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
-      //const db_name = 'dbSpy';
-
       // Send query name, query string, date, and execution time on response
       res.locals.metrics = [namedQuery, queryStr, formattedDate, executionTime];
       res.locals.otherMetrics = otherMetrics;
