@@ -13,7 +13,9 @@ import screenshot from '../assets/ScreenshotDemo.png';
 /* "Home" Component - main launch page */
 export default function Home() {
   const user = useCredentialsStore((state: { user: any }) => state.user);
+  console.log('user status from store in home tsx file', user);
   const setUser = useCredentialsStore((state: { setUser: any }) => state.setUser);
+  //console.log('set user status from store in home tsx file', setUser);
   //END: STATE DECLARATION
 
   /* Retrieve user data from server*/
@@ -24,6 +26,14 @@ export default function Home() {
       });
       setUser(response.data);
       return response.data;
+      if (user) {
+        const response = await axios(`/api/me`, {
+          withCredentials: true,
+        });
+        console.log('response from api/me to home.tsx ', response.data);
+        setUser(response.data);
+        return response.data;
+      }
     };
     getUserData();
     window.history.replaceState({}, document.title, '/');
@@ -32,8 +42,8 @@ export default function Home() {
   return (
     <div className="">
       <div className="container mx-auto px-6 md:px-12 xl:px-32">
-        <div className="text-center text-black dark:text-[#f8f4eb]">
-          <div className="heroCard block rounded-lg bg-containers2 px-6 py-12 shadow-lg dark:bg-containers md:px-12 md:py-16">
+        <div className="text-center text-gray-800 dark:text-[#f8f4eb]">
+          <div className="heroCard block rounded-lg bg-[#f8f4eb] px-6 py-12 shadow-lg dark:bg-slate-900 md:px-12 md:py-16">
             <h1 className="mb-12 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl">
               Database development <br />
               <span className="dark-text-yellow-200 text-yellow-500">simplified.</span>

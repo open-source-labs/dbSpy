@@ -32,14 +32,20 @@ interface GlobalError {
 const saveController = {
   getSavedQueries: async (req: Request, res: Response, next: NextFunction) => {
     log.info('[saveCtrl - getSavedQueries] Beginning to load saved queries');
+    const user = req.session.user;
+    if (!user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
     try {
       // query to get all necessary data to the FE
-      // TODO - add in user data to filter per user
-      const getQueries: string = `SELECT name, query, query_date, exec_time, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks FROM queries ORDER BY id DESC`;
-      const queryVal = await pool.query(getQueries);
+      const userEmail = user.email;
+      const getQueries: string = `SELECT name, query, query_date, exec_time, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks FROM queries WHERE email = ? ORDER BY id DESC`;
+      const queryVal = await pool.query(getQueries, [userEmail]);
       res.locals.savedQueries = queryVal;
       return next();
     } catch (err) {
+      console.error('getSavedQueries ERROR:', err);
       return next({
         log: 'An error occurred in saveController.getSavedQueries',
         message: 'Something went wrong in the loading process',
