@@ -300,9 +300,18 @@ const mysqlController = {
 
   //----------Function to save query metrics from database-----------------------------------------------------------------
   mysqlSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
+    // getting user info to save query
+    const user = req.session.user;
+    console.log('CHECKING USER MYQQL: ', user);
+    if (!user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
     try {
       // grab queryString from FE
       console.log('REQ QUERY: ', req.body.params);
+
+      const userEmail = user.email;
       const { query_date, exec_time } = req.body.params.extractedQueryRes;
       const { queryString, queryName, hostname, database_name } =
         req.body.params.dbValues;
@@ -322,9 +331,10 @@ const mysqlController = {
       const formatDateForMySql = date.toISOString().split('T')[0];
       console.log('formatted date: ', formatDateForMySql);
 
-      const insertQueryStr = `INSERT INTO queries (query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      const insertQueryStr = `INSERT INTO queries (email, query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       const [saveQuery]: any = await pool.query(insertQueryStr, [
+        userEmail,
         queryString,
         hostname,
         exec_time,
@@ -349,6 +359,7 @@ const mysqlController = {
       if (saveQuery.affectedRows > 0) {
         console.log('saveQuery completed!');
         res.locals.savedQuery = [
+          userEmail,
           queryString,
           hostname,
           exec_time,
