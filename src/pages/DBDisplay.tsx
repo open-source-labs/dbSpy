@@ -75,10 +75,18 @@ const DBDisplay: React.FC = () => {
     const code = urlParams.get('code');
     const state = urlParams.get('state');
 
+    // Only proceed if there's a code present (meaning it's the initial OAuth redirect)
+    if(code && state){
     // Replaces client's URL in window to remove OAuth code/state
-    const newURL =
-      window.location.protocol + '//' + window.location.host + window.location.pathname;
-    window.history.replaceState({}, document.title, newURL);
+
+    // const newURL =
+    //   window.location.protocol + '//' + window.location.host + window.location.pathname;
+    // window.history.replaceState({}, document.title, newURL);
+
+     // Clean up the URL
+     const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
+     window.history.replaceState({}, document.title, newURL);
+
     // send POST request to /api/oauth with code/state
     fetch('/api/oauth', {
       method: 'POST',
@@ -106,6 +114,7 @@ const DBDisplay: React.FC = () => {
           message: 'Unable to login with OAuth.',
         });
       });
+    }
   }, []);
 
   //TODO: Hide add table on dataview click

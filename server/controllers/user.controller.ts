@@ -206,6 +206,16 @@ export const verifyUser: RequestHandler = async (
         email: foundUser[0][0].email,
       };
 
+      if (req.session) {
+        req.session.user = {
+          id: 0,
+          email: res.locals.userInfo.email,
+          username: res.locals.userInfo.name,
+          type: 'auth',
+        };
+      }
+      console.log('checking req.session.user: ', req.session.user);
+
       return next();
     } else {
       log.error('[userCtrl - verifyUser] Username/Password do not match');
@@ -224,6 +234,13 @@ export const verifyUser: RequestHandler = async (
       return next(err);
     }
   }
+};
+
+export const isAuthenticated: RequestHandler = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Not logged in' });
+  }
+  return next();
 };
 
 // Save currentSchema into database

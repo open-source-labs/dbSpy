@@ -35,6 +35,13 @@ declare module 'express-session' {
     logging?: boolean;
     db_type?: string;
     file_path?: string;
+    user?: {
+      id: number;
+      email: string;
+      username: string;
+      type: string;
+    };
+    accessToken?: string;
   }
 }
 

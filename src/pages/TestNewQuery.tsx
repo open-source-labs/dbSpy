@@ -228,6 +228,7 @@ const TestNewQuery: React.FC = () => {
   };
 
   const saveQuery = async () => {
+    console.log('Testing In Save Query ⭐️');
     try {
       // TODO remove commented out if not used selectedDb later
       // conditional to check that a query was run and that it had results
@@ -236,6 +237,7 @@ const TestNewQuery: React.FC = () => {
         alert('Please ensure you have ran a query and you received results');
         return;
       }
+      console.log('Testing After If ⭐️');
 
       // the BE returns back formatted query results
       // we want to extract just the data portion and send to the BE to save the query - since it's in str format, convert to obj
@@ -491,7 +493,9 @@ const TestNewQuery: React.FC = () => {
                   <tbody>
                     <tr>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        {moreMetrics?.planningTime}ms
+                        {moreMetrics?.planningTime
+                          ? moreMetrics.planningTime + 'ms'
+                          : 'N/A'}
                       </th>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
                         {moreMetrics?.totalCost}
@@ -512,10 +516,10 @@ const TestNewQuery: React.FC = () => {
                         {moreMetrics?.actualRows}
                       </th>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        {moreMetrics?.sharedHit}
+                        {moreMetrics?.sharedHit ? moreMetrics.sharedHit : 'N/A'}
                       </th>
                       <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        {moreMetrics?.sharedRead}
+                        {moreMetrics?.sharedRead ? moreMetrics?.sharedRead : 'N/A'}
                       </th>
                     </tr>
                   </tbody>

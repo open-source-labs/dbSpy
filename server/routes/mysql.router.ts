@@ -1,5 +1,6 @@
 import { Router, Response, Request } from 'express';
 import mysqlController from '../controllers/mysqlData.controller';
+import { isAuthenticated } from '../controllers/user.controller';
 
 const mysqlRouter = Router();
 
@@ -12,12 +13,13 @@ mysqlRouter.get(
   '/run-query',
   mysqlController.mysqlGetMetrics,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals.metrics);
+    return res.status(200).json(res.locals);
   }
 );
 
 mysqlRouter.post(
   '/save-query',
+  isAuthenticated,
   mysqlController.mysqlSaveQuery,
   (_req: Request, res: Response) => {
     return res.status(200).json(res.locals.savedQuery);
