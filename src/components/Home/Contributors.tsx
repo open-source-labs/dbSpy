@@ -271,12 +271,14 @@ export default function Contributors() {
   }
 
   return (
-    <div className="contributors container mx-auto my-24 px-6">
+    <div className=" contributors container mx-auto my-24 px-6">
       <section className="mb-32 text-center text-gray-800">
         <h2 className="team-header mb-32 text-3xl font-bold text-gray-900 dark:text-[#f8f4eb]">
           Meet the dbSpy Team
         </h2>
-        <div className="flex flex-row flex-wrap justify-around">{profiles}</div>
+        <div className="flex flex-row flex-wrap justify-around dark:bg-containers">
+          {profiles}
+        </div>
       </section>
     </div>
   );

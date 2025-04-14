@@ -302,7 +302,7 @@ const TestNewQuery: React.FC = () => {
   return (
     <>
       {/* <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2"> */}
-      <div className="justify-space-around min-h-screen w-full flex-auto justify-around bg-[#c9ced1] dark:bg-slate-700 ">
+      <div className="justify-space-around min-h-screen w-full flex-auto justify-around bg-background dark:bg-primary ">
         <FeatureTab />
         {/* Must wrap the page title in the toggle div in order for the title to shift w/ the rest of the page */}
         <div
@@ -310,13 +310,13 @@ const TestNewQuery: React.FC = () => {
         >
           <div className="mb-12 mr-2 flex w-full items-center justify-end pt-20">
             <div className="flex w-full">
-              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-white">
+              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-yellow-200">
                 Test New Query
               </h1>
             </div>
             <button
               onClick={improveWithAi}
-              className="mr-4 h-11 w-auto whitespace-nowrap rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+              className="mr-4 h-11 w-auto whitespace-nowrap rounded border border-yellow-200 bg-buttons px-4 py-2 text-white transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
             >
               Improve with AI
             </button>

@@ -52,7 +52,7 @@ const ViewSavedQueries: React.FC = () => {
 
   return (
     <>
-      <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2">
+      <div className="justify-space-around flex-auto justify-end border-2 border-black bg-background pr-2 dark:bg-primary">
         <FeatureTab />
         <div className="ml-20 pt-20 text-center">
           <h1 className="mb-12 text-5xl font-bold tracking-tight text-yellow-400">

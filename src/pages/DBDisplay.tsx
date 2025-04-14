@@ -145,13 +145,12 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-
       <div id="DBDisplay" className=" transition-colors duration-500">
         {/* shadow-2xl: strong box-shadow for depth, bg-gray-900: change background color */}
         <div
           ref={mySideBarId}
           id="mySidenav"
-          className="sidenav bg-[#fbf3de] shadow-2xl bg-gradient-to-b from-[#f8f4eb] dark:from-sky-800 to-transparent bg-opacity-10"
+          className="sidenav bg-[#fbf3de] bg-opacity-10 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-2xl dark:from-sky-800"
         >
           <a href="#" className="closebtn" onClick={closeNav}>
             &times;
@@ -169,7 +168,7 @@ const DBDisplay: React.FC = () => {
           {/* w-50%: set width to 50% of parent, flex-col: stack children vertically */}
           {welcome ? (
             <div className="pt-20">
-              <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
+              <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col text-black transition-colors duration-500 dark:text-[#f8f4eb]">
                 <h3 className="text-center">Welcome to dbSpy!</h3>
                 <p className="text-center">
                   Please connect your database, upload a SQL file, or build your database
