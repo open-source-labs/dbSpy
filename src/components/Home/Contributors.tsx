@@ -262,6 +262,41 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
     githubUrl: 'https://github.com/Donald-Macak',
   },
+  {
+    imgUrl: DonM,
+    name: 'Revathy Venkataraman',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
+    githubUrl: 'https://github.com/Donald-Macak',
+  },
+  {
+    imgUrl: DonM,
+    name: 'Vicky Yue',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
+    githubUrl: 'https://github.com/Donald-Macak',
+  },
+  {
+    imgUrl: DonM,
+    name: 'Roshumba Llewellyn',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/roshumballewellyn/',
+    githubUrl: 'https://github.com/roshumba',
+  },
+  {
+    imgUrl: DonM,
+    name: 'Emma Vargas',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
+    githubUrl: 'https://github.com/Donald-Macak',
+  },
+  {
+    imgUrl: DonM,
+    name: 'Yihe Liu',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
+    githubUrl: 'https://github.com/Donald-Macak',
+  },
 ];
 
 export default function Contributors() {
@@ -271,12 +306,12 @@ export default function Contributors() {
   }
 
   return (
-    <div className=" contributors container mx-auto my-24 px-6">
+    <div className=" contributors container mx-auto my-24 px-6 dark:bg-primary">
       <section className="mb-32 text-center text-gray-800">
         <h2 className="team-header mb-32 text-3xl font-bold text-gray-900 dark:text-[#f8f4eb]">
           Meet the dbSpy Team
         </h2>
-        <div className="flex flex-row flex-wrap justify-around dark:bg-containers">
+        <div className="flex flex-row flex-wrap justify-around dark:bg-primary">
           {profiles}
         </div>
       </section>

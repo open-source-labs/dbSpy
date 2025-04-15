@@ -5,7 +5,7 @@ export default function Profile(properties: any) {
 
   return (
     <div className="profileCard basis-1/4">
-      <div className="profileDetails block h-full rounded-lg bg-[#f8f4eb] shadow-lg dark:bg-gray-900">
+      <div className="profileDetails block h-full rounded-lg bg-[#f8f4eb] shadow-lg dark:bg-containers">
         <div className="flex justify-center">
           <div className="testing flex justify-center">
             <img

@@ -310,13 +310,13 @@ const TestNewQuery: React.FC = () => {
         >
           <div className="mb-12 mr-2 flex w-full items-center justify-end pt-20">
             <div className="flex w-full">
-              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-yellow-200">
+              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-accentText">
                 Test New Query
               </h1>
             </div>
             <button
               onClick={improveWithAi}
-              className="mr-4 h-11 w-auto whitespace-nowrap rounded border border-yellow-200 bg-buttons px-4 py-2 text-white transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+              className="mr-6 h-11 w-auto whitespace-nowrap rounded border-2 border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
             >
               Improve with AI
             </button>
@@ -396,14 +396,14 @@ const TestNewQuery: React.FC = () => {
               {/* 💙💙 Run Query Button -------------- */}
               <button
                 onClick={sendQuery}
-                className="rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+                className="mr-4 h-11 w-auto whitespace-nowrap rounded border-2 border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
               >
                 Run Query
               </button>
               {/* 💙💙 Save Query Button -------------- */}
               <button
                 onClick={saveQuery}
-                className="mr-2 rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+                className="mr-4 h-11 w-auto whitespace-nowrap rounded border-2 border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
               >
                 Save Query
               </button>

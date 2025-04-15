@@ -39,7 +39,7 @@
 
 /* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
 .dark {
-  background-color: #000001;
+  background-color: #000000;
 }
 
 .testing {

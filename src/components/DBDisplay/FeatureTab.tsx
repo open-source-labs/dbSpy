@@ -54,9 +54,7 @@ export default function FeatureTab(props: any) {
   );
   const { user } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema, setDBName } = useSettingsStore(
-    (state) => state
-  );
+  const { setWelcome, isSchema, setDBName } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
@@ -313,8 +311,7 @@ export default function FeatureTab(props: any) {
         className="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50"
       >
         {/* <!-- Confirm Modal content --> */}
-        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-gradient-to-b from-[#f8f4eb] to-transparent bg-opacity-80 shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
-
+        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-opacity-80 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
           <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
             Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
             changes.
@@ -337,7 +334,7 @@ export default function FeatureTab(props: any) {
       </div>
       {/* dbSpy 8.0: added toggle button in Navbar to control FeatureTab */}
       <div
-        className={`bg-blue fixed left-0 top-8 z-10 h-full w-64 transition-transform duration-300 ${
+        className={`bg-blue fixed left-0 top-10 z-10 h-full w-64 transition-transform duration-300 ${
           toggleClicked ? '-translate-x-full' : 'translate-x-0'
         }`}
       >

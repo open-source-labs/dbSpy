@@ -76,44 +76,46 @@ const DBDisplay: React.FC = () => {
     const state = urlParams.get('state');
 
     // Only proceed if there's a code present (meaning it's the initial OAuth redirect)
-    if(code && state){
-    // Replaces client's URL in window to remove OAuth code/state
+    if (code && state) {
+      // Replaces client's URL in window to remove OAuth code/state
 
-    // const newURL =
-    //   window.location.protocol + '//' + window.location.host + window.location.pathname;
-    // window.history.replaceState({}, document.title, newURL);
+      // const newURL =
+      //   window.location.protocol + '//' + window.location.host + window.location.pathname;
+      // window.history.replaceState({}, document.title, newURL);
 
-     // Clean up the URL
-     const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
-     window.history.replaceState({}, document.title, newURL);
+      // Clean up the URL
+      const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
+      window.history.replaceState({}, document.title, newURL);
 
-    // send POST request to /api/oauth with code/state
-    fetch('/api/oauth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'Application/JSON',
-      },
-      body: JSON.stringify({ code: code, state: state }),
-    })
-      .then((data) => {
-        // successful codes
-        if (data.status >= 200 && data.status < 300) {
-          // convert response to JSON
-          return data.json();
-        } else
-          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
+      // send POST request to /api/oauth with code/state
+      fetch('/api/oauth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/JSON',
+        },
+        body: JSON.stringify({ code: code, state: state }),
       })
-      .then((res) => {
-        // update the state with user data
-        setUser(res);
-      })
-      .catch((err) => {
-        console.log({
-          log: `There was an error completing OAuth request: ${err}`,
-          status: err,
-          message: 'Unable to login with OAuth.',
+        .then((data) => {
+          // successful codes
+          if (data.status >= 200 && data.status < 300) {
+            // convert response to JSON
+            return data.json();
+          } else
+            throw new Error(
+              `Continue with OAuth failed with status code: ${data.status}`
+            );
+        })
+        .then((res) => {
+          // update the state with user data
+          setUser(res);
+        })
+        .catch((err) => {
+          console.log({
+            log: `There was an error completing OAuth request: ${err}`,
+            status: err,
+            message: 'Unable to login with OAuth.',
+          });
         });
-      });
     }
   }, []);
 
@@ -159,9 +161,13 @@ const DBDisplay: React.FC = () => {
         <div
           ref={mySideBarId}
           id="mySidenav"
-          className="sidenav bg-[#fbf3de] bg-opacity-10 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-2xl dark:from-sky-800"
+          className="sidenav bg-opacity-10 bg-gradient-to-b from-transparent to-transparent"
         >
-          <a href="#" className="closebtn" onClick={closeNav}>
+          <a
+            href="#"
+            className="absolute right-4 top-24 z-50 text-[40px] text-black hover:text-yellow-500 dark:text-white"
+            onClick={closeNav}
+          >
             &times;
           </a>
           <Sidebar closeNav={closeNav} />
