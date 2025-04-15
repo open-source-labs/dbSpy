@@ -86,7 +86,11 @@ function Navbar() {
             <NavLink to="/" className={`${linkbtn} flex items-center`}>
               Home
             </NavLink>
-            <NavLink to="/display" data-testid="navbar-display" className={`${linkbtn} flex items-center`}>
+            <NavLink
+              to={user ? '/display' : '/login'}
+              data-testid="navbar-display"
+              className={`${linkbtn} flex items-center`}
+            >
               Display
             </NavLink>
           </div>
@@ -97,21 +101,13 @@ function Navbar() {
               {/* inline-block: behave like an inline element but allows width and height modifications */}
               {/* pt: padding to top, dark:text-white: change text color to white in dark mode */}
               {/* lg: large screens, mt-0: margin-top: 0, on lg mode */}
-              <span className="text-blue-200">
-                {user.full_name}
-              </span>
+              <span className="text-blue-200">{user.full_name}</span>
               {/* ml: margin left, mr: margin right, rounded-full: make the image circular, dark:invert: invert color in dark mode */}
-              <img
-                className="h-[25px] w-[25px] rounded-full invert"
-                src={default_pfp}
-              />
+              <img className="h-[25px] w-[25px] rounded-full invert" src={default_pfp} />
             </>
           ) : (
             <>
-              <NavLink
-                to="/login"
-                className="text-white text-base font-bold"
-              >
+              <NavLink to="/login" className="text-base font-bold text-white">
                 Login
               </NavLink>
               <img className="h-[20px] w-[20px] invert" src={login} />
