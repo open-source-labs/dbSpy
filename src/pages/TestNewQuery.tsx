@@ -418,7 +418,7 @@ const TestNewQuery: React.FC = () => {
               </div>
             )}
             {queryResult && (
-              <div className="text-xl font-semibold text-accent dark:text-accentText">
+              <div className="overflow-x w-full max-w-[1300px] shrink-0 text-xl font-semibold text-accent dark:text-accentText">
                 {isQuerySaved ? 'Query Saved!' : ''}
                 <h3 className="mb-4 text-xl font-semibold text-slate-700 dark:text-white">
                   Query Results:
