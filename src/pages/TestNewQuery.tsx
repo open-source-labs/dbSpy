@@ -302,7 +302,7 @@ const TestNewQuery: React.FC = () => {
   return (
     <>
       {/* <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2"> */}
-      <div className="justify-space-around min-h-screen w-full flex-auto justify-around bg-background dark:bg-primary ">
+      <div className="min-h-screen flex-auto justify-end justify-around bg-background dark:bg-primary ">
         <FeatureTab />
         {/* Must wrap the page title in the toggle div in order for the title to shift w/ the rest of the page */}
         <div

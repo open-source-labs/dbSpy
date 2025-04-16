@@ -17,6 +17,9 @@ import DeleteTableModal from '../components/Modals/DeleteTableModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
+import { useModalStore } from '../store/useModalStore';
+import QueryModal from '../components/Modals/QueryModal';
+
 const DBDisplay: React.FC = () => {
   const { setUser } = useCredentialsStore();
 
@@ -49,6 +52,7 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
+  const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
   // Zustand state management to handle authentication
   const { user } = useCredentialsStore((state): any => state);
   // useRef() create a reference to DOM elements
@@ -199,7 +203,7 @@ const DBDisplay: React.FC = () => {
               {/* rounded: rounded corner, px: padding horizontal, py: padding vertical */}
               <button
                 id="showSchema"
-                className="mt-2 h-[28px] rounded bg-[#7597c5] px-4 font-bold text-white hover:bg-yellow-500 hover:text-black dark:bg-accent "
+                className="mt-2 h-[28px] rounded bg-[#7597c5] px-4 font-bold text-white hover:bg-yellow-500 hover:text-black dark:bg-accent dark:hover:bg-yellow-500 "
                 onClick={setTableMode}
               >
                 Show data
@@ -215,7 +219,7 @@ const DBDisplay: React.FC = () => {
               <DataFlow />
               <button
                 id="showSchema"
-                className="hover: mt-2 h-[28px] rounded rounded bg-[#7597c5] bg-black px-4 font-bold text-black text-white hover:bg-yellow-500"
+                className="mt-2 h-[28px] rounded bg-[#7597c5] px-4 font-bold text-white hover:bg-yellow-500 hover:text-black dark:bg-accent dark:hover:bg-yellow-500 "
                 onClick={setTableMode}
               >
                 Show Schema
@@ -231,6 +235,7 @@ const DBDisplay: React.FC = () => {
           openAddTableModal={openAddTableModal}
           openDeleteTableModal={openDeleteTableModal}
         />
+        {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {inputModalState.isOpen ? (
           <InputModal
             mode={inputModalState.mode as 'table' | 'column'}

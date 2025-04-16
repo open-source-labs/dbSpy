@@ -31,9 +31,9 @@ import MattC from '../../assets/contributors/MattC.jpg';
 import MattJ from '../../assets/contributors/Matthew_Jones.jpeg';
 import StanH from '../../assets/contributors/Stan.jpg';
 import DonM from '../../assets/contributors/DonM.jpg';
-import Revathy from '../../assets/contributors/Revathy.jpg';
+import Reva from '../../assets/contributors/Reva.png';
 import Vicky from '../../assets/contributors/Vicky.jpg';
-import Roshumba from '../../assets/contributors/Roshumba.jpg';
+import Roshumba from '../../assets/contributors/Roshumba.png';
 import Emma from '../../assets/contributors/Emma.jpeg';
 import Yihe from '../../assets/contributors/Yihe.jpg';
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
@@ -268,7 +268,7 @@ const profileList: profileInfo[] = [
     githubUrl: 'https://github.com/Donald-Macak',
   },
   {
-    imgUrl: Revathy,
+    imgUrl: Reva,
     name: 'Revathy Venkataraman',
     title: 'Software Engineer',
     linkedInUrl: 'https://www.linkedin.com/in/revavenk',

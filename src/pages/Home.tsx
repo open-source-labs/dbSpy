@@ -249,7 +249,7 @@ export default function Home() {
       <Contributors />
       <footer className="bg-containers2 text-center dark:bg-containers lg:text-left">
         <div className="p-4 text-center text-black dark:text-[#f8f4eb]">
-          Copyright © 2022 dbSpy + OSLabs. Distributed under the MIT License.
+          Copyright © 2025 dbSpy + OSLabs. Distributed under the MIT License.
         </div>
       </footer>
     </div>

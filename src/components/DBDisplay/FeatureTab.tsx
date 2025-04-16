@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useNavStore } from '../../store/navStore';
+import { useModalStore } from '../../store/useModalStore';
 
 // Functions imported:
 import parseSql from '../../parse';
@@ -38,6 +39,8 @@ import DeleteDbModal from '../Modals/DeleteDbModal';
 export default function FeatureTab(props: any) {
   // dbSpy 8.0: get the state store in Zustand
   const toggleClicked = useNavStore((state) => state.toggleClicked);
+  const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
+
   const navigate = useNavigate();
 
   //STATE DECLARATION (dbSpy3.0)
@@ -56,7 +59,7 @@ export default function FeatureTab(props: any) {
 
   const { setWelcome, isSchema, setDBName } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
-  const [queryModalOpened, setQueryModalOpened] = useState(false);
+  // const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
   const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
   const [deleteDbModalOpened, setDeleteDbModalOpened] = useState(false);
@@ -143,13 +146,13 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
-  // Export QueryModal
-  const openQueryModal = () => {
-    setQueryModalOpened(true);
-  };
-  const closeQueryModal = () => {
-    setQueryModalOpened(false);
-  };
+  // // Export QueryModal
+  // const openQueryModal = () => {
+  //   setQueryModalOpened(true);
+  // };
+  // const closeQueryModal = () => {
+  //   setQueryModalOpened(false);
+  // };
 
   //SaveDbNameModal - dbSpy 7.0
   const openSaveDbNameModal = () => {
@@ -396,7 +399,7 @@ export default function FeatureTab(props: any) {
 
               {/* Commented code is for Export Query Button */}
               {/* TODO: Add SAVE feature */}
-              {/* <li>
+              <li>
                 <a
                   onClick={openQueryModal}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
@@ -404,7 +407,7 @@ export default function FeatureTab(props: any) {
                   <ExportQueryIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
-              </li> */}
+              </li>
               <br />
               {/* ----------- 💙💙💙💙 Edit Tab ------------------------- */}
               {/* Adding a Table and its features will be going inside the Main Functionalities from Connect Tab  (STRETCH) */}
@@ -539,7 +542,7 @@ export default function FeatureTab(props: any) {
 
         {/* Query Output Modal */}
         {/* Sending props to child components. */}
-        {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
+        {/* {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null} */}
         {saveDbNameModalOpened ? (
           <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
         ) : null}

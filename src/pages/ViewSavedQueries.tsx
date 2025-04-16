@@ -52,7 +52,7 @@ const ViewSavedQueries: React.FC = () => {
 
   return (
     <>
-      <div className="justify-space-around flex-auto justify-end bg-background pr-2 dark:bg-primary">
+      <div className="flex-auto justify-end justify-around bg-background pr-2 dark:bg-primary">
         <FeatureTab />
         <div
           className={`h-screen transition-all duration-300 ${
@@ -163,8 +163,8 @@ const ViewSavedQueries: React.FC = () => {
                 </table>
               </div>
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-white">
-                No queries saved.
+              <div className="flex h-full w-full items-center justify-center text-lg text-slate-800 dark:text-white">
+                No Queries Saved
               </div>
             )}
           </div>
