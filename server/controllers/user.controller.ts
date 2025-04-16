@@ -142,7 +142,7 @@ export const userRegistration: RequestHandler = async (
         .then(() => {
           log.info(`${email} successfully registered`);
           res.locals.userInfo = { name: full_name, email: email };
-          res.locals.user = full_name;
+          res.locals.user = { email: email };
           return next();
         })
         .catch((err: ErrorEvent) => next(err));
