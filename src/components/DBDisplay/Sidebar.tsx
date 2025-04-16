@@ -135,7 +135,7 @@ const Sidebar = (props: any) => {
   return (
     <form
       id="dbconnect"
-      className="rounded-2xl bg-[#fbf3de] bg-opacity-0 bg-gradient-to-b from-[#f8f4eb] to-transparent backdrop-blur-md dark:from-accent"
+      className="rounded-2xl bg-[#fbf3de] bg-opacity-0 bg-gradient-to-b from-accent to-transparent backdrop-blur-md dark:from-accent"
     >
       <label className="dark:text-[#f8f4eb]">
         <h3>Connect to Database</h3>

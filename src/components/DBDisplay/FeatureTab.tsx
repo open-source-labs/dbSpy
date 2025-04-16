@@ -311,7 +311,7 @@ export default function FeatureTab(props: any) {
         className="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50"
       >
         {/* <!-- Confirm Modal content --> */}
-        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-opacity-80 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
+        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-opacity-90 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
           <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
             Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
             changes.
@@ -472,18 +472,18 @@ export default function FeatureTab(props: any) {
               {/* ----------- 💙💙💙💙 Test Tab -------------------------- */}
               <p className="text-slate-900 dark:text-[#f8f4eb]">Test</p>
               <hr />
-              {isSchema ? (
-                <li>
-                  {/* ----- 💙💙 Test New Query Button -------- */}
-                  <NavLink
-                    to="/test-new-query"
-                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
-                  >
-                    <AddTableIcon />
-                    <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
-                  </NavLink>
-                </li>
-              ) : null}
+
+              <li>
+                {/* ----- 💙💙 Test New Query Button -------- */}
+                <NavLink
+                  to="/test-new-query"
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                >
+                  <AddTableIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
+                </NavLink>
+              </li>
+
               <li>
                 {/* ----- 💙💙 View Saved Queries Button -------- */}
                 <NavLink

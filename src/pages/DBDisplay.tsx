@@ -199,7 +199,7 @@ const DBDisplay: React.FC = () => {
               {/* rounded: rounded corner, px: padding horizontal, py: padding vertical */}
               <button
                 id="showSchema"
-                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500 hover:text-black"
+                className="mt-2 h-[28px] rounded bg-[#7597c5] px-4 font-bold text-white hover:bg-yellow-500 hover:text-black dark:bg-accent "
                 onClick={setTableMode}
               >
                 Show data
@@ -215,12 +215,12 @@ const DBDisplay: React.FC = () => {
               <DataFlow />
               <button
                 id="showSchema"
-                className="hover: rounded bg-black px-4 py-2 font-bold text-black text-white hover:bg-yellow-500"
+                className="hover: mt-2 h-[28px] rounded rounded bg-[#7597c5] bg-black px-4 font-bold text-black text-white hover:bg-yellow-500"
                 onClick={setTableMode}
               >
                 Show Schema
               </button>
-              <span id="text" className="ml-5 text-white">
+              <span id="text" className="ml-5 text-black dark:text-white">
                 Current Database: {dbName}
               </span>
             </>
