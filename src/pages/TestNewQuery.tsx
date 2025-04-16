@@ -302,7 +302,7 @@ const TestNewQuery: React.FC = () => {
   return (
     <>
       {/* <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2"> */}
-      <div className="justify-space-around min-h-screen w-full flex-auto justify-around bg-[#c9ced1] dark:bg-slate-700 ">
+      <div className="min-h-screen flex-auto justify-end justify-around bg-background dark:bg-primary ">
         <FeatureTab />
         {/* Must wrap the page title in the toggle div in order for the title to shift w/ the rest of the page */}
         <div
@@ -310,13 +310,13 @@ const TestNewQuery: React.FC = () => {
         >
           <div className="mb-12 mr-2 flex w-full items-center justify-end pt-20">
             <div className="flex w-full">
-              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-white">
+              <h1 className="text-5xl font-bold tracking-tight text-slate-700 dark:text-accentText">
                 Test New Query
               </h1>
             </div>
             <button
               onClick={improveWithAi}
-              className="mr-4 h-11 w-auto whitespace-nowrap rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+              className="mr-6 h-11 w-auto whitespace-nowrap rounded border-2 border-slate-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
             >
               Improve with AI
             </button>
@@ -396,14 +396,14 @@ const TestNewQuery: React.FC = () => {
               {/* 💙💙 Run Query Button -------------- */}
               <button
                 onClick={sendQuery}
-                className="rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+                className="mr-4 h-11 w-auto whitespace-nowrap rounded border-2 border-slate-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
               >
                 Run Query
               </button>
               {/* 💙💙 Save Query Button -------------- */}
               <button
                 onClick={saveQuery}
-                className="mr-2 rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
+                className="mr-4 h-11 w-auto whitespace-nowrap rounded border-2 border-slate-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
               >
                 Save Query
               </button>
@@ -418,7 +418,7 @@ const TestNewQuery: React.FC = () => {
               </div>
             )}
             {queryResult && (
-              <div className="mt-8 text-white">
+              <div className="overflow-x w-full max-w-[1300px] shrink-0 text-xl font-semibold text-accent dark:text-accentText">
                 {isQuerySaved ? 'Query Saved!' : ''}
                 <h3 className="mb-4 text-xl font-semibold text-slate-700 dark:text-white">
                   Query Results:
@@ -426,18 +426,45 @@ const TestNewQuery: React.FC = () => {
                 {/* <table className="mx-auto mr-2 w-fit border-collapse border border-white"> */}
                 <table className="mr-2 w-fit border-collapse border border-white">
                   <thead>
-                    <tr className="bg-slate-700 dark:bg-slate-800">
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                    <tr className="bg-slate-600 dark:bg-slate-700">
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
                         Name
                       </th>
-                      <th className="w-[250px] border border-white px-6 py-3 text-center text-base text-white">
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
                         Query
                       </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
                         Date Run
                       </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
                         Execution Time
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Planning Time
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Total Cost
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Actual Total Time
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Node Type
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Relation Name
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Plan Rows
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Actual Rows
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Shared Hit Blocks
+                      </th>
+                      <th className="border border-white px-6 py-3 text-center text-base text-white">
+                        Shared Read Blocks
                       </th>
                     </tr>
                   </thead>
@@ -449,78 +476,42 @@ const TestNewQuery: React.FC = () => {
                         return (
                           <td
                             key={index}
-                            className="border border-slate-700 px-4 py-2 text-center text-base text-black dark:border-white dark:text-white"
+                            className="border border-slate-700 px-4 py-2 text-center text-base text-slate-800 dark:border-white dark:text-white"
                           >
                             {value.trim()}
                           </td>
                         );
                       })}
-                    </tr>
-                  </tbody>
-                </table>
-                <table className="mr-2 w-fit border-collapse border border-white">
-                  <thead>
-                    <tr className="bg-slate-700 dark:bg-slate-800">
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Planning Time
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Total Cost
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Actual Total Time
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Node Type
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Relation Name
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Plan Rows
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Actual Rows
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Shared Hit Blocks
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
-                        Shared Read Blocks
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      {/* Body of extended metrics (moreMetrics) */}
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.planningTime
                           ? moreMetrics.planningTime + 'ms'
                           : 'N/A'}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.totalCost}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.actualTotalTime}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.nodeType}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.relationName}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.planRows}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.actualRows}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.sharedHit ? moreMetrics.sharedHit : 'N/A'}
-                      </th>
-                      <th className="w-[200px] border border-white px-6 py-3 text-center text-base text-white">
+                      </td>
+                      <td className="border border-slate-700 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                         {moreMetrics?.sharedRead ? moreMetrics?.sharedRead : 'N/A'}
-                      </th>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
