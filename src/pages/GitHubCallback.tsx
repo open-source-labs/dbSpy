@@ -2,8 +2,12 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useCredentialsStore from '../store/credentialsStore';
+import { config } from 'dotenv';
+
+config();
 
 const GitHubCallback: React.FC = () => {
+  const apiOauth = process.env.PROD_API_OAUTH || 'http://localhost:8080/api/oauth';
   const setUser = useCredentialsStore((state) => state.setUser);
   const navigate = useNavigate();
 
@@ -17,7 +21,7 @@ const GitHubCallback: React.FC = () => {
       return;
     }
 
-    fetch('http://localhost:8080/api/oauth', {
+    fetch(apiOauth, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, state, type: 'GITHUB' }),
