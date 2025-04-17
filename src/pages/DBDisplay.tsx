@@ -11,13 +11,20 @@ import DataFlow from '../components/ReactFlow/DataFlow';
 //-- Modals (pop ups) Components Imports;
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
-import LoadDbModal from '@/components/Modals/LoadDbModal';
+import DbNameInput from '../components/Modals/DbNameInput';
+import LoadDbModal from '../components/Modals/LoadDbModal';
+import DeleteDbModal from '../components/Modals/DeleteDbModal';
 import DeleteTableModal from '../components/Modals/DeleteTableModal';
 //-- State Stores Imports;
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
 import { useModalStore } from '../store/useModalStore';
+import { accountModalStore } from '../store/accountModalStore';
+import useSchemaStore from '../store/schemaStore';
+import useDataStore from '../store/dataStore';
+import axios, { AxiosResponse } from 'axios';
+
 import QueryModal from '../components/Modals/QueryModal';
 
 const DBDisplay: React.FC = () => {
@@ -52,7 +59,24 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
+  // dbSpy8.0: Zustand state managemant to handle modals under Account
   const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
+  const {
+    saveDbModalOpened,
+    setSaveDbModalOpen,
+    setSaveDbModalClose,
+    loadDbModalOpened,
+    setLoadDbModalOpen,
+    setLoadDbModalClose,
+    nameArr,
+    setNameArr,
+    deleteDbModalOpened,
+    setDeleteDbModalClose,
+  } = accountModalStore();
+  const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
+    (state: any) => state
+  );
+  const { dataStore, setDataStore } = useDataStore((state: any) => state);
   // Zustand state management to handle authentication
   const { user } = useCredentialsStore((state): any => state);
   // useRef() create a reference to DOM elements
@@ -157,6 +181,100 @@ const DBDisplay: React.FC = () => {
       openNav();
     }
   }
+  // dbSpy8.0: move from FeatureTab to Display page
+  // Function for saving databases. Reworked for multiple saves - dbspy 7.0
+  const saveSchema = (inputName: string): void => {
+    //check to see if a table is present in the schemaStore
+    if (Object.keys(schemaStore).length !== 0) {
+      //Create request body with the schema to be saved and the inputted name to save it under
+      const postBody = {
+        schema: JSON.stringify(schemaStore),
+        SaveName: inputName,
+        TableData: JSON.stringify(dataStore),
+      };
+      //make a get request to see if the name already exists in the database
+      axios
+        .get<string[]>('/api/saveFiles/allSave')
+        .then((res: AxiosResponse) => {
+          const nameArrCheck = [];
+          for (let saveName of res.data.data) {
+            nameArrCheck.push(saveName.SaveName);
+          }
+          // if the name already exists then send to one route and if not then send to the other
+          // route with combined middleware.
+          if (nameArrCheck.includes(inputName)) {
+            axios
+              .patch('/api/saveFiles/save', postBody)
+              .catch((err) => console.error('err', err));
+          } else {
+            console.log('Saving schema with postBody:', postBody);
+
+            axios
+              .post('/api/saveFiles/CreateAndSave', postBody)
+              .catch((err) => console.error('err', err));
+          }
+        })
+        .catch((err) => console.error('Err', err));
+    } else {
+      //if no table is present, send alert to the user
+      alert('No schema displayed.');
+    }
+  };
+
+  const closeSaveDbNameModal = (input?: string) => {
+    if (input) {
+      saveSchema(input);
+    }
+    setSaveDbModalClose();
+  };
+
+  // Reworked for multiple loads -  dbSpy 7.0
+  const loadSchema = async (inputName: string) => {
+    try {
+      //send the inputName along with the get request as query in the parameters.
+      const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
+      if (data.status === 204) return alert('No database stored!');
+      const schemaString = await data.json();
+
+      setDataStore(JSON.parse(schemaString.tableData));
+
+      return setSchemaStore(JSON.parse(schemaString.data));
+    } catch (err) {
+      console.log(err);
+      console.error('err retrieve', err);
+      window.alert(err);
+    }
+  };
+  // Load selected database - dbSpy 7.0
+  const closeLoadDbModal = (input?: string) => {
+    if (input) {
+      loadSchema(input);
+      setDBName(input);
+    }
+    setLoadDbModalClose();
+  };
+
+  // Function for deleting databases - dbspy 7.0
+  const deleteDatabase = (inputName: string) => {
+    try {
+      //send the inputName along with the delete request as query in the parameters.
+      axios
+        .delete(`/api/saveFiles/deleteSave/${inputName}`)
+        .catch((err) => console.error('err', err));
+    } catch (err) {
+      console.log(err);
+      console.error('err retrieve', err);
+      window.alert(err);
+    }
+  };
+
+  // Delete selected database - dbSpy 7.0
+  const closeDeleteDbModal = (input?: string) => {
+    if (input) {
+      deleteDatabase(input);
+    }
+    setDeleteDbModalClose();
+  };
 
   return (
     <>
@@ -255,6 +373,15 @@ const DBDisplay: React.FC = () => {
             closeDeleteTableModal={() => setDeleteTableModalState(false)}
           />
         ) : null}
+        {saveDbModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+        ) : null}
+        {loadDbModalOpened ? (
+          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
+        ) : null}
+        {deleteDbModalOpened ? (
+                  <DeleteDbModal nameArr={nameArr} closeDeleteDbModal={closeDeleteDbModal} />
+                ) : null}
       </div>
     </>
   );

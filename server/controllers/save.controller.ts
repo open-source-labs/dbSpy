@@ -187,7 +187,7 @@ const saveController = {
     const { SaveName } = req.body;
     const { email } = req.session;
     console.log('157', email, SaveName);
-
+    
     const newSaveQuery = 'INSERT INTO saveddb(email,SaveName,SaveData) VALUES (?,?,?)';
     const values = [email, SaveName, '{}'];
     try {

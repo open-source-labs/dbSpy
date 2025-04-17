@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useNavStore } from '../../store/navStore';
 import { useModalStore } from '../../store/useModalStore';
+import { accountModalStore } from '../../store/accountModalStore';
 
 // Functions imported:
 import parseSql from '../../parse';
@@ -40,6 +41,17 @@ export default function FeatureTab(props: any) {
   // dbSpy 8.0: get the state store in Zustand
   const toggleClicked = useNavStore((state) => state.toggleClicked);
   const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
+  const {
+    saveDbModalOpened,
+    setSaveDbModalOpen,
+    setSaveDbModalClose,
+    loadDbModalOpened,
+    setLoadDbModalOpen,
+    setLoadDbModalClose,
+    nameArr,
+    setNameArr,
+    setDeleteDbModalOpen,
+  } = accountModalStore();
 
   const navigate = useNavigate();
 
@@ -60,10 +72,10 @@ export default function FeatureTab(props: any) {
   const { setWelcome, isSchema, setDBName } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
   // const [queryModalOpened, setQueryModalOpened] = useState(false);
-  const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
-  const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
+  //const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
+  //const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
   const [deleteDbModalOpened, setDeleteDbModalOpened] = useState(false);
-  const [nameArr, setNameArr] = useState<string[]>([]);
+  //const [nameArr, setNameArr] = useState<string[]>([]);
   //END: STATE DECLARATION
 
   //create references for HTML elements
@@ -146,29 +158,23 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
-  // // Export QueryModal
-  // const openQueryModal = () => {
-  //   setQueryModalOpened(true);
-  // };
-  // const closeQueryModal = () => {
-  //   setQueryModalOpened(false);
-  // };
-
+  // dbSpy8.0: use Zustand to handle states
+  // store in /store/accountModalStore
   //SaveDbNameModal - dbSpy 7.0
   const openSaveDbNameModal = () => {
     if (!user) alert('Must sign in to save!');
     else {
-      setSaveDbNameModalOpened(true);
+      setSaveDbModalOpen();
     }
   };
 
-  const closeSaveDbNameModal = (input?: string) => {
-    //pull dbName from input field and send it to the database along with the schema. - dbSpy 7.0
-    if (input) {
-      saveSchema(input);
-    }
-    setSaveDbNameModalOpened(false);
-  };
+  // const closeSaveDbNameModal = (input?: string) => {
+  //   //pull dbName from input field and send it to the database along with the schema. - dbSpy 7.0
+  //   if (input) {
+  //     saveSchema(input);
+  //   }
+  //   setSaveDbModalClose();
+  // };
 
   // LoadDbModal
   // Open loadDbName Modal and send get request to database to get&list all the databases name. - dbSpy 7.0
@@ -184,7 +190,7 @@ export default function FeatureTab(props: any) {
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
           }
-          setLoadDbModalOpened(true);
+          setLoadDbModalOpen();
           setNameArr(nameArr);
         })
         .catch((err) => {
@@ -207,7 +213,7 @@ export default function FeatureTab(props: any) {
           for (let saveName of res.data.data) {
             nameArr.push(saveName.SaveName);
           }
-          setDeleteDbModalOpened(true);
+          setDeleteDbModalOpen();
           setNameArr(nameArr);
         })
         .catch((err) => {
@@ -217,89 +223,89 @@ export default function FeatureTab(props: any) {
     }
     return [];
   };
-  // Load selected database - dbSpy 7.0
-  const closeLoadDbModal = (input?: string) => {
-    if (input) {
-      loadSchema(input);
-      setDBName(input);
-    }
-    setLoadDbModalOpened(false);
-  };
+  // // Load selected database - dbSpy 7.0
+  // const closeLoadDbModal = (input?: string) => {
+  //   if (input) {
+  //     loadSchema(input);
+  //     setDBName(input);
+  //   }
+  //   setLoadDbModalClose();
+  // };
   // Delete selected database - dbSpy 7.0
-  const closeDeleteDbModal = (input?: string) => {
-    if (input) {
-      deleteDatabase(input);
-    }
-    setDeleteDbModalOpened(false);
-  };
+  // const closeDeleteDbModal = (input?: string) => {
+  //   if (input) {
+  //     deleteDatabase(input);
+  //   }
+  //   setDeleteDbModalOpened(false);
+  // };
 
-  // Function for saving databases. Reworked for multiple saves - dbspy 7.0
-  const saveSchema = (inputName: string): void => {
-    //check to see if a table is present in the schemaStore
-    if (Object.keys(schemaStore).length !== 0) {
-      //Create request body with the schema to be saved and the inputted name to save it under
-      const postBody = {
-        schema: JSON.stringify(schemaStore),
-        SaveName: inputName,
-        TableData: JSON.stringify(dataStore),
-      };
-      //make a get request to see if the name already exists in the database
-      axios
-        .get<string[]>('/api/saveFiles/allSave')
-        .then((res: AxiosResponse) => {
-          const nameArr = [];
-          for (let saveName of res.data.data) {
-            nameArr.push(saveName.SaveName);
-          }
-          // if the name already exists then send to one route and if not then send to the other
-          // route with combined middleware.
-          if (nameArr.includes(inputName)) {
-            axios
-              .patch('/api/saveFiles/save', postBody)
-              .catch((err) => console.error('err', err));
-          } else {
-            axios
-              .post('/api/saveFiles/CreateAndSave', postBody)
-              .catch((err) => console.error('err', err));
-          }
-        })
-        .catch((err) => console.error('Err', err));
-    } else {
-      //if no table is present, send alert to the user
-      alert('No schema displayed.');
-    }
-  };
+  // // Function for saving databases. Reworked for multiple saves - dbspy 7.0
+  // const saveSchema = (inputName: string): void => {
+  //   //check to see if a table is present in the schemaStore
+  //   if (Object.keys(schemaStore).length !== 0) {
+  //     //Create request body with the schema to be saved and the inputted name to save it under
+  //     const postBody = {
+  //       schema: JSON.stringify(schemaStore),
+  //       SaveName: inputName,
+  //       TableData: JSON.stringify(dataStore),
+  //     };
+  //     //make a get request to see if the name already exists in the database
+  //     axios
+  //       .get<string[]>('/api/saveFiles/allSave')
+  //       .then((res: AxiosResponse) => {
+  //         const nameArr = [];
+  //         for (let saveName of res.data.data) {
+  //           nameArr.push(saveName.SaveName);
+  //         }
+  //         // if the name already exists then send to one route and if not then send to the other
+  //         // route with combined middleware.
+  //         if (nameArr.includes(inputName)) {
+  //           axios
+  //             .patch('/api/saveFiles/save', postBody)
+  //             .catch((err) => console.error('err', err));
+  //         } else {
+  //           axios
+  //             .post('/api/saveFiles/CreateAndSave', postBody)
+  //             .catch((err) => console.error('err', err));
+  //         }
+  //       })
+  //       .catch((err) => console.error('Err', err));
+  //   } else {
+  //     //if no table is present, send alert to the user
+  //     alert('No schema displayed.');
+  //   }
+  // };
 
-  // Reworked for multiple loads -  dbSpy 7.0
-  const loadSchema = async (inputName: string) => {
-    try {
-      //send the inputName along with the get request as query in the parameters.
-      const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
-      if (data.status === 204) return alert('No database stored!');
-      const schemaString = await data.json();
+  // // Reworked for multiple loads -  dbSpy 7.0
+  // const loadSchema = async (inputName: string) => {
+  //   try {
+  //     //send the inputName along with the get request as query in the parameters.
+  //     const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
+  //     if (data.status === 204) return alert('No database stored!');
+  //     const schemaString = await data.json();
 
-      setDataStore(JSON.parse(schemaString.tableData));
+  //     setDataStore(JSON.parse(schemaString.tableData));
 
-      return setSchemaStore(JSON.parse(schemaString.data));
-    } catch (err) {
-      console.log(err);
-      console.error('err retrieve', err);
-      window.alert(err);
-    }
-  };
+  //     return setSchemaStore(JSON.parse(schemaString.data));
+  //   } catch (err) {
+  //     console.log(err);
+  //     console.error('err retrieve', err);
+  //     window.alert(err);
+  //   }
+  // };
   // Function for deleting databases - dbspy 7.0
-  const deleteDatabase = (inputName: string) => {
-    try {
-      //send the inputName along with the delete request as query in the parameters.
-      axios
-        .delete(`/api/saveFiles/deleteSave/${inputName}`)
-        .catch((err) => console.error('err', err));
-    } catch (err) {
-      console.log(err);
-      console.error('err retrieve', err);
-      window.alert(err);
-    }
-  };
+  // const deleteDatabase = (inputName: string) => {
+  //   try {
+  //     //send the inputName along with the delete request as query in the parameters.
+  //     axios
+  //       .delete(`/api/saveFiles/deleteSave/${inputName}`)
+  //       .catch((err) => console.error('err', err));
+  //   } catch (err) {
+  //     console.log(err);
+  //     console.error('err retrieve', err);
+  //     window.alert(err);
+  //   }
+  // };
 
   // END: HELPER FUNCTIONS
 
@@ -543,15 +549,15 @@ export default function FeatureTab(props: any) {
         {/* Query Output Modal */}
         {/* Sending props to child components. */}
         {/* {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null} */}
-        {saveDbNameModalOpened ? (
-          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
-        ) : null}
-        {loadDbModalOpened ? (
+        {/* {saveDbModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={setSaveDbModalClose} />
+        ) : null} */}
+        {/* {loadDbModalOpened ? (
           <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
-        ) : null}
-        {deleteDbModalOpened ? (
+        ) : null} */}
+        {/* {deleteDbModalOpened ? (
           <DeleteDbModal nameArr={nameArr} closeDeleteDbModal={closeDeleteDbModal} />
-        ) : null}
+        ) : null} */}
       </div>
     </>
   );
