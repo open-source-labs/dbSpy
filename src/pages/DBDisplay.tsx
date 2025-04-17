@@ -81,46 +81,38 @@ const DBDisplay: React.FC = () => {
 
     // Only proceed if there's a code present (meaning it's the initial OAuth redirect)
     //if (code && state) {
-      // Replaces client's URL in window to remove OAuth code/state
+    // Replaces client's URL in window to remove OAuth code/state
+    const newURL = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, newURL);
 
-      // const newURL =
-      //   window.location.protocol + '//' + window.location.host + window.location.pathname;
-      // window.history.replaceState({}, document.title, newURL);
-
-      // Clean up the URL
-      const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
-      window.history.replaceState({}, document.title, newURL);
-
-      // send POST request to /api/oauth with code/state
-      fetch('/api/oauth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'Application/JSON',
-        },
-        body: JSON.stringify({ code: code, state: state }),
+    // send POST request to /api/oauth with code/state
+    fetch('/api/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify({ code: code, state: state }),
+    })
+      .then((data) => {
+        // successful codes
+        if (data.status >= 200 && data.status < 300) {
+          // convert response to JSON
+          return data.json();
+        } else
+          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
       })
-        .then((data) => {
-          // successful codes
-          if (data.status >= 200 && data.status < 300) {
-            // convert response to JSON
-            return data.json();
-          } else
-            throw new Error(
-              `Continue with OAuth failed with status code: ${data.status}`
-            );
-        })
-        .then((res) => {
-          // update the state with user data
-          setUser(res);
-        })
-        .catch((err) => {
-          console.log({
-            log: `There was an error completing OAuth request: ${err}`,
-            status: err,
-            message: 'Unable to login with OAuth.',
-          });
+      .then((res) => {
+        // update the state with user data
+        setUser(res);
+      })
+      .catch((err) => {
+        console.log({
+          log: `There was an error completing OAuth request: ${err}`,
+          status: err,
+          message: 'Unable to login with OAuth.',
         });
-   // }
+      });
+    // }
   }, []);
 
   //TODO: Hide add table on dataview click

@@ -37,7 +37,7 @@ const App: React.FC = () => {
           <Route index element={<Home />} />
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
-          <Route path="display" element={ <DBDisplay /> } />
+          <Route path="display" element={user ? <DBDisplay /> : <Login />} />
           <Route path="test-new-query" element={user ? <TestNewQuery /> : <Login />} />
           <Route
             path="view-saved-queries"
