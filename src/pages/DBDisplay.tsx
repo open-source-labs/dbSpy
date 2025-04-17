@@ -60,25 +60,18 @@ const DBDisplay: React.FC = () => {
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
   // dbSpy8.0: Zustand state managemant to handle modals under Account
-  const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
+  const { closeQueryModal, queryModalOpened } = useModalStore();
   const {
     saveDbModalOpened,
-    setSaveDbModalOpen,
     setSaveDbModalClose,
     loadDbModalOpened,
-    setLoadDbModalOpen,
     setLoadDbModalClose,
     nameArr,
-    setNameArr,
     deleteDbModalOpened,
     setDeleteDbModalClose,
   } = accountModalStore();
-  const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
-    (state: any) => state
-  );
+  const { schemaStore, setSchemaStore } = useSchemaStore((state: any) => state);
   const { dataStore, setDataStore } = useDataStore((state: any) => state);
-  // Zustand state management to handle authentication
-  const { user } = useCredentialsStore((state): any => state);
   // useRef() create a reference to DOM elements
   //create references for HTML elements
   // mySideBarId is the reference to the sidebar
@@ -86,8 +79,6 @@ const DBDisplay: React.FC = () => {
   // mainId is the reference to the main content
   const mainId: any = useRef();
   // any is not a good type to use, but it is used here to avoid TypeScript errors
-  // const mySideBarId = useRef<HTMLDivElement | null>(null);
-  // const mainId = useRef<HTMLDivElement | null>(null);
 
   /**
    * Future iterations may want to modify this to not run every time client(s) load
@@ -103,70 +94,51 @@ const DBDisplay: React.FC = () => {
     const code = urlParams.get('code');
     const state = urlParams.get('state');
 
-    // Only proceed if there's a code present (meaning it's the initial OAuth redirect)
-    //if (code && state) {
-      // Replaces client's URL in window to remove OAuth code/state
+    // Clean up the URL
+    const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
+    window.history.replaceState({}, document.title, newURL);
 
-      // const newURL =
-      //   window.location.protocol + '//' + window.location.host + window.location.pathname;
-      // window.history.replaceState({}, document.title, newURL);
-
-      // Clean up the URL
-      const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
-      window.history.replaceState({}, document.title, newURL);
-
-      // send POST request to /api/oauth with code/state
-      fetch('/api/oauth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'Application/JSON',
-        },
-        body: JSON.stringify({ code: code, state: state }),
+    // send POST request to /api/oauth with code/state
+    fetch('/api/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify({ code: code, state: state }),
+    })
+      .then((data) => {
+        // successful codes
+        if (data.status >= 200 && data.status < 300) {
+          // convert response to JSON
+          return data.json();
+        } else
+          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
       })
-        .then((data) => {
-          // successful codes
-          if (data.status >= 200 && data.status < 300) {
-            // convert response to JSON
-            return data.json();
-          } else
-            throw new Error(
-              `Continue with OAuth failed with status code: ${data.status}`
-            );
-        })
-        .then((res) => {
-          // update the state with user data
-          setUser(res);
-        })
-        .catch((err) => {
-          console.log({
-            log: `There was an error completing OAuth request: ${err}`,
-            status: err,
-            message: 'Unable to login with OAuth.',
-          });
+      .then((res) => {
+        // update the state with user data
+        setUser(res);
+      })
+      .catch((err) => {
+        console.log({
+          log: `There was an error completing OAuth request: ${err}`,
+          status: err,
+          message: 'Unable to login with OAuth.',
         });
-   // }
+      });
+    // }
   }, []);
-
-  //TODO: Hide add table on dataview click
-  // const dataOnclick = ():void => {
-  //   const addTableButtonRef = useRef(null);
-  // }
 
   // for the sidebar of Add table
   /* Set the width of the side navigation to 400px and add a right margin of 400px */
   const openNav = () => {
     // expand the sidebar to 400px
     mySideBarId.current.style.width = '400px';
-    // move the content to the left
-    // mainId.current.style.marginRight = '400px';
   };
 
   /* Set the width of the side navigation to 0, and a right margin of 50px */
   const closeNav = () => {
     // hide the sidebar
     mySideBarId.current.style.width = '0';
-    // move the content to the right
-    // mainId.current.style.marginRight = '0';
   };
 
   // dbSpy 6.0: Update handleSidebar to allow opening/closing sidebar on Connect Database click
@@ -207,8 +179,6 @@ const DBDisplay: React.FC = () => {
               .patch('/api/saveFiles/save', postBody)
               .catch((err) => console.error('err', err));
           } else {
-            console.log('Saving schema with postBody:', postBody);
-
             axios
               .post('/api/saveFiles/CreateAndSave', postBody)
               .catch((err) => console.error('err', err));
@@ -240,7 +210,6 @@ const DBDisplay: React.FC = () => {
 
       return setSchemaStore(JSON.parse(schemaString.data));
     } catch (err) {
-      console.log(err);
       console.error('err retrieve', err);
       window.alert(err);
     }
@@ -262,7 +231,6 @@ const DBDisplay: React.FC = () => {
         .delete(`/api/saveFiles/deleteSave/${inputName}`)
         .catch((err) => console.error('err', err));
     } catch (err) {
-      console.log(err);
       console.error('err retrieve', err);
       window.alert(err);
     }
@@ -353,6 +321,9 @@ const DBDisplay: React.FC = () => {
           openAddTableModal={openAddTableModal}
           openDeleteTableModal={openDeleteTableModal}
         />
+
+        {/* MODALS */}
+        {/* dbSpy8.0: move modals into Display page */}
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {inputModalState.isOpen ? (
           <InputModal
@@ -380,8 +351,8 @@ const DBDisplay: React.FC = () => {
           <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
         ) : null}
         {deleteDbModalOpened ? (
-                  <DeleteDbModal nameArr={nameArr} closeDeleteDbModal={closeDeleteDbModal} />
-                ) : null}
+          <DeleteDbModal nameArr={nameArr} closeDeleteDbModal={closeDeleteDbModal} />
+        ) : null}
       </div>
     </>
   );

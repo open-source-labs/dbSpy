@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import useSchemaStore from '../../store/schemaStore';
-import queryGen from '../../queryGen';
-import { SchemaObject } from '../../Types';
 
 //Input modal for saving a new or existing database.
 export default function DbNameInputModal({closeSaveDbNameModal}: {closeSaveDbNameModal: (input?: string) => void;}) {
-  // read from schemaStore, then run queryGen
-  const { schemaStore, system } = useSchemaStore((state) => state);
-  // const queryObj = queryGen(schemaStore as unknown as SchemaObject, system as string);
-  
+
   function handleFormSubmit(event: any) {
     event.preventDefault(); // Prevent default form submission behavior
     //Target save button's id to indentify which button is clicked.

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import useSettingsStore from '../../store/settingsStore';
+import React from 'react';
+
 export default function LoadDbModal({
   closeLoadDbModal,
   nameArr,
