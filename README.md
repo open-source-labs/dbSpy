@@ -16,30 +16,59 @@
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
 
-### New Features with Version 7.0
+### 🚀 dbSpy v8.0 ✨ New Features
 
--UI is now full widescreen with a drop down menu to allow for more workspace.
--The Save, Load, and Delete features now take filename, and can save schema, and data.
--Deleting certain elements in tables now locates, and also properly delete depedent elements on other tables
--Implemented an algorithm to highlight all edges connected to currently selected table
--Fixed several Issues where certain Elements would not be deleted from a connected database
--Fixed several Issues with show Data terminating react flow
--Fixed several Issues with Edges being rendered too many times, and not deleted
+### 🔍 Test New Query Page - a modern querying interface
 
-### Use Cases
+- Run SQL queries against PostgreSQL or MySQL DBs
+- Live results + metadata: execution time, query name, timestamp
+- Zustand-powered state management
+- Input validation and error handling
+- Component-level Jest + ReactTestLibrary tests
 
-- Connecting to an existing remote PostgreSQL, MySQL, MicroSoftSQL, OracleSQL databases
-  - Renders an ER diagram for SCHEMA and DATA of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
-- Uploading your database's SQL file
-  - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
-- Seamlessly visualize relational databases (both SCHEMA and DATA)
-  - After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
-- Creating a database + ER diagram from scratch
-  - Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
+### 💾 View Saved Queries Page
+
+- Access previously saved queries per user
+- Sortable, styled tables with TypeScript typing
+- Track query performance across data models
+
+### 🎨 UI / UX Enhancements
+
+- TailwindCSS redesign: colors, layout, interactions
+- Responsive and fully supported dark/light mode
+- Logo animation integrated in navbar
+- Sidebar and tab layout fixes
+
+### 🛠 Functional Fixes
+
+- Resolved layout shift bugs
+- Optimized backend response handling
+- OAuth (GitHub + local login)
+
+### 📈 Opportunities for Continued Development
+
+- Extend Test Query feature to additional DB types (e.g. Oracle)
+- Persist database sessions across routes
+- Integrate LLMs to suggest efficient queries and schema improvements
+- Add OAuth support for Microsoft accounts
+- Add support for NoSQL (MongoDB) and graph databases
+- Expand UI testing coverage
+
+---
+### dbSpy v7.0 updates
+- Full widescreen UI with a dropdown menu for more workspace
+- Enhanced Save, Load, and Delete features that support filenames for saving schema and data
+- Proper deletion of dependent elements across tables
+- Algorithm to highlight edges connected to the selected table
+- Fixed rendering and deletion issues with elements
+- Support for connecting to remote databases (PostgreSQL, MySQL, Microsoft SQL, Oracle SQL)
+- Ability to upload SQL files and render ER diagrams for the provided SQL dump
+- Interface for modifying tables and creating new ones, with changes reflected in the database via generated queries
+- Canvas to create databases and ER diagrams from scratch.
 
 ---
 
-### Key Features
+### 🔑 Key Features
 
 1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
 
@@ -63,9 +92,13 @@
 
 11. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-## <img src="images/dbSpy7_canvas.png">
+12. **Live Querying and Save Queries** Test SQL queries and also save them to track and analyze query performance across data models (<span style="color:green"><strong>dbSpy V8.0</strong></span>)
 
-### Getting started
+## <img src="images/dbspy8homepage.png">
+## <img src="images/dpspy8testquery.png">
+## <img src="images/dpspy8savequery.png">
+
+### 🛠 Getting started
 
 You will need your own MySQL database for backend functions.
 
@@ -129,7 +162,7 @@ $ npm run dev
 
 To connect with the SQL database, we must create and configure SSL certificates.
 
-### Mac
+### macOS
 
 1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
 
@@ -205,7 +238,7 @@ npm run cert:linux
 2. Click on the confirm icon to delete the column.
 3. Click on the cancel icon to cancel the deletion.
 
-## <img src="images/dbspy7.gif">
+## <img src="images/dbspyv8.gif">
 
 ### Adding a foreign key reference to a column
 
@@ -248,6 +281,11 @@ npm run cert:linux
 
 ### Credits/Contributors
 
+- Yihe Liu • [LinkedIn](https://www.linkedin.com/in/yiheliu) • [Github](https://github.com/SparrowGecko)
+- Emma Vargas • [LinkedIn](https://www.linkedin.com/in/emmavargas/) • [Github](https://github.com/emma-vargas)
+- Vicky Yue • [LinkedIn](https://www.linkedin.com/in/vickyue/) • [Github](https://github.com/vyue013)
+- Roshumba Llewellyn • [LinkedIn](https://www.linkedin.com/in/roshumballewellyn/) • [Github](https://github.com/roshumba)
+- Revathy Venkataraman • [LinkedIn](https://www.linkedin.com/in/revavenk/) • [Github](https://github.com/reva2024)
 - David Jones • [LinkedIn](http://www.linkedin.com/in/davidjonesswe/) • [Github](https://github.com/david-jones-git)
 - John Ruiz • [LinkedIn](https://www.linkedin.com/in/john-ruiz-profile/) • [Github](https://github.com/johnruiz17)
 - Minh Chang • [LinkedIn](https://www.linkedin.com/in/minh-chang/) • [Github](https://github.com/miha-cha)

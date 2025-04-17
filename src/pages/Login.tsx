@@ -57,7 +57,7 @@ export default function Login() {
       // redirect_uri: 'http://db-spy.io/display/',
       redirect_uri: 'http://localhost:8080/display/',
       client_id:
-        '1050970973422-4am2mv6e621f83lggfcjubkl3hqtoj0k.apps.googleusercontent.com',
+        '320130847932-1e4r2g6d0cd0etfin12agg9pb5mc0tn7.apps.googleusercontent.com',
       access_type: 'offline',
       response_type: 'code',
       prompt: 'consent',
