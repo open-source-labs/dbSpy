@@ -11,13 +11,20 @@ import DataFlow from '../components/ReactFlow/DataFlow';
 //-- Modals (pop ups) Components Imports;
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
-import LoadDbModal from '@/components/Modals/LoadDbModal';
+import DbNameInput from '../components/Modals/DbNameInput';
+import LoadDbModal from '../components/Modals/LoadDbModal';
+import DeleteDbModal from '../components/Modals/DeleteDbModal';
 import DeleteTableModal from '../components/Modals/DeleteTableModal';
 //-- State Stores Imports;
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
 import { useModalStore } from '../store/useModalStore';
+import { accountModalStore } from '../store/accountModalStore';
+import useSchemaStore from '../store/schemaStore';
+import useDataStore from '../store/dataStore';
+import axios, { AxiosResponse } from 'axios';
+
 import QueryModal from '../components/Modals/QueryModal';
 
 const DBDisplay: React.FC = () => {
@@ -52,9 +59,19 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
-  const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
-  // Zustand state management to handle authentication
-  const { user } = useCredentialsStore((state): any => state);
+  // dbSpy8.0: Zustand state managemant to handle modals under Account
+  const { closeQueryModal, queryModalOpened } = useModalStore();
+  const {
+    saveDbModalOpened,
+    setSaveDbModalClose,
+    loadDbModalOpened,
+    setLoadDbModalClose,
+    nameArr,
+    deleteDbModalOpened,
+    setDeleteDbModalClose,
+  } = accountModalStore();
+  const { schemaStore, setSchemaStore } = useSchemaStore((state: any) => state);
+  const { dataStore, setDataStore } = useDataStore((state: any) => state);
   // useRef() create a reference to DOM elements
   //create references for HTML elements
   // mySideBarId is the reference to the sidebar
@@ -62,8 +79,6 @@ const DBDisplay: React.FC = () => {
   // mainId is the reference to the main content
   const mainId: any = useRef();
   // any is not a good type to use, but it is used here to avoid TypeScript errors
-  // const mySideBarId = useRef<HTMLDivElement | null>(null);
-  // const mainId = useRef<HTMLDivElement | null>(null);
 
   /**
    * Future iterations may want to modify this to not run every time client(s) load
@@ -79,10 +94,8 @@ const DBDisplay: React.FC = () => {
     const code = urlParams.get('code');
     const state = urlParams.get('state');
 
-    // Only proceed if there's a code present (meaning it's the initial OAuth redirect)
-    //if (code && state) {
-    // Replaces client's URL in window to remove OAuth code/state
-    const newURL = window.location.origin + window.location.pathname;
+    // Clean up the URL
+    const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
     window.history.replaceState({}, document.title, newURL);
 
     // send POST request to /api/oauth with code/state
@@ -113,28 +126,47 @@ const DBDisplay: React.FC = () => {
         });
       });
     // }
+    // send POST request to /api/oauth with code/state
+    fetch('/api/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify({ code: code, state: state }),
+    })
+      .then((data) => {
+        // successful codes
+        if (data.status >= 200 && data.status < 300) {
+          // convert response to JSON
+          return data.json();
+        } else
+          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
+      })
+      .then((res) => {
+        // update the state with user data
+        setUser(res);
+      })
+      .catch((err) => {
+        console.log({
+          log: `There was an error completing OAuth request: ${err}`,
+          status: err,
+          message: 'Unable to login with OAuth.',
+        });
+      });
+    // }
   }, []);
-
-  //TODO: Hide add table on dataview click
-  // const dataOnclick = ():void => {
-  //   const addTableButtonRef = useRef(null);
-  // }
 
   // for the sidebar of Add table
   /* Set the width of the side navigation to 400px and add a right margin of 400px */
   const openNav = () => {
     // expand the sidebar to 400px
     mySideBarId.current.style.width = '400px';
-    // move the content to the left
-    // mainId.current.style.marginRight = '400px';
   };
 
   /* Set the width of the side navigation to 0, and a right margin of 50px */
   const closeNav = () => {
     // hide the sidebar
     mySideBarId.current.style.width = '0';
-    // move the content to the right
-    // mainId.current.style.marginRight = '0';
   };
 
   // dbSpy 6.0: Update handleSidebar to allow opening/closing sidebar on Connect Database click
@@ -149,6 +181,96 @@ const DBDisplay: React.FC = () => {
       openNav();
     }
   }
+  // dbSpy8.0: move from FeatureTab to Display page
+  // Function for saving databases. Reworked for multiple saves - dbspy 7.0
+  const saveSchema = (inputName: string): void => {
+    //check to see if a table is present in the schemaStore
+    if (Object.keys(schemaStore).length !== 0) {
+      //Create request body with the schema to be saved and the inputted name to save it under
+      const postBody = {
+        schema: JSON.stringify(schemaStore),
+        SaveName: inputName,
+        TableData: JSON.stringify(dataStore),
+      };
+      //make a get request to see if the name already exists in the database
+      axios
+        .get<string[]>('/api/saveFiles/allSave')
+        .then((res: AxiosResponse) => {
+          const nameArrCheck = [];
+          for (let saveName of res.data.data) {
+            nameArrCheck.push(saveName.SaveName);
+          }
+          // if the name already exists then send to one route and if not then send to the other
+          // route with combined middleware.
+          if (nameArrCheck.includes(inputName)) {
+            axios
+              .patch('/api/saveFiles/save', postBody)
+              .catch((err) => console.error('err', err));
+          } else {
+            axios
+              .post('/api/saveFiles/CreateAndSave', postBody)
+              .catch((err) => console.error('err', err));
+          }
+        })
+        .catch((err) => console.error('Err', err));
+    } else {
+      //if no table is present, send alert to the user
+      alert('No schema displayed.');
+    }
+  };
+
+  const closeSaveDbNameModal = (input?: string) => {
+    if (input) {
+      saveSchema(input);
+    }
+    setSaveDbModalClose();
+  };
+
+  // Reworked for multiple loads -  dbSpy 7.0
+  const loadSchema = async (inputName: string) => {
+    try {
+      //send the inputName along with the get request as query in the parameters.
+      const data = await fetch(`/api/saveFiles/loadSave?SaveName=${inputName}`);
+      if (data.status === 204) return alert('No database stored!');
+      const schemaString = await data.json();
+
+      setDataStore(JSON.parse(schemaString.tableData));
+
+      return setSchemaStore(JSON.parse(schemaString.data));
+    } catch (err) {
+      console.error('err retrieve', err);
+      window.alert(err);
+    }
+  };
+  // Load selected database - dbSpy 7.0
+  const closeLoadDbModal = (input?: string) => {
+    if (input) {
+      loadSchema(input);
+      setDBName(input);
+    }
+    setLoadDbModalClose();
+  };
+
+  // Function for deleting databases - dbspy 7.0
+  const deleteDatabase = (inputName: string) => {
+    try {
+      //send the inputName along with the delete request as query in the parameters.
+      axios
+        .delete(`/api/saveFiles/deleteSave/${inputName}`)
+        .catch((err) => console.error('err', err));
+    } catch (err) {
+      console.error('err retrieve', err);
+      window.alert(err);
+    }
+  };
+
+  // Delete selected database - dbSpy 7.0
+  const closeDeleteDbModal = (input?: string) => {
+    if (input) {
+      deleteDatabase(input);
+    }
+    setDeleteDbModalClose();
+  };
 
   return (
     <>
@@ -227,6 +349,9 @@ const DBDisplay: React.FC = () => {
           openAddTableModal={openAddTableModal}
           openDeleteTableModal={openDeleteTableModal}
         />
+
+        {/* MODALS */}
+        {/* dbSpy8.0: move modals into Display page */}
         {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {inputModalState.isOpen ? (
           <InputModal
@@ -246,6 +371,15 @@ const DBDisplay: React.FC = () => {
           <DeleteTableModal
             closeDeleteTableModal={() => setDeleteTableModalState(false)}
           />
+        ) : null}
+        {saveDbModalOpened ? (
+          <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
+        ) : null}
+        {loadDbModalOpened ? (
+          <LoadDbModal nameArr={nameArr} closeLoadDbModal={closeLoadDbModal} />
+        ) : null}
+        {deleteDbModalOpened ? (
+          <DeleteDbModal nameArr={nameArr} closeDeleteDbModal={closeDeleteDbModal} />
         ) : null}
       </div>
     </>

@@ -89,7 +89,6 @@ export default function Login() {
     const state = 'randomstring';
     const qs = new URLSearchParams({ ...options, state });
     const url = `${rootUrl}?${qs.toString()}`;
-    console.log(url);
 
     const strWindowFeatures =
       'toolbar=no, menu=no, width=600, height=700, top=100, left=800';

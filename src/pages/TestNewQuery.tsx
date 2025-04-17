@@ -112,8 +112,6 @@ const TestNewQuery: React.FC = () => {
       if (databaseLink) {
         const fullLink = databaseLink;
         const splitURI = fullLink.split('/');
-        console.log('FULL LINK:', fullLink);
-        console.log('SPLIT URI:', splitURI);
         switch (splitURI[0]) {
           case 'mysql:':
             const mysqlName = splitURI[3].split('?');
@@ -196,7 +194,7 @@ const TestNewQuery: React.FC = () => {
       }
 
       // View values array
-      console.log('VALUES FROM testNewQuery FE: ', values);
+      // console.log('VALUES FROM testNewQuery FE: ', values);
 
       // Update DB credential store with values from passed in link
       setDbCredentials(values);
@@ -206,7 +204,6 @@ const TestNewQuery: React.FC = () => {
       const dataFromBackend = await axios
         .get(`/api/sql/${values.db_type}/run-query`, { params: values })
         .then((res) => {
-          console.log('response from BE: ', res.data);
           // set query result state with data from response (array)
           // and set more metrics array of objects state
           setQueryResult(res.data.metrics);
@@ -228,7 +225,7 @@ const TestNewQuery: React.FC = () => {
   };
 
   const saveQuery = async () => {
-    console.log('Testing In Save Query ⭐️');
+    // console.log('Testing In Save Query ⭐️');
     try {
       // TODO remove commented out if not used selectedDb later
       // conditional to check that a query was run and that it had results
@@ -237,7 +234,7 @@ const TestNewQuery: React.FC = () => {
         alert('Please ensure you have ran a query and you received results');
         return;
       }
-      console.log('Testing After If ⭐️');
+      // console.log('Testing After If ⭐️');
 
       // the BE returns back formatted query results
       // we want to extract just the data portion and send to the BE to save the query - since it's in str format, convert to obj
@@ -255,7 +252,7 @@ const TestNewQuery: React.FC = () => {
           },
         })
         .then((res) => {
-          console.log('Query saved successfully! ', res.data);
+          // console.log('Query saved successfully! ', res.data);
           return res.data;
         })
         .catch((err: ErrorEvent) => console.error('Save query error', err));
