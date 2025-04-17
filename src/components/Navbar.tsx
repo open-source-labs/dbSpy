@@ -54,7 +54,7 @@ function Navbar() {
   const toggleNav = useNavStore((state): any => state.toggleNav);
   // dbSpy 8.0: move toggle button to control dark mode in Navbar
   const { setDarkMode, darkMode } = useSettingsStore((state) => state);
-  const { schemaStore, setSchemaStore } = useSchemaStore((state: any) => state);
+  const { setSchemaStore } = useSchemaStore((state: any) => state);
   //STATE DECLARATION (dbSpy3.0)
   const { user, setUser } = useCredentialsStore((state): any => state);
   //END: STATE DECLARATION

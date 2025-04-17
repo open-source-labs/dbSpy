@@ -13,9 +13,7 @@ import screenshot from '../assets/ScreenshotDemo.png';
 /* "Home" Component - main launch page */
 export default function Home() {
   const user = useCredentialsStore((state: { user: any }) => state.user);
-  console.log('user status from store in home tsx file', user);
   const setUser = useCredentialsStore((state: { setUser: any }) => state.setUser);
-  //console.log('set user status from store in home tsx file', setUser);
   //END: STATE DECLARATION
 
   /* Retrieve user data from server*/
@@ -25,7 +23,6 @@ export default function Home() {
         const response = await axios(`/api/me`, {
           withCredentials: true,
         });
-        console.log('response from api/me to home.tsx ', response.data);
         setUser(response.data);
         return response.data;
       }

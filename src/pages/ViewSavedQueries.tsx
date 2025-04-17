@@ -40,7 +40,6 @@ const ViewSavedQueries: React.FC = () => {
     const fetchSavedQueries = async () => {
       try {
         const res = await axios.get(`/api/saveFiles/saved-queries`);
-        // console.log('response from BE: ', res.data[0]);
         setSavedQueries(res.data[0]); // update state with data from BE
       } catch (error) {
         console.error('Error fetching saved queries:', error);

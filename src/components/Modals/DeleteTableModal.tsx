@@ -3,7 +3,6 @@ import useSchemaStore from '../../store/schemaStore';
 import useCredentialsStore from '../../store/credentialsStore';
 import useDataStore from '../../store/dataStore';
 import useFlowStore from '../../store/flowStore';
-import ReactFlow, { getConnectedEdges } from 'reactflow';
 
 type DeleteTableModalProps = {
   closeDeleteTableModal: () => void;
