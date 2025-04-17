@@ -19,9 +19,10 @@ export default function LoadDbModal({
   // handleclose from FeatureTab to toggle this modal off
   return (
     <div className="modal" id="loadDbModal" style={{ display: 'block', zIndex: '100' }}>
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
       <form
         onSubmit={handleFormSubmit}
-        className="modal-content w-[30%] min-w-[300px] max-w-[850px] content-center rounded-md border-0 bg-[#f8f4eb] shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:bg-slate-800 dark:shadow-[0px_5px_10px_#1e293b]"
+        className="modal-content relative z-10 w-96 rounded-md bg-opacity-80 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-[0px_5px_10px_rgba(0,0,0,0.4)] dark:from-accent dark:shadow-[0px_5px_10px_#1e293b]"
       >
         <div className="menu-box ml-0 mt-5" style={{ marginBottom: '20px' }}>
           <label
