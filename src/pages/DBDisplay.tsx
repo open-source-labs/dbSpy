@@ -59,6 +59,8 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
+  // Zustand state management to handle authentication
+  const { user } = useCredentialsStore((state): any => state);
   // dbSpy8.0: Zustand state managemant to handle modals under Account
   const { closeQueryModal, queryModalOpened } = useModalStore();
   const {
