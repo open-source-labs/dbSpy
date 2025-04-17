@@ -1,8 +1,9 @@
 // React & React Router & React Query Modules
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useNavStore } from '../../store/navStore';
+import { useModalStore } from '../../store/useModalStore';
 
 // Functions imported:
 import parseSql from '../../parse';
@@ -15,7 +16,6 @@ import useSettingsStore from '../../store/settingsStore';
 import useCredentialsStore from '../../store/credentialsStore';
 //import icon
 import {
-  HomeIcon,
   ConnectDatabaseIcon,
   UploadSQLFileIcon,
   ExportQueryIcon,
@@ -39,6 +39,8 @@ import DeleteDbModal from '../Modals/DeleteDbModal';
 export default function FeatureTab(props: any) {
   // dbSpy 8.0: get the state store in Zustand
   const toggleClicked = useNavStore((state) => state.toggleClicked);
+  const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
+
   const navigate = useNavigate();
 
   //STATE DECLARATION (dbSpy3.0)
@@ -53,13 +55,11 @@ export default function FeatureTab(props: any) {
   const { schemaStore, setSchemaStore, undoHandler, redoHandler } = useSchemaStore(
     (state) => state
   );
-  const { user, setUser } = useCredentialsStore((state: any) => state);
+  const { user } = useCredentialsStore((state: any) => state);
 
-  const { setWelcome, isSchema, setDarkMode, darkMode, setDBName } = useSettingsStore(
-    (state) => state
-  );
+  const { setWelcome, isSchema, setDBName } = useSettingsStore((state) => state);
   const [action, setAction] = useState(new Array());
-  const [queryModalOpened, setQueryModalOpened] = useState(false);
+  // const [queryModalOpened, setQueryModalOpened] = useState(false);
   const [saveDbNameModalOpened, setSaveDbNameModalOpened] = useState(false);
   const [loadDbModalOpened, setLoadDbModalOpened] = useState(false);
   const [deleteDbModalOpened, setDeleteDbModalOpened] = useState(false);
@@ -146,13 +146,13 @@ export default function FeatureTab(props: any) {
     setWelcome(false);
   };
 
-  // Export QueryModal
-  const openQueryModal = () => {
-    setQueryModalOpened(true);
-  };
-  const closeQueryModal = () => {
-    setQueryModalOpened(false);
-  };
+  // // Export QueryModal
+  // const openQueryModal = () => {
+  //   setQueryModalOpened(true);
+  // };
+  // const closeQueryModal = () => {
+  //   setQueryModalOpened(false);
+  // };
 
   //SaveDbNameModal - dbSpy 7.0
   const openSaveDbNameModal = () => {
@@ -301,35 +301,20 @@ export default function FeatureTab(props: any) {
     }
   };
 
-  // Clears session + reset store
-  const signoutSession = async () => {
-    await fetch(`/api/logout`);
-    window.open('/', '_self');
-    setSchemaStore({});
-    setUser(null);
-  };
-
-  //Toggle function for DarkMode
-  const toggleClass = (): void => {
-    const page = document.getElementById('body');
-    page!.classList.toggle('dark');
-    setDarkMode();
-  };
   // END: HELPER FUNCTIONS
 
   return (
     <>
       {/* PAGE */}
       {/* MODAL FOR CONFIRMATION POPUP */}
-      {/* dbSpy 8.0: move confirmModal out from FeatureTab */}
+      {/* dbSpy 8.0: move confirmModal to show on whole page */}
       <div
         ref={confirmModal}
         id="confirmModal"
         className="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50"
       >
         {/* <!-- Confirm Modal content --> */}
-        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-gradient-to-b from-[#f8f4eb] to-transparent bg-opacity-80 shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
-
+        <div className="modal-content w-[30%] min-w-[300px] max-w-[550px] content-center rounded-md border-0 bg-opacity-90 bg-gradient-to-b from-[#f8f4eb] to-transparent shadow-[0px_5px_10px_rgba(0,0,0,0.4)] backdrop-blur-md dark:from-slate-800 dark:to-transparent dark:shadow-[0px_5px_10px_#1e293b]">
           <p className="mb-4 text-center text-slate-900 dark:text-[#f8f4eb]">
             Are you sure you want to proceed? You will lose <strong>ALL</strong> unsaved
             changes.
@@ -352,7 +337,7 @@ export default function FeatureTab(props: any) {
       </div>
       {/* dbSpy 8.0: added toggle button in Navbar to control FeatureTab */}
       <div
-        className={`bg-blue fixed left-0 top-12 z-10 h-full w-64 transition-transform duration-300 ${
+        className={`bg-blue fixed left-0 top-10 z-10 h-full w-64 transition-transform duration-300 ${
           toggleClicked ? '-translate-x-full' : 'translate-x-0'
         }`}
       >
@@ -362,28 +347,6 @@ export default function FeatureTab(props: any) {
           aria-label="FeatureTab"
         >
           <div className="menuBar light:bg-sky-800 overflow-auto rounded px-5 py-6 transition-colors duration-500">
-            <button onClick={toggleClass}>
-              <div className="ItemLink group inline-flex h-10 w-[160px] items-center justify-start gap-0 rounded-lg py-2 pl-0 pr-0">
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.0"
-                  stroke="currentColor"
-                  className=" ml-2 mr-2 h-[24] stroke-current text-gray-500 group-hover:text-yellow-500 dark:text-[#f8f4eb] dark:group-hover:text-yellow-300"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.50488 10.7569C1.50488 16.4855 6.14803 21.1294 11.8756 21.1294C16.2396 21.1294 19.974 18.4335 21.5049 14.616C20.3104 15.0962 19.0033 15.3668 17.6372 15.3668C11.9095 15.3668 7.26642 10.7229 7.26642 4.99427C7.26642 3.63427 7.53299 2.3195 8.00876 1.12939C4.19637 2.66259 1.50488 6.39536 1.50488 10.7569Z"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="DarkMode text-sm font-normal leading-normal text-gray-900 group-hover:text-yellow-500 group-hover:underline dark:text-[#f8f4eb] dark:group-hover:text-yellow-300 ">
-                  {darkMode === true ? 'Light' : 'Dark'} Mode
-                </span>
-              </div>
-            </button>
             {/* ConnectDB code */}
             <p className=" mt-4 text-slate-900 dark:text-[#f8f4eb]">Connect</p>
             <hr />
@@ -436,7 +399,7 @@ export default function FeatureTab(props: any) {
 
               {/* Commented code is for Export Query Button */}
               {/* TODO: Add SAVE feature */}
-              {/* <li>
+              <li>
                 <a
                   onClick={openQueryModal}
                   className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline  dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
@@ -444,7 +407,7 @@ export default function FeatureTab(props: any) {
                   <ExportQueryIcon />
                   <span className="ml-3 flex-1 whitespace-nowrap">Export Query</span>
                 </a>
-              </li> */}
+              </li>
               <br />
               {/* ----------- 💙💙💙💙 Edit Tab ------------------------- */}
               {/* Adding a Table and its features will be going inside the Main Functionalities from Connect Tab  (STRETCH) */}
@@ -512,18 +475,18 @@ export default function FeatureTab(props: any) {
               {/* ----------- 💙💙💙💙 Test Tab -------------------------- */}
               <p className="text-slate-900 dark:text-[#f8f4eb]">Test</p>
               <hr />
-              {isSchema ? (
-                <li>
-                  {/* ----- 💙💙 Test New Query Button -------- */}
-                  <NavLink
-                    to="/test-new-query"
-                    className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
-                  >
-                    <AddTableIcon />
-                    <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
-                  </NavLink>
-                </li>
-              ) : null}
+
+              <li>
+                {/* ----- 💙💙 Test New Query Button -------- */}
+                <NavLink
+                  to="/test-new-query"
+                  className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300 "
+                >
+                  <AddTableIcon />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Test New Query</span>
+                </NavLink>
+              </li>
+
               <li>
                 {/* ----- 💙💙 View Saved Queries Button -------- */}
                 <NavLink
@@ -570,17 +533,6 @@ export default function FeatureTab(props: any) {
                     <span className="ml-3 flex-1 whitespace-nowrap">Delete Database</span>
                   </a>
                 </li>
-                {user ? (
-                  <li>
-                    <a
-                      onClick={() => signoutSession()}
-                      className="group flex cursor-pointer items-center rounded-lg p-2 text-sm font-normal text-gray-900 hover:text-yellow-500 hover:underline dark:text-[#f8f4eb] dark:hover:text-yellow-300"
-                    >
-                      <SignOutIcon />
-                      <span className="ml-3 flex-1 whitespace-nowrap">Sign Out</span>
-                    </a>
-                  </li>
-                ) : null}
               </ul>
             </div>
           </div>
@@ -590,7 +542,7 @@ export default function FeatureTab(props: any) {
 
         {/* Query Output Modal */}
         {/* Sending props to child components. */}
-        {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
+        {/* {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null} */}
         {saveDbNameModalOpened ? (
           <DbNameInput closeSaveDbNameModal={closeSaveDbNameModal} />
         ) : null}

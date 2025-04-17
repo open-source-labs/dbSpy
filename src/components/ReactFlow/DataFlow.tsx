@@ -89,7 +89,7 @@ export default function DataFlow(): JSX.Element {
 
   // renders React Flow canvas
   return (
-    <div className="flow" style={{ height: '98%', width: '100%', marginTop: '50px'}}>
+    <div className="flow" style={{ height: '98%', width: '100%', marginTop: '50px' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}

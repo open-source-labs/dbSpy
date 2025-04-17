@@ -34,7 +34,7 @@ const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Shared />}>
-          {/* index is default page | visitng `/` loads Home page */}
+          {/* index is default page | visiting `/` loads Home page */}
           <Route index element={<Home />} />
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />

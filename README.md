@@ -16,7 +16,46 @@
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
 
-### New Features with Version 7.0
+### 🚀 dbSpy v8.0 ✨ New Features
+
+### 🔍 Test New Query Page - a modern querying interface
+
+- Run SQL queries against PostgreSQL or MySQL DBs
+- Live results + metadata: execution time, query name, timestamp
+- Zustand-powered state management
+- Input validation and error handling
+- Component-level Jest + ReactTestLibrary tests
+
+### 💾 View Saved Queries Page
+
+- Access previously saved queries per user
+- Sortable, styled tables with TypeScript typing
+- Track query performance across data models
+
+### 🎨 UI / UX Enhancements
+
+- TailwindCSS redesign: colors, layout, interactions
+- Responsive and fully supported dark/light mode
+- Logo animation integrated in navbar
+- Sidebar and tab layout fixes
+
+### 🛠 Functional Fixes
+
+- Resolved layout shift bugs
+- Optimized backend response handling
+- OAuth (GitHub + local login)
+
+### 📈 Opportunities for Continued Development
+
+- Extend Test Query feature to additional DB types (e.g. Oracle)
+- Persist database sessions across routes
+- Integrate LLMs to suggest efficient queries and schema improvements
+- Add OAuth support for Microsoft accounts
+- Add support for NoSQL (MongoDB) and graph databases
+- Expand UI testing coverage
+
+---
+### dbSpy v7.0 updates
 
 -UI is now full widescreen with a drop down menu to allow for more workspace.
 -The Save, Load, and Delete features now take filename, and can save schema, and data.
@@ -39,7 +78,7 @@
 
 ---
 
-### Key Features
+### 🔑 Key Features
 
 1. **Database Uploads:** Connect to remote SQL database or upload local SQL files
 
@@ -63,9 +102,11 @@
 
 11. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
+12. **Live Querying and Save Queries** Test SQL queries and also save them to track and analyze query performance across data models (dbSpy V8.0)
+
 ## <img src="images/dbSpy7_canvas.png">
 
-### Getting started
+### 🛠 Getting started
 
 You will need your own MySQL database for backend functions.
 
@@ -129,7 +170,7 @@ $ npm run dev
 
 To connect with the SQL database, we must create and configure SSL certificates.
 
-### Mac
+### macOS
 
 1. Install mkcert; you can learn more about mkcert [here](https://github.com/FiloSottile/mkcert)
 
@@ -248,6 +289,11 @@ npm run cert:linux
 
 ### Credits/Contributors
 
+- Yihe Liu • [LinkedIn](https://www.linkedin.com/in/yiheliu) • [Github](https://github.com/SparrowGecko)
+- Emma Vargas • [LinkedIn](https://www.linkedin.com/in/emmavargas/) • [Github](https://github.com/emma-vargas)
+- Vicky Yue • [LinkedIn](https://www.linkedin.com/in/vickyue/) • [Github](https://github.com/vyue013)
+- Roshumba Llewellyn • [LinkedIn](https://www.linkedin.com/in/roshumballewellyn/) • [Github](https://github.com/roshumba)
+- Revathy Venkataraman • [LinkedIn](https://www.linkedin.com/in/revavenk/) • [Github](https://github.com/reva2024)
 - David Jones • [LinkedIn](http://www.linkedin.com/in/davidjonesswe/) • [Github](https://github.com/david-jones-git)
 - John Ruiz • [LinkedIn](https://www.linkedin.com/in/john-ruiz-profile/) • [Github](https://github.com/johnruiz17)
 - Minh Chang • [LinkedIn](https://www.linkedin.com/in/minh-chang/) • [Github](https://github.com/miha-cha)

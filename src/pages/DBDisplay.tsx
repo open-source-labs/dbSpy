@@ -17,6 +17,9 @@ import DeleteTableModal from '../components/Modals/DeleteTableModal';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 
+import { useModalStore } from '../store/useModalStore';
+import QueryModal from '../components/Modals/QueryModal';
+
 const DBDisplay: React.FC = () => {
   const { setUser } = useCredentialsStore();
 
@@ -49,6 +52,7 @@ const DBDisplay: React.FC = () => {
   const openAddTableModal = () => setInputModalState(true, 'table');
   const openDeleteTableModal = () => setDeleteTableModalState(true);
 
+  const { openQueryModal, closeQueryModal, queryModalOpened } = useModalStore();
   // Zustand state management to handle authentication
   const { user } = useCredentialsStore((state): any => state);
   // useRef() create a reference to DOM elements
@@ -76,44 +80,46 @@ const DBDisplay: React.FC = () => {
     const state = urlParams.get('state');
 
     // Only proceed if there's a code present (meaning it's the initial OAuth redirect)
-    if(code && state){
-    // Replaces client's URL in window to remove OAuth code/state
+    if (code && state) {
+      // Replaces client's URL in window to remove OAuth code/state
 
-    // const newURL =
-    //   window.location.protocol + '//' + window.location.host + window.location.pathname;
-    // window.history.replaceState({}, document.title, newURL);
+      // const newURL =
+      //   window.location.protocol + '//' + window.location.host + window.location.pathname;
+      // window.history.replaceState({}, document.title, newURL);
 
-     // Clean up the URL
-     const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
-     window.history.replaceState({}, document.title, newURL);
+      // Clean up the URL
+      const newURL = window.location.origin + window.location.pathname; // Slightly cleaner way
+      window.history.replaceState({}, document.title, newURL);
 
-    // send POST request to /api/oauth with code/state
-    fetch('/api/oauth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'Application/JSON',
-      },
-      body: JSON.stringify({ code: code, state: state }),
-    })
-      .then((data) => {
-        // successful codes
-        if (data.status >= 200 && data.status < 300) {
-          // convert response to JSON
-          return data.json();
-        } else
-          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
+      // send POST request to /api/oauth with code/state
+      fetch('/api/oauth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/JSON',
+        },
+        body: JSON.stringify({ code: code, state: state }),
       })
-      .then((res) => {
-        // update the state with user data
-        setUser(res);
-      })
-      .catch((err) => {
-        console.log({
-          log: `There was an error completing OAuth request: ${err}`,
-          status: err,
-          message: 'Unable to login with OAuth.',
+        .then((data) => {
+          // successful codes
+          if (data.status >= 200 && data.status < 300) {
+            // convert response to JSON
+            return data.json();
+          } else
+            throw new Error(
+              `Continue with OAuth failed with status code: ${data.status}`
+            );
+        })
+        .then((res) => {
+          // update the state with user data
+          setUser(res);
+        })
+        .catch((err) => {
+          console.log({
+            log: `There was an error completing OAuth request: ${err}`,
+            status: err,
+            message: 'Unable to login with OAuth.',
+          });
         });
-      });
     }
   }, []);
 
@@ -154,15 +160,18 @@ const DBDisplay: React.FC = () => {
 
   return (
     <>
-
       <div id="DBDisplay" className=" transition-colors duration-500">
         {/* shadow-2xl: strong box-shadow for depth, bg-gray-900: change background color */}
         <div
           ref={mySideBarId}
           id="mySidenav"
-          className="sidenav bg-[#fbf3de] shadow-2xl bg-gradient-to-b from-[#f8f4eb] dark:from-sky-800 to-transparent bg-opacity-10"
+          className="sidenav bg-opacity-10 bg-gradient-to-b from-transparent to-transparent"
         >
-          <a href="#" className="closebtn" onClick={closeNav}>
+          <a
+            href="#"
+            className="absolute right-4 top-24 z-50 text-[40px] text-black hover:text-yellow-500 dark:text-white"
+            onClick={closeNav}
+          >
             &times;
           </a>
           <Sidebar closeNav={closeNav} />
@@ -178,7 +187,7 @@ const DBDisplay: React.FC = () => {
           {/* w-50%: set width to 50% of parent, flex-col: stack children vertically */}
           {welcome ? (
             <div className="pt-20">
-              <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col transition-colors duration-500 dark:text-[#f8f4eb]">
+              <div className="canvas-ConnectToDatabase relative right-[142px] m-auto flex w-[50%] flex-col text-black transition-colors duration-500 dark:text-[#f8f4eb]">
                 <h3 className="text-center">Welcome to dbSpy!</h3>
                 <p className="text-center">
                   Please connect your database, upload a SQL file, or build your database
@@ -194,7 +203,7 @@ const DBDisplay: React.FC = () => {
               {/* rounded: rounded corner, px: padding horizontal, py: padding vertical */}
               <button
                 id="showSchema"
-                className="rounded bg-black px-4 py-2 font-bold text-white hover:bg-yellow-500 hover:text-black"
+                className="mt-2 h-[28px] rounded bg-[#7597c5] px-4 font-bold text-white hover:bg-yellow-500 hover:text-black dark:bg-accent dark:hover:bg-yellow-500 "
                 onClick={setTableMode}
               >
                 Show data
@@ -210,12 +219,12 @@ const DBDisplay: React.FC = () => {
               <DataFlow />
               <button
                 id="showSchema"
-                className="hover: rounded bg-black px-4 py-2 font-bold text-black text-white hover:bg-yellow-500"
+                className="mt-2 h-[28px] rounded bg-[#7597c5] px-4 font-bold text-white hover:bg-yellow-500 hover:text-black dark:bg-accent dark:hover:bg-yellow-500 "
                 onClick={setTableMode}
               >
                 Show Schema
               </button>
-              <span id="text" className="ml-5 text-white">
+              <span id="text" className="ml-5 text-black dark:text-white">
                 Current Database: {dbName}
               </span>
             </>
@@ -226,6 +235,7 @@ const DBDisplay: React.FC = () => {
           openAddTableModal={openAddTableModal}
           openDeleteTableModal={openDeleteTableModal}
         />
+        {queryModalOpened ? <QueryModal closeQueryModal={closeQueryModal} /> : null}
         {inputModalState.isOpen ? (
           <InputModal
             mode={inputModalState.mode as 'table' | 'column'}

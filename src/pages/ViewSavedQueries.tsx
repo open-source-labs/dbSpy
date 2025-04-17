@@ -52,14 +52,14 @@ const ViewSavedQueries: React.FC = () => {
 
   return (
     <>
-      <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2">
+      <div className="flex-auto justify-end justify-around bg-background pr-2 dark:bg-primary">
         <FeatureTab />
         <div
           className={`h-screen transition-all duration-300 ${
             toggleClicked ? 'ml-16' : 'ml-64'
           }`}
         >
-          <h1 className="flex items-center justify-center pt-20 text-5xl font-bold tracking-tight text-slate-700 dark:text-white">
+          <h1 className="flex items-center justify-center pt-20 text-5xl font-bold tracking-tight text-slate-700 dark:text-accentText">
             Saved Queries
           </h1>
           {/* this wrap aligns the title 'Saved Queries w/ the table together */}
@@ -68,7 +68,7 @@ const ViewSavedQueries: React.FC = () => {
               <div className="mt-8 w-full max-w-[1300px] shrink-0 overflow-x-auto px-4 text-white">
                 <table className="min-w-full table-fixed border-collapse border border-white text-white">
                   <thead>
-                    <tr className="bg-blue-950 ">
+                    <tr className="bg-slate-600 dark:bg-slate-700 ">
                       <th className="w-[250px] whitespace-normal text-wrap break-words border border-white px-6 py-3 text-center text-lg text-white">
                         Name
                       </th>
@@ -114,47 +114,47 @@ const ViewSavedQueries: React.FC = () => {
                     {/* values from savedQueries to get us each row */}
                     {savedQueries.map((query, index) => (
                       <tr key={index}>
-                        <td className="break-words border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="break-words border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.name}
                         </td>
-                        <td className="break-words border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="break-words border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.query}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {new Date(query.query_date).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
                           })}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.exec_time}ms
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.planning_time ? query.planning_time + 'ms' : 'N/A'}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.total_cost}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.actual_total_time}ms
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.node_type}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.relation_name}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.plan_rows}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.actual_rows}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.shared_hit_blocks ? query.shared_hit_blocks : 'N/A'}
                         </td>
-                        <td className="border border-white px-6 py-3 text-center text-base text-white">
+                        <td className="border border-slate-500 px-6 py-3 text-center text-base text-slate-800 dark:border-white dark:text-white">
                           {query.shared_read_blocks ? query.shared_hit_blocks : 'N/A'}
                         </td>
                       </tr>
@@ -163,8 +163,8 @@ const ViewSavedQueries: React.FC = () => {
                 </table>
               </div>
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-white">
-                No queries saved.
+              <div className="flex h-full w-full items-center justify-center text-lg text-slate-800 dark:text-white">
+                No Queries Saved
               </div>
             )}
           </div>

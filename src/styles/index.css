@@ -39,7 +39,7 @@
 
 /* rule is here to wrangle any element that happened not to change with the rest of them due to other rule conflicts  */
 .dark {
-  background-color: #0f192a;
+  background-color: #000000;
 }
 
 .testing {
@@ -183,7 +183,7 @@
   min-height: 5px;
   width: 6px;
   height: 6px;
-  background: #1a192b;
+  background: #000001;
   border: 1px solid white;
   border-radius: 100%;
 }
@@ -277,7 +277,7 @@
   text-align: center;
   border-width: 1px;
   border-style: solid;
-  border-color: #1a192b;
+  border-color: #000001;
   background-color: white;
 }
 .react-flow__node-default.selectable:hover,
@@ -298,7 +298,7 @@
 .react-flow__node-group.selectable.selected,
 .react-flow__node-group.selectable:focus,
 .react-flow__node-group.selectable:focus-visible {
-  box-shadow: 0 0 0 0.5px #1a192b;
+  box-shadow: 0 0 0 0.5px #000001;
   outline: none;
 }
 .react-flow__node.selected {
@@ -362,7 +362,7 @@
 .table-node {
   height: auto;
   width: auto;
-  border: 3px solid #273943;
+  border: 3px solid #000001;
   /* padding: 5px; */
   border-radius: 4px;
   color: #f8f4eb;

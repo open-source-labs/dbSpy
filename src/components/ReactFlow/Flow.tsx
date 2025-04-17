@@ -86,7 +86,10 @@ export default function Flow(): JSX.Element {
   };
   // renders React Flow canvas
   return (
-    <div className="flow" style={{ height: '98%', width: '100%', zIndex: 0, marginTop: '50px' }}>
+    <div
+      className="flow"
+      style={{ height: '98%', width: '100%', zIndex: 0, marginTop: '50px' }}
+    >
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}

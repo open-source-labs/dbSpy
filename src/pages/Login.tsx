@@ -150,6 +150,11 @@ export default function Login() {
               Continue with email
             </button>
           </div>
+          <div className="flex w-full justify-center text-center">
+            {!loginStatus ? (
+              <div className="text-xs text-red-500">Failed to log in. Try again.</div>
+            ) : null}
+          </div>
         </form>
         <div className="ContentDivider inline-flex h-5 items-center justify-start gap-2 self-stretch">
           <div className="Divider h-px shrink grow basis-0 bg-gray-200" />
