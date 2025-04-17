@@ -126,6 +126,34 @@ const DBDisplay: React.FC = () => {
         });
       });
     // }
+    // send POST request to /api/oauth with code/state
+    fetch('/api/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify({ code: code, state: state }),
+    })
+      .then((data) => {
+        // successful codes
+        if (data.status >= 200 && data.status < 300) {
+          // convert response to JSON
+          return data.json();
+        } else
+          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
+      })
+      .then((res) => {
+        // update the state with user data
+        setUser(res);
+      })
+      .catch((err) => {
+        console.log({
+          log: `There was an error completing OAuth request: ${err}`,
+          status: err,
+          message: 'Unable to login with OAuth.',
+        });
+      });
+    // }
   }, []);
 
   // for the sidebar of Add table

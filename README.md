@@ -55,7 +55,9 @@
 - Expand UI testing coverage
 
 ---
-### dbSpy v7.0 updates
+
+### dbSpy v8.0 updates
+
 - Full widescreen UI with a dropdown menu for more workspace
 - Enhanced Save, Load, and Delete features that support filenames for saving schema and data
 - Proper deletion of dependent elements across tables
@@ -95,7 +97,9 @@
 12. **Live Querying and Save Queries** Test SQL queries and also save them to track and analyze query performance across data models (<span style="color:green"><strong>dbSpy V8.0</strong></span>)
 
 ## <img src="images/dbspy8homepage.png">
+
 ## <img src="images/dpspy8testquery.png">
+
 ## <img src="images/dpspy8savequery.png">
 
 ### 🛠 Getting started

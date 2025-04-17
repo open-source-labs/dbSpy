@@ -78,14 +78,16 @@ export default function Login() {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
     const options: Options = {
       // redirect_uri: 'http://db-spy.io/display/',
-      redirect_uri: 'http://localhost:8080/display/',
+      redirect_uri: 'http://localhost:8080/auth/github/callback',
       // TODO - figure out way to hide client_id, dotenv doesn't work in React components on FE
       client_id: 'Ov23lip6dXsoIJIInyHD',
       state: 'randomstring',
       allow_signup: 'true',
       scope: ['read:user', 'user:email'].join(' '),
     };
-    const qs = new URLSearchParams(options);
+
+    const state = 'randomstring';
+    const qs = new URLSearchParams({ ...options, state });
     const url = `${rootUrl}?${qs.toString()}`;
 
     const strWindowFeatures =

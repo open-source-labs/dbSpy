@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import Shared from './pages/Shared';
 import TestNewQuery from './pages/TestNewQuery';
 import ViewSavedQueries from './pages/ViewSavedQueries';
+import GitHubCallback from './pages/GitHubCallback';
 
 //-- used to store and access login info. using Zustand (state management library)
 import useCredentialsStore from './store/credentialsStore';
@@ -36,13 +37,19 @@ const App: React.FC = () => {
           <Route index element={<Home />} />
           <Route path="login" element={user ? <DBDisplay /> : <Login />} />
           <Route path="signup" element={user ? <DBDisplay /> : <Signup />} />
-          <Route path="display" element={ <DBDisplay /> } />
+          <Route path="display" element={user ? <DBDisplay /> : <Login />} />
           <Route path="test-new-query" element={user ? <TestNewQuery /> : <Login />} />
           <Route
             path="view-saved-queries"
             element={user ? <ViewSavedQueries /> : <Login />}
           />
         </Route>
+
+        {/* --- OAUTH CALLBACK ROUTE --- */}
+        {/* GH callback sits outside of the shared route flow */}
+        {/* Because this is a redirect from GitHub after successful authentication, it needs to be processed immediately when the user lands on it */}
+        <Route path="/auth/github/callback" element={<GitHubCallback />} />
+
         {/* main dashboard? route does not live inside the Shared layout */}
       </Routes>
     </BrowserRouter>
