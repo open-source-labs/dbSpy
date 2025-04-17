@@ -56,25 +56,15 @@
 
 ---
 ### dbSpy v7.0 updates
-
--UI is now full widescreen with a drop down menu to allow for more workspace.
--The Save, Load, and Delete features now take filename, and can save schema, and data.
--Deleting certain elements in tables now locates, and also properly delete depedent elements on other tables
--Implemented an algorithm to highlight all edges connected to currently selected table
--Fixed several Issues where certain Elements would not be deleted from a connected database
--Fixed several Issues with show Data terminating react flow
--Fixed several Issues with Edges being rendered too many times, and not deleted
-
-### Use Cases
-
-- Connecting to an existing remote PostgreSQL, MySQL, MicroSoftSQL, OracleSQL databases
-  - Renders an ER diagram for SCHEMA and DATA of the existing database and provides an interface for users to both modify existing tables and create new tables. A log of changes is stored, and at any point, the user can generate a query containing the changes, such that they are reflected in the existing database.
-- Uploading your database's SQL file
-  - Renders an ER diagram for the provided SQL file (db dump) and provides an interface for a user to both modify existing tables and create new tables. Changes are converted into the corresponding queries, which the user can view and execute on their own database outside of dbSpy.
-- Seamlessly visualize relational databases (both SCHEMA and DATA)
-  - After connecting database tables with one another, users are able to render the relationship connections of individual tables by clicking on the tables.
-- Creating a database + ER diagram from scratch
-  - Provides a canvas for users to create a database by using ER diagrams, thus creating a blueprint for engineering database structures.
+- Full widescreen UI with a dropdown menu for more workspace
+- Enhanced Save, Load, and Delete features that support filenames for saving schema and data
+- Proper deletion of dependent elements across tables
+- Algorithm to highlight edges connected to the selected table
+- Fixed rendering and deletion issues with elements
+- Support for connecting to remote databases (PostgreSQL, MySQL, Microsoft SQL, Oracle SQL)
+- Ability to upload SQL files and render ER diagrams for the provided SQL dump
+- Interface for modifying tables and creating new ones, with changes reflected in the database via generated queries
+- Canvas to create databases and ER diagrams from scratch.
 
 ---
 
@@ -102,9 +92,11 @@
 
 11. **Dark Mode:** Visual settings to provide a more comfortable viewing experience in low-light environements
 
-12. **Live Querying and Save Queries** Test SQL queries and also save them to track and analyze query performance across data models (dbSpy V8.0)
+12. **Live Querying and Save Queries** Test SQL queries and also save them to track and analyze query performance across data models (<span style="color:green"><strong>dbSpy V8.0</strong></span>)
 
-## <img src="images/dbSpy7_canvas.png">
+## <img src="images/dbspy8homepage.png">
+## <img src="images/dpspy8testquery.png">
+## <img src="images/dpspy8savequery.png">
 
 ### 🛠 Getting started
 
@@ -246,7 +238,7 @@ npm run cert:linux
 2. Click on the confirm icon to delete the column.
 3. Click on the cancel icon to cancel the deletion.
 
-## <img src="images/dbspy7.gif">
+## <img src="images/dbspyv8.gif">
 
 ### Adding a foreign key reference to a column
 
