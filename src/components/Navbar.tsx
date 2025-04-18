@@ -1,21 +1,27 @@
+// *components inside Navbar
+// React & React Router & React Query Modules;
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+
+//-- State Stores Imports;
 import useSchemaStore from '../store/schemaStore';
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
 import logo from '../assets/newLogoWhite.png';
 import login from '../assets/right-to-bracket-solid.svg';
 import default_pfp from '../assets/default_pfp.svg';
+import { SignOutIcon } from '../FeatureTabIcon';
 
 // dbSpy 8.0: add icons for toggle button to control FeatureTab
+//-- Sidebar Toggle Icons
 import sidebarOpen from '../assets/sidebarOpen.svg';
 import sidebarClose from '../assets/sidebarClose.svg';
 import sidebarOpenBlack from '../assets/sidebarOpenBlack.svg';
 import sidebarCloseBlack from '../assets/sidebarCloseBlack.svg';
 import { useNavStore } from '../store/navStore';
 
+// dbSpy 8.0: moved logo animation from FeatureTab to Navbar
 // Images for logo animation db 7.0
-// dbSpy 8.0: moved logo animation from FeatureTab to Navbar and only kept light version logo
 import logo1 from '../assets/newLogoWhite_color1.png';
 import logo2 from '../assets/newLogoWhite_color2.png';
 import logo3 from '../assets/newLogoWhite_color3.png';
@@ -41,8 +47,6 @@ import darkLogo9 from '../assets/newLogoBlack_color9.png';
 import darkLogo10 from '../assets/newLogoBlack_color10.png';
 import darkLogo11 from '../assets/newLogoBlack_color11.png';
 import darkLogo12 from '../assets/newLogoBlack_color12.png';
-
-import { SignOutIcon } from '../FeatureTabIcon';
 
 const linkbtn =
   ' flex items-center text-[#210d10] hover:text-yellow-500 dark:text-[#f8f4eb] dark:hover:text-yellow-300 inline-block mr-3';
