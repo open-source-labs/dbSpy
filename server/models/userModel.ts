@@ -20,8 +20,18 @@ const { USER_DB_URL_MYSQL, USER_DB_USER_MYSQL, USER_DB_PW_MYSQL, DB_PORT } = pro
 //     : fs.readFileSync('./.cert/cert.pem').toString();
 
 // Load CA certificate
-const caCertPath = path.resolve(__dirname, '../certs/ca.pem'); // Make sure this file exists
-const caCert = fs.readFileSync(caCertPath, 'utf-8');
+// This will check if the env is dev
+// If it is then we will read from ../certs/ca.pem
+// Otherwise the env will be prod, and we are ignoring this since we have uploaded ca.pem to a S3 bucket, and .extensions/certs.config will be grabbing it from there and making a dir to store the cert
+let ssl: any = false;
+if (process.env.NODE_ENV === 'development') {
+  const caCertPath = path.resolve(__dirname, '../certs/ca.pem'); // Make sure this file exists
+  const caCert = fs.readFileSync(caCertPath, 'utf-8');
+  ssl = {
+    rejectUnauthorized: true,
+    ca: caCert, // ✅ Provide Aiven's CA certificate
+  };
+}
 
 const pool = mysql
   .createPool({
@@ -34,10 +44,7 @@ const pool = mysql
     connectTimeout: 10000, // Timeout for establishing a connection
     connectionLimit: 10,
     queueLimit: 0,
-    ssl: {
-      rejectUnauthorized: true,
-      ca: caCert, // ✅ Provide Aiven's CA certificate
-    },
+    ssl,
     // ssl: {
     //   key: SSL_KEY,
     //   cert: SSL_CERT,

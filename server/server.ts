@@ -8,7 +8,6 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
-
 config();
 
 const port: number = Number(process.env.PORT) || 3000;
@@ -33,12 +32,12 @@ app.use(
       httpOnly: true,
       path: '/',
       sameSite: true,
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
 
-app.listen(3000, () => {
+app.listen(port, () => {
   log.info(`Securely Running at ${port}`);
   routes(app);
 });
