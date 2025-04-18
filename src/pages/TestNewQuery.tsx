@@ -15,9 +15,10 @@ type Database = {
   id: string | number;
 };
 
-// defining type of query result
+// defining type of query result (for initial metrics)
 type QueryResult = string[];
 
+// defining type of moreMetrics result (for extended metrics)
 type MoreMetricsResult = {
   planningTime: number;
   totalCost: number;
@@ -31,7 +32,7 @@ type MoreMetricsResult = {
 };
 
 const TestNewQuery: React.FC = () => {
-  // get state of FeatureTab from Zustand store
+  // Zustand store to track FeatureTab toggle state
   const toggleClicked = useNavStore((state) => state.toggleClicked);
   // holds the list of dbs user can select from
   const [dbInput, setDbInput] = useState<Database[] | null>(null);
@@ -53,6 +54,7 @@ const TestNewQuery: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // sets state of db credentials to allow connection on BE
+  // Zustand function to update global DB credentials store after parsing the input URI
   // TODO: Review the use of Store in this case
   const setDbCredentials = useCredentialsStore((state) => state.setDbCredentials);
 
@@ -72,31 +74,6 @@ const TestNewQuery: React.FC = () => {
     queryName?: string;
   }>({ db_type: 'postgres' });
   //END: STATE DECLARATION
-
-  // ! Not sure if this useEffect is needed. we aren't loading any data on render
-  // getting req to query / select db user is using
-  // useEffect(() => {
-  //   const fetchUserDatabase = async () => {
-  //     try {
-  //       //TODO where is it getting sent to?? backend route??
-  //       const response = await fetch('');
-  //       if (!response.ok) {
-  //         throw new Error('HTTP error! status: ${response.status}');
-  //       }
-  //       // parsing the json data
-  //       const data = await response.json();
-
-  //       // saving data to state
-  //       setDbInput(data);
-  //     } catch (error) {
-  //       // TODO DELETE when backend works
-  //       // fake data to test calling state w/ successful api call
-  //       setDbInput([{ id: 12345, name: 'Fake Db Name' }]);
-  //       console.error('Failed to fetch user database', error);
-  //     }
-  //   };
-  //   // fetchUserDatabase();
-  // }, []); // leave empty dependency array to run once on mount
 
   // Send DB link and query string to BE for testing
   const sendQuery = async () => {
@@ -140,57 +117,6 @@ const TestNewQuery: React.FC = () => {
             values.queryName = queryName;
             break;
         }
-        // switch (splitURI[0]) {
-        //   case 'mysql:':
-        //     const mysqlName = splitURI[3].split('?');
-        //     const mysqlPort = splitURI[2].split(':')[2];
-        //     const internalLinkArray_mySQL = splitURI[2].split(':')[1].split('@');
-        //     values.hostname = internalLinkArray_mySQL[1];
-        //     values.username = splitURI[2].split(':')[0];
-        //     values.password = internalLinkArray_mySQL[0];
-        //     values.port = mysqlPort ? mysqlPort : '3306';
-        //     values.database_name = mysqlName[0];
-        //     values.db_type = 'mysql';
-        //     break;
-        //   case 'mssql:':
-        //     const mssqlName = splitURI[3];
-        //     const mssqlPort = splitURI[2].split(':')[2];
-        //     const internalLinkArray_mssql = splitURI[2].split(':')[1].split('@');
-        //     values.hostname = internalLinkArray_mssql[1];
-        //     values.username = splitURI[2].split(':')[0];
-        //     values.password = internalLinkArray_mssql[0];
-        //     values.port = mssqlPort ? mssqlPort : '1433';
-        //     values.database_name = mssqlName;
-        //     values.db_type = 'mssql';
-        //     break;
-        //   case 'oracle:':
-        //     const oracleName = splitURI[3];
-        //     const oraclePort = splitURI[2].split(':')[2];
-        //     const internalLinkArray_oracle = splitURI[2].split(':')[1].split('@');
-        //     values.hostname = internalLinkArray_oracle[1];
-        //     values.username = splitURI[2].split(':')[0];
-        //     values.password = internalLinkArray_oracle[0];
-        //     values.port = oraclePort ? oraclePort : '1521';
-        //     values.database_name = oracleName;
-        //     values.db_type = 'oracle';
-        //     values.service_name = values.service_name;
-        //     break;
-        //   default:
-        //     const postgresName = splitURI[3];
-        //     const postgresPort = splitURI[2].split(':')[2];
-        //     const internalLinkArray_Postgres = splitURI[2].split(':')[1].split('@');
-        //     values.hostname = internalLinkArray_Postgres[1];
-        //     values.username = splitURI[2].split(':')[0];
-        //     values.password = internalLinkArray_Postgres[0];
-        //     values.port = postgresPort ? postgresPort : '5432';
-        //     values.database_name = postgresName;
-        //     values.db_type = 'postgres';
-        //     values.queryString = queryInput; // include query string on params
-        //     break;
-        // }
-        // } else if (values.file_path) {
-        //   values.db_type = 'sqlite';
-        //   values.database_name = values.file_path;
       }
 
       // View values array
@@ -224,12 +150,12 @@ const TestNewQuery: React.FC = () => {
     }
   };
 
+  // send POSt req to BE to save query to user's saved queries
   const saveQuery = async () => {
     // console.log('Testing In Save Query ⭐️');
     try {
       // TODO remove commented out if not used selectedDb later
       // conditional to check that a query was run and that it had results
-      // if (!queryResult || !selectedDb) {
       if (!queryResult) {
         alert('Please ensure you have ran a query and you received results');
         return;
@@ -271,34 +197,12 @@ const TestNewQuery: React.FC = () => {
         alert('Coming Soon!');
         return;
       }
-
-      // post req
-      //TODO where is it getting sent to?? backend route??
-      //   const response = await fetch('', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({
-      //       query: textInput,
-      //       databaseId: selectedDb.id,
-      //       result: queryResult,
-      //     }),
-      //   });
-
-      //   conditional for failed resp
-      //   if (!response.ok) {
-      //     throw new Error('HTTP error! status: ${response.status}');
-      //   }
-    } catch (error) {
-      //   console.error('Coming Soon!', error);
-    }
+    } catch (error) {}
   };
 
   //TODO get the FeatureTab to not sit on top of content in the page
   return (
     <>
-      {/* <div className="justify-space-around flex-auto justify-end border-2 border-black pr-2"> */}
       <div className="min-h-screen flex-auto justify-end justify-around bg-background dark:bg-primary ">
         <FeatureTab />
         {/* Must wrap the page title in the toggle div in order for the title to shift w/ the rest of the page */}
@@ -311,6 +215,7 @@ const TestNewQuery: React.FC = () => {
                 Test New Query
               </h1>
             </div>
+            {/* -------------Improve w/ AI Button -------------- */}
             <button
               onClick={improveWithAi}
               className="mr-6 h-11 w-auto whitespace-nowrap rounded border-2 border-slate-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
@@ -318,17 +223,7 @@ const TestNewQuery: React.FC = () => {
               Improve with AI
             </button>
           </div>
-          {/* 💙💙 Improve w/ AI Button -------------- */}
-          {/* <div className="mr-2 flex justify-end">
-            <button
-              onClick={improveWithAi}
-              className="rounded border border-gray-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100 dark:text-black"
-            >
-              Improve with AI
-            </button>
-          </div> */}
-
-          {/* 💙💙 Naming Query ------------- */}
+          {/* ------------------ Naming Query ------------- */}
           <div className="ml-2 mr-2 mt-4 flex flex-col space-y-4">
             <textarea
               value={queryName}
@@ -344,43 +239,7 @@ const TestNewQuery: React.FC = () => {
               placeholder="Enter DB link here"
               className="w-1/2 rounded-md border border-gray-300 p-4 text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-
-            {/* 💙💙 Select db dropdown ------------------- */}
-            {/* {dbInput && (
-            <div className="my-4">
-              <label htmlFor="database-select" className="mr-2">
-                Select a Database:
-              </label>
-              <select
-                id="database-select"
-                onChange={(e) => {
-                  const selected = dbInput.find(
-                    (db) => db.id.toString() === e.target.value
-                  );
-                  setSelectedDb(selected || null);
-                }}
-                className="rounded border px-3 py-2 text-black"
-                value={selectedDb?.id ?? ''}
-              >
-                <option value="" disabled>
-                  -- Choose a database --
-                </option>
-                {dbInput.map((db) => (
-                  <option key={db.id} value={db.id}>
-                    {db.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )} */}
-            {/* turnery to serve as placeholder for the time between db being fetech and db being rendered */}
-            {/* Uncoment code when user has access to dropdown to select DB  */}
-            {/* {selectedDb ? (
-            <span className="text-white">Connected to: {selectedDb.name}</span>
-          ) : (
-            <p className="dark:text-white">Loading database...</p>
-          )} */}
-            {/* Query Input ------------- */}
+            {/* ---------------- Query Input ------------- */}
             <textarea
               value={queryString}
               onChange={(e) => setQueryString(e.target.value)}
@@ -390,14 +249,14 @@ const TestNewQuery: React.FC = () => {
             />
             {/* this wrap aligns the 2 buttons together */}
             <div className="mt-4 flex justify-end gap-x-8">
-              {/* 💙💙 Run Query Button -------------- */}
+              {/* --------------- Run Query Button -------------- */}
               <button
                 onClick={sendQuery}
                 className="mr-4 h-11 w-auto whitespace-nowrap rounded border-2 border-slate-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
               >
                 Run Query
               </button>
-              {/* 💙💙 Save Query Button -------------- */}
+              {/* ---------------- Save Query Button -------------- */}
               <button
                 onClick={saveQuery}
                 className="mr-4 h-11 w-auto whitespace-nowrap rounded border-2 border-slate-700 bg-white px-4 py-2 text-black transition duration-200 hover:translate-y-[-2px] hover:cursor-pointer hover:border-sky-700 hover:ring-2 hover:ring-blue-300 dark:bg-blue-100"
@@ -406,7 +265,7 @@ const TestNewQuery: React.FC = () => {
               </button>
             </div>
           </div>
-          {/* 💙💙 Query Result --------------- */}
+          {/* ------------------ Query Result --------------- */}
           {/* this wrap aligns the title 'Query Results' w/ the table  together */}
           <div className="mt-4 flex gap-x-8">
             {error && (
