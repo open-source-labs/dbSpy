@@ -237,7 +237,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* TODO: ADD TEAM GAMJATANG */}
+      {/* ------- renders contributors components -------- */}
+      {/* Contributors component edits users, Profile component edits their containers  */}
       <Contributors />
       <footer className="bg-containers2 text-center dark:bg-containers lg:text-left">
         <div className="p-4 text-center text-black dark:text-[#f8f4eb]">

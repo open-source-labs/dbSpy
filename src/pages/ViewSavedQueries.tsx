@@ -32,10 +32,10 @@ const ViewSavedQueries: React.FC = () => {
   // get state of FeatureTab from Zustand store
   const toggleClicked = useNavStore((state) => state.toggleClicked);
 
-  // holds saved Queries
+  // holds saved Queries from BE
   const [savedQueries, setSavedQueries] = useState<SaveQuery[]>([]);
 
-  // fetch queries data req
+  // fetch saved queries data req on component mount
   useEffect(() => {
     const fetchSavedQueries = async () => {
       try {
@@ -63,6 +63,7 @@ const ViewSavedQueries: React.FC = () => {
           </h1>
           {/* this wrap aligns the title 'Saved Queries w/ the table together */}
           <div className="mt-4 flex gap-x-8">
+            {/* renders saved query data in a scrollable table */}
             {savedQueries.length > 0 ? (
               <div className="mt-8 w-full max-w-[1300px] shrink-0 overflow-x-auto px-4 text-white">
                 <table className="min-w-full table-fixed border-collapse border border-white text-white">
@@ -160,6 +161,7 @@ const ViewSavedQueries: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
+                {/* fallback message when user has no queries saved */}
               </div>
             ) : (
               <div className="flex h-full w-full items-center justify-center text-lg text-slate-800 dark:text-white">
