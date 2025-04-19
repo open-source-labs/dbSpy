@@ -31,6 +31,11 @@ import MattC from '../../assets/contributors/MattC.jpg';
 import MattJ from '../../assets/contributors/Matthew_Jones.jpeg';
 import StanH from '../../assets/contributors/Stan.jpg';
 import DonM from '../../assets/contributors/DonM.jpg';
+import Reva from '../../assets/contributors/Reva.png';
+import Vicky from '../../assets/contributors/Vicky.jpg';
+import Roshumba from '../../assets/contributors/Roshumba.png';
+import Emma from '../../assets/contributors/Emma.jpeg';
+import Yihe from '../../assets/contributors/Yihe.jpg';
 //for future contributors: add your profile information to the profileList array as an object formatted as shown below, and it will auto-populate the home page with a new profile card
 
 type profileInfo = {
@@ -262,6 +267,41 @@ const profileList: profileInfo[] = [
     linkedInUrl: 'https://www.linkedin.com/in/donald-macak-7b6592279/',
     githubUrl: 'https://github.com/Donald-Macak',
   },
+  {
+    imgUrl: Reva,
+    name: 'Revathy Venkataraman',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/revavenk',
+    githubUrl: 'https://github.com/reva2024',
+  },
+  {
+    imgUrl: Vicky,
+    name: 'Vicky Yue',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/vickyue/',
+    githubUrl: 'https://github.com/vyue013',
+  },
+  {
+    imgUrl: Roshumba,
+    name: 'Roshumba Llewellyn',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/roshumballewellyn/',
+    githubUrl: 'https://github.com/roshumba',
+  },
+  {
+    imgUrl: Emma,
+    name: 'Emma Vargas',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/emmavargas/',
+    githubUrl: 'https://github.com/emma-vargas',
+  },
+  {
+    imgUrl: Yihe,
+    name: 'Yihe Liu',
+    title: 'Software Engineer',
+    linkedInUrl: 'https://www.linkedin.com/in/yiheliu',
+    githubUrl: 'https://github.com/SparrowGecko',
+  },
 ];
 
 export default function Contributors() {
@@ -271,12 +311,14 @@ export default function Contributors() {
   }
 
   return (
-    <div className="contributors container mx-auto my-24 px-6">
+    <div className=" contributors container mx-auto my-24 px-6 dark:bg-primary">
       <section className="mb-32 text-center text-gray-800">
         <h2 className="team-header mb-32 text-3xl font-bold text-gray-900 dark:text-[#f8f4eb]">
           Meet the dbSpy Team
         </h2>
-        <div className="flex flex-row flex-wrap justify-around">{profiles}</div>
+        <div className="flex flex-row flex-wrap justify-around dark:bg-primary">
+          {profiles}
+        </div>
       </section>
     </div>
   );

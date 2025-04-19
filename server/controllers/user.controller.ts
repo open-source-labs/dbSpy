@@ -61,19 +61,34 @@ export const userRegistration: RequestHandler = async (
         log.info('[userCtrl - userReg] Created user from Google OAuth');
         return next();
       } else {
+        // userInfo.type default is 'github'
         const { login, id, url, avatar_url, type } = res.locals.userInfo;
-        const queryStr =
-          'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
-        let hashedPw: string;
-        hashedPw = id ? id.toString() : 'default';
-        const addUser = await pool.query(queryStr, [
-          login,
+
+        // checks if GitHub user exists already
+        const userQueryStr = 'SELECT email FROM users WHERE email = ?';
+        const foundUserGithub = (await pool.query(userQueryStr, [
           url,
-          hashedPw,
-          avatar_url,
-          type,
-        ]);
+        ])) as RowDataPacket[][];
+
+        // if exists, log statement then retrieve info after if-else
+        // else create new user into db
+        if (foundUserGithub[0]?.length) {
+          log.info('[userCtrl - userReg] User exists from GitHub OAuth already!');
+        } else {
+          const queryStr =
+            'INSERT IGNORE INTO users (full_name, email , password , picture, type) VALUES (?,?,?,?,?)';
+          let hashedPw: string;
+          hashedPw = id ? id.toString() : 'default';
+          const addUser = await pool.query(queryStr, [
+            login,
+            url,
+            hashedPw,
+            avatar_url,
+            type,
+          ]);
+        }
         const user = (await findUser(url)) as RowDataPacket[][];
+        console.log('USER REG GH: ', user);
         res.locals.user = user[0][0];
         log.info('[userCtrl - userReg] Created user from GitHub OAuth');
         return next();
@@ -127,7 +142,7 @@ export const userRegistration: RequestHandler = async (
         .then(() => {
           log.info(`${email} successfully registered`);
           res.locals.userInfo = { name: full_name, email: email };
-          res.locals.user = full_name;
+          res.locals.user = { email: email };
           return next();
         })
         .catch((err: ErrorEvent) => next(err));
@@ -191,12 +206,22 @@ export const verifyUser: RequestHandler = async (
         email: foundUser[0][0].email,
       };
 
-      return next();
-      } else {
-        log.error('[userCtrl - verifyUser] Username/Password do not match');
-
-        return res.redirect(401, '/login');
+      if (req.session) {
+        req.session.user = {
+          id: 0,
+          email: res.locals.userInfo.email,
+          username: res.locals.userInfo.name,
+          type: 'auth',
+        };
       }
+      console.log('checking req.session.user: ', req.session.user);
+
+      return next();
+    } else {
+      log.error('[userCtrl - verifyUser] Username/Password do not match');
+
+      return res.redirect(401, '/login');
+    }
   } catch (err: unknown) {
     if (err instanceof Error) {
       const error: GlobalError = {
@@ -209,6 +234,13 @@ export const verifyUser: RequestHandler = async (
       return next(err);
     }
   }
+};
+
+export const isAuthenticated: RequestHandler = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Not logged in' });
+  }
+  return next();
 };
 
 // Save currentSchema into database

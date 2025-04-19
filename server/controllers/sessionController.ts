@@ -8,7 +8,12 @@ config();
 
 declare module 'express-session' {
   interface SessionData {
-    user: string;
+    user?: {
+      id: number | 0; // github oauth will provide id, 0 will be if id doesn't exist (n/a)
+      email: string;
+      username: string;
+      type: string;
+    };
     email: string;
   }
 }
@@ -46,7 +51,7 @@ export const setJwtToken: RequestHandler = async (
 
     // store access token and email in the session
     // getCurrentUser uses accessToken, saveSchema and retrieveSchema use the email
-    req.session.user = accessToken;
+    req.session.accessToken = accessToken;
     req.session.email = email;
 
     return next();
@@ -57,8 +62,8 @@ export const setJwtToken: RequestHandler = async (
 };
 
 export const getCurrentUser: RequestHandler = (req, res) => {
-  if (req?.session?.user) {
-    const accessToken = req.session.user;
+  if (req?.session?.accessToken) {
+    const accessToken = req.session.accessToken;
 
     jwt.verify(
       accessToken as string,

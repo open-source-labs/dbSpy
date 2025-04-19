@@ -57,13 +57,13 @@ function ColumnInput({
   };
 
   return (
-    <div className="column-input">
+    <div className="column-input mb-4 flex gap-1">
       <div>
         <label
           className=" text-center text-slate-900 dark:text-[#f8f4eb]"
           htmlFor={`column-${index}-name`}
         >
-          Column Name
+          Name
         </label>
         <input
           type="text"
@@ -114,7 +114,7 @@ function ColumnInput({
 
       <div>
         <label
-          className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+          className="w-[100px] text-center text-slate-900 dark:text-[#f8f4eb]"
           htmlFor={`column-${index}-default-val`}
         >
           Default Value
@@ -132,7 +132,7 @@ function ColumnInput({
       {mode === 'table' && (
         <div>
           <label
-            className=" text-center text-slate-900 dark:text-[#f8f4eb]"
+            className="w-[90px] text-center text-slate-900 dark:text-[#f8f4eb]"
             htmlFor={`column-${index}-primary`}
           >
             Primary Key

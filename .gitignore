@@ -10,3 +10,4 @@ ca.crt/
 ca.key/
 coverage/
 certs/
+.DS_Store
