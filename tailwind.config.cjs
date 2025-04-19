@@ -3,6 +3,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      // primary colors used for styling dark/light mode. buttons, backgrounds, text
       colors: {
         primary: '#000000', // will be used for dark mode background
         background: '#e5e5e4', // will be used for light mode background
