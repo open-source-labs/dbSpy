@@ -26,8 +26,8 @@ const postgresController = {
   //----------Function to collect all schema and data from database-----------------------------------------------------------------
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
-    console.log('postgresQuery REQ: ', req);
-    console.log('MADE IT TO postgresQuery MIDDLEWARE');
+    // console.log('postgresQuery REQ: ', req);
+    // console.log('MADE IT TO postgresQuery MIDDLEWARE');
 
     /*
      * Used for storing Primary Key table and column names that are
@@ -170,21 +170,20 @@ const postgresController = {
   //----------Function to gather query metrics from database-----------------------------------------------------------------
   postgresGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresGetMetrics = await dbConnect(req);
-    console.log('REACHED postgresGetMetrics MIDDLEWARE');
-    console.log('REQ QUERY: ', req.query);
+    // console.log('REACHED postgresGetMetrics MIDDLEWARE');
+    // console.log('REQ QUERY: ', req.query);
     try {
       // destructuing the below 2 fields to store to the queries table in mysql db
       const { queryString, queryName, hostname, database_name } = req.query;
-      console.log('❓ QUERY FROM FE IS: ', queryString);
-      console.log('hostname:', hostname);
-      console.log('database_name', database_name);
+      // console.log('❓ QUERY FROM FE IS: ', queryString);
+      // console.log('hostname:', hostname);
+      // console.log('database_name', database_name);
 
       // Query string (EXPLAIN) to access performance data
       const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
       const result = await PostgresGetMetrics.query(testQuery);
 
-      console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
-      // 🌟🌟🌟
+      // console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
       /*
       Key Metrics Explanation:
       - Execution Time: total time it takes to execute the query (in ms)
@@ -198,7 +197,6 @@ const postgresController = {
 
       //pull exec time alone for the mysql update when storing queries
       const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
-      console.log('exec_time:', exec_time);
 
       // Pull Execution time only
       const resObj = result[0]['QUERY PLAN'][0];
@@ -206,7 +204,6 @@ const postgresController = {
       const executionTime = `Execution Time: ${resObj['Execution Time']}ms`;
       const namedQuery = `Query Name: ${queryName}`;
       const queryStr = `Query: ${queryString}`;
-      // console.log('⏰ EXECUTION TIME METRIC', executionTime);
 
       const otherMetrics: Array<object> = [
         {
@@ -221,7 +218,6 @@ const postgresController = {
           sharedRead: resObjPlan['Shared Read Blocks'],
         },
       ];
-      // console.log('OTHER METRICCSSSS: ', otherMetrics);
 
       // Create date metric to add to response
       const now = new Date();
@@ -255,8 +251,8 @@ const postgresController = {
     }
 
     try {
-      console.log('REACHED postgresSaveMetrics MIDDLEWARE');
-      console.log('REQ BODY: ', req.body.params);
+      // console.log('REACHED postgresSaveMetrics MIDDLEWARE');
+      // console.log('REQ BODY: ', req.body.params);
 
       const userEmail = user.email;
       const { query_date, exec_time } = req.body.params.extractedQueryRes;
@@ -277,7 +273,7 @@ const postgresController = {
       // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
       const date = new Date(query_date);
       const formatDateForMySql = date.toISOString().split('T')[0];
-      console.log('formatted date: ', formatDateForMySql);
+      // console.log('formatted date: ', formatDateForMySql);
 
       const insertQueryStr = `INSERT INTO queries (email, query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 

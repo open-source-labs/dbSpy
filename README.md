@@ -13,11 +13,8 @@
 
 </div>
 
-
-
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
-
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" />
@@ -38,7 +35,6 @@
   <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
   <img src="https://img.shields.io/badge/AWS-FF9900?style=flat-square&logo=amazonaws&logoColor=black" />
 </p>
-
 
 ### 🚀 dbSpy v8.0 ✨ New Features
 
@@ -80,7 +76,7 @@
 
 ---
 
-### dbSpy v8.0 updates
+### dbSpy v7.0 updates
 
 - Full widescreen UI with a dropdown menu for more workspace
 - Enhanced Save, Load, and Delete features that support filenames for saving schema and data
