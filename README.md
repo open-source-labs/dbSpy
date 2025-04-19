@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://makeapullrequest.com">![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)</a>
-<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-6.0.0-blue)</a>
+<a href="https://img.shields.io/badge/version-1.0.1-blue">![Version](https://img.shields.io/badge/version-8.0.0-blue)</a>
 ![GitHub Stars](https://img.shields.io/github/stars/oslabs-beta/JAKT?color=%23fb7182)
 ![MIT License](https://img.shields.io/badge/license-MIT-yellow)
 
@@ -13,8 +13,32 @@
 
 </div>
 
+
+
 <h1 align="center">Visualize, modify, and build your database with dbSpy!</h1>
 <p align="center">An open-source data modeling tool to facilitate relational database development</p>
+
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/React--Router-EA4335?style=flat-square&logo=reactrouter&logoColor=white" />
+  <img src="https://img.shields.io/badge/React--Flow-00BFFF?style=flat-square&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-BB99FF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/Zustand-FACC15?style=flat-square&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/MySQL-00758F?style=flat-square&logo=mysql&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeORM-FF5277?style=flat-square&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/OAuth2-3B82F6?style=flat-square&logo=oauth&logoColor=white" />
+  <img src="https://img.shields.io/badge/Jest-C21325?style=flat-square&logo=jest&logoColor=white" />
+  <img src="https://img.shields.io/badge/React--Testing--Library-E33332?style=flat-square&logo=testing-library&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/AWS-FF9900?style=flat-square&logo=amazonaws&logoColor=black" />
+</p>
+
 
 ### 🚀 dbSpy v8.0 ✨ New Features
 

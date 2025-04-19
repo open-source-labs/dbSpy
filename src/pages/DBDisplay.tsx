@@ -1,13 +1,14 @@
 //* main dashboard page
 // React & React Router & React Query Modules;
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 
-// Dashboard Components Imported;
+//-- Dashboard Components Imported;
 import Sidebar from '../components/DBDisplay/Sidebar';
 import FeatureTab from '../components/DBDisplay/FeatureTab';
 import AddReference from '../components/DBDisplay/AddReference';
 import Flow from '../components/ReactFlow/Flow';
 import DataFlow from '../components/ReactFlow/DataFlow';
+
 //-- Modals (pop ups) Components Imports;
 import InputModal from '../components/Modals/InputModal';
 import DataInputModal from '../components/Modals/DataInputModal';
@@ -15,17 +16,19 @@ import DbNameInput from '../components/Modals/DbNameInput';
 import LoadDbModal from '../components/Modals/LoadDbModal';
 import DeleteDbModal from '../components/Modals/DeleteDbModal';
 import DeleteTableModal from '../components/Modals/DeleteTableModal';
+import { useModalStore } from '../store/useModalStore';
+import { accountModalStore } from '../store/accountModalStore';
+import QueryModal from '../components/Modals/QueryModal';
+
 //-- State Stores Imports;
 import useCredentialsStore from '../store/credentialsStore';
 import useSettingsStore from '../store/settingsStore';
-
-import { useModalStore } from '../store/useModalStore';
-import { accountModalStore } from '../store/accountModalStore';
 import useSchemaStore from '../store/schemaStore';
 import useDataStore from '../store/dataStore';
+
 import axios, { AxiosResponse } from 'axios';
 
-import QueryModal from '../components/Modals/QueryModal';
+
 
 const DBDisplay: React.FC = () => {
   const { setUser } = useCredentialsStore();
@@ -49,16 +52,6 @@ const DBDisplay: React.FC = () => {
     setDBName,
   } = useSettingsStore((state) => state);
 
-  // Input Modal state and handlers
-  type InputModalState = {
-    isOpen: boolean;
-    mode: 'table' | 'column';
-    tableName?: string;
-  };
-  //-- helper functions to open specific modals
-  const openAddTableModal = () => setInputModalState(true, 'table');
-  const openDeleteTableModal = () => setDeleteTableModalState(true);
-
   // dbSpy8.0: Zustand state managemant to handle modals under Account
   const { closeQueryModal, queryModalOpened } = useModalStore();
   const {
@@ -72,8 +65,11 @@ const DBDisplay: React.FC = () => {
   } = accountModalStore();
   const { schemaStore, setSchemaStore } = useSchemaStore((state: any) => state);
   const { dataStore, setDataStore } = useDataStore((state: any) => state);
-  // useRef() create a reference to DOM elements
-  //create references for HTML elements
+
+  //-- helper functions to open specific modals
+  const openAddTableModal = () => setInputModalState(true, 'table');
+  const openDeleteTableModal = () => setDeleteTableModalState(true);
+
   // mySideBarId is the reference to the sidebar
   const mySideBarId: any = useRef();
   // mainId is the reference to the main content
@@ -125,37 +121,9 @@ const DBDisplay: React.FC = () => {
           message: 'Unable to login with OAuth.',
         });
       });
-    // }
-    // send POST request to /api/oauth with code/state
-    fetch('/api/oauth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'Application/JSON',
-      },
-      body: JSON.stringify({ code: code, state: state }),
-    })
-      .then((data) => {
-        // successful codes
-        if (data.status >= 200 && data.status < 300) {
-          // convert response to JSON
-          return data.json();
-        } else
-          throw new Error(`Continue with OAuth failed with status code: ${data.status}`);
-      })
-      .then((res) => {
-        // update the state with user data
-        setUser(res);
-      })
-      .catch((err) => {
-        console.log({
-          log: `There was an error completing OAuth request: ${err}`,
-          status: err,
-          message: 'Unable to login with OAuth.',
-        });
-      });
-    // }
   }, []);
 
+  // ****** dbSpy8.0: move from FeatureTab to Display page ******
   // for the sidebar of Add table
   /* Set the width of the side navigation to 400px and add a right margin of 400px */
   const openNav = () => {
@@ -181,7 +149,7 @@ const DBDisplay: React.FC = () => {
       openNav();
     }
   }
-  // dbSpy8.0: move from FeatureTab to Display page
+  
   // Function for saving databases. Reworked for multiple saves - dbspy 7.0
   const saveSchema = (inputName: string): void => {
     //check to see if a table is present in the schemaStore
@@ -271,6 +239,7 @@ const DBDisplay: React.FC = () => {
     }
     setDeleteDbModalClose();
   };
+  // ******* End moving from FeatureTab ******
 
   return (
     <>
@@ -295,7 +264,6 @@ const DBDisplay: React.FC = () => {
         {/* <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page --> */}
         {/* mx-auto: center the div horizontally, transition-colors: enable smooth color transitions, duration-500: set transition duration to 0.5s */}
         <div ref={mainId} id="main" className="mx-auto transition-colors duration-500">
-          {/* <div>"Current Database Name:"</div> */}
           {/* relative: positions relative to its normal location, right-[142px]: move 142px to left */}
           {/* m-auto = margin: auto in CSS */}
           {/* w-50%: set width to 50% of parent, flex-col: stack children vertically */}
