@@ -17,6 +17,7 @@ import { config } from 'dotenv';
 import log from '../logger/index';
 import type { DefaultErr } from '../../src/Types';
 import session from 'express-session';
+import path from 'path';
 
 config();
 
@@ -110,8 +111,9 @@ const routes = (app: Express) => {
     res.json({ message: 'Reached /api/ route' });
   });
 
-  app.get('/*', (_req, res) => {
-    res.status(404).send('Not found');
+  // This must be placed **after** all your API routes
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
   });
 
   // Global Error Handler

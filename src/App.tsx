@@ -8,6 +8,7 @@ import Shared from './pages/Shared';
 import TestNewQuery from './pages/TestNewQuery';
 import ViewSavedQueries from './pages/ViewSavedQueries';
 import GitHubCallback from './pages/GitHubCallback';
+import NotFound from './pages/NotFound';
 
 //-- used to store and access login info. using Zustand (state management library)
 import useCredentialsStore from './store/credentialsStore';
@@ -51,6 +52,9 @@ const App: React.FC = () => {
         <Route path="/auth/github/callback" element={<GitHubCallback />} />
 
         {/* main dashboard? route does not live inside the Shared layout */}
+
+        {/* Catch all route for undefined paths */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
