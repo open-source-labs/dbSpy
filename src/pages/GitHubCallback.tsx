@@ -10,7 +10,6 @@ const GitHubCallback: React.FC = () => {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get('code');
     const state = new URLSearchParams(window.location.search).get('state');
-    console.log('Code + State from GitHub:', code, state); // Log to check the value of code and state
 
     if (!code) {
       navigate('/login');
