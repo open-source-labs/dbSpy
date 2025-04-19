@@ -21,7 +21,9 @@ const GitHubCallback: React.FC = () => {
       return;
     }
 
-    fetch(apiOauth, {
+    // in development mode, change redirect_uri to 'http://localhost:8080/auth/github/callback'
+    // in production mode, change redirect_uri back to 'https://dbspy.net/auth/github/callback' before deploying
+    fetch('https://www.dbspy.net/auth/github/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, state, type: 'GITHUB' }),
