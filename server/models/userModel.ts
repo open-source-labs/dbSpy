@@ -3,7 +3,7 @@ import fs from 'fs';
 import log from '../logger';
 import path from 'path';
 
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 dotenv.config();
 
 const { USER_DB_URL_MYSQL, USER_DB_USER_MYSQL, USER_DB_PW_MYSQL, DB_PORT } = process.env;

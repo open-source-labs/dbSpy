@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import dns from 'dns';
 import react from '@vitejs/plugin-react';
-const fs = require('fs');
 import { resolve } from 'path';
 
 dns.setDefaultResultOrder('verbatim');
