@@ -1,6 +1,7 @@
 {
   "name": "dbspy",
   "version": "8.0.0",
+  "type": "module",
   "description": "The open source dev tool to logically model and build MySQL and PostgreSQL databases",
   "main": "server/server.ts",
   "engines": {
@@ -21,7 +22,7 @@
     "cert:linux": "rm -rf .cert && mkdir -p .cert && cd .cert && mkcert create-ca && mkcert create-cert --key key.pem --cert cert.pem",
     "e2e": "cypress open --project ./tests"
   },
-  "author": "Minh Chang, David Jones, Darius Okafor, John Ruiz, Parwinder Singh",
+  "author": "Vicky Yue, Reva Venkataraman, Yihe Liu, Roshumba Llewellyn, Emma Vargas",
   "license": "MIT",
   "dependencies": {
     "@tippyjs/react": "^4.2.6",

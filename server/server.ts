@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import express, { Express } from 'express';
-import log from './logger/index';
-import routes from './routes';
+import log from './logger/index.js';
+import routes from './routes/index.js';
 import path from 'path';
 import cors from 'cors';
 import session from 'express-session';

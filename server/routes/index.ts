@@ -1,21 +1,21 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
-import { getAccesToken, getUserInfo } from '../controllers/oauth.controller';
-import { setJwtToken, getCurrentUser } from '../controllers/sessionController';
+import { getAccesToken, getUserInfo } from '../controllers/oauth.controller.js';
+import { setJwtToken, getCurrentUser } from '../controllers/sessionController.js';
 import {
   retrieveSchema,
   saveSchema,
   userRegistration,
   verifyUser,
-} from '../controllers/user.controller';
-import { postgresRouter } from './postgres.router';
-import { microsoftRouter } from './microsoft.router';
-import { oracleRouter } from './oracle.router';
-import { mysqlRouter } from './mysql.router';
-import { sqliteRouter } from './sqlite.router';
-import { saveRouter } from './save.router';
+} from '../controllers/user.controller.js';
+import { postgresRouter } from './postgres.router.js';
+import { microsoftRouter } from './microsoft.router.js';
+import { oracleRouter } from './oracle.router.js';
+import { mysqlRouter } from './mysql.router.js';
+import { sqliteRouter } from './sqlite.router.js';
+import { saveRouter } from './save.router.js';
 import { config } from 'dotenv';
-import log from '../logger/index';
-import type { DefaultErr } from '../../src/Types';
+import log from '../logger/index.js';
+import type { DefaultErr } from '../../src/Types.js';
 import session from 'express-session';
 import path from 'path';
 

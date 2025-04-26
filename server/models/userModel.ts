@@ -1,6 +1,6 @@
 import mysql from 'mysql2';
 import fs from 'fs';
-import log from '../logger';
+import log from '../logger/index.js';
 import path from 'path';
 
 import dotenv from 'dotenv';

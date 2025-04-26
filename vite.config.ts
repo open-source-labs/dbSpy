@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 dns.setDefaultResultOrder('verbatim');
+
 export default defineConfig({
   server: {
     port: 8080,
