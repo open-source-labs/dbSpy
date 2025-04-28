@@ -8,20 +8,32 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
-config();
-
-const port: number = Number(process.env.PORT) || 3000;
+config(); // load .env variables
 
 const app: Express = express();
+const port: number = Number(process.env.PORT) || 3000;
+
 //Set the payload limit size to 1mb when save a large database data which is TableData in featureTab.
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
 
+// Core express middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Cookies and CORS
 app.use(cookieParser());
 app.use(cors());
+
+// Serve static files from 'dist'
 app.use(express.static(path.join(__dirname, '../dist')));
+
+// Session setup
+if (!process.env.SESSION_SECRET) {
+  console.error('❌ SESSION_SECRET is not defined in environment variables!');
+  process.exit(1); // Exit early if SESSION_SECRET is missing
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET as string,
@@ -31,15 +43,16 @@ app.use(
       secure: false,
       httpOnly: true,
       path: '/',
-      sameSite: true,
+      sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
 
+// Start the server
 app.listen(port, () => {
-  log.info(`Securely Running at ${port}`);
-  routes(app);
+  log.info(`✅ Server running securely at ${port}`);
+  routes(app); // register routes AFTER all middlewares
 });
 
 export default app;
