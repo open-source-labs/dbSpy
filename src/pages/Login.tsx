@@ -39,7 +39,7 @@ export default function Login() {
 
   type Options = {
     redirect_uri: string;
-    client_id: string;
+    client_id?: string;
     access_type?: string;
     response_type?: string;
     prompt?: string;
@@ -49,14 +49,14 @@ export default function Login() {
   };
 
   // in development mode, change redirect_uri to 'http://localhost:8080/display/'
-  // in production mode, change redirect_uri back to 'http://db-spy.io/display/' before deploying
+  // in production mode, change redirect_uri back to 'https://dbspy.net/display/' before deploying
   function getGoogle(): void {
     const rootUrl: string = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     const options: Options = {
-      redirect_uri: 'http://db-spy.io/display/',
+      redirect_uri: 'http://localhost:8080/display/',
       client_id:
-        '1050970973422-4am2mv6e621f83lggfcjubkl3hqtoj0k.apps.googleusercontent.com',
+        '320130847932-1e4r2g6d0cd0etfin12agg9pb5mc0tn7.apps.googleusercontent.com',
       access_type: 'offline',
       response_type: 'code',
       prompt: 'consent',
@@ -76,15 +76,17 @@ export default function Login() {
   const getGithub = (): void => {
     const rootUrl: string = 'https://github.com/login/oauth/authorize';
     const options: Options = {
-      redirect_uri: 'http://db-spy.io/display/',
-      client_id: '18d4ecdcc6ed1cb25240',
+      redirect_uri: 'https://www.dbspy.net/auth/github/callback',
+      // TODO - figure out way to hide client_id, dotenv doesn't work in React components on FE
+      client_id: 'Ov23li1zd9jvrvT4aT5F',
       state: 'randomstring',
       allow_signup: 'true',
       scope: ['read:user', 'user:email'].join(' '),
     };
-    const qs = new URLSearchParams(options);
+
+    const state = 'randomstring';
+    const qs = new URLSearchParams({ ...options, state });
     const url = `${rootUrl}?${qs.toString()}`;
-    console.log(url);
 
     const strWindowFeatures =
       'toolbar=no, menu=no, width=600, height=700, top=100, left=800';
@@ -146,6 +148,11 @@ export default function Login() {
             >
               Continue with email
             </button>
+          </div>
+          <div className="flex w-full justify-center text-center">
+            {!loginStatus ? (
+              <div className="text-xs text-red-500">Failed to log in. Try again.</div>
+            ) : null}
           </div>
         </form>
         <div className="ContentDivider inline-flex h-5 items-center justify-start gap-2 self-stretch">

@@ -1,5 +1,6 @@
 import { Router, Response, Request } from 'express';
 import postgresController from '../controllers/postgresData.controller';
+import { isAuthenticated } from '../controllers/user.controller';
 
 const postgresRouter = Router();
 
@@ -9,6 +10,23 @@ postgresRouter.get(
   postgresController.postgresQuery,
   (_req: Request, res: Response) => {
     return res.status(200).json(res.locals);
+  }
+);
+
+postgresRouter.get(
+  '/run-query',
+  postgresController.postgresGetMetrics,
+  (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals);
+  }
+);
+
+postgresRouter.post(
+  '/save-query',
+  isAuthenticated,
+  postgresController.postgresSaveQuery,
+  (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.savedQuery);
   }
 );
 

@@ -16,13 +16,19 @@ import {
   removeForeignKey,
 } from './helperFunctions/universal.helpers';
 import { resourceLimits } from 'worker_threads';
+import pool from './../models/userModel';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Object containing all of the middleware
 const postgresController = {
   //----------Function to collect all schema and data from database-----------------------------------------------------------------
   postgresQuery: async (req: Request, res: Response, next: NextFunction) => {
     const PostgresDataSource = await dbConnect(req);
-    console.log('MADE IT TO postgresQuery MIDDLEWARE');
+    // console.log('postgresQuery REQ: ', req);
+    // console.log('MADE IT TO postgresQuery MIDDLEWARE');
+
     /*
      * Used for storing Primary Key table and column names that are
      *  part of Foreign Keys to adjust IsDestination to be true.
@@ -146,6 +152,8 @@ const postgresController = {
       // Storage of queried results into res.locals
       res.locals.schema = schema;
       res.locals.data = tableData;
+      // res.locals.database_link = req.query.database_link;
+      // res.locals.db_connection = PostgresDataSource;
 
       // Disconnecting after data has been received
       PostgresDataSource.destroy();
@@ -156,6 +164,170 @@ const postgresController = {
       PostgresDataSource.destroy();
       console.log('Database has been disconnected');
       return next(err);
+    }
+  },
+
+  //----------Function to gather query metrics from database-----------------------------------------------------------------
+  postgresGetMetrics: async (req: Request, res: Response, next: NextFunction) => {
+    const PostgresGetMetrics = await dbConnect(req);
+    // console.log('REACHED postgresGetMetrics MIDDLEWARE');
+    // console.log('REQ QUERY: ', req.query);
+    try {
+      // destructuing the below 2 fields to store to the queries table in mysql db
+      const { queryString, queryName, hostname, database_name } = req.query;
+      // console.log('❓ QUERY FROM FE IS: ', queryString);
+      // console.log('hostname:', hostname);
+      // console.log('database_name', database_name);
+
+      // Query string (EXPLAIN) to access performance data
+      const testQuery = `EXPLAIN (FORMAT JSON, ANALYZE, VERBOSE, BUFFERS) ${queryString};`;
+      const result = await PostgresGetMetrics.query(testQuery);
+
+      // console.log('⭐️QUERY PLAN RESULT: ', result[0]['QUERY PLAN']);
+      /*
+      Key Metrics Explanation:
+      - Execution Time: total time it takes to execute the query (in ms)
+      - Planning Time: time spent preparing the query plan (shows if the query is complex to plan)
+      - Actual Total Time: actual runtime of query (helps show real-time performance)
+      - Node Type (Seq Scan, Index Scan, Hash Join): tells you what scan/join is used - seq scan on big tables is a red flag
+      - Relation Name: table being queried (context for which part is being scanned)
+      - Plan Rows vs Actual Rows: estimated vs actual rows (if they differ a lot = bad stats or inefficient plan)
+      - Shared Hit Blocks / Read Blocks: pages read from cache vs. disk (shows I/O behavior -> disk access = slower)
+      */
+
+      //pull exec time alone for the mysql update when storing queries
+      const exec_time = result[0]['QUERY PLAN'][0]['Execution Time'];
+
+      // Pull Execution time only
+      const resObj = result[0]['QUERY PLAN'][0];
+      const resObjPlan = resObj['Plan'];
+      const executionTime = `Execution Time: ${resObj['Execution Time']}ms`;
+      const namedQuery = `Query Name: ${queryName}`;
+      const queryStr = `Query: ${queryString}`;
+
+      const otherMetrics: Array<object> = [
+        {
+          planningTime: resObj['Planning Time'],
+          actualTotalTime: resObjPlan['Actual Total Time'],
+          totalCost: resObjPlan['Total Cost'],
+          nodeType: resObjPlan['Node Type'],
+          relationName: resObjPlan['Relation Name'],
+          planRows: resObjPlan['Plan Rows'],
+          actualRows: resObjPlan['Actual Rows'],
+          sharedHit: resObjPlan['Shared Hit Blocks'],
+          sharedRead: resObjPlan['Shared Read Blocks'],
+        },
+      ];
+
+      // Create date metric to add to response
+      const now = new Date();
+      const options: any = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        timeZone: 'America/New_York', // Set to US Eastern Time
+      };
+      const formattedDate = `Date Run: ${now.toLocaleString('en-US', options)}`;
+
+      // Send query name, query string, date, and execution time on response
+      res.locals.metrics = [namedQuery, queryStr, formattedDate, executionTime];
+      res.locals.otherMetrics = otherMetrics;
+      PostgresGetMetrics.destroy();
+      return next();
+    } catch (err) {
+      console.error('Error during query execution: ', err);
+      PostgresGetMetrics.destroy();
+      // In case of an error, respond with a message
+      res.status(500).json({ error: 'Error executing query', message: err });
+    }
+  },
+
+  //----------Function to save query metrics after running query-----------------------------------------------------------------
+  postgresSaveQuery: async (req: Request, res: Response, next: NextFunction) => {
+    // getting user info to save query
+    const user = req.session.user;
+    if (!user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    try {
+      // console.log('REACHED postgresSaveMetrics MIDDLEWARE');
+      // console.log('REQ BODY: ', req.body.params);
+
+      const userEmail = user.email;
+      const { query_date, exec_time } = req.body.params.extractedQueryRes;
+      const { queryString, queryName, hostname, database_name } =
+        req.body.params.dbValues;
+      const {
+        planningTime,
+        totalCost,
+        actualTotalTime,
+        nodeType,
+        relationName,
+        planRows,
+        actualRows,
+        sharedHit,
+        sharedRead,
+      } = req.body.params.moreMetrics;
+
+      // converting date to DATE format (YYYY-MM-DD) for MySQL to insert into queries table
+      const date = new Date(query_date);
+      const formatDateForMySql = date.toISOString().split('T')[0];
+      // console.log('formatted date: ', formatDateForMySql);
+
+      const insertQueryStr = `INSERT INTO queries (email, query, db_link, exec_time, db_name, query_date, name, planning_time, total_cost, actual_total_time, node_type, relation_name, plan_rows, actual_rows, shared_hit_blocks, shared_read_blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+      //connect to mysql pool imported from userModel and send the query to update table
+      const [savingQuery]: any = await pool.query(insertQueryStr, [
+        userEmail,
+        queryString,
+        hostname,
+        exec_time,
+        database_name,
+        formatDateForMySql,
+        queryName,
+        planningTime,
+        totalCost,
+        actualTotalTime,
+        nodeType,
+        relationName,
+        planRows,
+        actualRows,
+        sharedHit,
+        sharedRead,
+      ]);
+
+      // Check if insertion was successful
+      // MySQL2 returns an array [result, fields]
+      // result is of type ResultSetHeader for INSERT queries
+      // affectedRows is a property of ResultSetHeader
+      if (savingQuery.affectedRows > 0) {
+        console.log('savingQuery completed!');
+        res.locals.savedQuery = [
+          userEmail,
+          queryString,
+          hostname,
+          exec_time,
+          database_name,
+          formatDateForMySql,
+          queryName,
+          planningTime,
+          totalCost,
+          actualTotalTime,
+          nodeType,
+          relationName,
+          planRows,
+          actualRows,
+          sharedHit,
+          sharedRead,
+        ];
+        return next();
+      } else {
+        throw new Error('Database insertion failed. No rows affected.');
+      }
+    } catch (error) {
+      console.error('Error in postgresSaveQuery: ', error);
+      return res.status(500).json({ error: 'Failed to save query to database.' });
     }
   },
 

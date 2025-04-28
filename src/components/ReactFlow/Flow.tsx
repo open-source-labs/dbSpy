@@ -13,12 +13,14 @@ import TableNode from './TableNode';
 import createEdges from './createEdges';
 import createNodes from './createNodes';
 import useSettingsStore from '../../store/settingsStore';
+import { useNavStore } from '../../store/navStore';
 
 const nodeTypes = {
   table: TableNode,
 };
 
 export default function Flow(): JSX.Element {
+  const toggleClicked = useNavStore((state) => state.toggleClicked);
   // set up states for nodes and edges
   const { edges, setEdges, nodes, setNodes, onNodesChange, onEdgesChange, onConnect } =
     useFlowStore((state) => state);
@@ -84,7 +86,10 @@ export default function Flow(): JSX.Element {
   };
   // renders React Flow canvas
   return (
-    <div className="flow" style={{ height: '98%', width: '100%', zIndex: 0 }}>
+    <div
+      className="flow"
+      style={{ height: '98%', width: '100%', zIndex: 0, marginTop: '50px' }}
+    >
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}

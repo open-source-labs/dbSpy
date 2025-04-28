@@ -12,6 +12,7 @@ interface NewColumn {
 }
 
 //---------------CONNECT TO THE DATABASE-----------------------------------------------------------------------------------------
+let dbDataSource: DataSource | null = null;
 
 export const dbConnect = async (req: Request) => {
   const { db_type, hostname, password, port, username, database_name, service_name } =

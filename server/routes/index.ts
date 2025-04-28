@@ -14,9 +14,10 @@ import { mysqlRouter } from './mysql.router';
 import { sqliteRouter } from './sqlite.router';
 import { saveRouter } from './save.router';
 import { config } from 'dotenv';
-import log from '../logger/index';
+import log from '../logger';
 import type { DefaultErr } from '../../src/Types';
 import session from 'express-session';
+import path from 'path';
 
 config();
 
@@ -35,6 +36,13 @@ declare module 'express-session' {
     logging?: boolean;
     db_type?: string;
     file_path?: string;
+    user?: {
+      id: number;
+      email: string;
+      username: string;
+      type: string;
+    };
+    accessToken?: string;
   }
 }
 
@@ -97,8 +105,15 @@ const routes = (app: Express) => {
   // Status code being handled in middleware
   app.get('/api/retrieveSchema', retrieveSchema);
 
-  app.get('/*', (_req, res) => {
-    res.status(404).send('Not found');
+  // TODO - look into this in vite.config.ts
+  // Added /api/ route to resolve vite http proxy error?
+  app.get('/api/', (req, res) => {
+    res.json({ message: 'Reached /api/ route' });
+  });
+
+  // This must be placed **after** all your API routes
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
   });
 
   // Global Error Handler

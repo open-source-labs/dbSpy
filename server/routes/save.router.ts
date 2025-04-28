@@ -3,6 +3,8 @@
 import { Router, Response, Request } from 'express';
 import bodyParser from 'body-parser';
 import saveController from '../controllers/save.controller';
+import { isAuthenticated } from '../controllers/user.controller';
+
 const saveRouter = Router();
 
 // Apply bodyParser with a larger limit
@@ -10,7 +12,15 @@ const saveRouter = Router();
 // app.use(bodyParser.json({ limit: '50mb' }));
 // app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-
+//Load Saved Queries
+saveRouter.get(
+  '/saved-queries',
+  isAuthenticated,
+  saveController.getSavedQueries,
+  (_req: Request, res: Response) => {
+    return res.status(200).json(res.locals.savedQueries);
+  }
+);
 
 //Clone Save
 //takes current user email + filename
@@ -40,7 +50,7 @@ saveRouter.get('/loadSave', saveController.load, (_req: Request, res: Response) 
 //Save
 // Takes in current useremail + filename
 //updates the schema in the database
-saveRouter.patch('/save',saveController.save, (_req: Request, res: Response) => {
+saveRouter.patch('/save', saveController.save, (_req: Request, res: Response) => {
   return res.status(200).json(res.locals);
 });
 
