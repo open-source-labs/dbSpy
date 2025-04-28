@@ -1,8 +1,8 @@
 // React & React Router Modules
 import axios from 'axios';
 import React, { useState } from 'react';
-import useCredentialsStore from '../store/credentialsStore.js';
-import { handleOAuthLogin } from '../utils/getGoogleUrl.js';
+import useCredentialsStore from '../store/credentialsStore';
+import { handleOAuthLogin } from '../utils/getGoogleUrl';
 import googleImg from '../../src/assets/GoogleImage.png';
 import gitHubImage from '../../src/assets/GithubImage.png';
 import { NavLink, useNavigate } from 'react-router-dom';
